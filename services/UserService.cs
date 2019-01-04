@@ -65,6 +65,7 @@ namespace SprintCrowdBackEnd.services
             {
                 response.StatusId = (int)ResponseStatus.AlreadyRegistered;
                 response.Data = "User already exists.";
+                return response;
             }
             _userRepo.AddUser(user);
             response.StatusId = (int)ResponseStatus.AllOk;
