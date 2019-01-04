@@ -1,0 +1,10 @@
+/home/anton/Desktop/SprintCrowdBackEnd/obj/Debug/netcoreapp2.0/SprintCrowdBackEnd.csproj.CoreCompileInputs.cache
+/home/anton/Desktop/SprintCrowdBackEnd/obj/Debug/netcoreapp2.0/SprintCrowdBackEnd.AssemblyInfoInputs.cache
+/home/anton/Desktop/SprintCrowdBackEnd/obj/Debug/netcoreapp2.0/SprintCrowdBackEnd.AssemblyInfo.cs
+/home/anton/Desktop/SprintCrowdBackEnd/bin/Debug/netcoreapp2.0/SprintCrowdBackEnd.deps.json
+/home/anton/Desktop/SprintCrowdBackEnd/bin/Debug/netcoreapp2.0/SprintCrowdBackEnd.runtimeconfig.json
+/home/anton/Desktop/SprintCrowdBackEnd/bin/Debug/netcoreapp2.0/SprintCrowdBackEnd.runtimeconfig.dev.json
+/home/anton/Desktop/SprintCrowdBackEnd/bin/Debug/netcoreapp2.0/SprintCrowdBackEnd.dll
+/home/anton/Desktop/SprintCrowdBackEnd/bin/Debug/netcoreapp2.0/SprintCrowdBackEnd.pdb
+/home/anton/Desktop/SprintCrowdBackEnd/obj/Debug/netcoreapp2.0/SprintCrowdBackEnd.dll
+/home/anton/Desktop/SprintCrowdBackEnd/obj/Debug/netcoreapp2.0/SprintCrowdBackEnd.pdb
