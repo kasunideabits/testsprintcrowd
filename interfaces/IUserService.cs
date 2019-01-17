@@ -5,7 +5,6 @@ namespace SprintCrowdBackEnd.interfaces
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
-        ResponseObject RegisterUser(User user);
+        User Authenticate(string fbAccessToken);
     }
 }

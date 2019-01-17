@@ -3,6 +3,7 @@ namespace SprintCrowdBackEnd.Enums
     public enum ResponseStatus
     {
         AllOk = 200,
-        AlreadyRegistered = 409
+        //UserExists = 409,
+        IncorrectAuth = 403
     }
 }

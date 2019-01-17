@@ -10,6 +10,7 @@ using SprintCrowdBackEnd.Models;
 using System.Linq;
 using SprintCrowdBackEnd.repositories;
 using SprintCrowdBackEnd.Enums;
+using SprintCrowdBackEnd.Models.GraphApi;
 
 namespace SprintCrowdBackEnd.services
 {
@@ -17,60 +18,82 @@ namespace SprintCrowdBackEnd.services
     {
         private IUserRepo _userRepo;
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-
+        private IFbService _fbService;
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings, IUserRepo userRepo)
+        public UserService(IOptions<AppSettings> appSettings, IUserRepo userRepo, IFbService fbService)
         {
             _appSettings = appSettings.Value;
             _userRepo = userRepo;
+            _fbService = fbService;
         }
 
-        public User Authenticate(string email, string password)
+        public User Authenticate(string fbAccessToken)
         {
-            var user = _userRepo.GetUser(email);
-
-            // return null if user not found
-            if (user == null)
-                return null;
-
-            // authentication successful so generate jwt token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            if(_fbService.ValidateAccessToken(fbAccessToken))
             {
-                Subject = new ClaimsIdentity(new Claim[] 
+                //Hurray! Valid access token
+                //lets get details about /me => Graph Api
+                Me userDetails = _fbService.GetFbUserDetails(fbAccessToken);
+                User user = _userRepo.GetUser(userDetails.Email);
+                if(user == null)
                 {
-                    new Claim(ClaimTypes.Name, user.Email.ToString()),
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = _appSettings.Issuer,
-                Audience = _appSettings.Audience
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
+                    //User is a new user, need to register the user
+                    user = new User(){
+                        Email = userDetails.Email,
+                        FbUserId = userDetails.Id,
+                        FirstName = userDetails.FirstName,
+                        LastName = userDetails.LastName,
+                        LastLoggedInTime = DateTime.UtcNow,
+                        Token = fbAccessToken
+                    };
+                    this.RegisterUser(user);
+                }
+                UpdateLastLoggedInTIme(user);
+                // authentication successful so generate jwt token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[] 
+                    {
+                        new Claim(ClaimTypes.Name, user.Email.ToString()),
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(365), //TODO: Decide whether to expire or keep forever
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                    Issuer = _appSettings.Issuer,
+                    Audience = _appSettings.Audience
+                };
+                var jwt_token = tokenHandler.CreateToken(tokenDescriptor);
+                user.Token = tokenHandler.WriteToken(jwt_token);
 
-            // remove password before returning
-            user.Password = null;
+                return user;
 
-            return user;
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
-        public ResponseObject RegisterUser(User user)
+        private void RegisterUser(User user)
         {
             User existingUser = _userRepo.GetUser(user.Email);
             ResponseObject response = new ResponseObject();
             if (existingUser != null)
             {
-                response.StatusId = (int)ResponseStatus.AlreadyRegistered;
-                response.Data = "User already exists.";
-                return response;
+                _userRepo.AddUser(user);
             }
-            _userRepo.AddUser(user);
-            response.StatusId = (int)ResponseStatus.AllOk;
+        }
 
-            return response;
+        /*Keep a record of last logged in time to every user.
+          May come in handy in future
+         */
+        private void UpdateLastLoggedInTIme(User user)
+        {
+            user.LastLoggedInTime = DateTime.UtcNow;
+            _userRepo.UpdateUser(user);
         }
     }
 }

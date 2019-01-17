@@ -62,9 +62,7 @@ namespace SprintCrowdBackEnd
                      options.UseNpgsql(appSettings.PostGres.ConnectionString));
 
             services.AddMvc();
-            services.AddSingleton<IUserRepo, UserRepo>();
-             // add userservice as dependecy injection
-            services.AddScoped<IUserService, UserService>();
+            RegisterDependencyInjection(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +93,16 @@ namespace SprintCrowdBackEnd
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void RegisterDependencyInjection(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IFbRepo, FbRepo>();
+
+            services.AddScoped<IFbService, FbService >();
+             // add userservice as dependecy injection
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

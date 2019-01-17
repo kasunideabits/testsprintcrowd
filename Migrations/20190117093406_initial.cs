@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SprintCrowdBackEnd.Migrations
@@ -15,8 +16,9 @@ namespace SprintCrowdBackEnd.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    LastLoggedInTime = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
+                    FbUserId = table.Column<string>(nullable: true),
                     Token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

@@ -6,5 +6,6 @@ namespace SprintCrowdBackEnd.interfaces
     {
         User GetUser(string email);
         void AddUser(User user);
+        void UpdateUser(User user);
     }
 }

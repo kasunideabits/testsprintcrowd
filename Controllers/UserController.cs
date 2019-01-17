@@ -16,27 +16,32 @@ namespace SprintCrowdBackEnd.Controllers
             _userService = userService;
         }
 
+        /*
+            Will both register and login.
+            validate the access token, if account exists send jwt token, if not register
+            and then send jwt token
+
+            Input: FbAccessToken => String
+         */
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]User userParam)
         {
-            var user = _userService.Authenticate(userParam.Email, userParam.Password);
+            var fbAccessToken = userParam.Token;
+            
+            var user = _userService.Authenticate(fbAccessToken);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
+            {
+                return BadRequest(new ResponseObject(){
+                    StatusId = (int)Enums.ResponseStatus.IncorrectAuth,
+                    Data = "Error occured while logging you in, Please try again later"
+                });
+            }
+        
             return Ok(new ResponseObject(){
                 Data = user
             });
-        }
-
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public IActionResult Register([FromBody]User userParam)
-        {
-            ResponseObject response = _userService.RegisterUser(userParam);
-
-            return Ok(response);
         }
 
         [HttpGet("test")]
