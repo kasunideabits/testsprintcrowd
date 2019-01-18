@@ -14,13 +14,13 @@ namespace SprintCrowdBackEnd.services
         }
         public bool ValidateAccessToken(string accessToken)
         {
-           DebugUserAccessToken userAccessTokenData =  _fbRepo.DebugUserAccessToken(accessToken);
-           if(userAccessTokenData.Data != null && userAccessTokenData.Data.IsValid)
-           {
-               return true;
-           }
+            DebugUserAccessToken userAccessTokenData =  _fbRepo.DebugUserAccessToken(accessToken);
+            if(userAccessTokenData.Data != null && userAccessTokenData.Data.IsValid)
+            {
+                return true;
+            }
 
-           return false;
+            return false;
         }
 
         /*

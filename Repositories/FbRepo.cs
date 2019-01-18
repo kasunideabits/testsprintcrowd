@@ -4,6 +4,8 @@ using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models.GraphApi;
 using SprintCrowdBackEnd.Models;
 using Microsoft.Extensions.Options;
+using SprintCrowdBackEnd.Logger;
+using SprintCrowdBackEnd.Enums;
 
 namespace SprintCrowdBackEnd.repositories
 {
@@ -20,13 +22,13 @@ namespace SprintCrowdBackEnd.repositories
 
         private string GenerateAppAccessToken()
         {
-           RestRequest request = new RestRequest("oauth/access_token", Method.GET);
-           request.AddParameter("client_id", _appSettings.FacebookApp.AppId);
-           request.AddParameter("client_secret", _appSettings.FacebookApp.AppSecret);
-           request.AddParameter("grant_type", "client_credentials");
-           OAuthAppAccessToken appAccessToken = _client.Execute<OAuthAppAccessToken>(request);
+            RestRequest request = new RestRequest("oauth/access_token", Method.GET);
+            request.AddParameter("client_id", _appSettings.FacebookApp.AppId);
+            request.AddParameter("client_secret", _appSettings.FacebookApp.AppSecret);
+            request.AddParameter("grant_type", "client_credentials");
+            OAuthAppAccessToken appAccessToken = _client.Execute<OAuthAppAccessToken>(request);
 
-           return appAccessToken.AccessToken;
+            return appAccessToken.AccessToken;
         }
 
         public DebugUserAccessToken DebugUserAccessToken(string accessToken)
@@ -56,16 +58,16 @@ namespace SprintCrowdBackEnd.repositories
 
         private FbProfilePicture GetProfilePictue(string accessToken)
         {
-           RestRequest request = new RestRequest("me/picture", Method.GET);
-           request.AddParameter("access_token", accessToken);
-           //should set redirect to false, other wise facebook replies with
-           //base64 encoded image data
-           request.AddParameter("redirect", false);
-           request.AddParameter("format", "json");
-           request.AddParameter("fields", "url,height,width");
-           FbProfilePicture picture = _client.Execute<FbProfilePicture>(request);
+            RestRequest request = new RestRequest("me/picture", Method.GET);
+            request.AddParameter("access_token", accessToken);
+            //should set redirect to false, other wise facebook replies with
+            //base64 encoded image data
+            request.AddParameter("redirect", false);
+            request.AddParameter("format", "json");
+            request.AddParameter("fields", "url,height,width");
+            FbProfilePicture picture = _client.Execute<FbProfilePicture>(request);
            
-           return picture;
+            return picture;
 
         }
     }

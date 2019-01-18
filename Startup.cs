@@ -2,11 +2,14 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SprintCrowdBackEnd.Enums;
+using SprintCrowdBackEnd.ExceptionHandler;
 using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Models;
@@ -73,6 +77,7 @@ namespace SprintCrowdBackEnd
                 options.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings(){
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }, ArrayPool<char>.Shared));
+                options.Filters.Add<GlobalExceptionHandler>();
             });
             RegisterDependencyInjection(services);
         }

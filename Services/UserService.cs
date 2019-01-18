@@ -30,6 +30,7 @@ namespace SprintCrowdBackEnd.services
 
         public User Authenticate(string fbAccessToken)
         {
+            throw new NullReferenceException();
             if(_fbService.ValidateAccessToken(fbAccessToken))
             {
                 //Hurray! Valid access token
