@@ -7,6 +7,7 @@ namespace SprintCrowdBackEnd.Models
         public string Audience { get; set; }
         public PostGresSettings PostGres { get; set; }
         public FacebookAppConfig FacebookApp { get; set; }
+        public LoggingConfig Logging { get; set; }
     }
 
     public class PostGresSettings
@@ -19,5 +20,10 @@ namespace SprintCrowdBackEnd.Models
     {
         public string AppId { get; set; }
         public string AppSecret { get; set; }
+    }
+
+    public class LoggingConfig
+    {
+        public string LogPath { get; set; }
     }
 }

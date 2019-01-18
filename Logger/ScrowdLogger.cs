@@ -1,48 +1,53 @@
 using System;
+using System.IO;
 using SprintCrowdBackEnd.Enums;
+using SprintCrowdBackEnd.Models;
 
 namespace SprintCrowdBackEnd.Logger
 {
     public class ScrowdLogger
     {
+        public static AppSettings appSettings;
         public static void Log(string log, LogType logType = LogType.Info)
         {
+            string formattedLog = BuildLogString(log);
             switch(logType)
             {
                 case LogType.Info:
                     //friendly logs
-                    PrintInfo(log);
+                    PrintInfo(formattedLog);
                     break;
                 case LogType.Warning:
                     //Warnings
-                    PrintWarning(log);
+                    PrintWarning(formattedLog);
                     break;
                 case LogType.Error:
-                    PrintError(log);
+                    PrintError(formattedLog);
                     //Errors should be handled, right now saving them to db
                     break;
             }
         }
 
-        private static void PrintInfo(string log)
+        private static void PrintInfo(string formattedLog)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(BuildLogString(log));
+            Console.WriteLine(formattedLog);
             Console.ResetColor();
         }
 
-        private static void PrintWarning(string log)
+        private static void PrintWarning(string formattedLog)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(BuildLogString(log));
+            Console.WriteLine(formattedLog);
             Console.ResetColor();
         }
 
-        private static void PrintError(string log)
+        private static void PrintError(string formattedLog)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(BuildLogString(log));
-            Console.ResetColor();  
+            Console.WriteLine(formattedLog);
+            Console.ResetColor();
+            WriteLogToFile(formattedLog, LogType.Error);
         }
         
         /*
@@ -52,6 +57,22 @@ namespace SprintCrowdBackEnd.Logger
         {
             //maybe append some more data in the future
             return $"{DateTime.UtcNow} : {log}";
+        }
+
+        private static void WriteLogToFile(string formattedLog, LogType logType)
+        {
+            try
+            {
+                using(StreamWriter writetext = new StreamWriter(appSettings.Logging.LogPath, true))
+                {
+                    writetext.WriteLine(formattedLog);
+                }
+            }
+            catch(IOException ex)
+            {
+                ScrowdLogger.Log("Access to log file denied.", LogType.Info);
+            }
+
         }
     }
 }
