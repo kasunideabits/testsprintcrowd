@@ -4,6 +4,7 @@ using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SprintCrowdBackEnd.repositories
 {
@@ -18,7 +19,8 @@ namespace SprintCrowdBackEnd.repositories
         /*Get user by email*/
         public User GetUser(string email)
         {
-            return _context.Users.FirstOrDefault(u => u.Email.Equals(email));
+            return _context.Users.Include(u => u.ProfilePicture)
+                .FirstOrDefault(u => u.Email.Equals(email));
         }
 
         /*Add user to db */

@@ -3,6 +3,8 @@
 using System;
 using Newtonsoft.Json;
 using RestSharp;
+using SprintCrowdBackEnd.Enums;
+using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Models.GraphApi;
 
 namespace SprintCrowdBackEnd.Helpers
@@ -22,12 +24,9 @@ namespace SprintCrowdBackEnd.Helpers
 
         public T Execute<T>(RestRequest request) where T : new()
         {
-            Console.WriteLine($"Sending request to {request.Resource}");
-            string content = _client.Execute(request).Content;
-
-            return JsonConvert.DeserializeObject<T>(content);
-            /*return JsonConvert.DeserializeObject<T>(
-                _client.Execute(request).Content);*/
+            ScrowdLogger.Log($"Sending request to {request.Resource}", LogType.Info);
+            return JsonConvert.DeserializeObject<T>(
+                _client.Execute(request).Content);
             
         }
     }

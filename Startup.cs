@@ -13,7 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.interfaces;
+using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Models;
 using SprintCrowdBackEnd.repositories;
 using SprintCrowdBackEnd.services;
@@ -107,6 +109,7 @@ namespace SprintCrowdBackEnd
 
         private void RegisterDependencyInjection(IServiceCollection services)
         {
+            ScrowdLogger.Log("Initating dependency injection.", LogType.Info);
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IFbRepo, FbRepo>();
 
