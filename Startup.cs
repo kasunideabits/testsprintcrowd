@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models;
 using SprintCrowdBackEnd.repositories;
@@ -61,7 +64,14 @@ namespace SprintCrowdBackEnd
             services.AddDbContext<ApplicationDbContext>(options =>  
                      options.UseNpgsql(appSettings.PostGres.ConnectionString));
 
-            services.AddMvc();
+            services.AddMvc(options => 
+            {
+                //ignore self referencing loops newtonsoft.
+                options.OutputFormatters.Clear();
+                options.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings(){
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                }, ArrayPool<char>.Shared));
+            });
             RegisterDependencyInjection(services);
         }
 

@@ -12,5 +12,22 @@ namespace SprintCrowdBackEnd.Models.GraphApi
         public string FirstName { get; set; }
         [JsonProperty("last_name")]
         public string LastName { get; set; }
+        public FbProfilePicture ProfilePicture { get; set; }
+
+    }
+
+    public class FbProfilePicture
+    {
+        [JsonProperty("data")]
+        public Data PictureData { get; set ; }
+        public class Data
+        {
+            [JsonProperty("data/height")]
+            public int Height { get; set; }
+            [JsonProperty("width")]
+            public int Width { get; set; }
+            [JsonProperty("url")]
+            public string Url { get; set; }
+        }
     }
 }

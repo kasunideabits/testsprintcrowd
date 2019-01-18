@@ -14,7 +14,7 @@ namespace SprintCrowdBackEnd.Models
             modelBuilder.Entity<ProfilePicture>()
             .HasOne(p => p.User)
             .WithOne(u => u.ProfilePicture)
-            .HasForeignKey<ProfilePicture>(t => t.UserId);
+            .HasForeignKey<ProfilePicture>(p => p.UserId);
 
 
         }

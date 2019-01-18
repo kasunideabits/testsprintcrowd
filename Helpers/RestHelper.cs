@@ -23,8 +23,12 @@ namespace SprintCrowdBackEnd.Helpers
         public T Execute<T>(RestRequest request) where T : new()
         {
             Console.WriteLine($"Sending request to {request.Resource}");
-            return JsonConvert.DeserializeObject<T>(
-                _client.Execute<T>(request).Content);
+            string content = _client.Execute(request).Content;
+
+            return JsonConvert.DeserializeObject<T>(content);
+            /*return JsonConvert.DeserializeObject<T>(
+                _client.Execute(request).Content);*/
+            
         }
     }
 }
