@@ -23,7 +23,7 @@ namespace SprintCrowdBackEnd.Logger
                     break;
                 case LogType.Error:
                     PrintError(formattedLog);
-                    //Errors should be handled, right now saving them to db
+                    //Errors
                     break;
             }
         }
@@ -57,16 +57,16 @@ namespace SprintCrowdBackEnd.Logger
         private static string BuildLogString(string log)
         {
             //maybe append some more data in the future
-            return $"{DateTime.UtcNow} : {log}";
+            return $"{DateTime.UtcNow}: {log}";
         }
 
         private static void WriteLogToFile(string formattedLog, LogType logType)
         {
             try
             {
-                using(StreamWriter writetext = new StreamWriter(appSettings.Logging.LogPath, true))
+                using(StreamWriter handler = new StreamWriter(appSettings.Logging.LogPath, true))
                 {
-                    writetext.WriteLine($"LogType: {logType.ToString()} => {formattedLog}");
+                    handler.WriteLine($"LogType: {logType.ToString()} => {formattedLog}");
                 }
             }
             catch(IOException ex)
