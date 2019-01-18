@@ -5,5 +5,6 @@ namespace SprintCrowdBackEnd.interfaces
     public interface IFbRepo
     {
         Me GetMe(string accessToken);
+        DebugUserAccessToken DebugUserAccessToken(string accessToken);
     }
 }

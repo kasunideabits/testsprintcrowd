@@ -22,7 +22,7 @@ namespace SprintCrowdBackEnd.Models.GraphApi
         public Data PictureData { get; set ; }
         public class Data
         {
-            [JsonProperty("data/height")]
+            [JsonProperty("height")]
             public int Height { get; set; }
             [JsonProperty("width")]
             public int Width { get; set; }
