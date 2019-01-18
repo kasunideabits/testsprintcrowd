@@ -20,15 +20,23 @@ namespace SprintCrowdBackEnd.repositories
             this._appSettings = appSettings.Value;
         }
 
+        /*
+            A unique access token could be generated or
+            `appid|appsecret` can be used as the app access
+            token
+            ref: https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
+         */
         private string GenerateAppAccessToken()
         {
-            RestRequest request = new RestRequest("oauth/access_token", Method.GET);
+            /*RestRequest request = new RestRequest("oauth/access_token", Method.GET);
             request.AddParameter("client_id", _appSettings.FacebookApp.AppId);
             request.AddParameter("client_secret", _appSettings.FacebookApp.AppSecret);
             request.AddParameter("grant_type", "client_credentials");
             OAuthAppAccessToken appAccessToken = _client.Execute<OAuthAppAccessToken>(request);
 
-            return appAccessToken.AccessToken;
+            return appAccessToken.AccessToken;*/
+
+            return $"{_appSettings.FacebookApp.AppId}|{_appSettings.FacebookApp.AppSecret}";
         }
 
         public DebugUserAccessToken DebugUserAccessToken(string accessToken)

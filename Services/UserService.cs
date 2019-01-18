@@ -11,6 +11,7 @@ using System.Linq;
 using SprintCrowdBackEnd.repositories;
 using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.Models.GraphApi;
+using SprintCrowdBackEnd.Logger;
 
 namespace SprintCrowdBackEnd.services
 {
@@ -75,6 +76,7 @@ namespace SprintCrowdBackEnd.services
             }
             else
             {
+                ScrowdLogger.Log($"Invalid user access token : {fbAccessToken}", LogType.Warning);
                 return null;
             }
 

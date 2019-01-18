@@ -40,6 +40,7 @@ namespace SprintCrowdBackEnd.Logger
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(formattedLog);
             Console.ResetColor();
+            WriteLogToFile(formattedLog, LogType.Warning);
         }
 
         private static void PrintError(string formattedLog)
@@ -65,7 +66,7 @@ namespace SprintCrowdBackEnd.Logger
             {
                 using(StreamWriter writetext = new StreamWriter(appSettings.Logging.LogPath, true))
                 {
-                    writetext.WriteLine(formattedLog);
+                    writetext.WriteLine($"LogType: {logType.ToString()} => {formattedLog}");
                 }
             }
             catch(IOException ex)

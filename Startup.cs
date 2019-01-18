@@ -116,13 +116,13 @@ namespace SprintCrowdBackEnd
 
         private void RegisterDependencyInjection(IServiceCollection services)
         {
-            ScrowdLogger.Log("Initating dependency injection.", LogType.Info);
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IFbRepo, FbRepo>();
 
             services.AddScoped<IFbService, FbService >();
              // add userservice as dependecy injection
             services.AddScoped<IUserService, UserService>();
+            ScrowdLogger.Log("Dependency injection registered.", LogType.Info);
         }
     }
 }
