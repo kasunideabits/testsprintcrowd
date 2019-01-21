@@ -16,6 +16,7 @@ namespace SprintCrowdBackEnd.Persistence
             {
                 base.OnModelCreating(builder);
                 builder.ApplyConfiguration(new UserConfig());
+                builder.ApplyConfiguration(new ProfilePictureConfig());
             }
     }
 

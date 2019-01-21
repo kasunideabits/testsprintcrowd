@@ -2,6 +2,7 @@
 namespace SprintCrowdBackEnd.Persistence
 {
     using System;
+    using SprintCrowdBackEnd.Models;
 
     public class User
     {
@@ -12,6 +13,6 @@ namespace SprintCrowdBackEnd.Persistence
         public string Email { get; set; }
         public string FbUserId { get; set; }
         public string Token { get; set; }
-        public string ProfilePicture { get; set; }
+        public ProfilePicture ProfilePicture { get; set; }
     }
 }

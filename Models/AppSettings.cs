@@ -13,7 +13,6 @@ namespace SprintCrowdBackEnd.Models
     public class PostGresSettings
     {
         public string ConnectionString { get; set; }
-        public string Database { get; set; }
     }
 
     public class FacebookAppConfig

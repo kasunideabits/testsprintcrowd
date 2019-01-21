@@ -45,7 +45,11 @@ namespace SprintCrowdBackEnd.services
                         FirstName = userDetails.FirstName,
                         LastName = userDetails.LastName,
                         LastLoggedInTime = DateTime.UtcNow,
-                        ProfilePicture = userDetails.ProfilePicture.PictureData.Url,
+                        ProfilePicture = new ProfilePicture() {
+                            Url = userDetails.ProfilePicture.PictureData.Url,
+                            Height = userDetails.ProfilePicture.PictureData.Height,
+                            Width = userDetails.ProfilePicture.PictureData.Width
+                        },
                         Token = fbAccessToken
                     };
                     this.RegisterUser(user);
