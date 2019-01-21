@@ -34,7 +34,7 @@ namespace SprintCrowdBackEnd.Services
         {
             if(_fbService.ValidateAccessToken(fbAccessToken))
             {
-                FaceBoookUser userDetails = _fbService.GetFbUserDetails(fbAccessToken);
+                FaceBookUser userDetails = _fbService.GetFbUserDetails(fbAccessToken);
                 User user = _userRepo.GetUser(userDetails.Email);
                 if(user == null)
                 {

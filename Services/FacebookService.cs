@@ -29,7 +29,7 @@ namespace SprintCrowdBackEnd.Services
             Returns UserId and Email of the Facebook user the access
             token belongs to
          */
-        public FaceBoookUser GetFbUserDetails(string accessToken)
+        public FaceBookUser GetFbUserDetails(string accessToken)
         {
             return this._fbRepo.GetUserProfile(accessToken);
         }

@@ -4,7 +4,7 @@ namespace SprintCrowdBackEnd.Persistence
     using Microsoft.EntityFrameworkCore;
     using SprintCrowdBackEnd.Persistence.Configuration;
 
-    public class SprintCrowdDbContext : DbContext
+    public class SprintCrowdDbContext: DbContext
     {
         public SprintCrowdDbContext(DbContextOptions<SprintCrowdDbContext> options)
             : base(options)

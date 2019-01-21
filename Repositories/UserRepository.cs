@@ -9,20 +9,19 @@ namespace SprintCrowdBackEnd.Repositories
     using SprintCrowdBackEnd.Persistence;
     using SprintCrowdBackEnd.Interfaces;
 
-    public class UserRepository : IUserRepository
+    public class UserRepository: IUserRepository
     {
+        private readonly SprintCrowdDbContext _context;      
         public UserRepository(SprintCrowdDbContext context)
         {
             _context = context;
         }
-
-        private readonly SprintCrowdDbContext _context;      
-
-
+        
         /*Get user by email*/
         public User GetUser(string email)
         {
             return _context.Users
+                .Include(u => u.ProfilePicture)
                 .FirstOrDefault(u => u.Email.Equals(email));
         }
 
@@ -30,7 +29,7 @@ namespace SprintCrowdBackEnd.Repositories
         public void AddUser(User user)
         {
             _context.Users.Add(user);
-            _context.SaveChanges();  
+            _context.SaveChanges();
         }
 
         //Id should be set obviously
@@ -38,7 +37,7 @@ namespace SprintCrowdBackEnd.Repositories
         {
             _context.Users.Update(user);
             _context.SaveChanges();
-        } 
+        }
 
     }
 }

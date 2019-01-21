@@ -2,7 +2,7 @@
 namespace SprintCrowdBackEnd.Models.GraphApi
 {
     using Newtonsoft.Json;
-    public class FaceBoookUser
+    public class FaceBookUser
     {
         [JsonProperty("id")]
         public string Id { get; set; }

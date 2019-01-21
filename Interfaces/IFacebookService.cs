@@ -6,6 +6,6 @@ namespace SprintCrowdBackEnd.Interfaces
     {
         bool ValidateAccessToken(string accessToken);
 
-        FaceBoookUser GetFbUserDetails(string accessToken);
+        FaceBookUser GetFbUserDetails(string accessToken);
     }
 }

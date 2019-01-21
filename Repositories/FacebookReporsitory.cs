@@ -48,13 +48,13 @@ namespace SprintCrowdBackEnd.Repositories
             return _client.Execute<DebugUserAccessToken>(request);
         }
 
-        public FaceBoookUser GetUserProfile(string accessToken)
+        public FaceBookUser GetUserProfile(string accessToken)
         {
             RestRequest request = new RestRequest("me", Method.GET);
             request.AddParameter("access_token", accessToken);
             request.AddParameter("format", "json");
             request.AddParameter("fields", "email,first_name,last_name");
-            FaceBoookUser myDetails = _client.Execute<FaceBoookUser>(request);
+            FaceBookUser myDetails = _client.Execute<FaceBookUser>(request);
             myDetails.ProfilePicture = GetProfilePictue(accessToken);
             if(myDetails.Id == null)
             {
