@@ -4,7 +4,7 @@ namespace SprintCrowdBackEnd.Interfaces
 
     public interface IFacebookReporsitory
     {
-        FaceBoookUser GetUserProfile(string accessToken);
+        FaceBookUser GetUserProfile(string accessToken);
 
         DebugUserAccessToken DebugUserAccessToken(string accessToken);
     }
