@@ -1,25 +1,28 @@
 using System;
 using System.Collections.Generic;
 using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using SprintCrowdBackEnd.Persistence;
+using SprintCrowdBackEnd.Interfaces;
 
 namespace SprintCrowdBackEnd.repositories
 {
-    public class UserRepo: IUserRepo
+    public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _context;      
-        public UserRepo(ApplicationDbContext context)
+        public UserRepository(SprintCrowdDbContext context)
         {
             _context = context;
         }
 
+        private readonly SprintCrowdDbContext _context;      
+
+
         /*Get user by email*/
         public User GetUser(string email)
         {
-            return _context.Users.Include(u => u.ProfilePicture)
+            return _context.Users
                 .FirstOrDefault(u => u.Email.Equals(email));
         }
 
@@ -35,6 +38,7 @@ namespace SprintCrowdBackEnd.repositories
         {
             _context.Users.Update(user);
             _context.SaveChanges();
-        }
+        } 
+
     }
 }

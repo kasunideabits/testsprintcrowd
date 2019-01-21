@@ -1,17 +1,21 @@
-using SprintCrowdBackEnd.Helpers;
-using SprintCrowdBackEnd.interfaces;
-using SprintCrowdBackEnd.Models.GraphApi;
+
 
 namespace SprintCrowdBackEnd.services
 {
-    public class FbService: IFbService
-    {
-        private IFbRepo _fbRepo;
+    using SprintCrowdBackEnd.Helpers;
+    using SprintCrowdBackEnd.Interfaces;
+    using SprintCrowdBackEnd.Models.GraphApi;
 
-        public FbService(IFbRepo fbRepo)
+    public class FacebookService: IFacebookService
+    {
+
+        public FacebookService(IFacebookReporsitory fbRepo)
         {
             this._fbRepo = fbRepo;
         }
+
+        private IFacebookReporsitory _fbRepo;
+
         public bool ValidateAccessToken(string accessToken)
         {
             DebugUserAccessToken userAccessTokenData =  _fbRepo.DebugUserAccessToken(accessToken);
@@ -27,9 +31,9 @@ namespace SprintCrowdBackEnd.services
             Returns UserId and Email of the Facebook user the access
             token belongs to
          */
-        public Me GetFbUserDetails(string accessToken)
+        public FaceBoookUser GetFbUserDetails(string accessToken)
         {
-            return _fbRepo.GetMe(accessToken);
+            return _fbRepo.GetUserProfile(accessToken);
         }
     }
 }

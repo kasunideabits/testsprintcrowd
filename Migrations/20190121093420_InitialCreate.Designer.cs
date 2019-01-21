@@ -2,16 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SprintCrowdBackEnd.Models;
+using SprintCrowdBackEnd.Persistence;
 
 namespace SprintCrowdBackEnd.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SprintCrowdDbContext))]
+    [Migration("20190121093420_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,18 +21,7 @@ namespace SprintCrowdBackEnd.Migrations
                 .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SprintCrowdBackEnd.Models.ProfilePicture", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("Url");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("ProfilePictures");
-                });
-
-            modelBuilder.Entity("SprintCrowdBackEnd.Models.User", b =>
+            modelBuilder.Entity("SprintCrowdBackEnd.Persistence.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -45,19 +36,13 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("LastName");
 
+                    b.Property<string>("ProfilePicture");
+
                     b.Property<string>("Token");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("SprintCrowdBackEnd.Models.ProfilePicture", b =>
-                {
-                    b.HasOne("SprintCrowdBackEnd.Models.User", "User")
-                        .WithOne("ProfilePicture")
-                        .HasForeignKey("SprintCrowdBackEnd.Models.ProfilePicture", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

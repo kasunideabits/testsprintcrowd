@@ -1,8 +1,9 @@
 using SprintCrowdBackEnd.Models;
+using SprintCrowdBackEnd.Persistence;
 
-namespace SprintCrowdBackEnd.interfaces
+namespace SprintCrowdBackEnd.Interfaces
 {
-    public interface IUserRepo
+    public interface IUserRepository
     {
         User GetUser(string email);
         void AddUser(User user);

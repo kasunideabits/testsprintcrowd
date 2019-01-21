@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SprintCrowdBackEnd.interfaces;
+using SprintCrowdBackEnd.Interfaces;
 using SprintCrowdBackEnd.Models;
+using SprintCrowdBackEnd.Persistence;
 
 namespace SprintCrowdBackEnd.Controllers
 {

@@ -5,29 +5,32 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models;
 using System.Linq;
 using SprintCrowdBackEnd.repositories;
 using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.Models.GraphApi;
 using SprintCrowdBackEnd.Logger;
+using SprintCrowdBackEnd.Interfaces;
+using SprintCrowdBackEnd.Persistence;
 
 namespace SprintCrowdBackEnd.services
 {
     public class UserService: IUserService
     {
-        private IUserRepo _userRepo;
+
+        public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepo, IFacebookService fbService)
+        {
+            this._appSettings = appSettings.Value;
+            this._userRepo = userRepo;
+            this._fbService = fbService;
+        }
+
+        private IUserRepository _userRepo;
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private IFbService _fbService;
+        private IFacebookService _fbService;
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings, IUserRepo userRepo, IFbService fbService)
-        {
-            _appSettings = appSettings.Value;
-            _userRepo = userRepo;
-            _fbService = fbService;
-        }
 
         public User Authenticate(string fbAccessToken)
         {
@@ -35,7 +38,7 @@ namespace SprintCrowdBackEnd.services
             {
                 //Hurray! Valid access token
                 //lets get details about /me => Graph Api
-                Me userDetails = _fbService.GetFbUserDetails(fbAccessToken);
+                FaceBoookUser userDetails = _fbService.GetFbUserDetails(fbAccessToken);
                 User user = _userRepo.GetUser(userDetails.Email);
                 if(user == null)
                 {
@@ -46,9 +49,7 @@ namespace SprintCrowdBackEnd.services
                         FirstName = userDetails.FirstName,
                         LastName = userDetails.LastName,
                         LastLoggedInTime = DateTime.UtcNow,
-                        ProfilePicture = new ProfilePicture() {
-                            Url = userDetails.ProfilePicture.PictureData.Url
-                        },
+                        ProfilePicture = userDetails.ProfilePicture.PictureData.Url,
                         Token = fbAccessToken
                     };
                     this.RegisterUser(user);

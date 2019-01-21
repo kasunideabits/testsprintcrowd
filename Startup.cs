@@ -18,10 +18,12 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.ExceptionHandler;
-using SprintCrowdBackEnd.interfaces;
+using SprintCrowdBackEnd.Interfaces;
 using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Models;
+using SprintCrowdBackEnd.Persistence;
 using SprintCrowdBackEnd.repositories;
+using SprintCrowdBackEnd.Repositories;
 using SprintCrowdBackEnd.services;
 
 namespace SprintCrowdBackEnd
@@ -69,7 +71,7 @@ namespace SprintCrowdBackEnd
                 };
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>  
+            services.AddDbContext<SprintCrowdDbContext>(options =>  
                      options.UseNpgsql(appSettings.PostGres.ConnectionString));
 
             services.AddMvc(options => 
@@ -116,10 +118,9 @@ namespace SprintCrowdBackEnd
 
         private void RegisterDependencyInjection(IServiceCollection services)
         {
-            services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<IFbRepo, FbRepo>();
-
-            services.AddScoped<IFbService, FbService >();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFacebookReporsitory, FacebookReporsitory>();
+            services.AddScoped<IFacebookService, FacebookService >();
              // add userservice as dependecy injection
             services.AddScoped<IUserService, UserService>();
             ScrowdLogger.Log("Dependency injection registered.", LogType.Info);

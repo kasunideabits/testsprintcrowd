@@ -1,20 +1,20 @@
 using RestSharp;
 using SprintCrowdBackEnd.Helpers;
-using SprintCrowdBackEnd.interfaces;
 using SprintCrowdBackEnd.Models.GraphApi;
 using SprintCrowdBackEnd.Models;
 using Microsoft.Extensions.Options;
 using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Enums;
+using SprintCrowdBackEnd.Interfaces;
 
-namespace SprintCrowdBackEnd.repositories
+namespace SprintCrowdBackEnd.Repositories
 {
-    public class FbRepo: IFbRepo
+    public class FacebookReporsitory: IFacebookReporsitory
     {
         private RestHelper _client;
         private AppSettings _appSettings;
 
-        public FbRepo(IOptions<AppSettings> appSettings)
+        public FacebookReporsitory(IOptions<AppSettings> appSettings)
         {
             this._client = new RestHelper("https://graph.facebook.com/v3.2");
             this._appSettings = appSettings.Value;
@@ -48,13 +48,13 @@ namespace SprintCrowdBackEnd.repositories
             return _client.Execute<DebugUserAccessToken>(request);
         }
 
-        public Me GetMe(string accessToken)
+        public FaceBoookUser GetUserProfile(string accessToken)
         {
             RestRequest request = new RestRequest("me", Method.GET);
             request.AddParameter("access_token", accessToken);
             request.AddParameter("format", "json");
             request.AddParameter("fields", "email,first_name,last_name");
-            Me myDetails = _client.Execute<Me>(request);
+            FaceBoookUser myDetails = _client.Execute<FaceBoookUser>(request);
             myDetails.ProfilePicture = GetProfilePictue(accessToken);
             if(myDetails.Id == null)
             {

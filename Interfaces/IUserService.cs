@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using SprintCrowdBackEnd.Models;
+using SprintCrowdBackEnd.Persistence;
 
-namespace SprintCrowdBackEnd.interfaces
+namespace SprintCrowdBackEnd.Interfaces
 {
     public interface IUserService
     {

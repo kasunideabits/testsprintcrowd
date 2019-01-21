@@ -1,7 +1,8 @@
-using System;
 
-namespace SprintCrowdBackEnd.Models
+namespace SprintCrowdBackEnd.Persistence
 {
+    using System;
+
     public class User
     {
         public int Id { get; set; }
@@ -10,9 +11,7 @@ namespace SprintCrowdBackEnd.Models
         public DateTime LastLoggedInTime { get; set; }
         public string Email { get; set; }
         public string FbUserId { get; set; }
-        //No password needed as logging from facebook
-        //public string Password { get; set; }
         public string Token { get; set; }
-        public ProfilePicture ProfilePicture { get; set; }
+        public string ProfilePicture { get; set; }
     }
 }
