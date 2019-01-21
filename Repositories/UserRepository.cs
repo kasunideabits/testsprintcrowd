@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.repositories
+namespace SprintCrowdBackEnd.Repositories
 {
     using System;
     using System.Collections.Generic;

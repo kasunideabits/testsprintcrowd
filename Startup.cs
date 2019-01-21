@@ -22,9 +22,8 @@ using SprintCrowdBackEnd.Interfaces;
 using SprintCrowdBackEnd.Logger;
 using SprintCrowdBackEnd.Models;
 using SprintCrowdBackEnd.Persistence;
-using SprintCrowdBackEnd.repositories;
 using SprintCrowdBackEnd.Repositories;
-using SprintCrowdBackEnd.services;
+using SprintCrowdBackEnd.Services;
 
 namespace SprintCrowdBackEnd
 {

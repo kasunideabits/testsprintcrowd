@@ -71,7 +71,7 @@ namespace SprintCrowdBackEnd.Logger
             }
             catch(IOException ex)
             {
-                ScrowdLogger.Log("Access to log file denied.", LogType.Info);
+                ScrowdLogger.Log($"Access to log file denied. Reason: {ex.Message}", LogType.Info);
             }
 
         }

@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.services
+namespace SprintCrowdBackEnd.Services
 {
     using SprintCrowdBackEnd.Helpers;
     using SprintCrowdBackEnd.Interfaces;
