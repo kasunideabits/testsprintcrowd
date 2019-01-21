@@ -9,7 +9,6 @@ namespace SprintCrowdBackEnd.services
     using Microsoft.IdentityModel.Tokens;
     using SprintCrowdBackEnd.Models;
     using System.Linq;
-    using SprintCrowdBackEnd.repositories;
     using SprintCrowdBackEnd.Enums;
     using SprintCrowdBackEnd.Models.GraphApi;
     using SprintCrowdBackEnd.Logger;
