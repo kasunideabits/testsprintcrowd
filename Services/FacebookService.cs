@@ -1,5 +1,3 @@
-
-
 namespace SprintCrowdBackEnd.services
 {
     using SprintCrowdBackEnd.Helpers;

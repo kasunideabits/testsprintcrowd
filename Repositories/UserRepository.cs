@@ -1,14 +1,14 @@
-using System;
-using System.Collections.Generic;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Models;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using SprintCrowdBackEnd.Persistence;
-using SprintCrowdBackEnd.Interfaces;
-
 namespace SprintCrowdBackEnd.repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using SprintCrowdBackEnd.Enums;
+    using SprintCrowdBackEnd.Models;
+    using System.Linq;
+    using Microsoft.EntityFrameworkCore;
+    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowdBackEnd.Interfaces;
+
     public class UserRepository : IUserRepository
     {
         public UserRepository(SprintCrowdDbContext context)

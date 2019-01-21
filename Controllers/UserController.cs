@@ -1,11 +1,13 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SprintCrowdBackEnd.Interfaces;
-using SprintCrowdBackEnd.Models;
-using SprintCrowdBackEnd.Persistence;
+
 
 namespace SprintCrowdBackEnd.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowdBackEnd.Interfaces;
+    using SprintCrowdBackEnd.Models;
+    using SprintCrowdBackEnd.Persistence;
+
     [Authorize]
     [Route("[controller]")]
     public class UserController: ControllerBase

@@ -1,14 +1,14 @@
-using RestSharp;
-using SprintCrowdBackEnd.Helpers;
-using SprintCrowdBackEnd.Models.GraphApi;
-using SprintCrowdBackEnd.Models;
-using Microsoft.Extensions.Options;
-using SprintCrowdBackEnd.Logger;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Interfaces;
-
 namespace SprintCrowdBackEnd.Repositories
 {
+    using RestSharp;
+    using SprintCrowdBackEnd.Helpers;
+    using SprintCrowdBackEnd.Models.GraphApi;
+    using SprintCrowdBackEnd.Models;
+    using Microsoft.Extensions.Options;
+    using SprintCrowdBackEnd.Logger;
+    using SprintCrowdBackEnd.Enums;
+    using SprintCrowdBackEnd.Interfaces;
+
     public class FacebookReporsitory: IFacebookReporsitory
     {
         private RestHelper _client;

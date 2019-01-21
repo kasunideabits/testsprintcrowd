@@ -1,21 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using SprintCrowdBackEnd.Models;
-using System.Linq;
-using SprintCrowdBackEnd.repositories;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Models.GraphApi;
-using SprintCrowdBackEnd.Logger;
-using SprintCrowdBackEnd.Interfaces;
-using SprintCrowdBackEnd.Persistence;
-
 namespace SprintCrowdBackEnd.services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
+    using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
+    using SprintCrowdBackEnd.Models;
+    using System.Linq;
+    using SprintCrowdBackEnd.repositories;
+    using SprintCrowdBackEnd.Enums;
+    using SprintCrowdBackEnd.Models.GraphApi;
+    using SprintCrowdBackEnd.Logger;
+    using SprintCrowdBackEnd.Interfaces;
+    using SprintCrowdBackEnd.Persistence;
+
     public class UserService: IUserService
     {
         public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepo, IFacebookService fbService)

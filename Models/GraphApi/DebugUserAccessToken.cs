@@ -1,8 +1,10 @@
-using System.Collections.Generic;
-using Newtonsoft.Json;
+
 
 namespace SprintCrowdBackEnd.Models.GraphApi
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
     public class DebugUserAccessToken
     {
         public TokenData Data { get; set; }

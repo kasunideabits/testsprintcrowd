@@ -1,7 +1,7 @@
-using Newtonsoft.Json;
-
 namespace SprintCrowdBackEnd.Models.GraphApi
 {
+    using Newtonsoft.Json;
+
     public class OAuthAppAccessToken
     {
         [JsonProperty("access_token")]
