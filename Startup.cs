@@ -99,7 +99,6 @@ namespace SprintCrowdBackEnd
             }
 
             app.UseStaticFiles();
-
             // global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
@@ -107,13 +106,7 @@ namespace SprintCrowdBackEnd
                 .AllowAnyHeader()
                 .AllowCredentials());
             app.UseAuthentication();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
 
         private void RegisterDependencyInjection(IServiceCollection services)
