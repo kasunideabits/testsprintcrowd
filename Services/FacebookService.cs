@@ -33,7 +33,7 @@ namespace SprintCrowdBackEnd.services
          */
         public FaceBoookUser GetFbUserDetails(string accessToken)
         {
-            return _fbRepo.GetUserProfile(accessToken);
+            return this._fbRepo.GetUserProfile(accessToken);
         }
     }
 }

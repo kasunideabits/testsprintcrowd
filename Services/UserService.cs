@@ -18,7 +18,6 @@ namespace SprintCrowdBackEnd.services
 {
     public class UserService: IUserService
     {
-
         public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepo, IFacebookService fbService)
         {
             this._appSettings = appSettings.Value;
@@ -31,19 +30,16 @@ namespace SprintCrowdBackEnd.services
         private IFacebookService _fbService;
         private readonly AppSettings _appSettings;
 
-
         public User Authenticate(string fbAccessToken)
         {
             if(_fbService.ValidateAccessToken(fbAccessToken))
             {
-                //Hurray! Valid access token
-                //lets get details about /me => Graph Api
                 FaceBoookUser userDetails = _fbService.GetFbUserDetails(fbAccessToken);
                 User user = _userRepo.GetUser(userDetails.Email);
                 if(user == null)
                 {
-                    //User is a new user, need to register the user
-                    user = new User(){
+                    user = new User()
+                    {
                         Email = userDetails.Email,
                         FbUserId = userDetails.Id,
                         FirstName = userDetails.FirstName,
@@ -54,7 +50,7 @@ namespace SprintCrowdBackEnd.services
                     };
                     this.RegisterUser(user);
                 }
-                UpdateLastLoggedInTIme(user);
+                this.UpdateLastLoggedInTime(user);
                 // authentication successful so generate jwt token
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -85,21 +81,21 @@ namespace SprintCrowdBackEnd.services
 
         private void RegisterUser(User user)
         {
-            User existingUser = _userRepo.GetUser(user.Email);
+            User existingUser = this._userRepo.GetUser(user.Email);
             ResponseObject response = new ResponseObject();
             if (existingUser != null)
             {
-                _userRepo.AddUser(user);
+                this._userRepo.AddUser(user);
             }
         }
 
         /*Keep a record of last logged in time to every user.
           May come in handy in future
          */
-        private void UpdateLastLoggedInTIme(User user)
+        private void UpdateLastLoggedInTime(User user)
         {
             user.LastLoggedInTime = DateTime.UtcNow;
-            _userRepo.UpdateUser(user);
+            this._userRepo.UpdateUser(user);
         }
     }
 }
