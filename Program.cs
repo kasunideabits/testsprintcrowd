@@ -5,11 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using SprintCrowdBackEnd.Enums;
 using SprintCrowdBackEnd.Logger;
+using SprintCrowdBackEnd.Persistence;
 
 namespace SprintCrowdBackEnd
 {
@@ -23,16 +26,20 @@ namespace SprintCrowdBackEnd
 
         public static void Main(string[] args)
         {
-            IConfiguration sprintCrowdConfig = Configuration.GetSection("SprintCrowd");
-            string hostUrl = sprintCrowdConfig.GetValue<string>("HostUrl");
-            BuildWebHost(args, hostUrl).Build().Run();
+            BuildWebHost(args).Run();
         }
 
-        public static IWebHostBuilder BuildWebHost(string[] args, string hostUrl) =>
-            WebHost.CreateDefaultBuilder(args)
+         public static IWebHost BuildWebHost(string[] args)
+        {
+            IConfiguration sprintCrowdConfig = Configuration.GetSection("SprintCrowd");
+            string hostUrl = sprintCrowdConfig.GetValue<string>("HostUrl");
+            return WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(Program.Configuration)
                 .UseUrls(hostUrl)
                 .UseSerilog()
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .Build();
+        }
+
     }
 }
