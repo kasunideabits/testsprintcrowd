@@ -77,7 +77,7 @@ namespace SprintCrowdBackEnd.Services
             }
             else
             {
-                ScrowdLogger.Log($"Invalid user access token : {fbAccessToken}", LogType.Warning);
+                SLogger.Log($"Invalid user access token : {fbAccessToken}", LogType.Warning);
                 return null;
             }
 

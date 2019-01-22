@@ -43,11 +43,11 @@ namespace SprintCrowdBackEnd
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-            // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
-            ScrowdLogger.appSettings = appSettings;
-            ScrowdLogger.InitLogger();
-            ScrowdLogger.Log("Init Logger.", LogType.Info);
+            SLogger.appSettings = appSettings;
+            SLogger.InitLogger();
+            SLogger.Log("Init Logger.", LogType.Info);
+            // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(options =>
             {
@@ -115,7 +115,7 @@ namespace SprintCrowdBackEnd
             services.AddScoped<IFacebookService, FacebookService >();
              // add userservice as dependecy injection
             services.AddScoped<IUserService, UserService>();
-            ScrowdLogger.Log("Dependency injection registered.", LogType.Info);
+            SLogger.Log("Dependency injection registered.", LogType.Info);
         }
     }
 }
