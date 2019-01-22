@@ -11,7 +11,7 @@ namespace SprintCrowdBackEnd.ExceptionHandler
             string logMessage = context.Exception != null ?
                 context.Exception.StackTrace 
                 : "No exception message provided";
-            ScrowdLogger.Log($"{logMessage}", LogType.Error);
+            SLogger.Log($"{logMessage}", LogType.Error);
         }
     }
 }

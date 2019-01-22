@@ -24,7 +24,7 @@ namespace SprintCrowdBackEnd.Helpers
 
         public T Execute<T>(RestRequest request) where T : new()
         {
-            ScrowdLogger.Log($"Sending request to {request.Resource}", LogType.Info);
+            SLogger.Log($"Sending request to {request.Resource}", LogType.Info);
             return JsonConvert.DeserializeObject<T>(
                 _client.Execute(request).Content);
             

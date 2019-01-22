@@ -7,7 +7,7 @@ using SprintCrowdBackEnd.Models;
 
 namespace SprintCrowdBackEnd.Logger
 {
-    public class ScrowdLogger
+    public class SLogger
     {
         private static ILogger logger;
         public static AppSettings appSettings;
@@ -41,8 +41,8 @@ namespace SprintCrowdBackEnd.Logger
                     logger.Warning(log);
                     break;
                 case LogType.Error:
-                    logger.Error(log);
                     //Errors
+                    logger.Error(log);
                     break;
             }
         }
