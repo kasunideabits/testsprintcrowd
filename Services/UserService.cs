@@ -69,8 +69,8 @@ namespace SprintCrowdBackEnd.Services
                     Issuer = _appSettings.Issuer,
                     Audience = _appSettings.Audience
                 };
-                var jwt_token = tokenHandler.CreateToken(tokenDescriptor);
-                user.Token = tokenHandler.WriteToken(jwt_token);
+                SecurityToken jwtToken = tokenHandler.CreateToken(tokenDescriptor);
+                user.Token = tokenHandler.WriteToken(jwtToken);
 
                 return user;
 

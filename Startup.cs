@@ -43,11 +43,11 @@ namespace SprintCrowdBackEnd
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             ScrowdLogger.appSettings = appSettings;
-            ScrowdLogger.Log("AppSettings set for logger.", LogType.Info);
+            ScrowdLogger.InitLogger();
+            ScrowdLogger.Log("Init Logger.", LogType.Info);
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(options =>
             {
