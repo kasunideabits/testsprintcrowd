@@ -31,7 +31,7 @@ namespace SprintCrowdBackEnd
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -69,9 +69,8 @@ namespace SprintCrowdBackEnd
                     ValidateLifetime = true
                 };
             });
-
             services.AddDbContext<SprintCrowdDbContext>(options =>  
-                     options.UseNpgsql(appSettings.PostGres.ConnectionString));
+                     options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
 
             services.AddMvc(options => 
             {

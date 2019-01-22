@@ -15,33 +15,24 @@ namespace SprintCrowdBackEnd
 {
     public class Program
     {
+        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+           .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+           .AddEnvironmentVariables()
+           .Build();
+
         public static void Main(string[] args)
         {
-            // use this to allow command line parameters in the config
-            var configuration = new ConfigurationBuilder()
-                .AddCommandLine(args)
-                .Build();
-            BuildWebHost(args).Run();
+            IConfiguration sprintCrowdConfig = Configuration.GetSection("SprintCrowd");
+            string hostUrl = sprintCrowdConfig.GetValue<string>("HostUrl");
+            BuildWebHost(args, hostUrl).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            // use this to allow command line parameters in the config
-            var configuration = new ConfigurationBuilder()
-                .AddCommandLine(args)
-                .Build();
-
-
-            var hostUrl = configuration["hosturl"];
-            if (string.IsNullOrEmpty(hostUrl))
-                hostUrl = "http://0.0.0.0:5000";
-
-            return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
+        public static IWebHostBuilder BuildWebHost(string[] args, string hostUrl) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseConfiguration(Program.Configuration)
                 .UseUrls(hostUrl)
                 .UseSerilog()
-                .Build();
-        }
-            
+                .UseStartup<Startup>();
     }
 }
