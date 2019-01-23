@@ -1,32 +1,27 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using SprintCrowd.Backend.Enums;
-using SprintCrowd.Backend.ExceptionHandler;
-using SprintCrowd.Backend.Interfaces;
-using SprintCrowd.Backend.Logger;
-using SprintCrowd.Backend.Models;
-using SprintCrowd.Backend.Persistence;
-using SprintCrowd.Backend.Repositories;
-using SprintCrowd.Backend.Services;
-
-namespace SprintCrowd.Backend
+﻿namespace SprintCrowd.Backend
 {
+    using System.Buffers;
+    using System.Text;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc.Formatters;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
+    using Swashbuckle.AspNetCore;
+    using Swashbuckle.AspNetCore.Swagger;
+    using SprintCrowd.Backend.Enums;
+    using SprintCrowd.Backend.ExceptionHandler;
+    using SprintCrowd.Backend.Interfaces;
+    using SprintCrowd.Backend.Logger;
+    using SprintCrowd.Backend.Models;
+    using SprintCrowd.Backend.Persistence;
+    using SprintCrowd.Backend.Repositories;
+    using SprintCrowd.Backend.Services;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -69,18 +64,24 @@ namespace SprintCrowd.Backend
                     ValidateLifetime = true
                 };
             });
-            services.AddDbContext<SprintCrowdDbContext>(options =>  
+            services.AddDbContext<SprintCrowdDbContext>(options =>
                      options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
 
-            services.AddMvc(options => 
+            services.AddMvc(options =>
             {
                 //ignore self referencing loops newtonsoft.
                 options.OutputFormatters.Clear();
-                options.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings(){
+                options.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings()
+                {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }, ArrayPool<char>.Shared));
                 options.Filters.Add<GlobalExceptionHandler>();
             });
+            services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new Info { Title = "SprintCrowd API", Version = "v1" });
+                }
+            );
             RegisterDependencyInjection(services);
         }
 
@@ -104,6 +105,12 @@ namespace SprintCrowd.Backend
                 .AllowAnyHeader()
                 .AllowCredentials());
             app.UseAuthentication();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
+                c.RoutePrefix = string.Empty;
+            });
+            app.UseSwagger();
             app.UseMvc();
         }
 
@@ -111,8 +118,8 @@ namespace SprintCrowd.Backend
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFacebookReporsitory, FacebookReporsitory>();
-            services.AddScoped<IFacebookService, FacebookService >();
-             // add userservice as dependecy injection
+            services.AddScoped<IFacebookService, FacebookService>();
+            // add userservice as dependecy injection
             services.AddScoped<IUserService, UserService>();
             SLogger.Log("Dependency injection registered.", LogType.Info);
         }
