@@ -1,13 +1,13 @@
-namespace SprintCrowdBackEnd.Repositories
+namespace SprintCrowd.Backend.Repositories
 {
     using System;
     using System.Collections.Generic;
-    using SprintCrowdBackEnd.Enums;
-    using SprintCrowdBackEnd.Models;
+    using SprintCrowd.Backend.Enums;
+    using SprintCrowd.Backend.Models;
     using System.Linq;
     using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Persistence;
-    using SprintCrowdBackEnd.Interfaces;
+    using SprintCrowd.Backend.Persistence;
+    using SprintCrowd.Backend.Interfaces;
 
     public class UserRepository: IUserRepository
     {

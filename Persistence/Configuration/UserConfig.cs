@@ -1,5 +1,5 @@
 
-namespace SprintCrowdBackEnd.Persistence.Configuration
+namespace SprintCrowd.Backend.Persistence.Configuration
 {
     using Microsoft.EntityFrameworkCore;
 

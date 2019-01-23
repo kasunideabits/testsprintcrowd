@@ -1,8 +1,8 @@
-namespace SprintCrowdBackEnd.Services
+namespace SprintCrowd.Backend.Services
 {
-    using SprintCrowdBackEnd.Helpers;
-    using SprintCrowdBackEnd.Interfaces;
-    using SprintCrowdBackEnd.Models.GraphApi;
+    using SprintCrowd.Backend.Helpers;
+    using SprintCrowd.Backend.Interfaces;
+    using SprintCrowd.Backend.Models.GraphApi;
 
     public class FacebookService: IFacebookService
     {

@@ -1,6 +1,6 @@
-namespace SprintCrowdBackEnd.Models
+namespace SprintCrowd.Backend.Models
 {
-    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowd.Backend.Persistence;
 
     public class ProfilePicture
     {

@@ -16,16 +16,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.ExceptionHandler;
-using SprintCrowdBackEnd.Interfaces;
-using SprintCrowdBackEnd.Logger;
-using SprintCrowdBackEnd.Models;
-using SprintCrowdBackEnd.Persistence;
-using SprintCrowdBackEnd.Repositories;
-using SprintCrowdBackEnd.Services;
+using SprintCrowd.Backend.Enums;
+using SprintCrowd.Backend.ExceptionHandler;
+using SprintCrowd.Backend.Interfaces;
+using SprintCrowd.Backend.Logger;
+using SprintCrowd.Backend.Models;
+using SprintCrowd.Backend.Persistence;
+using SprintCrowd.Backend.Repositories;
+using SprintCrowd.Backend.Services;
 
-namespace SprintCrowdBackEnd
+namespace SprintCrowd.Backend
 {
     public class Startup
     {

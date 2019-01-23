@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace SprintCrowdBackEnd.Migrations
+namespace SprintCrowd.Backend.Migrations
 {
     public partial class InitialMigration : Migration
     {

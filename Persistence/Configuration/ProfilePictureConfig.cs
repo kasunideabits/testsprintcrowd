@@ -1,7 +1,7 @@
-namespace SprintCrowdBackEnd.Persistence.Configuration
+namespace SprintCrowd.Backend.Persistence.Configuration
 {
     using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Models;
+    using SprintCrowd.Backend.Models;
 
     public class ProfilePictureConfig: IEntityTypeConfiguration<ProfilePicture>
     {

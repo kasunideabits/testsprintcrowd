@@ -1,8 +1,8 @@
 
-namespace SprintCrowdBackEnd.Interfaces
+namespace SprintCrowd.Backend.Interfaces
 {
-    using SprintCrowdBackEnd.Models;
-    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowd.Backend.Models;
+    using SprintCrowd.Backend.Persistence;
     
     public interface IUserRepository
     {

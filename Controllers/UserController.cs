@@ -1,12 +1,12 @@
 
 
-namespace SprintCrowdBackEnd.Controllers
+namespace SprintCrowd.Backend.Controllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using SprintCrowdBackEnd.Interfaces;
-    using SprintCrowdBackEnd.Models;
-    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowd.Backend.Interfaces;
+    using SprintCrowd.Backend.Models;
+    using SprintCrowd.Backend.Persistence;
 
     [Authorize]
     [Route("[controller]")]

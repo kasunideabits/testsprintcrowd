@@ -1,6 +1,6 @@
-using SprintCrowdBackEnd.Enums;
+using SprintCrowd.Backend.Enums;
 
-namespace SprintCrowdBackEnd.Models
+namespace SprintCrowd.Backend.Models
 {
     public class ResponseObject
     {

@@ -3,11 +3,11 @@
 using System;
 using Newtonsoft.Json;
 using RestSharp;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Logger;
-using SprintCrowdBackEnd.Models.GraphApi;
+using SprintCrowd.Backend.Enums;
+using SprintCrowd.Backend.Logger;
+using SprintCrowd.Backend.Models.GraphApi;
 
-namespace SprintCrowdBackEnd.Helpers
+namespace SprintCrowd.Backend.Helpers
 {
     public class RestHelper
     {

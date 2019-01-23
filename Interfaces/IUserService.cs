@@ -1,9 +1,9 @@
 
 
-namespace SprintCrowdBackEnd.Interfaces
+namespace SprintCrowd.Backend.Interfaces
 {
     using System.Collections.Generic;
-    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowd.Backend.Persistence;
     
     public interface IUserService
     {

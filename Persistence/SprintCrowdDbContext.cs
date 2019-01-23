@@ -1,8 +1,8 @@
 
-namespace SprintCrowdBackEnd.Persistence
+namespace SprintCrowd.Backend.Persistence
 {
     using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Persistence.Configuration;
+    using SprintCrowd.Backend.Persistence.Configuration;
 
     public class SprintCrowdDbContext: DbContext
     {

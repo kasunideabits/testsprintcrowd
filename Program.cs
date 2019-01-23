@@ -10,11 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Logger;
-using SprintCrowdBackEnd.Persistence;
+using SprintCrowd.Backend.Enums;
+using SprintCrowd.Backend.Logger;
+using SprintCrowd.Backend.Persistence;
 
-namespace SprintCrowdBackEnd
+namespace SprintCrowd.Backend
 {
     public class Program
     {

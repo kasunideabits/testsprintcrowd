@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Enums
+namespace SprintCrowd.Backend.Enums
 {
     public enum ResponseStatus
     {

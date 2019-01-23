@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Models.GraphApi
+namespace SprintCrowd.Backend.Models.GraphApi
 {
     using Newtonsoft.Json;
 

@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Services
+namespace SprintCrowd.Backend.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,14 +7,14 @@ namespace SprintCrowdBackEnd.Services
     using System.Text;
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
-    using SprintCrowdBackEnd.Models;
+    using SprintCrowd.Backend.Models;
     using System.Linq;
-    using SprintCrowdBackEnd.Repositories;
-    using SprintCrowdBackEnd.Enums;
-    using SprintCrowdBackEnd.Models.GraphApi;
-    using SprintCrowdBackEnd.Logger;
-    using SprintCrowdBackEnd.Interfaces;
-    using SprintCrowdBackEnd.Persistence;
+    using SprintCrowd.Backend.Repositories;
+    using SprintCrowd.Backend.Enums;
+    using SprintCrowd.Backend.Models.GraphApi;
+    using SprintCrowd.Backend.Logger;
+    using SprintCrowd.Backend.Interfaces;
+    using SprintCrowd.Backend.Persistence;
 
     public class UserService: IUserService
     {

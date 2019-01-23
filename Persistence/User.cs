@@ -1,8 +1,8 @@
 
-namespace SprintCrowdBackEnd.Persistence
+namespace SprintCrowd.Backend.Persistence
 {
     using System;
-    using SprintCrowdBackEnd.Models;
+    using SprintCrowd.Backend.Models;
 
     public class User
     {

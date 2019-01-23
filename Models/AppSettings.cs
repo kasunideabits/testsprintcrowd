@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Models
+namespace SprintCrowd.Backend.Models
 {
     public class AppSettings
     {

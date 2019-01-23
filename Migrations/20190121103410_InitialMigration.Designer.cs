@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SprintCrowdBackEnd.Persistence;
+using SprintCrowd.Backend.Persistence;
 
-namespace SprintCrowdBackEnd.Migrations
+namespace SprintCrowd.Backend.Migrations
 {
     [DbContext(typeof(SprintCrowdDbContext))]
     [Migration("20190121103410_InitialMigration")]

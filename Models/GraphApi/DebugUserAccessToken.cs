@@ -1,6 +1,6 @@
 
 
-namespace SprintCrowdBackEnd.Models.GraphApi
+namespace SprintCrowd.Backend.Models.GraphApi
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;

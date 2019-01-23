@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using Serilog;
 using Serilog.Events;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Models;
+using SprintCrowd.Backend.Enums;
+using SprintCrowd.Backend.Models;
 
-namespace SprintCrowdBackEnd.Logger
+namespace SprintCrowd.Backend.Logger
 {
     public class SLogger
     {

@@ -1,6 +1,6 @@
-namespace SprintCrowdBackEnd.Interfaces
+namespace SprintCrowd.Backend.Interfaces
 {
-    using SprintCrowdBackEnd.Models.GraphApi;
+    using SprintCrowd.Backend.Models.GraphApi;
 
     public interface IFacebookReporsitory
     {

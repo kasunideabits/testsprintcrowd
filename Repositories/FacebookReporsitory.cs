@@ -1,13 +1,13 @@
-namespace SprintCrowdBackEnd.Repositories
+namespace SprintCrowd.Backend.Repositories
 {
     using RestSharp;
-    using SprintCrowdBackEnd.Helpers;
-    using SprintCrowdBackEnd.Models.GraphApi;
-    using SprintCrowdBackEnd.Models;
+    using SprintCrowd.Backend.Helpers;
+    using SprintCrowd.Backend.Models.GraphApi;
+    using SprintCrowd.Backend.Models;
     using Microsoft.Extensions.Options;
-    using SprintCrowdBackEnd.Logger;
-    using SprintCrowdBackEnd.Enums;
-    using SprintCrowdBackEnd.Interfaces;
+    using SprintCrowd.Backend.Logger;
+    using SprintCrowd.Backend.Enums;
+    using SprintCrowd.Backend.Interfaces;
 
     public class FacebookReporsitory: IFacebookReporsitory
     {

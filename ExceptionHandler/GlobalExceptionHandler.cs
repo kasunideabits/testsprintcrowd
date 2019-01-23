@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Filters;
-using SprintCrowdBackEnd.Enums;
-using SprintCrowdBackEnd.Logger;
+using SprintCrowd.Backend.Enums;
+using SprintCrowd.Backend.Logger;
 
-namespace SprintCrowdBackEnd.ExceptionHandler
+namespace SprintCrowd.Backend.ExceptionHandler
 {
     public class GlobalExceptionHandler : IExceptionFilter
     {
