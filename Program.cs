@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using SprintCrowd.Backend.Enums;
-using SprintCrowd.Backend.Logger;
-using SprintCrowd.Backend.Persistence;
-
-namespace SprintCrowd.Backend
+﻿namespace SprintCrowd.Backend
 {
+    using System.IO;
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Serilog;
+
     public class Program
     {
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
@@ -29,7 +19,7 @@ namespace SprintCrowd.Backend
             BuildWebHost(args).Run();
         }
 
-         public static IWebHost BuildWebHost(string[] args)
+        public static IWebHost BuildWebHost(string[] args)
         {
             IConfiguration sprintCrowdConfig = Configuration.GetSection("SprintCrowd");
             string hostUrl = sprintCrowdConfig.GetValue<string>("HostUrl");
