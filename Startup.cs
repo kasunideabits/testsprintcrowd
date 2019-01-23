@@ -21,6 +21,9 @@
     using SprintCrowd.Backend.Persistence;
     using SprintCrowd.Backend.Repositories;
     using SprintCrowd.Backend.Services;
+    using System.Reflection;
+    using System.IO;
+    using System;
 
     public class Startup
     {
@@ -80,6 +83,9 @@
             services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new Info { Title = "SprintCrowd API", Version = "v1" });
+                    string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    c.IncludeXmlComments(xmlPath);
                 }
             );
             RegisterDependencyInjection(services);

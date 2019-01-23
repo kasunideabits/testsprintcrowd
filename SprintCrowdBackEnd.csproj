@@ -6,6 +6,7 @@
 
   <PropertyGroup>
       <CodeAnalysisRuleSet>sprintcrowd.ruleset</CodeAnalysisRuleSet>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
