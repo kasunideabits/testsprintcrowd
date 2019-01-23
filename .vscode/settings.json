@@ -1,0 +1,9 @@
+{
+  "csharpfixformat.sort.usings.order": "System",
+  "csharpfixformat.style.braces.onSameLine": false,
+  "csharpfixformat.style.newline.elseCatch": true,
+  "csharpfixformat.style.spaces.beforeBracket": true,
+  "razor.trace": "Verbose",
+  "csharpfixformat.style.braces.allowInlines": true,
+  "csharpfixformat.style.spaces.beforeParenthesis": false
+}
