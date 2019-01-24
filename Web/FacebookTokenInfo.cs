@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace SprintCrowd.Backend.Web
 {
+    /// <summary>
+    /// Represents a facebook access token.
+    /// </summary>
     public class FacebookTokenInfo
     {
         /// <summary>

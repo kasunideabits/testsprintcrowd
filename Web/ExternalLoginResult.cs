@@ -19,7 +19,7 @@ namespace SprintCrowd.Backend.Web
         /// <c>false</c> otherwise.
         /// </value>
         /// <remarks>This value is relevant only for new users.</remarks>
-        public bool EmailRequred { get; set; }
+        public bool EmailRequired { get; set; }
 
     }
 }

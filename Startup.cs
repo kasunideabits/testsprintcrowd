@@ -3,6 +3,7 @@
     using System.Buffers;
     using System.Text;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Formatters;
@@ -18,12 +19,13 @@
     using SprintCrowd.Backend.Interfaces;
     using SprintCrowd.Backend.Logger;
     using SprintCrowd.Backend.Models;
-    using SprintCrowd.Backend.Persistence;
+    using SprintCrowd.Backend.Infrastructure.Persistence;
     using SprintCrowd.Backend.Repositories;
     using SprintCrowd.Backend.Services;
     using System.Reflection;
     using System.IO;
     using System;
+    using SprintCrowd.Backend.Domain;
 
     public class Startup
     {
@@ -47,6 +49,7 @@
             SLogger.Log("Init Logger.", LogType.Info);
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,6 +72,8 @@
             });
             services.AddDbContext<SprintCrowdDbContext>(options =>
                      options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+
+            services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<SprintCrowdDbContext>();
 
             services.AddMvc(options =>
             {
@@ -122,11 +127,9 @@
 
         private void RegisterDependencyInjection(IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddScoped<IFacebookReporsitory, FacebookReporsitory>();
             services.AddScoped<IFacebookService, FacebookService>();
-            // add userservice as dependecy injection
-            services.AddScoped<IUserService, UserService>();
             SLogger.Log("Dependency injection registered.", LogType.Info);
         }
     }
