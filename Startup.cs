@@ -16,7 +16,6 @@
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.Backend.Enums;
     using SprintCrowd.Backend.ExceptionHandler;
-    using SprintCrowd.Backend.Interfaces;
     using SprintCrowd.Backend.Logger;
     using SprintCrowd.Backend.Models;
     using SprintCrowd.Backend.Infrastructure.Persistence;
