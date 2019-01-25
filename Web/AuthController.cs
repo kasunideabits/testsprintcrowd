@@ -2,6 +2,8 @@
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.Backend.Infrastructure.ExternalLogin;
+    using SprintCrowd.Backend.Application;
 
     /// <summary>
     /// User authentication controller.
@@ -10,21 +12,32 @@
     [ApiController]
     public class AuthController : Controller
     {
-        
+        private readonly IFacebookAuthService facebookAuthenticationService;
+
         /// <summary>
-        /// Performs a login / registration using a facebook.
+        /// Initialices a new instance of <see cref="AuthController" />.
         /// </summary>
-        /// <param name="token">The <see cref="ExternalLoginToken"/>.</param>
-        /// <returns>The result of the login operation.</returns>
-        /// <response code="200">The result of the login operation.</response>
-        /// <response code="400">The token is invalid.</response>
+        /// <param name="facebookAuthenticationService">The facebook authentication service.</param>
+        public AuthController(IFacebookAuthService facebookAuthenticationService)
+        {
+            this.facebookAuthenticationService = facebookAuthenticationService;
+        }
+        
+
+        /// <summary>
+        /// Authenticates/registers a user via facebook.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpPost("facebook")]
         [ProducesResponseType( typeof(ExternalLoginResult), 200)]
-        public async Task<IActionResult> FacebookLogin([FromBody] FacebookTokenInfo token)
+        [ProducesResponseType( typeof(ErrorResponse), 400)]
+        [ProducesResponseType( typeof(ErrorResponse), 500)]
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookAuthInfo token)
         {
-            return this.Ok(new ExternalLoginResult());
-        }        
+            ExternalLoginResult result = await this.facebookAuthenticationService.Authencticate(token);
 
-
+            return Ok(result);
+        }
     }
 }

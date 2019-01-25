@@ -20,12 +20,13 @@
     using SprintCrowd.Backend.Logger;
     using SprintCrowd.Backend.Models;
     using SprintCrowd.Backend.Infrastructure.Persistence;
-    using SprintCrowd.Backend.Repositories;
-    using SprintCrowd.Backend.Services;
     using System.Reflection;
     using System.IO;
     using System;
     using SprintCrowd.Backend.Domain;
+    using SprintCrowd.Backend.Infrastructure.ExternalLogin;
+    using SprintCrowd.Backend.Application;
+    using SprintCrowd.Backend.Web;
 
     public class Startup
     {
@@ -99,15 +100,6 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-
             app.UseStaticFiles();
             // global cors policy
             app.UseCors(x => x
@@ -122,14 +114,15 @@
                 c.RoutePrefix = string.Empty;
             });
             app.UseSwagger();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc();
         }
 
         private void RegisterDependencyInjection(IServiceCollection services)
         {
+            services.AddTransient<IFacebookProfileService, FacebookProfileService>();
 
-            services.AddScoped<IFacebookReporsitory, FacebookReporsitory>();
-            services.AddScoped<IFacebookService, FacebookService>();
+            services.AddTransient<IFacebookAuthService, FacebookAuthService>();
             SLogger.Log("Dependency injection registered.", LogType.Info);
         }
     }
