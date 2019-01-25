@@ -5,5 +5,9 @@
   "csharpfixformat.style.spaces.beforeBracket": true,
   "razor.trace": "Verbose",
   "csharpfixformat.style.braces.allowInlines": true,
-  "csharpfixformat.style.spaces.beforeParenthesis": false
+  "csharpfixformat.style.spaces.beforeParenthesis": false,
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
+  }
 }
