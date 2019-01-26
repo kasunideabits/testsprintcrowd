@@ -5,6 +5,8 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Serilog;
+    using Serilog.Events;
+    using Serilog.Sinks.SystemConsole.Themes;
 
     public class Program
     {
@@ -21,12 +23,19 @@
 
         public static IWebHost BuildWebHost(string[] args)
         {
-            IConfiguration sprintCrowdConfig = Configuration.GetSection("SprintCrowd");
-            string hostUrl = sprintCrowdConfig.GetValue<string>("HostUrl");
             return WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(Program.Configuration)
-                .UseUrls(hostUrl)
-                .UseSerilog()
+                .UseSerilog((context, configuration) =>
+                    {
+                        configuration
+                            .MinimumLevel.Debug()
+                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                            .MinimumLevel.Override("System", LogEventLevel.Warning)
+                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                            .Enrich.FromLogContext()
+                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
+                    }
+                )
                 .UseStartup<Startup>()
                 .Build();
         }

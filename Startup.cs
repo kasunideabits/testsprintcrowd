@@ -15,8 +15,6 @@
     using Swashbuckle.AspNetCore;
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.Backend.Enums;
-    using SprintCrowd.Backend.ExceptionHandler;
-    using SprintCrowd.Backend.Logger;
     using SprintCrowd.Backend.Models;
     using SprintCrowd.Backend.Infrastructure.Persistence;
     using System.Reflection;
@@ -26,6 +24,7 @@
     using SprintCrowd.Backend.Infrastructure.ExternalLogin;
     using SprintCrowd.Backend.Application;
     using SprintCrowd.Backend.Web;
+    using SprintCrowd.Backend.Infrastructure.Identity;
 
     public class Startup
     {
@@ -44,32 +43,10 @@
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
-            SLogger.appSettings = appSettings;
-            SLogger.InitLogger();
-            SLogger.Log("Init Logger.", LogType.Info);
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddSprintCrowdIdentity();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = appSettings.Issuer,
-                    ValidateAudience = true,
-                    ValidAudience = appSettings.Audience,
-                    ValidateLifetime = true
-                };
-            });
             services.AddDbContext<SprintCrowdDbContext>(options =>
                      options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
 
@@ -83,7 +60,6 @@
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }, ArrayPool<char>.Shared));
-                options.Filters.Add<GlobalExceptionHandler>();
             });
             services.AddSwaggerGen(c =>
                 {
@@ -99,6 +75,7 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseIdentityServer();
             app.UseStaticFiles();
             // global cors policy
             app.UseCors(x => x
@@ -122,7 +99,6 @@
             services.AddTransient<IFacebookProfileService, FacebookProfileService>();
 
             services.AddTransient<IFacebookAuthService, FacebookAuthService>();
-            SLogger.Log("Dependency injection registered.", LogType.Info);
         }
     }
 }
