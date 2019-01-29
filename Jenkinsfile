@@ -1,4 +1,4 @@
-﻿def image
+def image
 
 pipeline {
     agent { label 'LinuxSlave' }
