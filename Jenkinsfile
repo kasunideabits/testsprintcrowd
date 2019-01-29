@@ -25,7 +25,7 @@ pipeline {
                         image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                         image.push("${env.BRANCH_NAME}.latest")
                     }
-                   sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest"
+                   sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
                 }
             }
         }
