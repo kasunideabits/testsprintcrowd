@@ -4,6 +4,8 @@ namespace SprintCrowd.Backend.Web
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json;
+    using SprintCrowd.Backend.Application;
+    using SprintCrowdBackEnd.Application;
 
     /// <summary>
     /// OWIN middleware used for global error handling.
@@ -43,18 +45,14 @@ namespace SprintCrowd.Backend.Web
         private async Task HandleException(HttpContext context, Exception exception)
         {
             HttpResponse response = context.Response;
-            ApplicationException applicationException = exception as ApplicationException;
-
-            int errorCode = -1;
-            int statusCode = 500;
-            string message = "Unknown error";
-
-
+            Application.ApplicationException applicationException = exception as Application.ApplicationException;
+            ResponseObject responseObject = new ResponseObject{
+                StatusCode = applicationException.ErrorCode,
+                ErrorDescription = exception.Message.ToString()
+            };
             response.ContentType = "application/json";
-            response.StatusCode = statusCode;
-            
-            ErrorResponse error = new ErrorResponse(errorCode, message);
-            await response.WriteAsync(JsonConvert.SerializeObject(error));
+            response.StatusCode = (int)applicationException.ErrorCode;
+            await response.WriteAsync(JsonConvert.SerializeObject(responseObject));
         }
     }
 }

@@ -5,6 +5,9 @@ namespace SprintCrowd.Backend.Web
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using SprintCrowdBackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Extensions;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// User authentication controller.
@@ -14,12 +17,16 @@ namespace SprintCrowd.Backend.Web
     [Authorize]
     public class TestController : ControllerBase
     {
+        IUserService userService;
+        public TestController(IUserService userService)
+        {
+            this.userService = userService;
+        }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<User> Index()
         {
-            Console.WriteLine("test");
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+            return await User.GetUser(this.userService);
         }
     }
 }

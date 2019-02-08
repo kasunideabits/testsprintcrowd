@@ -15,6 +15,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<User>()
+                .HasMany(u => u.Events);
             builder.Entity<Event>()
                 .HasOne(e => e.CreatedBy);
             builder.Entity<EventParticipant>()

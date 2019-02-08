@@ -1,15 +1,16 @@
 namespace SprintCrowd.Backend.Application
 {
     using System;
+    using SprintCrowdBackEnd.Application;
 
     [Serializable]
     public class ApplicationException : Exception
     {
         public int ErrorCode { get;}
         public ApplicationException() { }
-        public ApplicationException(string message) : base(message) 
-        { 
-            this.ErrorCode = ApplicationErrorCodes.UnknownError;
+        public ApplicationException(string message) : base(message)
+        {
+            this.ErrorCode = (int)ApplicationErrorCodes.UnknownError;
         }
 
         public ApplicationException(int errorCode, string message) : base(message)

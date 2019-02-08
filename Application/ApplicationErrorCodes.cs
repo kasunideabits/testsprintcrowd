@@ -1,11 +1,7 @@
-namespace SprintCrowd.Backend.Application
+namespace SprintCrowdBackEnd.Application
 {
-    public static class ApplicationErrorCodes
+    public enum ApplicationErrorCodes
     {
-        public const int UnknownError = 99999;
-
-        public const int ExternalLoginError = 10000;
-        public const int EmailNotProvided = ExternalLoginError + 100;
-        
+        UnknownError = -1
     }
 }

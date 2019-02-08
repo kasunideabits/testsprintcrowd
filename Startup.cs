@@ -22,6 +22,10 @@
     using SprintCrowd.Backend.Application;
     using SprintCrowd.Backend.Web;
     using SprintCrowdBackEnd.Infrastructure.Persistence;
+    using Microsoft.IdentityModel.Protocols;
+    using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+    using SprintCrowdBackEnd.Extensions;
+    using SprintCrowdBackEnd.Domain.ScrowdUser;
 
     public class Startup
     {
@@ -40,12 +44,9 @@
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
-            // configure jwt authentication
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
+            services.AddSprintCrowdAuthentication(appSettings);
             services.AddDbContext<ScrowdDbContext>(options =>
                      options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
-
             services.AddMvc(options =>
             {
                 //ignore self referencing loops newtonsoft.
@@ -82,6 +83,7 @@
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
                 c.RoutePrefix = string.Empty;
             });
+            app.UseAuthentication();
             app.UseSwagger();
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc();
@@ -89,7 +91,8 @@
 
         private static void RegisterDependencyInjection(IServiceCollection services)
         {
-            
+            services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }
