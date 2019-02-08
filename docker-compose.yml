@@ -1,0 +1,27 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+  db1:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sprintcrowd
+      POSTGRES_DB: sprintcrowd
+      POSTGRES_PASSWORD: Admin123
+    ports:
+       - 5432:5432
+  db2:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sprintcrowd
+      POSTGRES_DB: identity
+      POSTGRES_PASSWORD: Admin123
+    ports:
+       - 5433:5432
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+     - 8081:8080

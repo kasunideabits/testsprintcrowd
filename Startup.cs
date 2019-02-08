@@ -16,15 +16,12 @@
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.Backend.Enums;
     using SprintCrowd.Backend.Models;
-    using SprintCrowd.Backend.Infrastructure.Persistence;
     using System.Reflection;
     using System.IO;
     using System;
-    using SprintCrowd.Backend.Domain;
-    using SprintCrowd.Backend.Infrastructure.ExternalLogin;
     using SprintCrowd.Backend.Application;
     using SprintCrowd.Backend.Web;
-    using SprintCrowd.Backend.Infrastructure.Identity;
+    using SprintCrowdBackEnd.Infrastructure.Persistence;
 
     public class Startup
     {
@@ -45,12 +42,9 @@
             var appSettings = appSettingsSection.Get<AppSettings>();
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            services.AddSprintCrowdIdentity();
 
-            services.AddDbContext<SprintCrowdDbContext>(options =>
+            services.AddDbContext<ScrowdDbContext>(options =>
                      options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
-
-            services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<SprintCrowdDbContext>();
 
             services.AddMvc(options =>
             {
@@ -75,7 +69,6 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseIdentityServer();
             app.UseStaticFiles();
             // global cors policy
             app.UseCors(x => x
@@ -94,11 +87,9 @@
             app.UseMvc();
         }
 
-        private void RegisterDependencyInjection(IServiceCollection services)
+        private static void RegisterDependencyInjection(IServiceCollection services)
         {
-            services.AddTransient<IFacebookProfileService, FacebookProfileService>();
-
-            services.AddTransient<IFacebookAuthService, FacebookAuthService>();
+            
         }
     }
 }

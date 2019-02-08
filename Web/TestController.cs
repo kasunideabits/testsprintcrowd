@@ -15,11 +15,11 @@ namespace SprintCrowd.Backend.Web
     public class TestController : ControllerBase
     {
 
-    [HttpGet]
-    public IActionResult Get()
-    {
-        Console.WriteLine("test");
-        return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
-    }
+        [HttpGet]
+        public IActionResult Get()
+        {
+            Console.WriteLine("test");
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
     }
 }
