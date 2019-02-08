@@ -4,9 +4,9 @@ pipeline {
     agent { label 'LinuxSlave' }
     environment
     {
-      ECRURL = '989299900151.dkr.ecr.ap-south-1.amazonaws.com'
-      ECRCRED = 'ecr:ap-south-1:aws-client-creds'
-      REPOSITORY = 'zacceleration/sprintcrowd'
+      ECRURL = '989299900151.dkr.ecr.ap-southeast-1.amazonaws.com'
+      ECRCRED = 'ecr:ap-southeast-1:aws-client-creds'
+      REPOSITORY = 'sprintcrowd/backend'
     }
     stages {
         stage("build") {
