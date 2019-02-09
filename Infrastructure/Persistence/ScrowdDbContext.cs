@@ -1,6 +1,7 @@
 namespace SprintCrowdBackEnd.Infrastructure.Persistence
 {
     using System.ComponentModel.DataAnnotations.Schema;
+    using System;
     using Microsoft.EntityFrameworkCore;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
@@ -36,6 +37,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 .HasIndex(u => u.Email)
                 .IsUnique();
             builder.Entity<User>()
+                .HasOne(u => u.AccessToken);
+            builder.Entity<User>()
                 .HasMany(u => u.Events);
             builder.Entity<Event>()
                 .HasOne(e => e.CreatedBy);
@@ -43,6 +46,39 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 .HasMany(e => e.Participants);
             builder.Entity<EventParticipant>()
                 .HasOne(ep => ep.User);
+            this.SetShadowProperties(builder);
+        }
+
+        /// <summary>
+        /// sets shadow properties.
+        /// </summary>
+        /// <param name="builder">model builder.</param>
+        protected void SetShadowProperties(ModelBuilder builder)
+        {
+            builder.Entity<User>()
+                .Property<DateTime>("LastUpdated");
+            builder.Entity<AccessToken>()
+                .Property<DateTime>("LastUpdated");
+            builder.Entity<EventParticipant>()
+                .Property<DateTime>("LastUpdated");
+            builder.Entity<Event>()
+                .Property<DateTime>("LastUpdated");
+        }
+
+        /// <summary>
+        /// override save changes to insert last updated value.
+        /// </summary>
+        public override int SaveChanges()
+        {
+            this.ChangeTracker.DetectChanges();
+            foreach (var entry in this.ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    entry.Property("LastUpdated").CurrentValue = DateTime.UtcNow;
+                }
+            }
+            return base.SaveChanges();
         }
     }
 }

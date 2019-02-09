@@ -14,7 +14,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         /// </summary>
         /// <value>status code for sent by the identity server.</value>
         [JsonProperty("statusCode")]
-        public int StatusCode { get; set; }
+        public int? StatusCode { get; set; }
         /// <summary>
         /// gets or sets value.
         /// </summary>

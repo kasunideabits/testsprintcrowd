@@ -59,14 +59,16 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             {
                 //Oh ohh, error occured during registeration in identity server
                 throw new ApplicationException(
-                    registerResponse.StatusCode,
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
             }
             User user = new User();
             user.Email = registerData.Email;
             user.FacebookUserId = registerResponse.Data.UserId;
             user.Name = registerResponse.Data.Name;
+            user.UserType = (int)UserType.Facebook;
             user.ProfilePicture = registerResponse.Data.ProfilePicture;
+            user.AccessToken.Token = registerData.AccessToken;
             //TODO- Profile Picture
             var result = await this.dbContext.User.AddAsync(user);
             return user;
