@@ -1,12 +1,12 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SprintCrowd.Backend.Application;
-using SprintCrowdBackEnd.Application;
-using SprintCrowdBackEnd.Domain.ScrowdUser;
-using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
-
 namespace SprintCrowdBackEnd.Web.Account
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.Backend.Application;
+    using SprintCrowdBackEnd.Application;
+    using SprintCrowdBackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+
     /// <summary>
     /// account controller.
     /// </summary>
@@ -26,15 +26,16 @@ namespace SprintCrowdBackEnd.Web.Account
             this.userService = userService;
         }
 
+        /// <summary>
+        /// Register user
+        /// TODO: switch user type
+        /// </summary>
         [HttpPost]
         [Route("register")]
         public async Task<ResponseObject> Register([FromBody] RegisterModel registerData)
         {
             User user = await this.userService.RegisterUser(registerData);
-            return new ResponseObject{
-                StatusCode = (int)ApplicationResponseCodes.Success,
-                Data = user
-            };
+            return new ResponseObject { StatusCode = (int)ApplicationResponseCodes.Success, Data = user };
         }
     }
 }

@@ -1,7 +1,7 @@
 namespace SprintCrowd.Backend.Web
 {
-    using System;
     using System.Threading.Tasks;
+    using System;
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json;
     using SprintCrowd.Backend.Application;
@@ -33,9 +33,9 @@ namespace SprintCrowd.Backend.Web
         {
             try
             {
-                await next.Invoke(context);
+                await this.next.Invoke(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await this.HandleException(context, ex);
             }
@@ -46,12 +46,13 @@ namespace SprintCrowd.Backend.Web
         {
             HttpResponse response = context.Response;
             Application.ApplicationException applicationException = exception as Application.ApplicationException;
-            ResponseObject responseObject = new ResponseObject{
+            ResponseObject responseObject = new ResponseObject
+            {
                 StatusCode = applicationException.ErrorCode,
-                ErrorDescription = exception.Message.ToString()
+                ErrorDescription = exception.Message.ToString(),
             };
             response.ContentType = "application/json";
-            response.StatusCode = (int)applicationException.ErrorCode;
+            response.StatusCode = (int)ApplicationErrorCode.InternalError;
             await response.WriteAsync(JsonConvert.SerializeObject(responseObject));
         }
     }

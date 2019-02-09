@@ -1,20 +1,67 @@
-using System;
-
 namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
 {
+    using System.Collections.Generic;
+    using System;
+
+    /// <summary>
+    /// Event Model.
+    /// </summary>
     public class Event
     {
-        public int Id {get; set;}
-        public string Name {get; set;}
-        public int Distance {get; set;}
-        public User CreatedBy {get; set;}
-        public DateTime StartDateTime {get; set;}
-        // event type public or not
-        public int Type {get; set;}
-        // event status
-        public int Status {get; set;}
-        public bool LocationProvided {get; set;}
-        public double Lattitude {get; set;}
-        public double Longitutude {get; set;}
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>unique id for the event.</value>
+        public int Id { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>event name.</value>
+        public string Name { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>distance for the event.</value>
+        public int Distance { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>created by the user.</value>
+        public User CreatedBy { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>event date start time.</value>
+        public DateTime StartDateTime { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>event type private or public.</value>
+        public int Type { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>event status, started or not.</value>
+        public int Status { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>is a event location provided by user.</value>
+        public bool LocationProvided { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>lattitude for the event.</value>
+        public double Lattitude { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>longitutude for the event.</value>
+        public double Longitutude { get; set; }
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>participants of the event.</value>
+        public List<EventParticipant> Participants { get; set; }
     }
 }
