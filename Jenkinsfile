@@ -37,7 +37,7 @@ pipeline {
           steps {
             sshagent(credentials: ['jenkins-ssh']) {
               sh "ssh -o StrictHostKeyChecking=no ${env.DEPLOYSERVER} 'cd devops; git pull'"
-              sh "ssh ${env.DEPLOYSERVER} 'cd devops/sprintcrowd-backend/prod; chmod 744 ./dedeploy.sh; ./deploy.sh'"
+              sh "ssh ${env.DEPLOYSERVER} 'cd devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'"
             }
           }
         }
