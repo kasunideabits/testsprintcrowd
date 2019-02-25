@@ -40,7 +40,7 @@ pipeline {
           steps {
             script {
                 docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-                  image.pull("${env.BRANCH_NAME}.latest")
+                  docker.image("${env.BRANCH_NAME}.latest")
                 }
             }
           }
