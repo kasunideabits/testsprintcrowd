@@ -53,7 +53,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            configure strongly typed settings objects
+            //configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
