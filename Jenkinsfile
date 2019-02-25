@@ -41,8 +41,8 @@ pipeline {
             script {
                 docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
                   sh 'pwd'
-                  sh 'cd devops; git pull'
-                  sh 'cd devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
+                  sh 'cd ~/devops; ls -la; git pull'
+                  sh 'cd ~/devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
                 }
             }
           }
