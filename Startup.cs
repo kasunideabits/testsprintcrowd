@@ -57,6 +57,7 @@
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
+            Console.WriteLine(appSettings.OpenidConfigurationEndPoint);
             services.AddSprintCrowdAuthentication(appSettings);
             services.AddDbContext<ScrowdDbContext>(options =>
                 options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
