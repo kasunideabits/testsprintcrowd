@@ -40,10 +40,9 @@ pipeline {
           steps {
             script {
                 docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-                  sshagent(credentials: ['jenkins-ssh']) {
-                    sh "ssh -o StrictHostKeyChecking=no ${env.DEPLOYSERVER} 'cd devops; git pull'"
-                    sh "ssh ${env.DEPLOYSERVER} 'cd devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'"
-                  }
+                  sh 'pwd'
+                  sh 'cd devops; git pull'
+                  sh 'cd devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
                 }
             }
           }
