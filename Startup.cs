@@ -54,31 +54,32 @@
         {
             services.AddCors();
             // configure strongly typed settings objects
-            var appSettingsSection = this.Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            Console.WriteLine(appSettings.OpenidConfigurationEndPoint);
-            services.AddSprintCrowdAuthentication(appSettings);
-            services.AddDbContext<ScrowdDbContext>(options =>
-                options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
-            services.AddMvc(options =>
-            {
-                //ignore self referencing loops newtonsoft.
-                options.OutputFormatters.Clear();
-                options.OutputFormatters.Add(new JsonOutputFormatter(
-                    new JsonSerializerSettings()
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    }, ArrayPool<char>.Shared));
-            });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "SprintCrowd API", Version = "v1" });
-                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
-            RegisterDependencyInjection(services);
+            // var appSettingsSection = this.Configuration.GetSection("AppSettings");
+            // services.Configure<AppSettings>(appSettingsSection);
+            // var appSettings = appSettingsSection.Get<AppSettings>();
+            // Console.WriteLine(appSettings.OpenidConfigurationEndPoint);
+            // services.AddSprintCrowdAuthentication(appSettings);
+            // services.AddDbContext<ScrowdDbContext>(options =>
+            //     options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+            // services.AddMvc(options =>
+            // {
+            //     //ignore self referencing loops newtonsoft.
+            //     options.OutputFormatters.Clear();
+            //     options.OutputFormatters.Add(new JsonOutputFormatter(
+            //         new JsonSerializerSettings()
+            //         {
+            //             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            //         }, ArrayPool<char>.Shared));
+            // });
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v1", new Info { Title = "SprintCrowd API", Version = "v1" });
+            //     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //     string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //     c.IncludeXmlComments(xmlPath);
+            // });
+            // RegisterDependencyInjection(services);
+            Console.ReadLine();
         }
 
         /// <summary>
