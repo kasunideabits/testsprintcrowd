@@ -11,6 +11,7 @@ pipeline {
     }
     stages {
         stage("build") {
+            agent { label 'LinuxSlave' }
             when { anyOf { branch 'test'; branch 'development' } }
             steps {
                 script {
@@ -19,6 +20,7 @@ pipeline {
             }
         }
         stage("push-image") {
+            agent { label 'LinuxSlave' }
             when { anyOf { branch 'test'; branch 'development' } }
             steps {
                 script {
@@ -31,6 +33,7 @@ pipeline {
             }
         }
         stage("deploy") {
+          agent { label 'scrowd-slave' }
           when {
                 branch 'test'
           }
