@@ -1,7 +1,7 @@
 def image
 
 pipeline {
-    agent { label 'LinuxSlave' }
+    agent none
     environment
     {
       ECRURL = '989299900151.dkr.ecr.ap-southeast-1.amazonaws.com'
