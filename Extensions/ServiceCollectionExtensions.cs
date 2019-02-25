@@ -23,6 +23,7 @@ namespace SprintCrowdBackEnd.Extensions
         {
             var httpDocumentRetriever = new HttpDocumentRetriever();
             httpDocumentRetriever.RequireHttps = false;
+            Console.WriteLine($"fsgkjfhkgfkjgkjgfkjg , {appSettings.OpenidConfigurationEndPoint}");
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                 appSettings.OpenidConfigurationEndPoint,
                 new OpenIdConnectConfigurationRetriever(),
