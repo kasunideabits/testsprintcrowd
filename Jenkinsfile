@@ -11,7 +11,7 @@ pipeline {
     }
     stages {
         stage("build") {
-            when { anyOf { branch 'master'; branch 'development' } }
+            when { anyOf { branch 'test'; branch 'development' } }
             steps {
                 script {
                     image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
@@ -19,7 +19,7 @@ pipeline {
             }
         }
         stage("push-image") {
-            when { anyOf { branch 'master'; branch 'development' } }
+            when { anyOf { branch 'test'; branch 'development' } }
             steps {
                 script {
                     docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
@@ -32,12 +32,13 @@ pipeline {
         }
         stage("deploy") {
           when {
-                branch 'master'
+                branch 'test'
           }
           steps {
-            sshagent(credentials: ['jenkins-ssh']) {
-              sh "ssh -o StrictHostKeyChecking=no ${env.DEPLOYSERVER} 'cd devops; git pull'"
-              sh "ssh ${env.DEPLOYSERVER} 'cd devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'"
+            script {
+                docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+                  image.pull("${env.BRANCH_NAME}.latest")
+                }
             }
           }
         }
