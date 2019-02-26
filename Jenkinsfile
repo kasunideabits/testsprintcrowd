@@ -41,7 +41,7 @@ pipeline {
             docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
               sh 'cd ~/devops; git pull'
               sh 'cd ~/devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
-              docker.image("${env.REPOSITORY}:${env.BRANCH_NAME}.latest").inside {
+              docker.image("${env.ECRURL}.${env.REPOSITORY}:${env.BRANCH_NAME}.latest").inside {
                 sh 'dotnet database update'
               }
             }
