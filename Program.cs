@@ -1,12 +1,16 @@
 ﻿namespace SprintCrowd.Backend
 {
     using System.IO;
+    using System;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
     using Serilog.Events;
     using Serilog.Sinks.SystemConsole.Themes;
     using Serilog;
+    using SprintCrowdBackEnd.Infrastructure.Persistence;
 
     /// <summary>
     /// entry class for dotnet core application.
@@ -27,7 +31,15 @@
         /// </summary>
         public static void Main(string [] args)
         {
-            BuildWebHost(args).Run();
+            IWebHost host = BuildWebHost(args);
+            using(IServiceScope scope = host.Services.CreateScope())
+            {
+                IServiceProvider provider = scope.ServiceProvider;
+                ScrowdDbContext context = provider.GetRequiredService<ScrowdDbContext>();
+                context.Database.Migrate();
+                context.SaveChanges();
+            }
+            host.Run();
         }
 
         /// <summary>
