@@ -23,9 +23,9 @@ namespace SprintCrowdBackEnd.Extensions
         {
             var httpDocumentRetriever = new HttpDocumentRetriever();
             httpDocumentRetriever.RequireHttps = false;
-            Console.WriteLine($"fsgkjfhkgfkjgkjgfkjg , {appSettings.OpenidConfigurationEndPoint}");
+            Console.WriteLine($"fsgkjfhkgfkjgkjgfkjg , {appSettings.AuthorizationServer + "/" + appSettings.OpenidConfigurationEndPoint}");
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                appSettings.OpenidConfigurationEndPoint,
+                appSettings.AuthorizationServer + "/" + appSettings.OpenidConfigurationEndPoint,
                 new OpenIdConnectConfigurationRetriever(),
                 httpDocumentRetriever
             );
@@ -35,17 +35,17 @@ namespace SprintCrowdBackEnd.Extensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                    // Clock skew compensates for server time drift.
-                    // We recommend 5 minutes or less:
-                    ClockSkew = TimeSpan.FromMinutes(5),
-                    IssuerSigningKeys = discoveryDocument.SigningKeys,
-                    RequireSignedTokens = true,
-                    ValidateAudience = true,
-                    ValidAudience = appSettings.Audience,
-                    ValidateIssuer = true,
-                    ValidIssuer = discoveryDocument.Issuer,
-                    RequireExpirationTime = true,
-                    ValidateLifetime = true,
+                        // Clock skew compensates for server time drift.
+                        // We recommend 5 minutes or less:
+                        ClockSkew = TimeSpan.FromMinutes(5),
+                        IssuerSigningKeys = discoveryDocument.SigningKeys,
+                        RequireSignedTokens = true,
+                        ValidateAudience = true,
+                        ValidAudience = appSettings.Audience,
+                        ValidateIssuer = true,
+                        ValidIssuer = discoveryDocument.Issuer,
+                        RequireExpirationTime = true,
+                        ValidateLifetime = true,
                     };
                 });
         }
