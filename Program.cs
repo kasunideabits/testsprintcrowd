@@ -11,6 +11,9 @@
     using Serilog.Sinks.SystemConsole.Themes;
     using Serilog;
     using SprintCrowdBackEnd.Infrastructure.Persistence;
+    using RestSharp;
+    using SprintCrowd.Backend.Models;
+    using System.Threading;
 
     /// <summary>
     /// entry class for dotnet core application.
@@ -37,7 +40,10 @@
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
+            WaitForDependecyServices();
+
             IWebHost host = BuildWebHost(args);
+
             using (IServiceScope scope = host.Services.CreateScope())
             {
                 IServiceProvider provider = scope.ServiceProvider;
@@ -71,5 +77,27 @@
                 .Build();
         }
 
+        /// <summary>
+        /// waitis for dependecy services to come up
+        /// </summary>
+        private static void WaitForDependecyServices()
+        {
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            var appSettings = appSettingsSection.Get<AppSettings>();
+
+            while (true)
+            {
+                var client = new RestClient(appSettings.AuthorizationServer);
+                var request = new RestRequest(appSettings.OpenidConfigurationEndPoint, Method.GET);
+                IRestResponse response = client.Get(request);
+                if (response.IsSuccessful)
+                {
+                    Log.Logger.Information($"Identity server found");
+                    break;
+                }
+                Log.Logger.Warning($"Identity server not up yet..  {appSettings.AuthorizationServer}/{appSettings.OpenidConfigurationEndPoint}");
+                Thread.Sleep(3000);
+            }
+        }
     }
 }

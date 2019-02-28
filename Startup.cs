@@ -3,32 +3,20 @@
     using System.Buffers;
     using System.IO;
     using System.Reflection;
-    using System.Text;
-    using System.Threading;
     using System;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-    using Microsoft.IdentityModel.Protocols;
-    using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json;
     using RestSharp;
-    using Serilog;
-    using SprintCrowd.Backend.Application;
-    using SprintCrowd.Backend.Enums;
     using SprintCrowd.Backend.Models;
     using SprintCrowd.Backend.Web;
     using SprintCrowdBackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Extensions;
     using SprintCrowdBackEnd.Infrastructure.Persistence;
     using Swashbuckle.AspNetCore.Swagger;
-    using Swashbuckle.AspNetCore;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -60,9 +48,6 @@
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
-            Console.WriteLine(appSettings.OpenidConfigurationEndPoint);
-            //wait for dependecy servives to come up
-            this.WaitForDependecyServices(appSettings);
             services.AddSprintCrowdAuthentication(appSettings);
             services.AddDbContext<ScrowdDbContext>(options =>
                 options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
@@ -119,27 +104,6 @@
         {
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IUserService, UserService>();
-        }
-
-        /// <summary>
-        /// waitis for dependecy services to come up
-        /// </summary>
-        /// <param name="appSettings">application settings</param>
-        private void WaitForDependecyServices(AppSettings appSettings)
-        {
-            while (true)
-            {
-                var client = new RestClient(appSettings.AuthorizationServer);
-                var request = new RestRequest(appSettings.OpenidConfigurationEndPoint, Method.GET);
-                IRestResponse response = client.Get(request);
-                if (response.IsSuccessful)
-                {
-                    Log.Logger.Warning($"Identity server found");
-                    break;
-                }
-                Log.Logger.Warning($"Identity server not up yet..  {appSettings.AuthorizationServer}/{appSettings.OpenidConfigurationEndPoint}");
-                Thread.Sleep(3000);
-            }
         }
     }
 }
