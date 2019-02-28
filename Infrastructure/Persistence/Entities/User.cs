@@ -48,8 +48,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// gets or set value.
         /// </summary>
-        /// <value>list of events the user has participated and participating on.</value>
-        public List<Event> Events { get; set; }
+        /// <value>list of sptints the user has participated and participating on.</value>
+        public List<Sprint> Sprint { get; set; }
         /// <summary>
         /// gets or set value.
         /// </summary>

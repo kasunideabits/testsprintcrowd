@@ -15,13 +15,13 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
         /// </summary>
         public DbSet<User> User { get; set; }
         /// <summary>
-        /// table for events.
+        /// table for sprints.
         /// </summary>
-        public DbSet<Event> Event { get; set; }
+        public DbSet<Sprint> Sprint { get; set; }
         /// <summary>
         /// table for tracking participants.
         /// </summary>
-        public DbSet<EventParticipant> EventParticipant { get; set; }
+        public DbSet<SprintParticipant> SprintParticipant { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScrowdDbContext"/> class.
@@ -39,12 +39,12 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
             builder.Entity<User>()
                 .HasOne(u => u.AccessToken);
             builder.Entity<User>()
-                .HasMany(u => u.Events);
-            builder.Entity<Event>()
+                .HasMany(u => u.Sprint);
+            builder.Entity<Sprint>()
                 .HasOne(e => e.CreatedBy);
-            builder.Entity<Event>()
+            builder.Entity<Sprint>()
                 .HasMany(e => e.Participants);
-            builder.Entity<EventParticipant>()
+            builder.Entity<SprintParticipant>()
                 .HasOne(ep => ep.User);
             this.SetShadowProperties(builder);
         }
@@ -59,9 +59,9 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 .Property<DateTime>("LastUpdated");
             builder.Entity<AccessToken>()
                 .Property<DateTime>("LastUpdated");
-            builder.Entity<EventParticipant>()
+            builder.Entity<SprintParticipant>()
                 .Property<DateTime>("LastUpdated");
-            builder.Entity<Event>()
+            builder.Entity<Sprint>()
                 .Property<DateTime>("LastUpdated");
         }
 
