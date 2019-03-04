@@ -4,6 +4,7 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
     using System;
     using Microsoft.EntityFrameworkCore;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using Npgsql.NameTranslation;
 
     /// <summary>
     /// db context for sprintcrowdbackend.
@@ -47,6 +48,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
             builder.Entity<SprintParticipant>()
                 .HasOne(ep => ep.User);
             this.SetShadowProperties(builder);
+
+            this.FixSnakeCaseNames(builder);
         }
 
         /// <summary>
@@ -79,6 +82,23 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 }
             }
             return base.SaveChanges();
+        }
+
+        private void FixSnakeCaseNames(ModelBuilder modelBuilder)
+        {
+            var mapper = new NpgsqlSnakeCaseNameTranslator();
+
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                // modify column names
+                foreach (var property in entity.GetProperties())
+                {
+                    property.Relational().ColumnName = mapper.TranslateMemberName(property.Relational().ColumnName);
+                }
+
+                // modify table name
+                entity.Relational().TableName = mapper.TranslateMemberName(entity.Relational().TableName);
+            }
         }
     }
 }
