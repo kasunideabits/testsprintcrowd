@@ -10,6 +10,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Infrastructure.Persistence;
     using SprintCrowdBackEnd.Web.Account;
+    using SprintCrowdBackEnd.Web.PushNotification;
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
     /// NO DIRECT ACCESS FROM SERVICES OR CONTROLLERS ALLOWED.
@@ -40,9 +41,19 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         /// room for improvement.
         /// </summary>
         /// <param name="userId">Facebook user id.</param>
-        public async Task<User> GetUser(string userId)
+        public async Task<User> GetFacebookUser(string userId)
         {
             return await this.dbContext.User.FirstOrDefaultAsync(u => u.FacebookUserId.Equals(userId));
+        }
+
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">id of the user</param>
+        /// <returns>user</returns>
+        public async Task<User> GetUserById(int userId)
+        {
+            return await this.dbContext.User.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         }
 
         /// <summary>
@@ -82,6 +93,33 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         public void SaveChanges()
         {
             this.dbContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// saves fcm token
+        /// </summary>
+        /// <param name="userId">id of the user</param>
+        /// <param name="fcmToken">fmc token</param>
+        /// <returns>async task</returns>
+        public async Task SaveFcmToken(int userId, string fcmToken)
+        {
+            FirebaseMessagingToken existingToken = await this.dbContext.FirebaseToken.FirstOrDefaultAsync(token => token.User.Id.Equals(userId));
+            if (existingToken == null)
+            {
+                //no token yet saved, insert
+                FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
+                {
+                User = await this.GetUserById(userId),
+                Token = fcmToken
+                };
+                await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
+            }
+            else
+            {
+                //update
+                existingToken.Token = fcmToken;
+                this.dbContext.FirebaseToken.Update(existingToken);
+            }
         }
     }
 }

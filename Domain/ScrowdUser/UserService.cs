@@ -3,6 +3,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
     using System.Threading.Tasks;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Web.Account;
+    using SprintCrowdBackEnd.Web.PushNotification;
 
     /// <summary>
     /// user service used for managing users.
@@ -43,6 +44,17 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterUser(registerData);
             this.userRepo.SaveChanges();
             return user;
+        }
+
+        /// <summary>
+        /// saves fcm token
+        /// </summary>
+        /// <param name="userId">id of the user</param>
+        /// <param name="fcmToken">fcm token</param>
+        /// <returns>async task</returns>
+        public async Task SaveFcmToken(int userId, string fcmToken)
+        {
+            await this.userRepo.SaveFcmToken(userId, fcmToken);
         }
     }
 }

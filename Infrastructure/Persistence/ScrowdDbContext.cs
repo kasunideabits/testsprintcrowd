@@ -3,8 +3,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
     using System.ComponentModel.DataAnnotations.Schema;
     using System;
     using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
     using Npgsql.NameTranslation;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// db context for sprintcrowdbackend.
@@ -23,6 +23,11 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
         /// table for tracking participants.
         /// </summary>
         public DbSet<SprintParticipant> SprintParticipant { get; set; }
+        /// <summary>
+        /// table for firebase cloud messaging tokens
+        /// </summary>
+        /// <value></value>
+        public DbSet<FirebaseMessagingToken> FirebaseToken { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScrowdDbContext"/> class.
@@ -47,6 +52,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 .HasMany(e => e.Participants);
             builder.Entity<SprintParticipant>()
                 .HasOne(ep => ep.User);
+            builder.Entity<FirebaseMessagingToken>()
+                .HasOne(token => token.User);
             this.SetShadowProperties(builder);
 
             this.FixSnakeCaseNames(builder);

@@ -1,0 +1,24 @@
+namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
+{
+    /// <summary>
+    /// Firebase token
+    /// </summary>
+    public class FirebaseMessagingToken
+    {
+        /// <summary>
+        /// unique id for the record
+        /// </summary>
+        /// <value></value>
+        public int Id { get; set; }
+        /// <summary>
+        /// id of the user
+        /// </summary>
+        /// <value>user id</value>
+        public User User { get; set; }
+        /// <summary>
+        /// firebase token
+        /// </summary>
+        /// <value>fcm token</value>
+        public string Token { get; set; }
+    }
+}
