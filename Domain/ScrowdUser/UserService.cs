@@ -28,9 +28,9 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         /// Get facebook User.
         /// </summary>
         /// <param name="userId">Facebook user id.</param>
-        public async Task<User> GetUser(string userId)
+        public async Task<User> GetFacebookUser(string userId)
         {
-            return await this.userRepo.GetUser(userId);
+            return await this.userRepo.GetFacebookUser(userId);
         }
 
         /// <summary>

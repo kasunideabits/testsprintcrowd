@@ -13,8 +13,8 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         /// <summary>
         /// retrieve the user by facebook user id.
         /// </summary>
-        /// <param name="userId">facebook user id of the user.</param>
-        Task<User> GetFacebookUser(string userId);
+        /// <param name="facebookUserId">facebook user id of the user.</param>
+        Task<User> GetFacebookUser(string facebookUserId);
         /// <summary>
         /// register a user.
         /// </summary>

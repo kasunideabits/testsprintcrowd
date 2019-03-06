@@ -18,7 +18,7 @@ namespace SprintCrowdBackEnd.Extensions
         public async static Task<User> GetUser(this ClaimsPrincipal claims, IUserService userService)
         {
             //Identity server maps sub to ClaimTypes.NameIdentifier
-            return await userService.GetUser(claims.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return await userService.GetFacebookUser(claims.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
     }
 }
