@@ -48,6 +48,9 @@ namespace SprintCrowdBackEnd.Extensions
                     ValidateLifetime = true
                     };
                     options.Authority = appSettings.AuthorizationServer;
+
+                    // Must remove this when we go to production
+                    options.RequireHttpsMetadata = false;
                 });
         }
     }
