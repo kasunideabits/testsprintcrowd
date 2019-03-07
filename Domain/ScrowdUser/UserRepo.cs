@@ -103,7 +103,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         /// <returns>async task</returns>
         public async Task SaveFcmToken(int userId, string fcmToken)
         {
-            FirebaseMessagingToken existingToken = await this.dbContext.FirebaseToken.FirstOrDefaultAsync(token => token.User.Id.Equals(userId));
+            FirebaseMessagingToken existingToken = await this.dbContext.FirebaseToken.FirstOrDefaultAsync(token => token.User.Id == userId);
             if (existingToken == null)
             {
                 //no token yet saved, insert
