@@ -73,6 +73,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 .Property<DateTime>("LastUpdated");
             builder.Entity<Sprint>()
                 .Property<DateTime>("LastUpdated");
+            builder.Entity<FirebaseMessagingToken>()
+                .Property<DateTime>("LastUpdated");
         }
 
         /// <summary>
