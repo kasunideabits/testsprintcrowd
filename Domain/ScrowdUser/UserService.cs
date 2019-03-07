@@ -55,6 +55,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
         public async Task SaveFcmToken(int userId, string fcmToken)
         {
             await this.userRepo.SaveFcmToken(userId, fcmToken);
+            this.userRepo.SaveChanges();
         }
     }
 }
