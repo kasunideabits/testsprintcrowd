@@ -42,7 +42,7 @@ namespace SprintCrowd.Backend.Web
                 FacebookUserId = QATestHelper.RandomString(),
                 Email = username + "@example.com",
                 Name = username,
-                ProfilePicture = "http://www/" + username + ".png",
+                ProfilePicture = "https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2017/04/09/Pictures/sunny-leone_4d74badc-1cf6-11e7-aa2a-1591876ff7cf.jpg",
                 AccessToken = accessToken,
             };
             this.context.User.Add(user);
