@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "back end API for sprint scrowd",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.z-acceleration.net:sprint-crowd/backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^2.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "chmod 777 ./Scripts/commit_pre_hook.sh; ./Scripts/commit_pre_hook.sh"
+    }
+  }
+}
