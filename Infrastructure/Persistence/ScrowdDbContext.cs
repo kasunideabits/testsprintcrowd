@@ -89,7 +89,9 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
                 {
                     entry.Property("LastUpdated").CurrentValue = DateTime.UtcNow;
                 }
+
             }
+
             return base.SaveChanges();
         }
 

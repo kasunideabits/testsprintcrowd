@@ -73,6 +73,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
             }
+
             User user = new User();
             user.Email = registerData.Email;
             user.FacebookUserId = registerResponse.Data.UserId;
