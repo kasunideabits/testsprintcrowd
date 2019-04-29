@@ -1,14 +1,14 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SprintCrowd.Backend.Application;
-using SprintCrowdBackEnd.Application;
-using SprintCrowdBackEnd.Domain.ScrowdUser;
-using SprintCrowdBackEnd.Extensions;
-using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
-
 namespace SprintCrowdBackEnd.Web.PushNotification
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.Backend.Application;
+    using SprintCrowdBackEnd.Application;
+    using SprintCrowdBackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Extensions;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+
     /// <summary>
     /// push notification controller
     /// </summary>
