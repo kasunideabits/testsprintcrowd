@@ -93,5 +93,6 @@
         <Rule Id="CA1307" Action="None" />
         <Rule Id="SA1623" Action="None" />
         <Rule Id="SA1642" Action="None" />
+        <Rule Id="SA1128" Action="None" />
     </Rules>
 </RuleSet>

@@ -111,7 +111,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
                 FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
                 {
                 User = await this.GetUserById(userId),
-                Token = fcmToken
+                Token = fcmToken,
                 };
                 await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
             }

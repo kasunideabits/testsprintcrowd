@@ -44,7 +44,7 @@ namespace SprintCrowdBackEnd.Extensions
                     ValidateIssuer = true,
                     ValidIssuer = discoveryDocument.Issuer,
                     RequireExpirationTime = true,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
                     };
                     options.Authority = appSettings.AuthorizationServer;
 
