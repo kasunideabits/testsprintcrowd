@@ -27,8 +27,7 @@ namespace SprintCrowdBackEnd.Extensions
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                 appSettings.AuthorizationServer + "/" + appSettings.OpenidConfigurationEndPoint,
                 new OpenIdConnectConfigurationRetriever(),
-                httpDocumentRetriever
-            );
+                httpDocumentRetriever);
             var discoveryDocument = configurationManager.GetConfigurationAsync().Result;
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
