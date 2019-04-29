@@ -68,7 +68,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
             if (registerResponse.StatusCode != 200)
             {
-                //Oh ohh, error occured during registeration in identity server
+                // Oh ohh, error occured during registeration in identity server
                 throw new ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
@@ -80,7 +80,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             user.UserType = (int)UserType.Facebook;
             user.ProfilePicture = registerResponse.Data.ProfilePicture;
             user.AccessToken.Token = registerData.AccessToken;
-            //TODO- Profile Picture
+            // TODO- Profile Picture
             var result = await this.dbContext.User.AddAsync(user);
             return user;
         }
@@ -106,7 +106,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             FirebaseMessagingToken existingToken = await this.dbContext.FirebaseToken.FirstOrDefaultAsync(token => token.User.Id == userId);
             if (existingToken == null)
             {
-                //no token yet saved, insert
+                // no token yet saved, insert
                 FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
                 {
                 User = await this.GetUserById(userId),
@@ -116,7 +116,7 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser
             }
             else
             {
-                //update
+                // update
                 existingToken.Token = fcmToken;
                 this.dbContext.FirebaseToken.Update(existingToken);
             }
