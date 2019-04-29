@@ -38,7 +38,7 @@ namespace SprintCrowdBackEnd.Web.PushNotification
         {
             User user = await this.User.GetUser(this.userService);
             await this.userService.SaveFcmToken(user.Id, fcmModel.Token);
-            return new ResponseObject() { StatusCode = (int)ApplicationResponseCodes.Success };
+            return new ResponseObject() { StatusCode = (int)ApplicationResponseCode.Success };
         }
 
     }

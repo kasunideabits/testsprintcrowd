@@ -35,7 +35,7 @@ namespace SprintCrowdBackEnd.Web.Account
         public async Task<ResponseObject> Register([FromBody] RegisterModel registerData)
         {
             User user = await this.userService.RegisterUser(registerData);
-            return new ResponseObject { StatusCode = (int)ApplicationResponseCodes.Success, Data = user };
+            return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = user };
         }
     }
 }
