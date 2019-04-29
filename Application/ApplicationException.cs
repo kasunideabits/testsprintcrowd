@@ -10,7 +10,7 @@ namespace SprintCrowd.Backend.Application
     public class ApplicationException : Exception
     {
         /// <summary>
-        /// application error code.
+        /// Gets application error code.
         /// </summary>
         public int ErrorCode { get; }
 
