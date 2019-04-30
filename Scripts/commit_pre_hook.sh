@@ -3,8 +3,9 @@ MAX_WARNINGS=50
 
 dotnet clean
 count=$( ( dotnet build | grep warning | wc -l ) )
-if [ $count -ge $MAX_WARNINGS ]; then
-   echo '[ERROR] Maximum warning limit exceed, Please fix warnings before push the commits'
-   exit -1;
+if [ $count -le $MAX_WARNINGS ]; then
+  exit 0
 fi
-exit 0
+
+echo '[ERROR] Maximum warning limit exceed, Please fix warnings before push the commits'
+exit -1;
