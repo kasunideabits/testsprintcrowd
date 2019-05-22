@@ -72,7 +72,7 @@
         <Rule Id="SA1305" Action="None" />
         <Rule Id="SA1412" Action="None" />
         <Rule Id="SA1600" Action="None" />
-        <Rule Id="SA1609" Action="Warning" />
+        <Rule Id="SA1609" Action="None" />
         <Rule Id="SA1633" Action="None" />
         <Rule Id="SA1210" Action="None" />
         <Rule Id="SA1514" Action="None" />
@@ -93,5 +93,6 @@
         <Rule Id="CA1307" Action="None" />
         <Rule Id="SA1623" Action="None" />
         <Rule Id="SA1642" Action="None" />
+        <Rule Id="SA1128" Action="None" />
     </Rules>
 </RuleSet>

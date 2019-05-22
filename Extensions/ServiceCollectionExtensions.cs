@@ -27,8 +27,7 @@ namespace SprintCrowdBackEnd.Extensions
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                 appSettings.AuthorizationServer + "/" + appSettings.OpenidConfigurationEndPoint,
                 new OpenIdConnectConfigurationRetriever(),
-                httpDocumentRetriever
-            );
+                httpDocumentRetriever);
             var discoveryDocument = configurationManager.GetConfigurationAsync().Result;
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -45,7 +44,7 @@ namespace SprintCrowdBackEnd.Extensions
                     ValidateIssuer = true,
                     ValidIssuer = discoveryDocument.Issuer,
                     RequireExpirationTime = true,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
                     };
                     options.Authority = appSettings.AuthorizationServer;
 

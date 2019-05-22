@@ -8,6 +8,7 @@
   <PropertyGroup>
       <CodeAnalysisRuleSet>sprintcrowd.ruleset</CodeAnalysisRuleSet>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <DefaultItemExcludes>$(DefaultItemExcludes);Migrations/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
