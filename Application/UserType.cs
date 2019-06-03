@@ -17,5 +17,9 @@ namespace SprintCrowdBackEnd.Application
         /// normal user, without any third party provider.
         /// </summary>
         NormalUser = 3,
+        /// <summary>
+        /// admin user, have access to Control panel.
+        /// </summary>
+        AdmiUser = 4
     }
 }
