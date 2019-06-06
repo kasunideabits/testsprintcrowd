@@ -2,7 +2,7 @@
 MAX_WARNINGS=50
 
 dotnet clean
-count=$( ( dotnet build | grep warning | wc -l ) )
+count=$( ( dotnet build | grep warning | grep -v 'Migrations/20' | wc -l ) )
 if [ $count -le $MAX_WARNINGS ]; then
   exit 0
 fi
