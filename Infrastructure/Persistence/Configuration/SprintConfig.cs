@@ -16,7 +16,7 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Configuration
         /// <param name="builder">entity builder instance</param>
         public void Configure(EntityTypeBuilder<Sprint> builder)
         {
-            builder.HasOne(s => s.CreatedBy);
+            builder.HasOne(s => s.CreatedBy).WithMany(s => s.Sprint);
             builder.HasMany(s => s.Participants);
             builder.Property<DateTime>("LastUpdated");
         }

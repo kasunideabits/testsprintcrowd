@@ -50,6 +50,10 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new SprintConfig());
             builder.ApplyConfiguration(new SprintParticipantConfig());
             builder.ApplyConfiguration(new UserConfig());
+            builder
+                .Entity<AccessToken>()
+                .Property<DateTime>("LastUpdated");
+
             this.FixSnakeCaseNames(builder);
         }
 
