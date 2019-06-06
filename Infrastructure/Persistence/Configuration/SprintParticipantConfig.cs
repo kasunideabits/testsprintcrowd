@@ -10,7 +10,6 @@
     /// </summary>
     public class SprintParticipantConfig : IEntityTypeConfiguration<SprintParticipant>
     {
-
         /// <summary>
         /// Configure table SprintParticipant
         /// </summary>
