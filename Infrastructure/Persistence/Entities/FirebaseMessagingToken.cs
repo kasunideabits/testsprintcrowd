@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
+﻿namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
 {
     /// <summary>
     /// Firebase token
@@ -8,7 +8,7 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// unique id for the record
         /// </summary>
-        /// <value></value>
+        /// <value>unique id</value>
         public int Id { get; set; }
         /// <summary>
         /// id of the user
