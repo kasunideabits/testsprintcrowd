@@ -1,6 +1,5 @@
 namespace backend.Data
 {
-
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -11,9 +10,15 @@ namespace backend.Data
     using SprintCrowdBackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Infrastructure.Persistence;
+
+    /// <summary>
+    /// auth DB seeder.
+    /// </summary>
     public class DbSeed
     {
-
+        /// <summary>
+        /// create default auth user for control-panel
+        /// </summary>
         public static void InitializeData(IServiceProvider services)
         {
             var context = services.GetRequiredService<ScrowdDbContext>();
@@ -38,4 +43,5 @@ namespace backend.Data
         }
 
     }
+
 }
