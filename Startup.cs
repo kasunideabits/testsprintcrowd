@@ -4,6 +4,7 @@
     using System.IO;
     using System.Reflection;
     using System;
+    using backend.Data;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.EntityFrameworkCore;
@@ -92,6 +93,7 @@
             });
             app.UseAuthentication();
             app.UseSwagger();
+            DbSeed.InitializeData(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider);
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc();
         }
