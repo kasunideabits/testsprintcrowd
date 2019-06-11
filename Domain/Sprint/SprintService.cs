@@ -1,11 +1,12 @@
-namespace SprintCrowdBackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
 
   using System.Threading.Tasks;
-  using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
   /// <summary>
-  /// Sprint service
+  ///   /// Sprint service
   /// </summary>
   public class SprintService : ISprintService
   {
@@ -32,7 +33,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint
       sprint_avail.Name = sprintData.Name;
       sprint_avail.Distance = sprintData.Distance;
       sprint_avail.StartDateTime = sprintData.StartTime;
-      sprint_avail.Type = sprintData.EventType;
+      sprint_avail.Type = sprintData.SprintType;
       sprint_avail.LocationProvided = sprintData.LocationProvided;
       sprint_avail.Lattitude = sprintData.Lattitude;
       sprint_avail.Longitutude = sprintData.Longitutude;
@@ -42,11 +43,42 @@ namespace SprintCrowdBackEnd.Domain.Sprint
       {
         Sprint sprint = await this.SprintRepo.UpdateSprint(sprint_avail);
 
-        this.SprintRepo.SaveChanges();
+        if (sprint != null)
+        {
+          this.SprintRepo.SaveChanges();
+
+        }
         return sprint;
       }
 
       return null;
+    }
+    /// <summary>
+    /// creates a new sprint
+    /// </summary>
+    /// <param name="sprintInfo">info about the sprint</param>
+    /// /// <param name="ownerOfSprint">user who created the sprint</param>
+    /// <returns>created sprint</returns>
+    public async Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint)
+    {
+      Sprint sprintToBeCreated = new Sprint();
+      sprintToBeCreated.CreatedBy = ownerOfSprint;
+      sprintToBeCreated.Type = sprintInfo.SprintType;
+      sprintToBeCreated.LocationProvided = sprintInfo.LocationProvided;
+      sprintToBeCreated.Lattitude = sprintInfo.Lattitude;
+      sprintToBeCreated.Longitutude = sprintInfo.Longitutude;
+      sprintToBeCreated.Name = sprintInfo.Name;
+      sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
+      sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
+      sprintToBeCreated.Distance = sprintInfo.Distance;
+
+      Sprint sprint = await this.SprintRepo.AddSprint(sprintToBeCreated);
+      if (sprint != null)
+      {
+        this.SprintRepo.SaveChanges();
+      }
+
+      return sprint;
     }
   }
 }

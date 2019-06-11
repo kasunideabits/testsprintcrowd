@@ -2,7 +2,7 @@
 using System;
 /*JUST USED TO AUTOMATING QA SCRIPTS. DO NOT WRITE APPLICATION LOGIC IN HERE */
 
-namespace SprintCrowd.Backend.Web
+namespace SprintCrowd.BackEnd.Web
 {
   using System.Collections.Generic;
   using System.Diagnostics;
@@ -11,9 +11,9 @@ namespace SprintCrowd.Backend.Web
   using System;
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
-  using SprintCrowdBackEnd.Application;
-  using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
-  using SprintCrowdBackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
   [Route("[controller]")]
   public class QATest : ControllerBase

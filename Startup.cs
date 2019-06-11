@@ -1,4 +1,4 @@
-﻿namespace SprintCrowd.Backend
+﻿namespace SprintCrowd.BackEnd
 {
   using System.Buffers;
   using System.IO;
@@ -11,12 +11,12 @@
   using Microsoft.Extensions.DependencyInjection;
   using Newtonsoft.Json;
   using RestSharp;
-  using SprintCrowd.Backend.Models;
-  using SprintCrowd.Backend.Web;
-  using SprintCrowdBackEnd.Domain.ScrowdUser;
-  using SprintCrowdBackEnd.Domain.Sprint;
-  using SprintCrowdBackEnd.Extensions;
-  using SprintCrowdBackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Domain.ScrowdUser;
+  using SprintCrowd.BackEnd.Domain.Sprint;
+  using SprintCrowd.BackEnd.Extensions;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Models;
+  using SprintCrowd.BackEnd.Web;
   using Swashbuckle.AspNetCore.Swagger;
 
   /// <summary>
@@ -42,16 +42,15 @@
     /// This method gets called by the runtime. Use this method to add services to the container.
     /// </summary>
     /// <param name="services">generated automatically</param>
-    public void ConfigureServices(IServiceCollection services)
+    public virtual void ConfigureServices(IServiceCollection services)
     {
       services.AddCors();
       // configure strongly typed settings objects
       var appSettingsSection = this.Configuration.GetSection("AppSettings");
       services.Configure<AppSettings>(appSettingsSection);
       var appSettings = appSettingsSection.Get<AppSettings>();
-      services.AddSprintCrowdAuthentication(appSettings);
-      services.AddDbContext<ScrowdDbContext>(options =>
-        options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+      this.AddAuthentication(services, appSettings);
+      this.AddDatabase(services);
       services.AddMvc(options =>
       {
         // ignore self referencing loops newtonsoft.
@@ -62,6 +61,36 @@
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
           }, ArrayPool<char>.Shared));
       });
+      this.AddSwagger(services);
+      RegisterDependencyInjection(services);
+    }
+
+    /// <summary>
+    /// Adds jwt token authentication
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="appSettings"></param>
+    public virtual void AddAuthentication(IServiceCollection services, AppSettings appSettings)
+    {
+      services.AddSprintCrowdAuthentication(appSettings);
+    }
+
+    /// <summary>
+    /// Adds db context
+    /// </summary>
+    /// <param name="services"></param>
+    public virtual void AddDatabase(IServiceCollection services)
+    {
+      services.AddDbContext<ScrowdDbContext>(options =>
+        options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+    }
+
+    /// <summary>
+    /// adds swagger
+    /// </summary>
+    /// <param name="services"></param>
+    public virtual void AddSwagger(IServiceCollection services)
+    {
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new Info { Title = "SprintCrowd API", Version = "v1" });
@@ -69,14 +98,13 @@
         string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         c.IncludeXmlComments(xmlPath);
       });
-      RegisterDependencyInjection(services);
     }
 
     /// <summary>
     /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     /// </summary>
     /// <param name="app">generated automatically</param>
-    public void Configure(IApplicationBuilder app)
+    public virtual void Configure(IApplicationBuilder app)
     {
       app.UseStaticFiles();
       // global cors policy

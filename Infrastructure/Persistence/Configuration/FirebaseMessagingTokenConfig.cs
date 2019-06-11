@@ -1,23 +1,23 @@
-﻿namespace SprintCrowdBackEnd.Infrastructure.Persistence.Configuration
+﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
 {
-    using System;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using System;
+  using Microsoft.EntityFrameworkCore.Metadata.Builders;
+  using Microsoft.EntityFrameworkCore;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
+  /// <summary>
+  /// Entity configuration for FirebaseMessagingToken table
+  /// </summary>
+  public class FirebaseMessagingTokenConfig : IEntityTypeConfiguration<FirebaseMessagingToken>
+  {
     /// <summary>
-    /// Entity configuration for FirebaseMessagingToken table
+    /// Configure table FirebaseMessagingToken
     /// </summary>
-    public class FirebaseMessagingTokenConfig : IEntityTypeConfiguration<FirebaseMessagingToken>
+    /// <param name="builder">entity builder instance</param>
+    public void Configure(EntityTypeBuilder<FirebaseMessagingToken> builder)
     {
-        /// <summary>
-        /// Configure table FirebaseMessagingToken
-        /// </summary>
-        /// <param name="builder">entity builder instance</param>
-        public void Configure(EntityTypeBuilder<FirebaseMessagingToken> builder)
-        {
-            builder.HasOne(token => token.User);
-            builder.Property<DateTime>("LastUpdated");
-        }
+      builder.HasOne(token => token.User);
+      builder.Property<DateTime>("LastUpdated");
     }
+  }
 }

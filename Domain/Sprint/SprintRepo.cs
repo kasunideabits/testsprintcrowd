@@ -1,9 +1,9 @@
-namespace SprintCrowdBackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
   using System.Linq;
   using System.Threading.Tasks;
-  using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
-  using SprintCrowdBackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
   /// <summary>
   /// Event repositiory
   /// </summary>

@@ -1,7 +1,7 @@
-namespace SprintCrowdBackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
   using System.Threading.Tasks;
-  using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   /// <summary>
   /// inerface for event repo
   /// </summary>

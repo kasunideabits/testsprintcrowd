@@ -1,28 +1,28 @@
-namespace SprintCrowd.Backend.Application
+namespace SprintCrowd.BackEnd.Application
 {
+  /// <summary>
+  /// response codes to use when responding to rest requests.
+  /// </summary>
+  public enum ApplicationResponseCode
+  {
     /// <summary>
-    /// response codes to use when responding to rest requests.
+    /// All went well.
     /// </summary>
-    public enum ApplicationResponseCode
-    {
-        /// <summary>
-        /// All went well.
-        /// </summary>
-        Success = 200,
+    Success = 200,
 
-        /// <summary>
-        /// already exists.
-        /// </summary>
-        Exists = 409,
+    /// <summary>
+    /// already exists.
+    /// </summary>
+    Exists = 409,
 
-        /// <summary>
-        /// expired.
-        /// </summary>
-        Expired = 401,
+    /// <summary>
+    /// expired.
+    /// </summary>
+    Expired = 401,
 
-        /// <summary>
-        /// Bad request.
-        /// </summary>
-        BadRequest = 400
-    }
+    /// <summary>
+    /// Bad request.
+    /// </summary>
+    BadRequest = 400
+  }
 }
