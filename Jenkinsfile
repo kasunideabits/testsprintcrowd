@@ -18,6 +18,14 @@ pipeline {
             }
         }
     }
+    stage("test") {
+        agent { label 'LinuxSlave' }
+        steps {
+            script {
+                sh 'cd tests/; dotnet restore; dotnet test'
+            }
+        }
+    }
     stage("push-image") {
         agent { label 'LinuxSlave' }
         when { anyOf { branch 'master'; branch 'development' } }
