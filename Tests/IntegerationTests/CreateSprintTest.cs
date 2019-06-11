@@ -45,7 +45,7 @@ namespace Tests
         Encoding.UTF8,
         "application/json"));
 
-      Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
+      Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
   }
 }
