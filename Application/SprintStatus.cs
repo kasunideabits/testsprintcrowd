@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Application
+namespace SprintCrowd.BackEnd.Application
 {
   /// <summary>
   /// common enum for device type, ios or android

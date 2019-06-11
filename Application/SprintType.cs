@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Application
+namespace SprintCrowd.BackEnd.Application
 {
   /// <summary>
   /// Types of sprints

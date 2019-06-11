@@ -1,21 +1,21 @@
-namespace SprintCrowdBackEnd.Infrastructure.Persistence
+namespace SprintCrowd.BackEnd.Infrastructure.Persistence
 {
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Design;
-    using SprintCrowd.Backend;
+  using Microsoft.Extensions.Configuration;
+  using Microsoft.EntityFrameworkCore;
+  using Microsoft.EntityFrameworkCore.Design;
+  using SprintCrowd.BackEnd;
 
-    /// <summary>
-    /// Design-time DB context factory.
-    /// </summary>
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ScrowdDbContext>
+  /// <summary>
+  /// Design-time DB context factory.
+  /// </summary>
+  public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ScrowdDbContext>
+  {
+    /// <inheritdoc />
+    public ScrowdDbContext CreateDbContext(string[] args)
     {
-        /// <inheritdoc />
-        public ScrowdDbContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<ScrowdDbContext>();
-            optionsBuilder.UseNpgsql(Program.Configuration.GetConnectionString("SprintCrowd"));
-            return new ScrowdDbContext(optionsBuilder.Options);
-        }
+      var optionsBuilder = new DbContextOptionsBuilder<ScrowdDbContext>();
+      optionsBuilder.UseNpgsql(Program.Configuration.GetConnectionString("SprintCrowd"));
+      return new ScrowdDbContext(optionsBuilder.Options);
     }
+  }
 }

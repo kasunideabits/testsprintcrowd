@@ -1,4 +1,4 @@
-﻿namespace SprintCrowd.Backend
+﻿namespace SprintCrowd.BackEnd
 {
   using System.Buffers;
   using System.IO;
@@ -11,13 +11,13 @@
   using Microsoft.Extensions.DependencyInjection;
   using Newtonsoft.Json;
   using RestSharp;
-  using SprintCrowd.Backend.Models;
-  using SprintCrowd.Backend.Web;
-  using SprintCrowdBackEnd.Domain.ScrowdUser;
-  using SprintCrowdBackEnd.Extensions;
-  using SprintCrowdBackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Models;
+  using SprintCrowd.BackEnd.Web;
+  using SprintCrowd.BackEnd.Domain.ScrowdUser;
+  using SprintCrowd.BackEnd.Extensions;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using Swashbuckle.AspNetCore.Swagger;
-  using SprintCrowdBackEnd.Domain.Sprint;
+  using SprintCrowd.BackEnd.Domain.Sprint;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -106,6 +106,7 @@
       services.AddScoped<IUserRepo, UserRepo>();
       services.AddScoped<IUserService, UserService>();
       services.AddScoped<ISprintRepo, SprintRepo>();
+      services.AddScoped<ISprintService, SprintService>();
     }
   }
 }

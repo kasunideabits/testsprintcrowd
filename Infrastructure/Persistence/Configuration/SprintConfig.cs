@@ -1,24 +1,24 @@
-namespace SprintCrowdBackEnd.Infrastructure.Persistence.Configuration
+namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
 {
-    using System;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using Microsoft.EntityFrameworkCore;
-    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using System;
+  using Microsoft.EntityFrameworkCore.Metadata.Builders;
+  using Microsoft.EntityFrameworkCore;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
+  /// <summary>
+  /// Entity configuration for Sprint table
+  /// </summary>
+  public class SprintConfig : IEntityTypeConfiguration<Sprint>
+  {
     /// <summary>
-    /// Entity configuration for Sprint table
+    /// Configure table Sprint
     /// </summary>
-    public class SprintConfig : IEntityTypeConfiguration<Sprint>
+    /// <param name="builder">entity builder instance</param>
+    public void Configure(EntityTypeBuilder<Sprint> builder)
     {
-        /// <summary>
-        /// Configure table Sprint
-        /// </summary>
-        /// <param name="builder">entity builder instance</param>
-        public void Configure(EntityTypeBuilder<Sprint> builder)
-        {
-            builder.HasOne(s => s.CreatedBy).WithMany(s => s.Sprint);
-            builder.HasMany(s => s.Participants);
-            builder.Property<DateTime>("LastUpdated");
-        }
+      builder.HasOne(s => s.CreatedBy).WithMany(s => s.Sprint);
+      builder.HasMany(s => s.Participants);
+      builder.Property<DateTime>("LastUpdated");
     }
+  }
 }

@@ -1,4 +1,4 @@
-namespace SprintCrowdBackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
   using System;
   /// <summary>
@@ -6,6 +6,20 @@ namespace SprintCrowdBackEnd.Domain.Sprint
   /// </summary>
   public class SprintModel
   {
+
+    /// <inheritdoc />
+    public SprintModel(string name, int distance, Boolean locationProvided, DateTime startTime, int sprintType,
+      double lattitude, double longitutude)
+    {
+      this.Name = name;
+      this.Distance = distance;
+      this.LocationProvided = locationProvided;
+      this.StartTime = startTime;
+      this.SprintType = sprintType;
+      this.Lattitude = lattitude;
+      this.Longitutude = longitutude;
+    }
+
     /// <summary>
     /// Event Name
     /// </summary>

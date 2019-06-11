@@ -1,8 +1,8 @@
-namespace SprintCrowdBackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
   using System.Threading.Tasks;
-  using SprintCrowdBackEnd.Application;
-  using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   /// <summary>
   ///   /// Sprint service
   /// </summary>
