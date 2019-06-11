@@ -47,7 +47,7 @@ namespace SprintCrowd.BackEnd.Web
       Application.ApplicationException applicationException = exception as Application.ApplicationException;
       ResponseObject responseObject = new ResponseObject
       {
-        StatusCode = 500, //TODO: get error code from exception Application.ApplicationException
+        StatusCode = applicationException == null ? 500 : applicationException.ErrorCode,
         ErrorDescription = exception.Message.ToString(),
       };
       response.ContentType = "application/json";
