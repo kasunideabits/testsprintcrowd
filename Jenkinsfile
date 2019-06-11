@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage("build") {
         agent { label 'LinuxSlave' }
-        when { anyOf { branch 'master'; branch 'development' } }
+        // when { anyOf { branch 'master'; branch 'development' } } //build every branch
         steps {
             script {
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
