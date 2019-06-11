@@ -3,8 +3,6 @@ namespace SprintCrowd.BackEnd.Web.Account
   using System.Threading.Tasks;
   using Microsoft.AspNetCore.Mvc;
   using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 

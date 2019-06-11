@@ -6,7 +6,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
   using RestSharp;
   using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Models;
-  using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using SprintCrowd.BackEnd.Web.Account;

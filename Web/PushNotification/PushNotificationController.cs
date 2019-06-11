@@ -4,8 +4,6 @@ namespace SprintCrowd.BackEnd.Web.PushNotification
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;

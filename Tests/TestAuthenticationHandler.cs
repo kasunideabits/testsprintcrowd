@@ -37,8 +37,8 @@ namespace Tests
   {
     public virtual ClaimsIdentity Identity { get; } = new ClaimsIdentity(new Claim[]
     {
-            new Claim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier", Guid.NewGuid().ToString()),
-    }, "test");
+            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+    }, "test_user");
   }
 
 }
