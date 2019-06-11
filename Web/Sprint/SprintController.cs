@@ -41,7 +41,7 @@ namespace SprintCrowd.BackEnd.Web.Event
     public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
     {
       User user = await this.User.GetUser(this.UserService);
-      var result = this.SprintService.CreateNewSprint(sprintInfo, user);
+      var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
 
       return new ResponseObject()
       {

@@ -18,6 +18,7 @@
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using Swashbuckle.AspNetCore.Swagger;
   using SprintCrowd.BackEnd.Domain.Sprint;
+  using backend.Data;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -122,6 +123,7 @@
       app.UseAuthentication();
       app.UseSwagger();
       app.UseMiddleware<ErrorHandlingMiddleware>();
+      DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);
       app.UseMvc();
     }
 

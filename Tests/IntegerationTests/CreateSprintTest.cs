@@ -25,6 +25,7 @@ namespace Tests
     public CreateSprintTest()
     {
       this._client = HttpServerClient.CreateServerClient();
+
     }
 
     /// <summary>

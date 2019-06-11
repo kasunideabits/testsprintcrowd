@@ -37,7 +37,7 @@ namespace Tests
   {
     public virtual ClaimsIdentity Identity { get; } = new ClaimsIdentity(new Claim[]
     {
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, 1.ToString()),
     }, "test_user");
   }
 

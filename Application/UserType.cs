@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Application
   /// </summary>
   public enum UserType
   {
+
     /// <summary>
     /// User type facebook.
     /// </summary>
@@ -17,5 +18,10 @@ namespace SprintCrowd.BackEnd.Application
     /// normal user, without any third party provider.
     /// </summary>
     NormalUser = 3,
+    /// <summary>
+    /// admin user, have access to Control panel.
+    /// </summary>
+    AdminUser = 4
   }
+
 }
