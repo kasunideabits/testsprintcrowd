@@ -21,11 +21,6 @@ namespace Tests
   public class CreateSprintTest
   {
     private readonly HttpClient _client;
-    public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
 
     public CreateSprintTest()
     {

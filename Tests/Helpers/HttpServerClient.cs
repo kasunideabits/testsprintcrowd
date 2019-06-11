@@ -16,7 +16,7 @@ namespace Tests.Helpers
 
     public static HttpClient CreateServerClient()
     {
-      var builder = new WebHostBuilder().UseConfiguration(CreateSprintTest.Configuration)
+      var builder = new WebHostBuilder().UseConfiguration(HttpServerClient.Configuration)
       .UseStartup<TestStartUp>();
       var testServer = new TestServer(builder);
 
