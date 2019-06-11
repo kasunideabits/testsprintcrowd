@@ -30,7 +30,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint
     /// public or private
     /// </summary>
     /// <value></value>
-    public int EventType { get; }
+    public int SprintType { get; }
     /// <summary>
     /// Latitutude
     /// </summary>
