@@ -19,5 +19,10 @@ namespace SprintCrowd.BackEnd.Application
     /// expired.
     /// </summary>
     Expired = 401,
+
+    /// <summary>
+    /// Bad request.
+    /// </summary>
+    BadRequest = 400
   }
 }

@@ -49,5 +49,17 @@ namespace SprintCrowd.BackEnd.Web.Event
         Data = result
       };
     }
+
+    /// <summary>
+    /// update sprint
+    /// </summary>
+    [HttpPut]
+    [Route("update")]
+    public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
+    {
+      Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
+
+      return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
+    }
   }
 }

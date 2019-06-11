@@ -11,14 +11,14 @@
   using Microsoft.Extensions.DependencyInjection;
   using Newtonsoft.Json;
   using RestSharp;
-  using SprintCrowd.BackEnd.Models;
-  using SprintCrowd.BackEnd.Web;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
+  using SprintCrowd.BackEnd.Domain.Sprint;
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Models;
+  using SprintCrowd.BackEnd.Web;
   using Swashbuckle.AspNetCore.Swagger;
-  using SprintCrowd.BackEnd.Domain.Sprint;
-  using backend.Data;
+  using SprintCrowd.BackEnd.Data;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -57,10 +57,10 @@
         // ignore self referencing loops newtonsoft.
         options.OutputFormatters.Clear();
         options.OutputFormatters.Add(new JsonOutputFormatter(
-                  new JsonSerializerSettings()
-                  {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                  }, ArrayPool<char>.Shared));
+          new JsonSerializerSettings()
+          {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+          }, ArrayPool<char>.Shared));
       });
       this.AddSwagger(services);
       RegisterDependencyInjection(services);
@@ -83,7 +83,7 @@
     public virtual void AddDatabase(IServiceCollection services)
     {
       services.AddDbContext<ScrowdDbContext>(options =>
-          options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+        options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
     }
 
     /// <summary>
@@ -110,10 +110,10 @@
       app.UseStaticFiles();
       // global cors policy
       app.UseCors(x => x
-          .AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials());
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
       app.UseAuthentication();
       app.UseSwaggerUI(c =>
       {

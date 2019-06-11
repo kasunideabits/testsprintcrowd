@@ -14,5 +14,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
     /// /// <param name="ownerOfSprint">user who creatse the sprint</param>
     /// <returns>cereated sprint</returns>
     Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint);
+
+    Task<Sprint> UpdateSprint(SprintModel sprintData);
   }
 }

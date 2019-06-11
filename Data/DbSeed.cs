@@ -1,4 +1,4 @@
-namespace backend.Data
+namespace SprintCrowd.BackEnd.Data
 {
   using System.Collections.Generic;
   using System.Linq;
