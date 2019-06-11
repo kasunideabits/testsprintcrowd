@@ -22,7 +22,7 @@ pipeline {
         agent { label 'LinuxSlave' }
         steps {
             script {
-                sh 'cd tests/; dotnet restore; dotnet test'
+                sh 'cd Tests/; dotnet restore; dotnet test'
             }
         }
     }
