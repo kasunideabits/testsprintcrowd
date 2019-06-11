@@ -1,8 +1,9 @@
 namespace SprintCrowdBackEnd.Domain.Sprint
 {
+  using System.Linq;
   using System.Threading.Tasks;
-  using SprintCrowdBackEnd.Infrastructure.Persistence;
   using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowdBackEnd.Infrastructure.Persistence;
   /// <summary>
   /// Event repositiory
   /// </summary>
@@ -27,7 +28,26 @@ namespace SprintCrowdBackEnd.Domain.Sprint
       var result = await this.dbContext.Sprint.AddAsync(SprintToAdd);
       return result.Entity;
     }
+    /// <summary>
+    /// Update event details instance of SprintService
+    /// </summary>
+    /// <param name="SprintData">sprint repository</param>
+    public async Task<Sprint> UpdateSprint(Sprint SprintData)
+    {
+      var result = this.dbContext.Sprint.Update(SprintData);
+      return result.Entity;
 
+    }
+    /// <summary>
+    /// Update event details instance of SprintService
+    /// </summary>
+    /// <param name="SprintID">sprint repository</param>
+    public async Task<Sprint> GetSprint(int SprintID)
+    {
+      Sprint sprint = await this.dbContext.Sprint.FindAsync(SprintID);
+
+      return sprint;
+    }
     /// <summary>
     /// commit and save changes to the db
     /// only call this from the service, DO NOT CALL FROM REPO ITSELF
@@ -37,5 +57,6 @@ namespace SprintCrowdBackEnd.Domain.Sprint
     {
       this.dbContext.SaveChanges();
     }
+
   }
 }

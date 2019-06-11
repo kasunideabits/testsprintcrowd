@@ -14,10 +14,10 @@
   using SprintCrowd.Backend.Models;
   using SprintCrowd.Backend.Web;
   using SprintCrowdBackEnd.Domain.ScrowdUser;
+  using SprintCrowdBackEnd.Domain.Sprint;
   using SprintCrowdBackEnd.Extensions;
   using SprintCrowdBackEnd.Infrastructure.Persistence;
   using Swashbuckle.AspNetCore.Swagger;
-  using SprintCrowdBackEnd.Domain.Sprint;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -51,16 +51,16 @@
       var appSettings = appSettingsSection.Get<AppSettings>();
       services.AddSprintCrowdAuthentication(appSettings);
       services.AddDbContext<ScrowdDbContext>(options =>
-          options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+        options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
       services.AddMvc(options =>
       {
         // ignore self referencing loops newtonsoft.
         options.OutputFormatters.Clear();
         options.OutputFormatters.Add(new JsonOutputFormatter(
-                  new JsonSerializerSettings()
-                  {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                  }, ArrayPool<char>.Shared));
+          new JsonSerializerSettings()
+          {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+          }, ArrayPool<char>.Shared));
       });
       services.AddSwaggerGen(c =>
       {
@@ -81,10 +81,10 @@
       app.UseStaticFiles();
       // global cors policy
       app.UseCors(x => x
-          .AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials());
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
       app.UseAuthentication();
       app.UseSwaggerUI(c =>
       {
@@ -106,6 +106,7 @@
       services.AddScoped<IUserRepo, UserRepo>();
       services.AddScoped<IUserService, UserService>();
       services.AddScoped<ISprintRepo, SprintRepo>();
+      services.AddScoped<ISprintService, SprintService>();
     }
   }
 }
