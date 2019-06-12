@@ -32,6 +32,7 @@ namespace SprintCrowd.BackEnd.Data
         {
           UserType = (int)UserType.AdminUser,
           Email = adminUserEmail,
+          FacebookUserId = "SprintCrowdAdmin",
           Name = "Mikael"
         };
 
