@@ -30,7 +30,6 @@ namespace SprintCrowd.BackEnd.Data
       {
         User user = new User()
         {
-          Id = 1,
           UserType = (int)UserType.AdminUser,
           Email = adminUserEmail,
           Name = "Mikael"
