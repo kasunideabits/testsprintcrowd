@@ -47,7 +47,7 @@
             sprintAavail.LocationProvided = sprintData.LocationProvided;
             sprintAavail.Lattitude = sprintData.Lattitude;
             sprintAavail.Longitutude = sprintData.Longitutude;
-
+            sprintAavail.NumberOfParticipants = sprintData.NumberOfParticipants;
             var value = sprintAavail.Id;
             if (sprintAavail != null)
             {
@@ -79,7 +79,7 @@
             sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
             sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
             sprintToBeCreated.Distance = sprintInfo.Distance;
-
+            sprintToBeCreated.NumberOfParticipants = sprintInfo.NumberOfParticipants;
             Sprint sprint = await this.SprintRepo.AddSprint(sprintToBeCreated);
             if (sprint != null)
             {

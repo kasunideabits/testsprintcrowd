@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Web.Event
+﻿namespace SprintCrowd.BackEnd.Web.Event
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
