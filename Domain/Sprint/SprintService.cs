@@ -29,24 +29,22 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
       Sprint UpdateSprint = new Sprint();
       UpdateSprint.Id = sprintData.Id;
 
-      var sprint_avail = await this.SprintRepo.GetSprint(UpdateSprint.Id);
-      sprint_avail.Name = sprintData.Name;
-      sprint_avail.Distance = sprintData.Distance;
-      sprint_avail.StartDateTime = sprintData.StartTime;
-      sprint_avail.Type = sprintData.SprintType;
-      sprint_avail.LocationProvided = sprintData.LocationProvided;
-      sprint_avail.Lattitude = sprintData.Lattitude;
-      sprint_avail.Longitutude = sprintData.Longitutude;
+      var sprintAavail = await this.SprintRepo.GetSprint(UpdateSprint.Id);
+      sprintAavail.Name = sprintData.Name;
+      sprintAavail.Distance = sprintData.Distance;
+      sprintAavail.StartDateTime = sprintData.StartTime;
+      sprintAavail.Type = sprintData.SprintType;
+      sprintAavail.LocationProvided = sprintData.LocationProvided;
+      sprintAavail.Lattitude = sprintData.Lattitude;
+      sprintAavail.Longitutude = sprintData.Longitutude;
 
-      var value = sprint_avail.Id;
-      if (sprint_avail != null)
+      var value = sprintAavail.Id;
+      if (sprintAavail != null)
       {
-        Sprint sprint = await this.SprintRepo.UpdateSprint(sprint_avail);
-
+        Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
         if (sprint != null)
         {
           this.SprintRepo.SaveChanges();
-
         }
         return sprint;
       }

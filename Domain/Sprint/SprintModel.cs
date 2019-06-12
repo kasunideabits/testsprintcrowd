@@ -9,7 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
     /// <inheritdoc />
     public SprintModel(string name, int distance, Boolean locationProvided, DateTime startTime, int sprintType,
-      double lattitude, double longitutude)
+      double lattitude, double longitutude, int id)
     {
       this.Name = name;
       this.Distance = distance;
@@ -18,38 +18,39 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
       this.SprintType = sprintType;
       this.Lattitude = lattitude;
       this.Longitutude = longitutude;
+      this.Id = id;
     }
 
     /// <summary>
     /// Event Id
     /// </summary>
     /// <value></value>
-    public int Id { get; set; }
+    public int Id { get; }
     /// <summary>
     /// Event Name
     /// </summary>
     /// <value></value>
-    public string Name { get; set; }
+    public string Name { get; }
     /// <summary>
     /// Event distance
     /// </summary>
     /// <value></value>
-    public int Distance { get; set; }
+    public int Distance { get; }
     /// <summary>
     /// Wether location is provided or not
     /// </summary>
     /// <value></value>
-    public Boolean LocationProvided { get; set; }
+    public Boolean LocationProvided { get; }
     /// <summary>
     /// Start Time of the event
     /// </summary>
     /// <value></value>
-    public DateTime StartTime { get; set; }
+    public DateTime StartTime { get; }
     /// <summary>
     /// event started or not
     /// </summary>
     /// <value></value>
-    public int Status { get; set; }
+    public int Status { get; }
     /// <summary>
     /// public or private
     /// </summary>
@@ -59,11 +60,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
     /// Latitutude
     /// </summary>
     /// <value></value>
-    public double Lattitude { get; set; }
+    public double Lattitude { get; }
     /// <summary>
     /// Longitutude
     /// </summary>
     /// <value></value>
-    public double Longitutude { get; set; }
+    public double Longitutude { get; }
   }
 }

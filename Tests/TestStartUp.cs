@@ -14,6 +14,7 @@ namespace Tests
 {
   public class TestStartUp : Startup
   {
+    public static ScrowdDbContext DbContext;
     public TestStartUp(IConfiguration configuration) : base(configuration)
     {
 
@@ -55,13 +56,13 @@ namespace Tests
       // });
       app.UseAuthentication();
       app.UseMiddleware<ErrorHandlingMiddleware>();
+      this.AddUserToInMemoryDatabase(app);
       app.UseMvc();
     }
 
-    public void AddUserToInMeoryDatabase(IApplicationBuilder app)
+    public void AddUserToInMemoryDatabase(IApplicationBuilder app)
     {
-      var context = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ScrowdDbContext>();
-
+      TestStartUp.DbContext = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ScrowdDbContext>();
       const string userEmail = "testUser@test.com";
       User user = new User()
       {
@@ -72,8 +73,8 @@ namespace Tests
         Name = "Test User"
       };
 
-      context.AddRange(user);
-      context.SaveChanges();
+      TestStartUp.DbContext.AddRange(user);
+      TestStartUp.DbContext.SaveChanges();
     }
   }
 }
