@@ -103,6 +103,7 @@ namespace Tests
       TestStartUp.DbContext.SaveChanges();
 
       var response = await this._client.GetAsync("/sprint/get");
+      response.EnsureSuccessStatusCode();
       string strResponse = await response.Content.ReadAsStringAsync();
       dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
       Assert.True((int)responseObj.Data.Count > 0 ? true : false);

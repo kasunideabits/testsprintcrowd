@@ -5,6 +5,8 @@
   using System.Threading.Tasks;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using Microsoft.EntityFrameworkCore;
+  using SprintCrowd.BackEnd.Application;
 
   /// <summary>
   /// Event repositiory
@@ -27,7 +29,7 @@
     /// <returns>Available events</returns>
     public async Task<List<Sprint>> GetAllEvents()
     {
-      return this.dbContext.Sprint.ToList();
+      return await this.dbContext.Sprint.Where(s => s.Type == (int)SprintType.PublicSprint).ToListAsync();
     }
 
     /// <summary>
