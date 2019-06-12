@@ -1,65 +1,81 @@
 namespace SprintCrowd.BackEnd.Web.Event
 {
-  using System.Threading.Tasks;
-  using Microsoft.AspNetCore.Authorization;
-  using Microsoft.AspNetCore.Mvc;
-  using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Domain.ScrowdUser;
-  using SprintCrowd.BackEnd.Domain.Sprint;
-  using SprintCrowd.BackEnd.Extensions;
-  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
-  /// <summary>
-  /// event controller
-  /// </summary>
-  [Route("[controller]")]
-  [ApiController]
-  [Authorize]
-
-  public class SprintController : ControllerBase
-  {
-    private ISprintService SprintService;
-    private IUserService UserService;
-    /// <summary>
-    /// intializes an instance of SprintController
-    /// </summary>
-    /// <param name="sprintService">sprint service</param>
-    /// /// <param name="userService">user service</param>
-    public SprintController(ISprintService sprintService, IUserService userService)
-    {
-      this.SprintService = sprintService;
-      this.UserService = userService;
-    }
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.Sprint;
+    using SprintCrowd.BackEnd.Extensions;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
-    /// creates an event
+    /// event controller
     /// </summary>
-    /// <param name="sprintInfo">info about the sprint</param>
-    /// <returns></returns>
-    [HttpPost]
-    [Route("create")]
-    public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
+    [Route("[controller]")]
+    [ApiController]
+    [Authorize]
+
+    public class SprintController : ControllerBase
     {
-      User user = await this.User.GetUser(this.UserService);
-      var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
+        private ISprintService SprintService;
+        private IUserService UserService;
+        /// <summary>
+        /// intializes an instance of SprintController
+        /// </summary>
+        /// <param name="sprintService">sprint service</param>
+        /// /// <param name="userService">user service</param>
+        public SprintController(ISprintService sprintService, IUserService userService)
+        {
+            this.SprintService = sprintService;
+            this.UserService = userService;
+        }
 
-      return new ResponseObject()
-      {
-        StatusCode = (int)ApplicationResponseCode.Success,
-        Data = result
-      };
+        /// <summary>
+        /// Get all events
+        /// </summary>
+        /// <returns>All events available in database</returns>
+        [HttpGet("get")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public IActionResult GetAllEvents()
+        {
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = this.SprintService.GetAll()
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// creates an event
+        /// </summary>
+        /// <param name="sprintInfo">info about the sprint</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("create")]
+        public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
+
+            return new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = result
+            };
+        }
+
+        /// <summary>
+        /// update sprint
+        /// </summary>
+        [HttpPut]
+        [Route("update")]
+        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
+        {
+            Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
+
+            return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
+        }
     }
-
-    /// <summary>
-    /// update sprint
-    /// </summary>
-    [HttpPut]
-    [Route("update")]
-    public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
-    {
-      Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
-
-      return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
-    }
-  }
 }
