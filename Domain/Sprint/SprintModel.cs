@@ -9,7 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
     /// <inheritdoc />
     public SprintModel(string name, int distance, Boolean locationProvided, DateTime startTime, int sprintType,
-      double lattitude, double longitutude, int id)
+      double lattitude, double longitutude, int id, int numOfParticiapants)
     {
       this.Name = name;
       this.Distance = distance;
@@ -19,6 +19,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
       this.Lattitude = lattitude;
       this.Longitutude = longitutude;
       this.Id = id;
+      this.NumberOfParticipants = numOfParticiapants;
     }
 
     /// <summary>
@@ -26,6 +27,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
     /// </summary>
     /// <value></value>
     public int Id { get; }
+    /// <summary>
+    /// number of participants for the sprint
+    /// </summary>
+    /// <value></value>
+    public int NumberOfParticipants { get; }
     /// <summary>
     /// Event Name
     /// </summary>
