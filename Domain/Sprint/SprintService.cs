@@ -24,9 +24,9 @@
     /// Get all events
     /// </summary>
     /// <returns>Available all events</returns>
-    public async Task<List<Sprint>> GetAll()
+    public async Task<List<Sprint>> GetAll(int eventType)
     {
-      return await this.SprintRepo.GetAllEvents();
+      return await this.SprintRepo.GetAllEvents(eventType);
     }
 
     /// <summary>

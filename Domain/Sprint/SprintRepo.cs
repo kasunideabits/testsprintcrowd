@@ -27,9 +27,9 @@
     /// Get all events
     /// </summary>
     /// <returns>Available events</returns>
-    public async Task<List<Sprint>> GetAllEvents()
+    public async Task<List<Sprint>> GetAllEvents(int eventType)
     {
-      return await this.dbContext.Sprint.Where(s => s.Type == (int)SprintType.PublicSprint).ToListAsync();
+      return await this.dbContext.Sprint.Where(s => s.Type == eventType).ToListAsync();
     }
 
     /// <summary>

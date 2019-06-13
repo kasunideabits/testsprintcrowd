@@ -34,15 +34,15 @@
     /// <summary>
     /// Get all events
     /// </summary>
-    /// <returns>All events available in database</returns>
-    [HttpGet("get")]
+    /// <returns>All public events available in database</returns>
+    [HttpGet("get-public")]
     [ProducesResponseType(typeof(ResponseObject), 200)]
-    public async Task<ResponseObject> GetAllEvents()
+    public async Task<ResponseObject> GetAllPublicEvents()
     {
       ResponseObject response = new ResponseObject()
       {
         StatusCode = (int)ApplicationResponseCode.Success,
-        Data = await this.SprintService.GetAll()
+        Data = await this.SprintService.GetAll((int)SprintType.PublicSprint)
       };
       return response;
     }
