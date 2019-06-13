@@ -102,7 +102,7 @@ namespace Tests
       var addedSprint2 = await TestStartUp.DbContext.Sprint.AddAsync(sprint2);
       TestStartUp.DbContext.SaveChanges();
 
-      var response = await this._client.GetAsync("/sprint/get");
+      var response = await this._client.GetAsync("/sprint/get-public");
       response.EnsureSuccessStatusCode();
       string strResponse = await response.Content.ReadAsStringAsync();
       dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
