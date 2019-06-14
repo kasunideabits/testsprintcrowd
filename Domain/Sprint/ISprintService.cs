@@ -13,7 +13,6 @@
         /// </summary>
         /// <returns>Available events</returns>
         Task<List<Sprint>> GetAll();
-
         /// <summary>
         /// Create a new sprint
         /// </summary>
@@ -21,8 +20,16 @@
         /// /// <param name="ownerOfSprint">user who creatse the sprint</param>
         /// <returns>cereated sprint</returns>
         Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint);
-
+        /// <summary>
+        /// Update a sprint
+        /// </summary>
+        /// <param name="sprintData">sprint information</param>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
+        /// <summary>
+        /// Save device uuid and os
+        /// </summary>
+        /// <param name="appData">device information</param>
+        Task<AppDownloads> SetDeviceInfo(AppDownloads appData);
 
     }
 }

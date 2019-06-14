@@ -88,6 +88,13 @@
 
             return sprint;
         }
-
+        /// <summary>
+        /// Save device uuid and os
+        /// </summary>
+        /// <param name="appData">device information</param>
+        public Task<AppDownloads> SetDeviceInfo(AppDownloads appData)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
