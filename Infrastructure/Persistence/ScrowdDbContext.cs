@@ -55,6 +55,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
       builder.ApplyConfiguration(new SprintConfig());
       builder.ApplyConfiguration(new SprintParticipantConfig());
       builder.ApplyConfiguration(new UserConfig());
+      builder.ApplyConfiguration(new AppDowloadsConfig());
       builder
         .Entity<AccessToken>()
         .Property<DateTime>("LastUpdated");

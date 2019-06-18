@@ -25,11 +25,6 @@
         /// </summary>
         /// <param name="sprintData">sprint information</param>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
-        /// <summary>
-        /// Save device uuid and os
-        /// </summary>
-        /// <param name="appData">device information</param>
-        Task<AppDownloads> SetDeviceInfo(AppDownloads appData);
 
     }
 }

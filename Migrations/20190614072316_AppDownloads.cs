@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SprintCrowd.BackEnd.Migrations
@@ -13,8 +14,9 @@ namespace SprintCrowd.BackEnd.Migrations
                 columns : table => new
                 {
                     id = table.Column<int>(nullable: false).Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                        device_id = table.Column<int>(nullable : true),
-                        device_platform = table.Column<string>(nullable : true)
+                        device_id = table.Column<string>(nullable : true),
+                        device_platform = table.Column<string>(nullable : true),
+                        last_updated = table.Column<DateTime>(nullable : false)
                 },
 
                 constraints : table =>

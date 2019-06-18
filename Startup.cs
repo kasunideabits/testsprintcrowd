@@ -11,6 +11,8 @@
   using Microsoft.Extensions.DependencyInjection;
   using Newtonsoft.Json;
   using RestSharp;
+  using SprintCrowd.BackEnd.Data;
+  using SprintCrowd.BackEnd.Domain.Device;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Domain.Sprint;
   using SprintCrowd.BackEnd.Extensions;
@@ -18,7 +20,6 @@
   using SprintCrowd.BackEnd.Models;
   using SprintCrowd.BackEnd.Web;
   using Swashbuckle.AspNetCore.Swagger;
-  using SprintCrowd.BackEnd.Data;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -137,6 +138,8 @@
       services.AddScoped<IUserService, UserService>();
       services.AddScoped<ISprintRepo, SprintRepo>();
       services.AddScoped<ISprintService, SprintService>();
+      services.AddScoped<IDeviceService, DeviceService>();
+      services.AddScoped<IDeviceRepo, DeviceRepo>();
     }
   }
 }

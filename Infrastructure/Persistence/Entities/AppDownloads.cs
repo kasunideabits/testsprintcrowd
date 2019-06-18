@@ -15,7 +15,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// uuid of the device
         /// </summary>
         /// <value></value>
-        public int DeviceId { get; set; }
+        public string DeviceId { get; set; }
         /// <summary>
         /// device os type
         /// </summary>

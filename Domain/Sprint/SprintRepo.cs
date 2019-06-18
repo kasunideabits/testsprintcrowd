@@ -61,15 +61,6 @@
             return sprint;
         }
         /// <summary>
-        /// Save device uuid and os
-        /// </summary>
-        /// <param name="DeviceData">device information</param>
-        public async Task<AppDownloads> AddDeviceInfo(AppDownloads DeviceData)
-        {
-            var downloadsInfo = await this.dbContext.AppDownloads.AddAsync(DeviceData);
-            return downloadsInfo.Entity;
-        }
-        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

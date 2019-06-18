@@ -26,11 +26,6 @@
         /// <param name="SprintID">event model</param>
         Task<Sprint> GetSprint(int SprintID);
         /// <summary>
-        /// Save device uuid and os
-        /// </summary>
-        /// <param name="DeviceData">device information</param>
-        Task<AppDownloads> AddDeviceInfo(AppDownloads DeviceData);
-        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();
