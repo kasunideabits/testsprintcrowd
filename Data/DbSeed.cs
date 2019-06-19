@@ -30,18 +30,15 @@ namespace SprintCrowd.BackEnd.Data
       {
         User user = new User()
         {
-          UserType = (int)UserType.AdminUser,
-          Email = adminUserEmail,
-          FacebookUserId = "SprintCrowdAdmin",
-          Name = "Mikael"
+        UserType = (int)UserType.AdminUser,
+        Email = adminUserEmail,
+        FacebookUserId = "SprintCrowdAdmin",
+        Name = "Mikael"
         };
 
         context.AddRange(user);
         context.SaveChanges();
       }
-
     }
-
   }
-
 }

@@ -9,7 +9,7 @@ namespace backend.Web.Device
 {
 
     /// <summary>
-    /// event controller
+    /// device controller
     /// </summary>
     [Route("[controller]")]
     [ApiController]
@@ -19,12 +19,16 @@ namespace backend.Web.Device
     {
 
         private IDeviceService DeviceService;
-
+        /// <summary>
+        /// Initialize device service instance.
+        /// </summary>
         public DeviceController(IDeviceService deviceService)
         {
             this.DeviceService = deviceService;
         }
-
+        /// <summary>
+        /// save device info uuid and platform
+        /// </summary>
         [HttpPost]
         [Route("info")]
         public async Task<ResponseObject> SetDeviceInfo([FromBody] AppDownloads AppData)
@@ -33,7 +37,9 @@ namespace backend.Web.Device
 
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads };
         }
-
+        /// <summary>
+        /// get app downloads devices count
+        /// </summary>
         [HttpGet]
         [Route("info")]
         public async Task<ResponseObject> GetDeviceInfo()

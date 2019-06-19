@@ -1,16 +1,20 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
 namespace SprintCrowd.BackEnd.Domain.Device
 {
+    using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    /// <summary>
+    /// Device service
+    /// </summary>
     public class DeviceService : IDeviceService
     {
-        private IDeviceRepo DeviceRepo;
+        private IDeviceRepo deviceRepo;
 
-        public DeviceService(IDeviceRepo deviceRepo)
+        /// <summary>
+        /// Initialize device instance of device service
+        /// </summary>
+        public DeviceService(IDeviceRepo dRepo)
         {
-            this.DeviceRepo = deviceRepo;
+            this.deviceRepo = dRepo;
         }
 
         /// <summary>
@@ -19,30 +23,30 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <param name="appData">device information</param>
         public async Task<AppDownloads> SetDeviceInfo(AppDownloads appData)
         {
-            AppDownloads DownloadInfo = new AppDownloads();
-            DownloadInfo.DeviceId = appData.DeviceId;
-            DownloadInfo.DevicePlatform = appData.DevicePlatform.ToUpperInvariant();
+            AppDownloads downloadInfo = new AppDownloads();
+            downloadInfo.DeviceId = appData.DeviceId;
+            downloadInfo.DevicePlatform = appData.DevicePlatform.ToUpperInvariant();
 
-            AppDownloads checkUUID = await this.DeviceRepo.GetUUID(appData.DeviceId);
+            AppDownloads checkUUID = await this.deviceRepo.GetUUID(appData.DeviceId);
 
             if (checkUUID == null)
             {
-                AppDownloads AppDownload = await this.DeviceRepo.AddDeviceInfo(DownloadInfo);
+                AppDownloads appDownload = await this.deviceRepo.AddDeviceInfo(downloadInfo);
 
-                if (AppDownload != null)
+                if (appDownload != null)
                 {
-                    this.DeviceRepo.SaveChanges();
+                    this.deviceRepo.SaveChanges();
                 }
 
-                return AppDownload;
+                return appDownload;
             }
-            return null;
 
+            return null;
         }
 
         Task<DeviceModal> IDeviceService.GetDeviceInfo()
         {
-            return this.DeviceRepo.GetDeviceInfo();
+            return this.deviceRepo.GetDeviceInfo();
         }
 
     }
