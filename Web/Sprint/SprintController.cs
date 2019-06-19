@@ -62,7 +62,7 @@
       return new ResponseObject()
       {
         StatusCode = (int)ApplicationResponseCode.Success,
-        Data = result
+          Data = result
       };
     }
 

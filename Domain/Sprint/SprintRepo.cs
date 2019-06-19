@@ -3,10 +3,10 @@
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
-  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-  using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using Microsoft.EntityFrameworkCore;
   using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
   /// <summary>
   /// Event repositiory
