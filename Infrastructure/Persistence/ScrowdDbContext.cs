@@ -34,6 +34,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
     /// </summary>
     /// <value></value>
     public DbSet<Achievement> Achievement { get; set; }
+    /// <summary>
+    /// table for app downloads
+    /// </summary>
+    /// <value></value>
+    public DbSet<AppDownloads> AppDownloads { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ScrowdDbContext"/> class.
@@ -50,9 +55,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
       builder.ApplyConfiguration(new SprintConfig());
       builder.ApplyConfiguration(new SprintParticipantConfig());
       builder.ApplyConfiguration(new UserConfig());
+      builder.ApplyConfiguration(new AppDowloadsConfig());
       builder
-          .Entity<AccessToken>()
-          .Property<DateTime>("LastUpdated");
+        .Entity<AccessToken>()
+        .Property<DateTime>("LastUpdated");
 
       this.FixSnakeCaseNames(builder);
     }
