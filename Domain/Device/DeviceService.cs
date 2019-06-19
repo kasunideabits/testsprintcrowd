@@ -44,7 +44,11 @@ namespace SprintCrowd.BackEnd.Domain.Device
             return null;
         }
 
-        Task<DeviceModal> IDeviceService.GetDeviceInfo()
+        /// <summary>
+        /// retrives downloads count per os
+        /// </summary>
+        /// <returns></returns>
+        public Task<DeviceModal> GetDeviceInfo()
         {
             return this.deviceRepo.GetDeviceInfo();
         }
