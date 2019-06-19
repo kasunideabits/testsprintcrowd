@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SprintCrowd.BackEnd.Application;
-using SprintCrowd.BackEnd.Domain.Device;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
-namespace backend.Web.Device
+﻿namespace SprintCrowd.BackEnd.Web.Device
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Device;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// device controller
@@ -17,26 +16,26 @@ namespace backend.Web.Device
 
     public class DeviceController : ControllerBase
     {
-
-        private IDeviceService DeviceService;
+        private IDeviceService deviceService;
         /// <summary>
         /// Initialize device service instance.
         /// </summary>
         public DeviceController(IDeviceService deviceService)
         {
-            this.DeviceService = deviceService;
+            this.deviceService = deviceService;
         }
+
         /// <summary>
         /// save device info uuid and platform
         /// </summary>
         [HttpPost]
         [Route("info")]
-        public async Task<ResponseObject> SetDeviceInfo([FromBody] AppDownloads AppData)
+        public async Task<ResponseObject> SetDeviceInfo([FromBody] AppDownloads appData)
         {
-            AppDownloads appdownloads = await this.DeviceService.SetDeviceInfo(AppData);
-
+            AppDownloads appdownloads = await this.deviceService.SetDeviceInfo(appData);
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads };
         }
+
         /// <summary>
         /// get app downloads devices count
         /// </summary>
@@ -44,7 +43,7 @@ namespace backend.Web.Device
         [Route("info")]
         public async Task<ResponseObject> GetDeviceInfo()
         {
-            DeviceModal appdownloads = await this.DeviceService.GetDeviceInfo();
+            DeviceModal appdownloads = await this.deviceService.GetDeviceInfo();
 
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads };
         }

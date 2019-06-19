@@ -7,11 +7,10 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
-    ///   /// Sprint service
+    /// Sprint service
     /// </summary>
     public class SprintService : ISprintService
     {
-        private ISprintRepo SprintRepo;
         /// <summary>
         /// initializes an instance of SprintService
         /// </summary>
@@ -20,6 +19,8 @@
         {
             this.SprintRepo = sprintRepo;
         }
+
+        private ISprintRepo SprintRepo { get; }
 
         /// <summary>
         /// Get all events
@@ -49,11 +50,10 @@
         /// <param name="sprintData">sprint repository</param>
         public async Task<Sprint> UpdateSprint(SprintModel sprintData)
         {
+            Sprint updateSprint = new Sprint();
+            updateSprint.Id = sprintData.Id;
 
-            Sprint UpdateSprint = new Sprint();
-            UpdateSprint.Id = sprintData.Id;
-
-            var sprintAavail = await this.SprintRepo.GetSprint(UpdateSprint.Id);
+            var sprintAavail = await this.SprintRepo.GetSprint(updateSprint.Id);
             sprintAavail.Name = sprintData.Name;
             sprintAavail.Distance = sprintData.Distance;
             sprintAavail.StartDateTime = sprintData.StartTime;
@@ -70,16 +70,18 @@
                 {
                     this.SprintRepo.SaveChanges();
                 }
+
                 return sprint;
             }
 
             return null;
         }
+
         /// <summary>
         /// creates a new sprint
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
-        /// /// <param name="ownerOfSprint">user who created the sprint</param>
+        /// <param name="ownerOfSprint">user who created the sprint</param>
         /// <returns>created sprint</returns>
         public async Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint)
         {
@@ -108,6 +110,5 @@
             return sprints
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
         }
-
     }
 }

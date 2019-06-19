@@ -11,31 +11,34 @@
         /// <summary>
         /// get all sprint public or private
         /// </summary>
-        /// <param name="eventType"></param>
-        /// <returns></returns>
+        /// <param name="eventType">public or private</param>
+        /// <returns>all events with given type</returns>
         Task<List<Sprint>> GetAllEvents(int eventType);
+
         /// <summary>
         /// Get all ongoing sprints
         /// </summary>
         /// <returns>All ongoing sprints</returns>
         Task<List<Sprint>> GetLiveSprints();
+
         /// <summary>
         /// adds new event to database
         /// </summary>
-        /// <param name="EventToCreate">event model</param>
-        /// <returns></returns>
+        /// <param name="eventToCreate">event model</param>
+        /// <returns>Created sprint details</returns>
+        Task<Sprint> AddSprint(Sprint eventToCreate);
 
-        Task<Sprint> AddSprint(Sprint EventToCreate);
         /// <summary>
         /// Updates event in database
         /// </summary>
-        /// <param name="SprintData">event model</param>
-        Task<Sprint> UpdateSprint(Sprint SprintData);
+        /// <param name="sprintData">event model</param>
+        Task<Sprint> UpdateSprint(Sprint sprintData);
+
         /// <summary>
         /// Check event in database
         /// </summary>
-        /// <param name="SprintID">event model</param>
-        Task<Sprint> GetSprint(int SprintID);
+        /// <param name="sprintID">event model</param>
+        Task<Sprint> GetSprint(int sprintID);
 
         /// <summary>
         /// saves changed to db

@@ -18,18 +18,19 @@
 
     public class SprintController : ControllerBase
     {
-        private ISprintService SprintService;
-        private IUserService UserService;
         /// <summary>
         /// intializes an instance of SprintController
         /// </summary>
         /// <param name="sprintService">sprint service</param>
-        /// /// <param name="userService">user service</param>
         public SprintController(ISprintService sprintService, IUserService userService)
         {
             this.SprintService = sprintService;
             this.UserService = userService;
         }
+
+        private ISprintService SprintService { get; }
+
+        private IUserService UserService { get; }
 
         /// <summary>
         /// Get all events
@@ -42,7 +43,7 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint)
+                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint),
             };
             return response;
         }
@@ -59,7 +60,7 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = liveSprintsCount
+                Data = liveSprintsCount,
             };
             return this.Ok(response);
         }
@@ -68,7 +69,7 @@
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
-        /// <returns></returns>
+        /// <returns>Created sprint details</returns>
         [HttpPost]
         [Route("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
@@ -76,11 +77,12 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
 
-            return new ResponseObject()
+            var response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result
+                Data = result,
             };
+            return response;
         }
 
         /// <summary>
@@ -88,9 +90,9 @@
         /// </summary>
         [HttpPut]
         [Route("update")]
-        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
+        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel sprintData)
         {
-            Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
+            Sprint sprint = await this.SprintService.UpdateSprint(sprintData);
 
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
         }

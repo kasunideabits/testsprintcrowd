@@ -49,33 +49,35 @@
         /// <summary>
         /// creates event
         /// </summary>
-        /// <param name="SprintToAdd">event model</param>
-        /// <returns></returns>
-        public async Task<Sprint> AddSprint(Sprint SprintToAdd)
+        /// <param name="sprintToAdd">event model</param>
+        /// <returns>added sprint result</returns>
+        public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
-            var result = await this.dbContext.Sprint.AddAsync(SprintToAdd);
+            var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             return result.Entity;
         }
-        /// <summary>
-        /// Update event details instance of SprintService
-        /// </summary>
-        /// <param name="SprintData">sprint repository</param>
-        public async Task<Sprint> UpdateSprint(Sprint SprintData)
-        {
-            var result = this.dbContext.Sprint.Update(SprintData);
-            return result.Entity;
 
-        }
         /// <summary>
         /// Update event details instance of SprintService
         /// </summary>
-        /// <param name="SprintID">sprint repository</param>
-        public async Task<Sprint> GetSprint(int SprintID)
+        /// <param name="sprintData">sprint repository</param>
+        public async Task<Sprint> UpdateSprint(Sprint sprintData)
         {
-            Sprint sprint = await this.dbContext.Sprint.FindAsync(SprintID);
+            var result = this.dbContext.Sprint.Update(sprintData);
+            return result.Entity;
+        }
+
+        /// <summary>
+        /// Update event details instance of SprintService
+        /// </summary>
+        /// <param name="sprintID">sprint repository</param>
+        public async Task<Sprint> GetSprint(int sprintID)
+        {
+            Sprint sprint = await this.dbContext.Sprint.FindAsync(sprintID);
 
             return sprint;
         }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
@@ -85,6 +87,5 @@
         {
             this.dbContext.SaveChanges();
         }
-
     }
 }
