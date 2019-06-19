@@ -34,8 +34,8 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// </summary>
         public async Task<DeviceModal> GetDeviceInfo()
         {
-            var downloadAllCount = this.dbContext.AppDownloads.Count(u => u.DeviceId != null);
-            var downloadIosCount = this.dbContext.AppDownloads.Count(u => u.DevicePlatform == "IOS");
+            var downloadAllCount = await this.dbContext.AppDownloads.CountAsync(u => u.DeviceId != null);
+            var downloadIosCount = await this.dbContext.AppDownloads.CountAsync(u => u.DevicePlatform == "IOS");
             var downloadAndroidCount = this.dbContext.AppDownloads.Count(u => u.DevicePlatform == "ANDROID");
             DeviceModal devices = new DeviceModal(downloadAllCount, downloadIosCount, downloadAndroidCount);
 
@@ -57,9 +57,9 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
         /// </summary>
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            this.dbContext.SaveChanges();
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }

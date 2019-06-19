@@ -48,9 +48,9 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// retrives downloads count per os
         /// </summary>
         /// <returns></returns>
-        public Task<DeviceModal> GetDeviceInfo()
+        public async Task<DeviceModal> GetDeviceInfo()
         {
-            return this.deviceRepo.GetDeviceInfo();
+            return await this.deviceRepo.GetDeviceInfo();
         }
 
     }
