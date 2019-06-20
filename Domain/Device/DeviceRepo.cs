@@ -57,7 +57,7 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
         /// </summary>
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await this.dbContext.SaveChangesAsync();
         }
