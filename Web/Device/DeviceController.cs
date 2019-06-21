@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Domain.Device;
+using SprintCrowd.BackEnd.Enums;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
 namespace backend.Web.Device
@@ -13,7 +14,7 @@ namespace backend.Web.Device
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy.ADMIN)]
 
     public class DeviceController : ControllerBase
     {
