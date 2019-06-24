@@ -1,13 +1,12 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SprintCrowd.BackEnd.Application;
-using SprintCrowd.BackEnd.Domain.Device;
-using SprintCrowd.BackEnd.Enums;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
-namespace backend.Web.Device
+namespace SprintCrowd.BackEnd.Web.Device
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Device;
+    using SprintCrowd.BackEnd.Enums;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// device controller

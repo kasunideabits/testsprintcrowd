@@ -7,9 +7,9 @@ namespace SprintCrowd.BackEnd.Extensions
     using Microsoft.IdentityModel.Protocols.OpenIdConnect;
     using Microsoft.IdentityModel.Protocols;
     using Microsoft.IdentityModel.Tokens;
-    using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Enums;
+    using SprintCrowd.BackEnd.Models;
 
     /// <summary>
     /// service collection extensions, used to authentication.
@@ -36,17 +36,17 @@ namespace SprintCrowd.BackEnd.Extensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // Clock skew compensates for server time drift.
-                        // We recommend 5 minutes or less:
-                        ClockSkew = TimeSpan.FromMinutes(5),
-                        IssuerSigningKeys = discoveryDocument.SigningKeys,
-                        RequireSignedTokens = true,
-                        ValidateAudience = true,
-                        ValidAudience = appSettings.Audience,
-                        ValidateIssuer = true,
-                        ValidIssuer = discoveryDocument.Issuer,
-                        RequireExpirationTime = true,
-                        ValidateLifetime = true,
+                    // Clock skew compensates for server time drift.
+                    // We recommend 5 minutes or less:
+                    ClockSkew = TimeSpan.FromMinutes(5),
+                    IssuerSigningKeys = discoveryDocument.SigningKeys,
+                    RequireSignedTokens = true,
+                    ValidateAudience = true,
+                    ValidAudience = appSettings.Audience,
+                    ValidateIssuer = true,
+                    ValidIssuer = discoveryDocument.Issuer,
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
                     };
                     options.Authority = appSettings.AuthorizationServer;
 

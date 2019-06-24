@@ -1,39 +1,48 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Sprint
 {
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
-  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-  /// <summary>
-  /// inerface for event repo
-  /// </summary>
-  public interface ISprintRepo
-  {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     /// <summary>
-    /// get all sprint public or private
+    /// inerface for event repo
     /// </summary>
-    /// <param name="eventType"></param>
-    /// <returns></returns>
-    Task<List<Sprint>> GetAllEvents(int eventType);
-    /// <summary>
-    /// adds new event to database
-    /// </summary>
-    /// <param name="EventToCreate">event model</param>
-    /// <returns></returns>
-    Task<Sprint> AddSprint(Sprint EventToCreate);
-    /// <summary>
-    /// Updates event in database
-    /// </summary>
-    /// <param name="SprintData">event model</param>
-    Task<Sprint> UpdateSprint(Sprint SprintData);
-    /// <summary>
-    /// Check event in database
-    /// </summary>
-    /// <param name="SprintID">event model</param>
-    Task<Sprint> GetSprint(int SprintID);
+    public interface ISprintRepo
+    {
+        /// <summary>
+        /// get all sprint public or private
+        /// </summary>
+        /// <param name="eventType">public or private</param>
+        /// <returns>all events with given type</returns>
+        Task<List<Sprint>> GetAllEvents(int eventType);
 
-    /// <summary>
-    /// saves changed to db
-    /// </summary>
-    void SaveChanges();
-  }
+        /// <summary>
+        /// Get all ongoing sprints
+        /// </summary>
+        /// <returns>All ongoing sprints</returns>
+        Task<List<Sprint>> GetLiveSprints();
+
+        /// <summary>
+        /// adds new event to database
+        /// </summary>
+        /// <param name="eventToCreate">event model</param>
+        /// <returns>Created sprint details</returns>
+        Task<Sprint> AddSprint(Sprint eventToCreate);
+
+        /// <summary>
+        /// Updates event in database
+        /// </summary>
+        /// <param name="sprintData">event model</param>
+        Task<Sprint> UpdateSprint(Sprint sprintData);
+
+        /// <summary>
+        /// Check event in database
+        /// </summary>
+        /// <param name="sprintID">event model</param>
+        Task<Sprint> GetSprint(int sprintID);
+
+        /// <summary>
+        /// saves changed to db
+        /// </summary>
+        void SaveChanges();
+    }
 }

@@ -19,8 +19,7 @@
 
     public class SprintController : ControllerBase
     {
-        private ISprintService SprintService;
-        private IUserService UserService;
+
         /// <summary>
         /// intializes an instance of SprintController
         /// </summary>
@@ -31,6 +30,9 @@
             this.SprintService = sprintService;
             this.UserService = userService;
         }
+
+        private ISprintService SprintService { get; }
+        private IUserService UserService { get; }
 
         /// <summary>
         /// Get all events
@@ -49,6 +51,23 @@
         }
 
         /// <summary>
+        /// Get all ongoing sprints
+        /// </summary>
+        /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
+        [HttpGet("stat/live-events")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetLiveSprintCount()
+        {
+            LiveSprintCount liveSprintsCount = await this.SprintService.GetLiveSprintCount();
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = liveSprintsCount,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
@@ -63,7 +82,7 @@
             return new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result
+                    Data = result
             };
         }
 
