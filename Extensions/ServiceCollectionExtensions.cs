@@ -7,6 +7,8 @@ namespace SprintCrowd.BackEnd.Extensions
     using Microsoft.IdentityModel.Protocols.OpenIdConnect;
     using Microsoft.IdentityModel.Protocols;
     using Microsoft.IdentityModel.Tokens;
+    using SprintCrowd.BackEnd.CustomPolicies;
+    using SprintCrowd.BackEnd.Enums;
     using SprintCrowd.BackEnd.Models;
 
     /// <summary>
@@ -51,6 +53,11 @@ namespace SprintCrowd.BackEnd.Extensions
                     // Must remove this when we go to production
                     options.RequireHttpsMetadata = false;
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.ADMIN, policy => policy.Requirements.Add(new HasScopeRequirement("scrowd-cp", discoveryDocument.Issuer)));
+            });
+
         }
     }
 }

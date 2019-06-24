@@ -22,10 +22,10 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <summary>
         /// Save device uuid and os
         /// </summary>
-        /// <param name="deviceData">device information</param>
-        public async Task<AppDownloads> AddDeviceInfo(AppDownloads deviceData)
+        /// <param name="DeviceData">device information</param>
+        public async Task<AppDownloads> AddDeviceInfo(AppDownloads DeviceData)
         {
-            var downloadsInfo = await this.dbContext.AppDownloads.AddAsync(deviceData);
+            var downloadsInfo = await this.dbContext.AppDownloads.AddAsync(DeviceData);
             return downloadsInfo.Entity;
         }
 
@@ -45,9 +45,11 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <summary>
         /// Get device uuid of the app
         /// </summary>
-        public async Task<AppDownloads> GetUUID(string uuid)
+        public async Task<AppDownloads> GetUUID(string UUID)
         {
-            return await this.dbContext.AppDownloads.FirstOrDefaultAsync(u => u.DeviceId == uuid);
+            AppDownloads uuid = await this.dbContext.AppDownloads.FirstOrDefaultAsync(u => u.DeviceId == UUID);
+            return uuid;
+
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
         /// </summary>
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await this.dbContext.SaveChangesAsync();
         }

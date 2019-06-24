@@ -35,7 +35,7 @@ namespace SprintCrowd.BackEnd.Domain.Device
 
                 if (appDownload != null)
                 {
-                    this.deviceRepo.SaveChanges();
+                    await this.deviceRepo.SaveChanges();
                 }
 
                 return appDownload;

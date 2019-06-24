@@ -6,6 +6,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
+    using SprintCrowd.BackEnd.Enums;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -14,14 +15,16 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy.ADMIN)]
 
     public class SprintController : ControllerBase
     {
+
         /// <summary>
         /// intializes an instance of SprintController
         /// </summary>
         /// <param name="sprintService">sprint service</param>
+        /// /// <param name="userService">user service</param>
         public SprintController(ISprintService sprintService, IUserService userService)
         {
             this.SprintService = sprintService;
@@ -29,7 +32,6 @@
         }
 
         private ISprintService SprintService { get; }
-
         private IUserService UserService { get; }
 
         /// <summary>
@@ -43,33 +45,16 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint),
+                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint)
             };
             return response;
-        }
-
-        /// <summary>
-        /// Get all ongoing sprints
-        /// </summary>
-        /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
-        [HttpGet("stat/live-events")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetLiveSprintCount()
-        {
-            LiveSprintCount liveSprintsCount = await this.SprintService.GetLiveSprintCount();
-            ResponseObject response = new ResponseObject()
-            {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = liveSprintsCount,
-            };
-            return this.Ok(response);
         }
 
         /// <summary>
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
-        /// <returns>Created sprint details</returns>
+        /// <returns></returns>
         [HttpPost]
         [Route("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
@@ -77,12 +62,11 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
 
-            var response = new ResponseObject()
+            return new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
+                    Data = result
             };
-            return response;
         }
 
         /// <summary>
@@ -90,9 +74,9 @@
         /// </summary>
         [HttpPut]
         [Route("update")]
-        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel sprintData)
+        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
         {
-            Sprint sprint = await this.SprintService.UpdateSprint(sprintData);
+            Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
 
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
         }

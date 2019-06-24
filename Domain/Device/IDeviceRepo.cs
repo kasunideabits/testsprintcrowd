@@ -24,6 +24,6 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <summary>
         /// saves changed to db
         /// </summary>
-        void SaveChanges();
+        Task SaveChanges();
     }
 }
