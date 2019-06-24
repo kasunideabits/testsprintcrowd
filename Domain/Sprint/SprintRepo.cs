@@ -39,10 +39,8 @@
         /// <returns>All ongoing sprints which not completed 24H</returns>
         public async Task<List<Sprint>> GetLiveSprints()
         {
-            DateTime now = DateTime.UtcNow;
-            DateTime end = now.AddDays(1);
             return await this.dbContext.Sprint
-                .Where(s => s.StartDateTime >= DateTime.UtcNow && s.StartDateTime < end)
+                .Where(s => s.Status == (int)SprintStatus.INPROGRESS)
                 .ToListAsync();
         }
 
