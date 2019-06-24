@@ -19,6 +19,7 @@
     using Tests.Helpers;
     using Xunit;
 
+    [Collection("Sequential")]
     public class SprintTests
     {
         private readonly HttpClient _client;
@@ -109,6 +110,9 @@
             Assert.True((int)responseObj.Data.Count > 0 ? true : false);
         }
 
+        /// <summary>
+        /// Get live events
+        /// </summary>
         [Fact]
         public async void GetLiveSprints()
         {
@@ -161,5 +165,4 @@
         }
 
     }
-
 }
