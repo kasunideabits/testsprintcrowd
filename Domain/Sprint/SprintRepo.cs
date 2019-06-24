@@ -42,7 +42,7 @@
             DateTime now = DateTime.UtcNow;
             DateTime end = now.AddDays(1);
             return await this.dbContext.Sprint
-                .Where(s => s.StartDateTime <= DateTime.UtcNow && s.StartDateTime < end)
+                .Where(s => s.StartDateTime >= DateTime.UtcNow && s.StartDateTime < end)
                 .ToListAsync();
         }
 
