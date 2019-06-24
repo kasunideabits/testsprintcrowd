@@ -51,6 +51,23 @@
         }
 
         /// <summary>
+        /// Get all ongoing sprints
+        /// </summary>
+        /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
+        [HttpGet("stat/live-events")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetLiveSprintCount()
+        {
+            LiveSprintCount liveSprintsCount = await this.SprintService.GetLiveSprintCount();
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = liveSprintsCount,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
