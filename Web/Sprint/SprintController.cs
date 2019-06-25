@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Event
 {
     using System.Threading.Tasks;
+    using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -63,6 +64,25 @@
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = liveSprintsCount,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get all created sprints, query filter can be apply with form, to
+        /// </summary>
+        /// <param name="from">Start date for filter</param>
+        /// <param name="to">End date for filter</param>
+        /// <returns>All, Public, Private created sprint count for given date range </returns>
+        [HttpGet("stat/created-events")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetCreatedEventsCount(DateTime from, DateTime? to)
+        {
+            CreatedSprintCount createdSprints = await this.SprintService.GetCreatedEventsCount(from, to);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = createdSprints,
             };
             return this.Ok(response);
         }
