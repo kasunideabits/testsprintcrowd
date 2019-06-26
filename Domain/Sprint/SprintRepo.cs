@@ -48,9 +48,7 @@
         public async Task<List<Sprint>> GetAllEvents(DateTime from, DateTime to)
         {
             return await this.dbContext.Sprint
-                .Where(s =>
-                    EF.Property<DateTime>(s, "LastUpdated") >= from &&
-                    EF.Property<DateTime>(s, "LastUpdated") <= to)
+                .Where(s => s.CreatedDate >= from && s.CreatedDate <= to)
                 .ToListAsync();
         }
 
