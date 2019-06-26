@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System;
 
     /// <summary>
@@ -63,6 +64,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>Number of pariticipants for the event</value>
         public int NumberOfParticipants { get; set; }
+        /// <summary>
+        /// Sprint created date
+        /// </summary>
+        /// <value>sprint created date</value>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
