@@ -51,8 +51,8 @@
 
             }
             int totalCount = allSprints.Count();
-            int privateCount = SprintCount(SprintType.PrivateSprint, allSprints).Count();
-            int publicCount = SprintCount(SprintType.PublicSprint, allSprints).Count();
+            int privateCount = this.SprintCount(SprintType.PrivateSprint, allSprints).Count();
+            int publicCount = this.SprintCount(SprintType.PublicSprint, allSprints).Count();
             return new CreatedSprintCount(totalCount, privateCount, publicCount);
         }
 
@@ -136,7 +136,7 @@
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
         }
 
-        private static List<Sprint> SprintCount(SprintType sprintType, List<Sprint> sprints)
+        private List<Sprint> SprintCount(SprintType sprintType, List<Sprint> sprints)
         {
             return sprints.Where(s => s.Type == (int)sprintType).ToList();
         }
