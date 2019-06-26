@@ -143,11 +143,43 @@
             Assert.Equal(2, (int)responseObj.Data.TwentyOneToThirty);
         }
 
+        /// <summary>
+        /// Get created sprint for last week
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async void CreatedSprintCount()
+        {
+            Sprint sprint1 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 10000, DateTime.UtcNow.AddDays(-7));
+            Sprint sprint2 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PrivateSprint, 10000, DateTime.UtcNow.AddDays(-7));
+            Sprint sprint3 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 10000, DateTime.UtcNow.AddDays(-8));
+            Sprint sprint4 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 10000, DateTime.UtcNow.AddDays(10));
+
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint1);
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint2);
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint3);
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint4);
+
+            TestStartUp.DbContext.SaveChanges();
+
+            var to = DateTime.UtcNow.ToString();
+            var from = DateTime.UtcNow.AddDays(-7).ToString();
+            var response = await this._client.GetAsync($"/sprint/stat/created-events?to={to}&from={from}");
+            response.EnsureSuccessStatusCode();
+            string strResponse = await response.Content.ReadAsStringAsync();
+            dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
+            Assert.Equal(2, (int)responseObj.Data.Total);
+            Assert.Equal(1, (int)responseObj.Data.Public);
+            Assert.Equal(1, (int)responseObj.Data.Private);
+
+        }
+
         private Sprint GenerateSprint(
             DateTime startDateTime,
             SprintStatus status,
             SprintType type,
-            int distance = 1000)
+            int distance = 1000,
+            DateTime? createdDate = null)
         {
             Random r = new Random();
             Sprint sprint = new Sprint()
@@ -160,6 +192,7 @@
                 StartDateTime = startDateTime,
                 Status = (int)status,
                 Type = (int)type,
+                CreatedDate = createdDate ?? DateTime.UtcNow
             };
             return sprint;
         }
