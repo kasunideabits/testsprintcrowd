@@ -24,6 +24,11 @@
             this.dbContext = dbContext;
         }
 
+        public async Task<List<Sprint>> GetAllEvents()
+        {
+            return await this.dbContext.Sprint.ToListAsync();
+        }
+
         /// <summary>
         /// Get all events
         /// </summary>
@@ -31,6 +36,19 @@
         public async Task<List<Sprint>> GetAllEvents(int eventType)
         {
             return await this.dbContext.Sprint.Where(s => s.Type == eventType).ToListAsync();
+        }
+
+        /// <summary>
+        /// Get created sprint count for given date range
+        /// </summary>
+        /// <param name="from">Start date for filter</param>
+        /// <param name="to">End date for filter</param>
+        /// <returns>Created All, Public, Private sprints</returns>
+        public async Task<List<Sprint>> GetAllEvents(DateTime from, DateTime to)
+        {
+            return await this.dbContext.Sprint
+                .Where(s => s.CreatedDate >= from && s.CreatedDate <= to)
+                .ToListAsync();
         }
 
         /// <summary>

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -29,6 +30,30 @@
         public async Task<List<Sprint>> GetAll(int eventType)
         {
             return await this.SprintRepo.GetAllEvents(eventType);
+        }
+
+        /// <summary>
+        /// Get created sprint count for given date range
+        /// </summary>
+        /// <param name="from">Start date for filter</param>
+        /// <param name="to">End date for filter</param>
+        /// <returns>Created All, Public, Private sprints</returns>
+        public async Task<CreatedSprintCount> GetCreatedEventsCount(DateTime? from, DateTime? to)
+        {
+            List<Sprint> allSprints = new List<Sprint>();
+            if (from.HasValue && to.HasValue)
+            {
+                allSprints = await this.SprintRepo.GetAllEvents(from.Value, to.Value);
+            }
+            else
+            {
+                allSprints = await this.SprintRepo.GetAllEvents();
+
+            }
+            int totalCount = allSprints.Count();
+            int privateCount = allSprints.Where(s => s.Type == (int)SprintType.PrivateSprint).Count();
+            int publicCount = allSprints.Where(s => s.Type == (int)SprintType.PublicSprint).Count();
+            return new CreatedSprintCount(totalCount, privateCount, publicCount);
         }
 
         /// <summary>

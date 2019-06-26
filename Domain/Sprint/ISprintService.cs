@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     /// <summary>
     /// ISprintService interface
@@ -13,6 +14,14 @@
         /// </summary>
         /// <returns>Available events</returns>
         Task<List<Sprint>> GetAll(int eventType);
+
+        /// <summary>
+        /// Get created sprint count for given date range
+        /// </summary>
+        /// <param name="from">Start date for filter</param>
+        /// <param name="to">End date for filter</param>
+        /// <returns>Created All, Public, Private sprints</returns>
+        Task<CreatedSprintCount> GetCreatedEventsCount(DateTime? from, DateTime? to);
 
         /// <summary>
         /// Get all ongoing sprints
@@ -31,9 +40,7 @@
         /// update sprint
         /// </summary>
         /// <param name="sprintData">sprint information</param>
-        /// <returns></returns>
-
+        /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
-
     }
 }

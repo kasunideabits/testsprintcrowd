@@ -2,18 +2,23 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     /// <summary>
     /// inerface for event repo
     /// </summary>
     public interface ISprintRepo
     {
+        Task<List<Sprint>> GetAllEvents();
+
         /// <summary>
         /// get all sprint public or private
         /// </summary>
         /// <param name="eventType">public or private</param>
         /// <returns>all events with given type</returns>
         Task<List<Sprint>> GetAllEvents(int eventType);
+
+        Task<List<Sprint>> GetAllEvents(DateTime from, DateTime to);
 
         /// <summary>
         /// Get all ongoing sprints

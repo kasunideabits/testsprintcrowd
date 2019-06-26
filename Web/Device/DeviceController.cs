@@ -17,6 +17,7 @@ namespace SprintCrowd.BackEnd.Web.Device
 
     public class DeviceController : ControllerBase
     {
+
         private IDeviceService DeviceService;
         /// <summary>
         /// Initialize device service instance.
