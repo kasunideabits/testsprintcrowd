@@ -24,7 +24,6 @@
             this.dbContext = dbContext;
         }
 
-
         public async Task<List<Sprint>> GetAllEvents()
         {
             return await this.dbContext.Sprint.ToListAsync();

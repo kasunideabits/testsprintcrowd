@@ -40,8 +40,7 @@
         /// update sprint
         /// </summary>
         /// <param name="sprintData">sprint information</param>
-        /// <returns></returns>
+        /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
-
     }
 }
