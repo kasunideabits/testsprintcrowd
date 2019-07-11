@@ -1,19 +1,19 @@
 {
-    "csharpfixformat.sort.usings.order": "System",
-    "csharpfixformat.sort.usings.enabled": true,
-    "csharpfixformat.style.braces.onSameLine": false,
-    "csharpfixformat.style.newline.elseCatch": true,
-    "csharpfixformat.style.spaces.beforeBracket": true,
-    "razor.trace": "Verbose",
-    "csharpfixformat.style.braces.allowInlines": true,
-    "csharpfixformat.style.spaces.beforeParenthesis": false,
-    "csharpfixformat.style.spaces.afterParenthesis": false,
-    "files.exclude": {
-        "**/bin": true,
-        "**/obj": true
-    },
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "files.trimTrailingWhitespace": true,
-    "files.trimFinalNewlines": true
+  "csharpfixformat.sort.usings.order": "System",
+  "csharpfixformat.sort.usings.enabled": true,
+  "csharpfixformat.style.braces.onSameLine": false,
+  "csharpfixformat.style.newline.elseCatch": true,
+  "csharpfixformat.style.spaces.beforeBracket": true,
+  "razor.trace": "Verbose",
+  "csharpfixformat.style.braces.allowInlines": true,
+  "csharpfixformat.style.spaces.beforeParenthesis": false,
+  "csharpfixformat.style.spaces.afterParenthesis": false,
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true
 }

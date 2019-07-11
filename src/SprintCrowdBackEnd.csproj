@@ -1,18 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-     <ProjectGuid>{7abf6823-deaf-44cc-b5d9-0311fe1e3950}</ProjectGuid>
+    <ProjectGuid>{7abf6823-deaf-44cc-b5d9-0311fe1e3950}</ProjectGuid>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ProjectGuid>{698696AD-9060-4DA3-9DFB-0B406BBAF4C3}</ProjectGuid>
   </PropertyGroup>
 
   <PropertyGroup>
-      <CodeAnalysisRuleSet>sprintcrowd.ruleset</CodeAnalysisRuleSet>
-      <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <DefaultItemExcludes>$(DefaultItemExcludes);Tests/**</DefaultItemExcludes>
+    <CodeAnalysisRuleSet>sprintcrowd.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Tests/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="2.3.2" />
+
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.0" />
     <PackageReference Include="RestSharp" Version="106.6.7" />
