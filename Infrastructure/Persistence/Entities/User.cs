@@ -55,5 +55,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// </summary>
     /// <value>access token.</value>
     public AccessToken AccessToken { get; set; }
+    /// <summary>
+    /// gets or set value.
+    /// </summary>
+    /// <value>country name of the user</value>
+    public string Country { get; set; }
+    /// <summary>
+    /// gets or set value.
+    /// </summary>
+    /// <value>city name of the user</value>
+    public string City { get; set; }
   }
 }

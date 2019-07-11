@@ -58,5 +58,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <value>link to the profile picture.</value>
     [JsonProperty("profilePicture")]
     public string ProfilePicture { get; set; }
+    /// <summary>
+    /// gets or sets value.
+    /// </summary>
+    /// <value>country name of the user.</value>
+    [JsonProperty("country")]
+    public string Country { get; set; }
+    /// <summary>
+    /// gets or sets value.
+    /// </summary>
+    /// <value>city name of the user.</value>
+    [JsonProperty("city")]
+    public string City { get; set; }
   }
 }

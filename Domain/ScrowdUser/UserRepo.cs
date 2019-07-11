@@ -5,9 +5,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
   using Microsoft.Extensions.Options;
   using RestSharp;
   using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Models;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Models;
   using SprintCrowd.BackEnd.Web.Account;
 
   /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -68,20 +68,30 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       {
         // Oh ohh, error occured during registeration in identity server
         throw new ApplicationException(
-            registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
-            registerResponse.ErrorDescription ?? "Failed to register user in identity server");
+          registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+          registerResponse.ErrorDescription ?? "Failed to register user in identity server");
       }
 
       User user = new User();
-      user.Email = registerData.Email;
-      user.FacebookUserId = registerResponse.Data.UserId;
-      user.Name = registerResponse.Data.Name;
-      user.UserType = (int)UserType.Facebook;
-      user.ProfilePicture = registerResponse.Data.ProfilePicture;
-      user.AccessToken.Token = registerData.AccessToken;
-      // TODO- Profile Picture
-      var result = await this.dbContext.User.AddAsync(user);
-      return user;
+
+      var exist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Id.Equals(user.Id));
+
+      if (exist == null)
+      {
+        user.Email = registerData.Email;
+        user.FacebookUserId = registerResponse.Data.UserId;
+        user.Name = registerResponse.Data.Name;
+        user.UserType = (int)UserType.Facebook;
+        user.ProfilePicture = registerResponse.Data.ProfilePicture;
+        user.AccessToken.Token = registerData.AccessToken;
+        user.Country = registerResponse.Data.Country;
+        user.City = registerResponse.Data.City;
+        // TODO- Profile Picture
+
+        var FbUser = await this.dbContext.User.AddAsync(user);
+        return FbUser.Entity;
+      }
+      return null;
     }
 
     /// <summary>
@@ -108,8 +118,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         // no token yet saved, insert
         FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
         {
-          User = await this.GetUserById(userId),
-          Token = fcmToken,
+        User = await this.GetUserById(userId),
+        Token = fcmToken,
         };
         await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
       }
