@@ -17,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "chmod 777 ./Scripts/commit_pre_hook.sh; ./Scripts/commit_pre_hook.sh"
+      "pre-push": "chmod 777 ./scripts/commit_pre_hook.sh; ./scripts/commit_pre_hook.sh"
     }
   }
 }
