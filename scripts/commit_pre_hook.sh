@@ -1,8 +1,9 @@
 ﻿#!/bin/bash
 MAX_WARNINGS=100
 
+cd src
 dotnet clean
-count=$( ( cd src; dotnet build | grep warning | grep -v 'Migrations/20' | wc -l ) )
+count=$( ( dotnet build | grep warning | grep -v 'Migrations/20' | wc -l ) )
 if [ $count -le $MAX_WARNINGS ]; then
   exit 0
 fi
