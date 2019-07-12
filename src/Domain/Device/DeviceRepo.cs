@@ -22,10 +22,10 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <summary>
         /// Save device uuid and os
         /// </summary>
-        /// <param name="DeviceData">device information</param>
-        public async Task<AppDownloads> AddDeviceInfo(AppDownloads DeviceData)
+        /// <param name="deviceData">device information</param>
+        public async Task<AppDownloads> AddDeviceInfo(AppDownloads deviceData)
         {
-            var downloadsInfo = await this.dbContext.AppDownloads.AddAsync(DeviceData);
+            var downloadsInfo = await this.dbContext.AppDownloads.AddAsync(deviceData);
             return downloadsInfo.Entity;
         }
 
@@ -45,11 +45,10 @@ namespace SprintCrowd.BackEnd.Domain.Device
         /// <summary>
         /// Get device uuid of the app
         /// </summary>
-        public async Task<AppDownloads> GetUUID(string UUID)
+        public async Task<AppDownloads> GetUUID(string uuid)
         {
-            AppDownloads uuid = await this.dbContext.AppDownloads.FirstOrDefaultAsync(u => u.DeviceId == UUID);
-            return uuid;
-
+            AppDownloads dUuid = await this.dbContext.AppDownloads.FirstOrDefaultAsync(u => u.DeviceId == uuid);
+            return dUuid;
         }
 
         /// <summary>

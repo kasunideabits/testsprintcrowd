@@ -20,7 +20,6 @@
 
     public class SprintController : ControllerBase
     {
-
         /// <summary>
         /// intializes an instance of SprintController
         /// </summary>
@@ -33,6 +32,7 @@
         }
 
         private ISprintService SprintService { get; }
+
         private IUserService UserService { get; }
 
         /// <summary>
@@ -46,7 +46,7 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint)
+                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint),
             };
             return response;
         }
@@ -91,7 +91,6 @@
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
-        /// <returns></returns>
         [HttpPost]
         [Route("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
@@ -99,11 +98,12 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
 
-            return new ResponseObject()
+            ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result
+                Data = result,
             };
+            return response;
         }
 
         /// <summary>
@@ -111,9 +111,9 @@
         /// </summary>
         [HttpPut]
         [Route("update")]
-        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel SprintData)
+        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel sprintData)
         {
-            Sprint sprint = await this.SprintService.UpdateSprint(SprintData);
+            Sprint sprint = await this.SprintService.UpdateSprint(sprintData);
 
             return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
         }

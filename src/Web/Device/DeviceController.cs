@@ -17,8 +17,6 @@ namespace SprintCrowd.BackEnd.Web.Device
 
     public class DeviceController : ControllerBase
     {
-
-        private IDeviceService DeviceService;
         /// <summary>
         /// Initialize device service instance.
         /// </summary>
@@ -26,6 +24,9 @@ namespace SprintCrowd.BackEnd.Web.Device
         {
             this.DeviceService = deviceService;
         }
+
+        private IDeviceService DeviceService { get; }
+
         /// <summary>
         /// save device info uuid and platform
         /// </summary>

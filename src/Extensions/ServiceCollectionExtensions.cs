@@ -3,7 +3,6 @@ namespace SprintCrowd.BackEnd.Extensions
     using System;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Protocols.OpenIdConnect;
     using Microsoft.IdentityModel.Protocols;
     using Microsoft.IdentityModel.Tokens;
@@ -57,7 +56,6 @@ namespace SprintCrowd.BackEnd.Extensions
             {
                 options.AddPolicy(Policy.ADMIN, policy => policy.Requirements.Add(new HasScopeRequirement("scrowd-cp", discoveryDocument.Issuer)));
             });
-
         }
     }
 }

@@ -8,9 +8,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// <summary>
         /// Initialize CreatedSprintCount class
         /// </summary>
-        /// <param name="totalCount"></param>
-        /// <param name="privateCount"></param>
-        /// <param name="publicCount"></param>
+        /// <param name="totalCount">total sprints</param>
+        /// <param name="privateCount">private event count</param>
+        /// <param name="publicCount">public event count</param>
         public CreatedSprintCount(int totalCount, int privateCount, int publicCount)
         {
             this.Total = totalCount;
