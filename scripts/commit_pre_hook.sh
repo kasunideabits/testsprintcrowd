@@ -1,5 +1,5 @@
 ﻿#!/bin/bash
-MAX_WARNINGS=100
+MAX_WARNINGS=150
 
 cd src
 dotnet clean
