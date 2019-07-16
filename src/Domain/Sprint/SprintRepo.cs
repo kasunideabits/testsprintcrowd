@@ -94,6 +94,11 @@
             return sprint;
         }
 
+        public async Task MarkAttence(int sprintId, int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

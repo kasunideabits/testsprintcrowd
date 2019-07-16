@@ -42,5 +42,7 @@
         /// <param name="sprintData">sprint information</param>
         /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
+
+        //   Task<MarkAttendenceResult> MarkAttendence(int sprintId, int userid);
     }
 }

@@ -130,6 +130,12 @@
             return sprint;
         }
 
+        Task<MarkAttendenceResult> MarkAttendence(int sprintId, int userId)
+        {
+            System.Console.WriteLine($"{sprintId}, {userId}");
+            throw new NotImplementedException();
+        }
+
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
         {
             return sprints

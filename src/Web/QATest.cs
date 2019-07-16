@@ -57,7 +57,7 @@ namespace SprintCrowd.BackEnd.Web
     {
       string name = QATestHelper.RandomString();
 
-      Sprint sprint = new Sprint()
+      SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint sprint = new SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint()
       {
         Name = name,
         Distance = 300,
@@ -70,14 +70,14 @@ namespace SprintCrowd.BackEnd.Web
 
     [HttpGet("sprint/{sprintId:int}")]
     public IActionResult GetSprint(int sprintId) =>
-        this.Ok(this.context.Sprint.FirstOrDefault(d => d.Id == sprintId));
+      this.Ok(this.context.Sprint.FirstOrDefault(d => d.Id == sprintId));
 
     [HttpGet("sprint")]
 
     [HttpPut("sprint/update/{sprintId:int}")]
-    public IActionResult UpdateSprint([FromBody] Sprint sprint, int sprintId)
+    public IActionResult UpdateSprint([FromBody] SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint sprint, int sprintId)
     {
-      Sprint exSprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
+      var exSprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
       if (exSprint != null && !exSprint.Equals(sprint) && exSprint.Id == sprint.Id)
       {
         this.context.Entry(exSprint).CurrentValues.SetValues(sprint);
@@ -90,7 +90,7 @@ namespace SprintCrowd.BackEnd.Web
     [HttpPost("sprint/update/time/{sprintId:int}")]
     public IActionResult UpdateStartTime([FromBody] SprintStartTime startTime, int sprintId)
     {
-      Sprint exSprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
+      var exSprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
       exSprint.StartDateTime = DateTime.UtcNow.AddMinutes(startTime.StartFrom);
       this.context.Update(exSprint);
       this.context.SaveChanges();
@@ -101,7 +101,7 @@ namespace SprintCrowd.BackEnd.Web
     public IActionResult AddSprintParticipant(int sprintId, int userId)
     {
       User user = this.context.User.Where(d => d.Id == userId).FirstOrDefault();
-      Sprint sprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
+      var sprint = this.context.Sprint.FirstOrDefault(d => d.Id == sprintId);
       if (sprint.Participants == null)
       {
         sprint.Participants = new List<SprintParticipant>();
