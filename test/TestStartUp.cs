@@ -1,19 +1,18 @@
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SprintCrowd.BackEnd;
-using SprintCrowd.BackEnd.Application;
-using SprintCrowd.BackEnd.Infrastructure.Persistence;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-using SprintCrowd.BackEnd.Models;
-using SprintCrowd.BackEnd.Web;
-using Tests.Mocks;
-
 namespace Tests
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Models;
+    using SprintCrowd.BackEnd.Web;
+    using SprintCrowd.BackEnd;
+    using Tests.Mocks;
+
     public class TestStartUp : Startup
     {
         public static ScrowdDbContext DbContext;
@@ -25,10 +24,10 @@ namespace Tests
         public override void AddAuthentication(IServiceCollection services, AppSettings appSettings)
         {
             services.AddAuthentication(options =>
-              {
-                  options.DefaultAuthenticateScheme = "Test Scheme"; // has to match scheme in TestAuthenticationExtensions
-                  options.DefaultChallengeScheme = "Test Scheme";
-              }).AddTestAuth(o => { });
+            {
+                options.DefaultAuthenticateScheme = "Test Scheme"; // has to match scheme in TestAuthenticationExtensions
+                options.DefaultChallengeScheme = "Test Scheme";
+            }).AddTestAuth(o => { });
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(SprintCrowd.BackEnd.Enums.Policy.ADMIN, policy => policy.Requirements.Add(new HasScopeRequirement()));
@@ -36,13 +35,12 @@ namespace Tests
             services.AddMvc();
         }
 
-        public override void AddSwagger(IServiceCollection services)
-        { }
+        public override void AddSwagger(IServiceCollection services) { }
 
         public override void AddDatabase(IServiceCollection services)
         {
             services.AddDbContext<ScrowdDbContext>(options =>
-                  options.UseInMemoryDatabase("InMemory"));
+                options.UseInMemoryDatabase("InMemory"));
         }
 
         public override void Configure(IApplicationBuilder app)

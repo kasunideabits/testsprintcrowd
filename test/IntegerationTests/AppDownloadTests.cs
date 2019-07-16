@@ -1,14 +1,14 @@
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using Newtonsoft.Json;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-using Tests.Helpers;
-using Xunit;
-
 namespace Tests
 {
+    using System.Net.Http;
+    using System.Net;
+    using System.Text;
+    using System;
+    using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using Tests.Helpers;
+    using Xunit;
+
     [Collection("Sequential")]
     public class AppDownloadTests
     {
@@ -54,9 +54,9 @@ namespace Tests
                 DevicePlatform = "ANDROID"
             };
             var response = await this._client.PostAsync("/sprint/create", new StringContent(
-              JsonConvert.SerializeObject(appDownload, Formatting.None),
-              Encoding.UTF8,
-              "application/json"));
+                JsonConvert.SerializeObject(appDownload, Formatting.None),
+                Encoding.UTF8,
+                "application/json"));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
