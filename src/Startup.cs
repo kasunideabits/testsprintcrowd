@@ -4,6 +4,7 @@
     using System.IO;
     using System.Reflection;
     using System;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,17 @@
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using RestSharp;
+    using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Data;
     using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
+    using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
-    using Microsoft.AspNetCore.Authorization;
-    using SprintCrowd.BackEnd.CustomPolicies;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -60,10 +61,10 @@
                 // ignore self referencing loops newtonsoft.
                 options.OutputFormatters.Clear();
                 options.OutputFormatters.Add(new JsonOutputFormatter(
-            new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }, ArrayPool<char>.Shared));
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    }, ArrayPool<char>.Shared));
             });
             this.AddSwagger(services);
             this.RegisterDependencyInjection(services);
@@ -86,7 +87,7 @@
         public virtual void AddDatabase(IServiceCollection services)
         {
             services.AddDbContext<ScrowdDbContext>(options =>
-              options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
+                options.UseNpgsql(this.Configuration.GetConnectionString("SprintCrowd")));
         }
 
         /// <summary>
@@ -113,10 +114,10 @@
             app.UseStaticFiles();
             // global cors policy
             app.UseCors(x => x
-              .AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials());
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
             app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
@@ -142,6 +143,7 @@
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
+            services.AddSingleton<INotifyFactory, NotifyFactory>();
             this.AddAuthorizationDIModules(services);
         }
 
