@@ -1,5 +1,5 @@
 ﻿#!/bin/bash
-MAX_WARNINGS=100
+MAX_WARNINGS=150
 
 dotnet clean
 count=$( ( dotnet build | grep warning | grep -v 'Migrations/20' | wc -l ) )
