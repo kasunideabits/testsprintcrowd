@@ -17,6 +17,7 @@
     using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -143,6 +144,8 @@
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
+            services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
+            services.AddScoped<ISprintParticipantService, SprintParticipantService>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             this.AddAuthorizationDIModules(services);
         }

@@ -45,8 +45,6 @@
         /// <param name="sprintID">event model</param>
         Task<Sprint> GetSprint(int sprintID);
 
-        //Task MarkAttendence(int sprintId, int userId);
-
         /// <summary>
         /// saves changed to db
         /// </summary>

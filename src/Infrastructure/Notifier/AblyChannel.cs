@@ -17,6 +17,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.Notifier
             this.Channel = channel;
         }
 
+        /// <summary>
+        /// Channel for publish
+        /// </summary>
         public IRealtimeChannel Channel { get; }
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Notifier
         /// <param name="message">message to publish</param>
         public async Task Publish(string eventName, dynamic message)
         {
-            this.Channel.PublishAsync(eventName, message);
+            await this.Channel.PublishAsync(eventName, message);
         }
     }
 }
