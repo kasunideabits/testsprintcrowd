@@ -6,6 +6,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Sprint service
@@ -16,11 +17,14 @@
         /// initializes an instance of SprintService
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
-        public SprintService(ISprintRepo sprintRepo)
+        /// <param name="sprintParticipantRepo">sprint repository</param>
+        public SprintService(ISprintRepo sprintRepo, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.SprintRepo = sprintRepo;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         private ISprintRepo SprintRepo { get; }
 
         /// <summary>
@@ -126,7 +130,6 @@
             {
                 this.SprintRepo.SaveChanges();
             }
-
             return sprint;
         }
 
@@ -135,5 +138,42 @@
             return sprints
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
         }
+
+
+        /// <summary>
+        /// creates a new sprint
+        /// </summary>
+        /// <param name="privateSprintInfo">details of the sprint</param>
+        /// <param name="stage">stage value</param>
+        /// <param name="joinedUserId">user who created the sprint</param>
+        /// <returns>created sprint</returns>
+
+
+        public async Task<SprintParticipant> CreateSprintJoinee(PrivateSprintModel privateSprintInfo, int stage, User joinedUserId)
+        {
+            try
+            {
+                Sprint currentSprint = await this.SprintRepo.GetSprint(privateSprintInfo.SprintId);
+                SprintParticipant sprintToBeJoined = new SprintParticipant()
+                {
+                    User = joinedUserId,
+                    Stage = stage,
+                    Sprint = currentSprint,
+                };
+
+                SprintParticipant sprintParticipant = await this.SprintParticipantRepo.AddSprintParticipant(sprintToBeJoined);
+                if (sprintParticipant != null)
+                {
+                    this.SprintParticipantRepo.SaveChanges();
+                }
+                return sprintParticipant;
+            }
+            catch (System.Exception ex)
+            {
+                throw new Application.ApplicationException($"{ex}");
+            }
+
+        }
+
     }
 }

@@ -4,6 +4,8 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.Event;
+
     /// <summary>
     /// ISprintService interface
     /// </summary>
@@ -42,5 +44,16 @@
         /// <param name="sprintData">sprint information</param>
         /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
+
+        /// <summary>
+        /// update sprint
+        /// </summary>
+        /// <param name="privateSprintInfo">sprint information</param>
+        /// <param name="stage">sprint information</param>
+        /// <param name="joinedUserId">sprint information</param>
+        /// <returns>update sprint</returns>
+
+        // Task<SprintParticipant> CreateSprintJoinee(int SprintId, int stage, User joinedUserId);
+        Task<SprintParticipant> CreateSprintJoinee(PrivateSprintModel privateSprintInfo, int stage, User joinedUserId);
     }
 }
