@@ -6,6 +6,9 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
+    /// <summary>
+    /// Implements ISprintParticipantRepo interface for hanle sprint participants
+    /// </summary>
     public class SprintParticipantRepo : ISprintParticipantRepo
     {
         /// <summary>
@@ -34,15 +37,19 @@
                 throw new ApplicationException("Entry not found");
 
             }
-            if (paritipant.Stage < (int)ParticipantStage.MARKED_ATTENDENCE)
+            if (paritipant.Stage == (int)ParticipantStage.JOINED)
             {
                 paritipant.Stage = (int)ParticipantStage.MARKED_ATTENDENCE;
                 this.Context.SprintParticipant.Update(paritipant);
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
-            else
+            else if (paritipant.Stage == (int)ParticipantStage.MARKED_ATTENDENCE)
             {
                 throw new ApplicationException("Already marked attendance");
+            }
+            else
+            {
+                throw new ApplicationException("Join before marked attendance");
             }
         }
 
