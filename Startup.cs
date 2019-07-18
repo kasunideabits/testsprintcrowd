@@ -142,6 +142,7 @@
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
+            services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
             this.AddAuthorizationDIModules(services);
         }
 

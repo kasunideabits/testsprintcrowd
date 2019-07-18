@@ -149,7 +149,7 @@
         /// <returns>created sprint</returns>
 
 
-        public async Task<SprintParticipant> CreateSprintJoinee(PrivateSprintModel privateSprintInfo, int stage, User joinedUserId)
+        public async Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, int stage, User joinedUserId)
         {
             try
             {

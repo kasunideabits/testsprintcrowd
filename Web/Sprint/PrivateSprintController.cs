@@ -36,7 +36,8 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// <returns></returns>
 
         [HttpPost]
-        [Route("private/create")]
+        //[Route("private/create")]
+        [Route("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
@@ -56,9 +57,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// <returns></returns>
 
         [HttpPost]
-        [Route("private/join")]
+        //[Route("private/join")]
+        [Route("join")]
         //public async Task<ResponseObject> JoinEvent(int SprintId, bool IsConfirmed)
-        public async Task<ResponseObject> JoinEvent([FromBody] PrivateSprintModel modelInfo)
+        public async Task<ResponseObject> JoinEvent([FromBody] JoinPrivateSprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
             if (modelInfo.IsConfirmed)
