@@ -14,6 +14,7 @@
         /// <summary>
         /// Initalize SprintParticipantService class
         /// </summary>
+        /// <param name="sprintRepo">sprint repository</param>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="notifyFactory">notifi factory</param>
         public SprintParticipantService(
