@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/SprintCrowdBackEnd.csproj"
+                "${workspaceFolder}/src/SprintCrowdBackEnd.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
