@@ -29,7 +29,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.Notifier
         /// <param name="message">message to publish</param>
         public async Task Publish(string eventName, dynamic message)
         {
-            await this.Channel.PublishAsync(eventName, message);
+            try
+            {
+                await this.Channel.PublishAsync(eventName, message);
+            }
+            catch (System.Exception e)
+            {
+                throw new Application.ApplicationException($"Ably channel error {e}");
+            }
         }
     }
 }
