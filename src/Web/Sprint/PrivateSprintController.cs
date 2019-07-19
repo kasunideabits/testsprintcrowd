@@ -53,7 +53,7 @@
             return new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result
+                Data = result
             };
         }
 
@@ -68,12 +68,12 @@
             User user = await this.User.GetUser(this.UserService);
             if (modelInfo.IsConfirmed)
             {
-                var result = await this.SprintParticipantService.CreateSprintJoinee(modelInfo, 1, user);
+                var result = await this.SprintParticipantService.CreateSprintJoinee(modelInfo, user);
 
                 return new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
-                        Data = result
+                    Data = result
                 };
             }
             else

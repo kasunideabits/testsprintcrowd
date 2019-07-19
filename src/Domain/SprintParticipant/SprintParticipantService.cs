@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -50,7 +51,12 @@
             return;
         }
 
-        public async Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, int stage, User joinedUserId)
+        /// <summary>
+        /// Mark the attendece for the given sprint and join
+        /// </summary>
+        /// <param name="privateSprintInfo">sprint id for mark attendance</param>
+        /// <param name="joinedUserId">user id for for participant</param>
+        public async Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId)
         {
             try
             {
@@ -58,7 +64,7 @@
                 SprintParticipant sprintToBeJoined = new SprintParticipant()
                 {
                     User = joinedUserId,
-                    Stage = stage,
+                    Stage = (int)ParticipantStage.MARKED_ATTENDENCE,
                     Sprint = currentSprint,
                 };
 

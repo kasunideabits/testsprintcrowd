@@ -24,6 +24,6 @@
         /// <param name="stage">sprint information</param>
         /// <param name="joinedUserId">sprint information</param>
         /// <returns>update sprint</returns>
-        Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, int stage, User joinedUserId);
+        Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId);
     }
 }
