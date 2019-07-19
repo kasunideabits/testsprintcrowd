@@ -4,6 +4,8 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.Event;
+
     /// <summary>
     /// ISprintService interface
     /// </summary>
@@ -42,5 +44,7 @@
         /// <param name="sprintData">sprint information</param>
         /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
+
+    
     }
 }

@@ -6,6 +6,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Sprint service
@@ -126,7 +127,6 @@
             {
                 this.SprintRepo.SaveChanges();
             }
-
             return sprint;
         }
 
@@ -135,5 +135,14 @@
             return sprints
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
         }
+
+        /// <summary>
+        /// creates a new sprint
+        /// </summary>
+        /// <param name="privateSprintInfo">details of the sprint</param>
+        /// <param name="stage">stage value</param>
+        /// <param name="joinedUserId">user who created the sprint</param>
+        /// <returns>created sprint</returns>
+
     }
 }

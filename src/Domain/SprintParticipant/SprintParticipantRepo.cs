@@ -54,6 +54,17 @@
         }
 
         /// <summary>
+        /// creates event
+        /// </summary>
+        /// <param name="privateEventCreate">event model</param>
+        /// <returns>added private sprint result</returns>
+        public async Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate)
+        {
+            var result = await this.Context.SprintParticipant.AddAsync(privateEventCreate);
+            return result.Entity;
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

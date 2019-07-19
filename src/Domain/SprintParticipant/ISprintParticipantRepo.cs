@@ -17,6 +17,13 @@
         Task<User> MarkAttendence(int sprintId, int userId);
 
         /// <summary>
+        /// adds new private event to database
+        /// </summary>
+        /// <param name="privateEventCreate">event model</param>
+        /// <returns>Created sprint details</returns>
+        Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();
