@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
 {
     /// <summary>
-    /// Interface for Join evetn
+    /// Interface for Join event
     /// </summary>
     public interface IJoinEventHandler
     {
