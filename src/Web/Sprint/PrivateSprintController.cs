@@ -25,8 +25,7 @@
         public PrivateSprintController(
             IUserService userService,
             ISprintService sprintService,
-            ISprintParticipantService sprintParticipantService
-        )
+            ISprintParticipantService sprintParticipantService)
         {
             this.SprintService = sprintService;
             this.SprintParticipantService = sprintParticipantService;
@@ -50,11 +49,12 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(modelInfo, user);
 
-            return new ResponseObject()
+            ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result
+                Data = result,
             };
+            return response;
         }
 
         /// <summary>
@@ -70,18 +70,20 @@
             {
                 var result = await this.SprintParticipantService.CreateSprintJoinee(modelInfo, user);
 
-                return new ResponseObject()
+                ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result
+                    Data = result,
                 };
+                return response;
             }
             else
             {
-                return new ResponseObject()
+                ResponseObject response = new ResponseObject()
                 {
-                    StatusCode = (int)ApplicationResponseCode.BadRequest
+                    StatusCode = (int)ApplicationResponseCode.BadRequest,
                 };
+                return response;
             }
         }
     }
