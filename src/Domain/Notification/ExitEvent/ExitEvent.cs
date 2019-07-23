@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.ExitEvent
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.ExitEvent
 {
     /// <summary>
     /// class which give information for exit event notification

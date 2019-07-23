@@ -1,35 +1,29 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     /// <summary>
-    /// Helper class for mark attendance event notificaitons
+    /// Channel name for mark attendace event notifications
     /// </summary>
-    public static class MarkAttendaceHelper
+    public static class ChannelNames
     {
         /// <summary>
-        /// Channel name for mark attendace event notifications
+        /// Generate channel name with sprint id
         /// </summary>
-        public static class Channels
-        {
-            /// <summary>
-            /// Generate channel name with sprint id
-            /// </summary>
-            /// <param name="sprintId">sprint id for the event</param>
-            /// <returns>generated channel name;</returns>
-            public static string GetChannel(int sprintId) => $"sprint{sprintId}";
-        }
+        /// <param name="sprintId">sprint id for the event</param>
+        /// <returns>generated channel name;</returns>
+        public static string GetChannel(int sprintId) => $"sprint{sprintId}";
+    }
+
+    /// <summary>
+    /// Events name generate for mark attendance notifications
+    /// </summary>
+    public static class EventNames
+    {
+        private const string Event = "MarkedAttendece";
 
         /// <summary>
-        /// Events name generate for mark attendance notifications
+        /// Get mark attendance event name
         /// </summary>
-        public static class Events
-        {
-            /// <summary>
-            /// Get mark attendance event name
-            /// </summary>
-            /// <returns>mark attendance event name</returns>
-            public static string GetEvent() => Event;
-
-            private const string Event = "MarkedAttendece";
-        }
+        /// <returns>mark attendance event name</returns>
+        public static string GetEvent() => Event;
     }
 }

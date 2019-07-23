@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SprintCrowd.BackEnd.Domain.Notification.ExitEvent
 {
@@ -11,7 +11,6 @@ namespace SprintCrowd.BackEnd.Domain.Notification.ExitEvent
         /// Execute background task for send notifcations and related work
         /// </summary>
         /// <param name="exitEvent"><see cref="ExitEvent"/></param>
-        /// <returns></returns>
         Task Execute(ExitEvent exitEvent);
     }
 }

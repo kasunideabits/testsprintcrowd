@@ -43,7 +43,6 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            string channelName = Channels.GetChannel(sprintId);
             var mA = new MarkAttendance(sprintId, userId, result.Name, result.ProfilePicture);
             await this.MarkAttendance.Execute(mA);
             this.SprintParticipantRepo.SaveChanges();
@@ -79,47 +78,5 @@
                 throw new Application.ApplicationException($"{ex}");
             }
         }
-    }
-
-    /// <summary>
-    /// Mark attendance message for publish with sccessfuly update
-    /// </summary>
-    internal class MarkAttendanceMessage
-    {
-
-        /// <summary>
-        /// Initalize MarkAttendanceMessage class
-        /// </summary>
-        /// <param name="sprintId">marked sprint id</param>
-        /// <param name="userId">marked user id</param>
-        /// <param name="name">name for user</param>
-        /// <param name="profilePicture">uri for user profile picture</param>
-        public MarkAttendanceMessage(int sprintId, int userId, string name, string profilePicture)
-        {
-            this.SprintId = sprintId;
-            this.UserId = userId;
-            this.Name = name;
-            this.ProfilePicture = profilePicture;
-        }
-
-        /// <summary>
-        /// Gets marked sprint id
-        /// </summary>
-        public int SprintId { get; }
-
-        /// <summary>
-        /// Gets marked user id
-        /// </summary>
-        public int UserId { get; }
-
-        /// <summary>
-        /// Gets name for user
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// Gets uri for user profile picture
-        /// </summary>
-        public string ProfilePicture { get; }
     }
 }

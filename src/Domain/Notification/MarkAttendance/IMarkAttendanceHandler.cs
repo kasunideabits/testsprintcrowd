@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     using System.Threading.Tasks;
 
@@ -10,8 +10,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
         /// <summary>
         /// Execute background task for send notifcations and related work
         /// </summary>
-        /// <param name="markAttendance"><see cref="MarkAttendance"/></param>
-        /// <returns></returns>
+        /// <param name="markAttendance"><see cref="MarkAttendance">mark attendance </see></param>
         Task Execute(MarkAttendance markAttendance);
     }
 }

@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     using System.Threading.Tasks;
     using Coravel.Queuing.Interfaces;
@@ -23,6 +23,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
         }
 
         private IQueue Queue { get; }
+
         private INotifyFactory NotifyFactory { get; }
 
         /// <summary>
@@ -40,8 +41,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
                         markAttendance.SprintId,
                         markAttendance.UserId,
                         markAttendance.Name,
-                        markAttendance.ProfilePicture
-                    );
+                        markAttendance.ProfilePicture);
                     this.SendNotification(markAttendance.SprintId, message);
                 }
             });
@@ -51,12 +51,12 @@ namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
         /// <summary>
         /// Send notification message via <see cref="NotifyFactory"/>
         /// </summary>
-        /// <param name="sprintId">sprint id for marked attendance</see></param>
+        /// <param name="sprintId">sprint id for marked attendance</param>
         /// <param name="message"><see cref="MarkAttendanceNotification"> notification message </see></param>
         private Task SendNotification(int sprintId, MarkAttendanceNotification message)
         {
-            IChannel channel = this.NotifyFactory.CreateChannel(MarkAttendaceHelper.Channels.GetChannel(sprintId));
-            channel.Publish(MarkAttendaceHelper.Events.GetEvent(), message);
+            IChannel channel = this.NotifyFactory.CreateChannel(ChannelNames.GetChannel(sprintId));
+            channel.Publish(EventNames.GetEvent(), message);
             return Task.CompletedTask;
         }
 

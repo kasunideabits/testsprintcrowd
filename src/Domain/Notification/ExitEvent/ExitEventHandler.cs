@@ -25,6 +25,7 @@
         }
 
         private IQueue Queue { get; }
+
         private INotifyFactory NotifyFactory { get; }
 
         /// <summary>
@@ -46,7 +47,6 @@
                         exitEvent.SprintName);
                     this.SendNotification(exitEvent.SprintId, users, message);
                 }
-
             });
             return Task.CompletedTask;
         }
@@ -74,13 +74,13 @@
         /// <param name="message"><see cref="ExitNotification"> notification message </see></param>
         private Task SendNotification(int sprintId, List<int> users, ExitNotification message)
         {
-            IChannel channel = this.NotifyFactory.CreateChannel(ExitEventHelper.Channels.ExitUser());
+            IChannel channel = this.NotifyFactory.CreateChannel(ChannelNames.ExitUser());
             users.ForEach(uid =>
             {
-                channel.Publish(ExitEventHelper.Events.GetEvent(uid), message);
+                channel.Publish(EventNames.GetEvent(uid), message);
             });
-            IChannel sprintChannel = this.NotifyFactory.CreateChannel(ExitEventHelper.Channels.ExitSprint(sprintId));
-            channel.Publish(ExitEventHelper.Events.GetSprintEvent(), message);
+            IChannel sprintChannel = this.NotifyFactory.CreateChannel(ChannelNames.ExitSprint(sprintId));
+            channel.Publish(EventNames.GetSprintEvent(), message);
             return Task.CompletedTask;
         }
 

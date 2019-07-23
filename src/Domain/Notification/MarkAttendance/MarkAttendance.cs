@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     /// <summary>
     /// class which give information for makr attendance event notification

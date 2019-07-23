@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
+﻿namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,8 +11,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
     /// Class responsible for send notification which indicating x user join
     /// for y event to all participant and mange notification datastore
     /// </summary>
-    //  TODO: store notifications
-
+    // TODO: store notifications
     public class JoinEventHandler : IJoinEventHandler
     {
         /// <summary>
@@ -27,6 +26,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
         }
 
         private IQueue Queue { get; }
+
         private INotifyFactory NotifyFactory { get; }
 
         /// <summary>
@@ -48,7 +48,6 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
                         joinEvent.SprintName);
                     this.SendNotification(users, message);
                 }
-
             });
             return Task.CompletedTask;
         }
@@ -75,10 +74,10 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
         /// <param name="message"><see cref="JoinedNotification"> notification message </see></param>
         private Task SendNotification(List<int> users, JoinedNotification message)
         {
-            IChannel channel = this.NotifyFactory.CreateChannel(JoinEventHelper.Channels.Join);
+            IChannel channel = this.NotifyFactory.CreateChannel(ChannelNames.Join);
             users.ForEach(uid =>
             {
-                channel.Publish(JoinEventHelper.Events.GetEvent(uid), message);
+                channel.Publish(EventNames.GetEvent(uid), message);
             });
             return Task.CompletedTask;
         }
