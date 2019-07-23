@@ -14,13 +14,6 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
             /// Join event subscribe name
             /// </summary>
             public const string Join = "notifications:sprint";
-
-            /// <summary>
-            /// Generate channel name with sprint id
-            /// </summary>
-            /// <param name="sprintId">sprint id for the event</param>
-            /// <returns>generated channel name;</returns>
-            public static string GetSprintChannel(int sprintId) => $"sprint{sprintId}";
         }
 
         /// <summary>

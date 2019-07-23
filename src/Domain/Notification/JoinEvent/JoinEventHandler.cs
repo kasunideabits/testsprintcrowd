@@ -50,7 +50,6 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
                 }
 
             });
-
             return Task.CompletedTask;
         }
 
@@ -60,7 +59,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
         /// <param name="context">db context</param>
         /// <param name="sprintId">related sprint id</param>
         /// <param name="userId">who joined for the event</param>
-        /// <returns></returns>
+        /// <returns>user ids</returns>
         private List<int> GetUsersToNotify(ScrowdDbContext context, int sprintId, int userId)
         {
             return context.SprintParticipant

@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
     public class JoinEvent
     {
         /// <summary>
-        /// Initialize <see cref="JoinEvetn"/> class
+        /// Initialize <see cref="JoinEvent"/> class
         /// </summary>
         /// <param name="sprintId">sprint id which joined</param>
         /// <param name="sprintName">sprint name which joined</param>
