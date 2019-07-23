@@ -4,6 +4,7 @@
     using System.IO;
     using System.Reflection;
     using System;
+    using Coravel;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc.Formatters;
@@ -14,6 +15,7 @@
     using RestSharp;
     using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Domain.Device;
+    using SprintCrowd.BackEnd.Domain.Notification;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
@@ -50,6 +52,7 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddQueue();
             services.AddCors();
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
@@ -147,6 +150,7 @@
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
             services.AddScoped<ISprintParticipantService, SprintParticipantService>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
+            services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             this.AddAuthorizationDIModules(services);
         }
 
