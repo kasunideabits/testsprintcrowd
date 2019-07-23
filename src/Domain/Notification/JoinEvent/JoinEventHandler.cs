@@ -46,7 +46,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
                         joinEvent.Name,
                         joinEvent.ProfilePicture,
                         joinEvent.SprintName);
-                    this.NotifiUsers(users, message);
+                    this.SendNotification(users, message);
                 }
 
             });
@@ -73,7 +73,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
         /// </summary>
         /// <param name="users">user id's for send notifications</param>
         /// <param name="message"><see cref="JoinedNotification"> notification message </see></param>
-        private Task NotifiUsers(List<int> users, JoinedNotification message)
+        private Task SendNotification(List<int> users, JoinedNotification message)
         {
             IChannel channel = this.NotifyFactory.CreateChannel(JoinEventHelper.Channels.Join);
             users.ForEach(uid =>
