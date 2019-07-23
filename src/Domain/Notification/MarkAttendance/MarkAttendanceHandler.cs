@@ -99,8 +99,6 @@ namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
             /// Gets uri for user profile picture
             /// </summary>
             public string ProfilePicture { get; }
-
         }
-
     }
 }
