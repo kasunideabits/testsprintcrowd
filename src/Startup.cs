@@ -27,6 +27,7 @@
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
+    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -153,6 +154,7 @@
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
+            services.AddTransient<IExitEventHandler, ExitEventHandler>();
             this.AddAuthorizationDIModules(services);
         }
 
