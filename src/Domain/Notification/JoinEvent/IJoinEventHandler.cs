@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace SprintCrowd.BackEnd.Domain.Notification
+namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
 {
     /// <summary>
     /// Interface for Join evetn

@@ -15,7 +15,7 @@
     using RestSharp;
     using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Domain.Device;
-    using SprintCrowd.BackEnd.Domain.Notification;
+    using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;

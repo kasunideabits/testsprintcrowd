@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification
+namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
 {
     /// <summary>
     /// class which give information for joined event notification

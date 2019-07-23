@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Domain.Notification
+namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
 {
     using System.Collections.Generic;
     using System.Linq;
