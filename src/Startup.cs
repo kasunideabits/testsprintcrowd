@@ -16,6 +16,7 @@
     using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
+    using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
@@ -151,6 +152,7 @@
             services.AddScoped<ISprintParticipantService, SprintParticipantService>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
+            services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
             this.AddAuthorizationDIModules(services);
         }
 
