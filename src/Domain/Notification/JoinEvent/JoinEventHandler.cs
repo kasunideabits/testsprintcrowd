@@ -94,6 +94,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification.JoinEvent
             /// <param name="userId">user id for who has joined</param>
             /// <param name="name">name for who has joined</param>
             /// <param name="profilePicture">profile picture url for user who has joined</param>
+            /// <param name="sprintName">sprint name</param>
             public JoinedNotification(int userId, string name, string profilePicture, string sprintName)
             {
                 this.UserId = userId;
