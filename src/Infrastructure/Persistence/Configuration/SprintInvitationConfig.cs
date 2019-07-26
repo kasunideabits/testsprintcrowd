@@ -14,7 +14,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
                 .WithOne(s => s.Inviter)
                 .HasForeignKey<SprintInvitation>(s => s.InviterId);
             builder
-                .HasOne(s => s.Inviter)
+                .HasOne(s => s.Invitee)
                 .WithOne(s => s.Invitee)
                 .HasForeignKey<SprintInvitation>(s => s.InviteeId);
             builder.Property<DateTime>("LastUpdated");
