@@ -61,5 +61,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value> Lanugage code </value>
         public string LanguagePreference { get; set; } = LanguageCode.English;
+
+        /// <summary>
+        /// Gets or set Notification reference for sender
+        /// </summary>
+        public virtual List<Notifications> SenderNotification { get; set; }
+
+        /// <summary>
+        /// Gets or set Notification reference for receiver
+        /// </summary>
+        public virtual List<Notifications> ReceiverNotification { get; set; }
+
+        public virtual SprintInvitation Inviter { get; set; }
+
+        public virtual SprintInvitation Invitee { get; set; }
+
     }
 }
