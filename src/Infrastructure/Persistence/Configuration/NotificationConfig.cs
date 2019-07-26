@@ -13,7 +13,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
         /// <summary>
         /// Configure table Notifications
         /// </summary>
-        /// <param name="builder"></param>
+        /// <param name="builder">entity builder instance</param>
         public void Configure(EntityTypeBuilder<Notifications> builder)
         {
             builder

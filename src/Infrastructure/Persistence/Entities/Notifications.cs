@@ -52,7 +52,6 @@
         /// <summary>
         /// Reference for sprint invitiation notification
         /// </summary>
-        /// <value></value>
         public virtual SprintInvitationNotification SprintInvitation { get; set; }
     }
 }

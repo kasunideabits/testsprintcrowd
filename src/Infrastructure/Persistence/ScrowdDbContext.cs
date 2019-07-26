@@ -43,10 +43,19 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// </summary>
         public DbSet<AppDownloads> AppDownloads { get; set; }
 
+        /// <summary>
+        /// table for notifications
+        /// </summary>
         public DbSet<Notifications> Notification { get; set; }
 
+        /// <summary>
+        /// table for sprint invitation
+        /// </summary>
         public DbSet<SprintInvitation> SprintInvitation { get; set; }
 
+        /// <summary>
+        /// table for sprint invitation notification
+        /// </summary>
         public DbSet<SprintInvitationNotification> SprintInvitationNotification { get; set; }
 
         /// <summary>

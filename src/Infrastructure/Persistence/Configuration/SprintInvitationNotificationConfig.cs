@@ -11,9 +11,9 @@
     public class SprintInvitationNotificationConfig : IEntityTypeConfiguration<SprintInvitationNotification>
     {
         /// <summary>
-        /// Configure table SprintInvitation
+        /// Configure table SprintInvitationNotification
         /// </summary>
-        /// <param name="builder"></param>
+        /// <param name="builder">entity builder instance</param>
         public void Configure(EntityTypeBuilder<SprintInvitationNotification> builder)
         {
             builder
