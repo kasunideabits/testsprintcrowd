@@ -71,10 +71,5 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Gets or set Notification reference for receiver
         /// </summary>
         public virtual List<Notifications> ReceiverNotification { get; set; }
-
-        public virtual SprintInvitation Inviter { get; set; }
-
-        public virtual SprintInvitation Invitee { get; set; }
-
     }
 }

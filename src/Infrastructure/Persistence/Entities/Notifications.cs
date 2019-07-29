@@ -8,50 +8,64 @@
     public class Notifications
     {
         /// <summary>
-        /// Unique id for notificaiton
+        /// Gets or set unique id for notificaiton
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Type of notification
+        /// Gets or set type of notification
         /// </summary>
-        /// <value></value>
         public NotificationType NotiticationType { get; set; }
 
         /// <summary>
-        /// Id reference for notificaiton sender
+        /// Gets or set id reference for notificaiton sender
         /// </summary>
         public int SenderId { get; set; }
 
         /// <summary>
-        /// Id for notification receiver
+        /// Gets or set id for notification receiver
         /// </summary>
         public int ReceiverId { get; set; }
 
         /// <summary>
-        /// Send time of the notification
+        /// Gets or set sprint id if available
+        /// </summary>
+        public int SprintId { get; set; }
+
+        /// <summary>
+        /// Gets or sets achievement id if available
+        /// </summary>
+        /// <value></value>
+        public int AchievementId { get; set; }
+
+        /// <summary>
+        /// Gets or set send time of the notification
         /// </summary>
         public DateTime SendTime { get; set; }
 
         /// <summary>
-        /// Notificaiton read or not
+        /// Gets or set notificaiton read or not
         /// </summary>
-        /// <value></value>
         public bool IsRead { get; set; }
 
         /// <summary>
-        /// Reference for notificaiton sender
+        /// Gets or set reference for notificaiton sender
         /// </summary>
         public virtual User Sender { get; set; }
 
         /// <summary>
-        /// Reference for notification receiver
+        /// Gets or set reference for notification receiver
         /// </summary>
         public virtual User Receiver { get; set; }
 
         /// <summary>
-        /// Reference for sprint invitiation notification
+        /// Gets or set reference for sprint
         /// </summary>
-        public virtual SprintInvitationNotification SprintInvitation { get; set; }
+        public virtual Sprint Sprint { get; set; }
+
+        /// <summary>
+        /// Gets or set reference for achievement
+        /// </summary>
+        public virtual Achievement Achievement { get; set; }
     }
 }

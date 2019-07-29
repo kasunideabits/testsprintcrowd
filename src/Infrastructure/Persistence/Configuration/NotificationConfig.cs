@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
-namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
+﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+    using Microsoft.EntityFrameworkCore;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+
     /// <summary>
     /// Entity configuration for Notifications table
     /// </summary>
@@ -24,6 +24,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
                 .HasOne(s => s.Receiver)
                 .WithMany(s => s.ReceiverNotification)
                 .HasForeignKey(s => s.ReceiverId);
+            builder
+                .HasOne(s => s.Achievement)
+                .WithMany(s => s.Notificatoins)
+                .HasForeignKey(s => s.AchievementId);
             builder.Property<DateTime>("LastUpdated");
         }
     }

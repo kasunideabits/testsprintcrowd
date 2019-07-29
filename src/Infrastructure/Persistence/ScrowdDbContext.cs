@@ -49,16 +49,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         public DbSet<Notifications> Notification { get; set; }
 
         /// <summary>
-        /// table for sprint invitation
-        /// </summary>
-        public DbSet<SprintInvitation> SprintInvitation { get; set; }
-
-        /// <summary>
-        /// table for sprint invitation notification
-        /// </summary>
-        public DbSet<SprintInvitationNotification> SprintInvitationNotification { get; set; }
-
-        /// <summary>
         /// override save changes to insert last updated value.
         /// </summary>
         public override int SaveChanges()
@@ -87,8 +77,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new AppDowloadsConfig());
             builder.ApplyConfiguration(new NotificationConfig());
-            builder.ApplyConfiguration(new SprintInvitationConfig());
-            builder.ApplyConfiguration(new SprintInvitationNotificationConfig());
             builder
                 .Entity<AccessToken>()
                 .Property<DateTime>("LastUpdated");
