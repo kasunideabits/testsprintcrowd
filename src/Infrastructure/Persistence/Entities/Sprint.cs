@@ -76,11 +76,5 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>participants of the event.</value>
         public List<SprintParticipant> Participants { get; set; }
-
-        /// <summary>
-        /// Gets for setds sprint invitation notifications
-        /// </summary>
-        /// <value></value>
-        public virtual List<SprintInvitationNotification> SprintInvitationNotification { get; set; }
     }
 }
