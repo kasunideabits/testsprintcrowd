@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence;
 namespace SprintCrowd.BackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190729112506_RenameNotificaitonTableName")]
+    partial class RenameNotificaitonTableName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,7 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.Property<int>("Type")
                         .HasColumnName("type");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -98,42 +100,6 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("firebase_token");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Friend", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<int>("Code")
-                        .HasColumnName("code");
-
-                    b.Property<int>("FriendId")
-                        .HasColumnName("friend_id");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("RequestStatus")
-                        .HasColumnName("request_status");
-
-                    b.Property<DateTime>("SendTime")
-                        .HasColumnName("send_time");
-
-                    b.Property<DateTime>("StatusUpdatedTime")
-                        .HasColumnName("status_updated_time");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FriendId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("frineds");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notification", b =>
@@ -299,9 +265,8 @@ namespace SprintCrowd.BackEnd.Migrations
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Achievement", b =>
                 {
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithMany("Achievements")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.FirebaseMessagingToken", b =>
@@ -309,19 +274,6 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Friend", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "FriendOf")
-                        .WithMany("FriendRequester")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notification", b =>
