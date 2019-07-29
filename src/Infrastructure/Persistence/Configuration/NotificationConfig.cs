@@ -8,13 +8,13 @@
     /// <summary>
     /// Entity configuration for Notifications table
     /// </summary>
-    public class NotificationConfig : IEntityTypeConfiguration<Notifications>
+    public class NotificationConfig : IEntityTypeConfiguration<Notification>
     {
         /// <summary>
         /// Configure table Notifications
         /// </summary>
         /// <param name="builder">entity builder instance</param>
-        public void Configure(EntityTypeBuilder<Notifications> builder)
+        public void Configure(EntityTypeBuilder<Notification> builder)
         {
             builder
                 .HasOne(s => s.Sender)

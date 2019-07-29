@@ -46,7 +46,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// <summary>
         /// table for notifications
         /// </summary>
-        public DbSet<Notifications> Notification { get; set; }
+        public DbSet<Notification> Notification { get; set; }
 
         /// <summary>
         /// override save changes to insert last updated value.

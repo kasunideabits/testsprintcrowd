@@ -5,7 +5,7 @@
     /// <summary>
     /// Class define Notification table attributes
     /// </summary>
-    public class Notifications
+    public class Notification
     {
         /// <summary>
         /// Gets or set unique id for notificaiton

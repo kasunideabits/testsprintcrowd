@@ -26,6 +26,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Gets or set notification reference
         /// </summary>
-        public virtual List<Notifications> Notificatoins { get; set; }
+        public virtual List<Notification> Notificatoins { get; set; }
     }
 }
