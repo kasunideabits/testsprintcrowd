@@ -49,8 +49,8 @@
             else
             {
                 allSprints = await this.SprintRepo.GetAllEvents();
-
             }
+
             int totalCount = allSprints.Count();
             int privateCount = allSprints.Where(s => s.Type == (int)SprintType.PrivateSprint).Count();
             int publicCount = allSprints.Where(s => s.Type == (int)SprintType.PublicSprint).Count();
@@ -127,6 +127,7 @@
             {
                 this.SprintRepo.SaveChanges();
             }
+
             return sprint;
         }
 
@@ -135,14 +136,5 @@
             return sprints
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
         }
-
-        /// <summary>
-        /// creates a new sprint
-        /// </summary>
-        /// <param name="privateSprintInfo">details of the sprint</param>
-        /// <param name="stage">stage value</param>
-        /// <param name="joinedUserId">user who created the sprint</param>
-        /// <returns>created sprint</returns>
-
     }
 }

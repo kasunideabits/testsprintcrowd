@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence;
 namespace SprintCrowd.BackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190722115149_LanguagePreference")]
+    partial class LanguagePreference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,39 +102,6 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.ToTable("firebase_token");
                 });
 
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notifications", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnName("is_read");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("NotiticationType")
-                        .HasColumnName("notitication_type");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnName("receiver_id");
-
-                    b.Property<DateTime>("SendTime")
-                        .HasColumnName("send_time");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnName("sender_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("notification");
-                });
-
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", b =>
                 {
                     b.Property<int>("Id")
@@ -181,62 +150,6 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("sprint");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<int>("InviteeId")
-                        .HasColumnName("invitee_id");
-
-                    b.Property<int>("InviterId")
-                        .HasColumnName("inviter_id");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("SprintId")
-                        .HasColumnName("sprint_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InviteeId")
-                        .IsUnique();
-
-                    b.HasIndex("InviterId")
-                        .IsUnique();
-
-                    b.HasIndex("SprintId");
-
-                    b.ToTable("sprint_invitation");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitationNotification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("NotificationId")
-                        .HasColumnName("notification_id");
-
-                    b.Property<int>("SprintId")
-                        .HasColumnName("sprint_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NotificationId")
-                        .IsUnique();
-
-                    b.HasIndex("SprintId");
-
-                    b.ToTable("sprint_invitation_notification");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintParticipant", b =>
@@ -320,55 +233,11 @@ namespace SprintCrowd.BackEnd.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notifications", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Receiver")
-                        .WithMany("ReceiverNotification")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Sender")
-                        .WithMany("SenderNotification")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", b =>
                 {
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "CreatedBy")
                         .WithMany("Sprint")
                         .HasForeignKey("CreatedById");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitation", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Invitee")
-                        .WithOne("Invitee")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitation", "InviteeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Inviter")
-                        .WithOne("Inviter")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitation", "InviterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", "Sprint")
-                        .WithMany()
-                        .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitationNotification", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notifications", "Notification")
-                        .WithOne("SprintInvitation")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvitationNotification", "NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", "Sprint")
-                        .WithMany("SprintInvitationNotification")
-                        .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintParticipant", b =>
