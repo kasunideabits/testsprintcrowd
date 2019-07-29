@@ -1,60 +1,54 @@
-﻿namespace SprintCrowd.BackEnd.Web.Event
+﻿namespace SprintCrowd.BackEnd.Web.Sprint
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
-    using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
-    /// event controller
+    /// Controller for handle sprint participants
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    public class PrivateSprintController : ControllerBase
+    [Authorize]
+    public class SprintParticipantController : ControllerBase
     {
         /// <summary>
-        /// intializes an instance of SprintController
+        /// Initialize SprintMarkAttendanceController controller
         /// </summary>
-        /// <param name="userService">user service</param>
-        /// <param name="sprintService">sprint service</param>
-        /// <param name="sprintParticipantService">sprint participant service</param>
-        public PrivateSprintController(
+        /// <param name="userService">instance reference for IUserService</param>
+        /// <param name="sprintParticipantService">instance reference for ISprintParticipantService</param>
+        public SprintParticipantController(
             IUserService userService,
-            ISprintService sprintService,
             ISprintParticipantService sprintParticipantService)
         {
-            this.SprintService = sprintService;
-            this.SprintParticipantService = sprintParticipantService;
             this.UserService = userService;
+            this.SprintParticipantService = sprintParticipantService;
         }
 
-        private ISprintService SprintService { get; }
-
+        private IUserService UserService { get; }
         private ISprintParticipantService SprintParticipantService { get; }
 
-        private IUserService UserService { get; }
-
         /// <summary>
-        /// creates an event
+        /// Mark attenedance for given sprint id
         /// </summary>
-        /// <param name="modelInfo">info about the sprint</param>
-        [HttpPost]
-        [Route("create")]
-        public async Task<ResponseObject> CreateEvent([FromBody] SprintModel modelInfo)
+        /// <param name="markAttendence">sprint and user details</param>
+        [HttpPost("mark-attendence")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> MarkAttendence([FromBody] MarkAttendence markAttendence)
         {
-            User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.CreateNewSprint(modelInfo, user);
-
+            await this.SprintParticipantService.MarkAttendence(markAttendence.SprintId, markAttendence.UserId);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
+                Data = "Successfully update mark attendence",
             };
-            return response;
+            return this.Ok(response);
         }
 
         /// <summary>

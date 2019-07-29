@@ -29,7 +29,7 @@ namespace Tests
         public async void ShouldCreateNewPrivateSprint()
         {
             SprintModel sprintModel = new SprintModel("TestEvent1", 1500, false, DateTime.UtcNow, (int)SprintType.PrivateSprint, 0, 0, 1, 3);
-            var response = await this._httpClient.PostAsync("/privatesprint/create", new StringContent(JsonConvert.SerializeObject(sprintModel), Encoding.UTF8, "application/json"));
+            var response = await this._httpClient.PostAsync("/sprint/create", new StringContent(JsonConvert.SerializeObject(sprintModel), Encoding.UTF8, "application/json"));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -46,8 +46,7 @@ namespace Tests
                 SprintId = 4,
                 IsConfirmed = true
             };
-
-            var response = await this._httpClient.PostAsync("/privatesprint/join", new StringContent(JsonConvert.SerializeObject(sprintModel), Encoding.UTF8, "application/json"));
+            var response = await this._httpClient.PostAsync("/sprintparticipant/join", new StringContent(JsonConvert.SerializeObject(sprintModel), Encoding.UTF8, "application/json"));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
