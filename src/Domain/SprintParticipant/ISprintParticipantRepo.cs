@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -22,6 +23,13 @@
         /// <param name="privateEventCreate">event model</param>
         /// <returns>Created sprint details</returns>
         Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate);
+
+        /// <summary>
+        /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
+        Task ExitSprint(int sprintId, int userId);
 
         /// <summary>
         /// saves changed to db

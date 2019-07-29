@@ -80,5 +80,22 @@
                 return response;
             }
         }
+
+        /// <summary>
+        /// Exit an event
+        /// </summary>
+        /// <param name="exitEvent">Exit event informantion</param>
+        [HttpPost]
+        [Route("exit")]
+        public async Task<ResponseObject> ExitEvent([FromBody] ExitEventModel exitEvent)
+        {
+            ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return response;
+        }
     }
 }

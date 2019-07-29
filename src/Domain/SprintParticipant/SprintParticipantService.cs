@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.Sprint;
@@ -76,6 +77,27 @@
             catch (System.Exception ex)
             {
                 throw new Application.ApplicationException($"{ex}");
+            }
+        }
+
+        /// <summary>
+        /// Exit sprint which join for event
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
+        /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
+        // TODO : notification
+        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId)
+        {
+            try
+            {
+                await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
+                this.SprintParticipantRepo.SaveChanges();
+                return new ExitSprintResult { Result = ExitResult.Success };
+            }
+            catch (Exception ex)
+            {
+                return new ExitSprintResult { Result = ExitResult.Faild, Reason = ex.Message.ToString() };
             }
         }
     }

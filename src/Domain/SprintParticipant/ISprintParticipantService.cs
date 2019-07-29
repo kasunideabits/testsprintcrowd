@@ -25,5 +25,13 @@
         /// <param name="joinedUserId">sprint information</param>
         /// <returns>update sprint</returns>
         Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId);
+
+        /// <summary>
+        /// Exit sprint which join for event
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
+        /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
+        Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
     }
 }
