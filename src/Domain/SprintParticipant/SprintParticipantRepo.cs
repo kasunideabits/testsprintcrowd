@@ -1,6 +1,5 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using SprintCrowd.BackEnd.Application;
@@ -70,14 +69,23 @@
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
-        public async Task ExitSprint(int sprintId, int userId)
+        public async Task<ParticipantInfo> ExitSprint(int sprintId, int userId)
         {
             var participant = await this.Context.SprintParticipant
+                .Include(sp => sp.Sprint)
+                .Include(sp => sp.User)
                 .FirstOrDefaultAsync(sp => sp.User.Id == userId && sp.Sprint.Id == sprintId);
             if (participant != null)
             {
+
                 participant.Stage = (int)ParticipantStage.QUIT;
                 this.Context.Update(participant);
+                return new ParticipantInfo(
+                    userId,
+                    participant.User.Name,
+                    participant.User.ProfilePicture,
+                    sprintId,
+                    participant.Sprint.Name);
             }
             else
             {
@@ -94,6 +102,5 @@
         {
             this.Context.SaveChanges();
         }
-
     }
 }

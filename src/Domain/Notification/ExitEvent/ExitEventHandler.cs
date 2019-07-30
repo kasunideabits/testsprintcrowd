@@ -39,48 +39,25 @@
             {
                 using(var context = new ScrowdDbFactory().CreateDbContext())
                 {
-                    List<int> users = this.GetUsersToNotify(context, exitEvent.SprintId, exitEvent.UserId);
                     var message = new ExitNotification(
                         exitEvent.UserId,
                         exitEvent.Name,
                         exitEvent.ProfilePicture,
                         exitEvent.SprintName);
-                    this.SendNotification(exitEvent.SprintId, users, message);
+                    this.SendNotification(exitEvent.SprintId, message);
                 }
             });
             return Task.CompletedTask;
         }
-
-        /// <summary>
-        /// Get users which want to send notificaiton
-        /// </summary>
-        /// <param name="context">db context</param>
-        /// <param name="sprintId">related sprint id</param>
-        /// <param name="userId">who exit for the event</param>
-        /// <returns>user ids</returns>
-        private List<int> GetUsersToNotify(ScrowdDbContext context, int sprintId, int userId)
-        {
-            return context.SprintParticipant
-                .Where(s => s.Sprint.Id == sprintId && s.User.Id != userId)
-                .Select(s => s.User.Id)
-                .ToList();
-        }
-
         /// <summary>
         /// Send notification message via <see cref="NotifyFactory"/>
         /// </summary>
         /// <param name="sprintId">sprint id</param>
-        /// <param name="users">user id's for send notifications</param>
         /// <param name="message"><see cref="ExitNotification"> notification message </see></param>
-        private Task SendNotification(int sprintId, List<int> users, ExitNotification message)
+        private Task SendNotification(int sprintId, ExitNotification message)
         {
-            IChannel channel = this.NotifyFactory.CreateChannel(ChannelNames.ExitUser());
-            users.ForEach(uid =>
-            {
-                channel.Publish(EventNames.GetEvent(uid), message);
-            });
             IChannel sprintChannel = this.NotifyFactory.CreateChannel(ChannelNames.ExitSprint(sprintId));
-            channel.Publish(EventNames.GetSprintEvent(), message);
+            sprintChannel.Publish(EventNames.GetSprintEvent(), message);
             return Task.CompletedTask;
         }
 

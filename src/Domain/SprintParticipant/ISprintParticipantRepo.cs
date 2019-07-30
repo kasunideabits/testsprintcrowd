@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
-        Task ExitSprint(int sprintId, int userId);
+        Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
 
         /// <summary>
         /// saves changed to db

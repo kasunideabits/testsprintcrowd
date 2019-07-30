@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -22,11 +23,13 @@
         public SprintParticipantService(
             ISprintRepo sprintRepo,
             ISprintParticipantRepo sprintParticipantRepo,
-            IMarkAttendanceHandler markAttendance)
+            IMarkAttendanceHandler markAttendance,
+            IExitEventHandler exitEventHandler)
         {
             this.SprintRepo = sprintRepo;
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.MarkAttendance = markAttendance;
+            this.ExitEventHandler = exitEventHandler;
         }
 
         private ISprintRepo SprintRepo { get; }
@@ -34,6 +37,8 @@
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         private IMarkAttendanceHandler MarkAttendance { get; }
+
+        private IExitEventHandler ExitEventHandler { get; }
 
         /// <summary>
         /// Mark the attendece for the given sprint and notify with evnet
@@ -91,8 +96,15 @@
         {
             try
             {
-                await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
+                ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
                 this.SprintParticipantRepo.SaveChanges();
+                var exitEvent = new ExitEvent(
+                    participant.SprintId,
+                    participant.SprintName,
+                    participant.UserId,
+                    participant.UserName,
+                    participant.ProfilePicture);
+                await this.ExitEventHandler.Execute(exitEvent);
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)
