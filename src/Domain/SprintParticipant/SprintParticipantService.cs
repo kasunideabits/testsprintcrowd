@@ -20,6 +20,7 @@
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="markAttendance">make attendace background notificaiton service</param>
+        /// <param name="exitEventHandler">exit event background notificaiton service</param>
         public SprintParticipantService(
             ISprintRepo sprintRepo,
             ISprintParticipantRepo sprintParticipantRepo,
