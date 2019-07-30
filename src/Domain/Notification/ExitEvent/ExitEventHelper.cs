@@ -17,7 +17,7 @@
     /// </summary>
     public static class EventNames
     {
-        private const string EventSprint = "Exit";
+        private const string EventSprint = "SprintExit";
 
         /// <summary>
         /// Get exit event sprint manger event
