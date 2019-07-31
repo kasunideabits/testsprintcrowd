@@ -9,7 +9,7 @@
         /// Exit event subsribe for sprint manger
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
-        public static string ExitSprint(int sprintId) => $"sprint{sprintId}";
+        public static string Sprint(int sprintId) => $"sprint{sprintId}";
     }
 
     /// <summary>
@@ -17,12 +17,12 @@
     /// </summary>
     public static class EventNames
     {
-        private const string EventSprint = "Exit";
+        private const string ExitSprint = "Exit";
 
         /// <summary>
         /// Get exit event sprint manger event
         /// </summary>
         /// <returns>exit event name for sprint manager</returns>
-        public static string GetSprintEvent() => EventSprint;
+        public static string GetExitSprintEvent() => ExitSprint;
     }
 }

@@ -37,7 +37,7 @@
         {
             this.Queue.QueueTask(() =>
             {
-                using(var context = new ScrowdDbFactory().CreateDbContext())
+                using (var context = new ScrowdDbFactory().CreateDbContext())
                 {
                     var message = new ExitNotification(
                         exitEvent.UserId,
@@ -56,8 +56,8 @@
         /// <param name="message"><see cref="ExitNotification"> notification message </see></param>
         private Task SendNotification(int sprintId, ExitNotification message)
         {
-            IChannel sprintChannel = this.NotifyFactory.CreateChannel(ChannelNames.ExitSprint(sprintId));
-            sprintChannel.Publish(EventNames.GetSprintEvent(), message);
+            IChannel sprintChannel = this.NotifyFactory.CreateChannel(ChannelNames.Sprint(sprintId));
+            sprintChannel.Publish(EventNames.GetExitSprintEvent(), message);
             return Task.CompletedTask;
         }
 
