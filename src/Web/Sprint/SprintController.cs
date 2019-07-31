@@ -48,5 +48,22 @@
             };
             return response;
         }
+
+        /// <summary>
+        /// Get sprint details with users who join to sprint
+        /// </summary>
+        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        [HttpGet("{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<ResponseObject> GetSprintWithPaticipants(int sprintId)
+        {
+            var result = await this.SprintService.GetSprintWithPaticipants(sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return response;
+        }
     }
 }

@@ -77,8 +77,24 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual List<Achievement> Achievements { get; set; }
 
+        /// <summary>
+        /// Gets or set inviter rederence
+        /// </summary>
+        public virtual SprintInvite Inviter { get; set; }
+
+        /// <summary>
+        /// Gets or set invitee reference
+        /// </summary>
+        public virtual SprintInvite Invitee { get; set; }
+
+        /// <summary>
+        /// Gets or set friend requester reference
+        /// </summary>
         public virtual List<Friend> FriendRequester { get; set; }
 
+        /// <summary>
+        /// Gets or set frineds reference
+        /// </summary>
         public virtual List<Friend> Friends { get; set; }
 
     }
