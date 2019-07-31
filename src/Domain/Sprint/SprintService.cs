@@ -131,6 +131,32 @@
             return sprint;
         }
 
+        /// <summary>
+        /// Get the sprint details and sprint participant details with given
+        /// sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        public async Task<SprintWithPariticpants> GetSprintWithPaticipants(int sprintId)
+        {
+            var sprint = await this.SprintRepo.GetSprintWithPaticipants(sprintId);
+            SprintWithPariticpants result = new SprintWithPariticpants()
+            {
+                SprintId = sprint.Id,
+                SprintName = sprint.Name,
+                Distance = sprint.Distance,
+                StartDateTime = sprint.StartDateTime,
+                Type = sprint.Type,
+                NumberOfParticipants = sprint.NumberOfParticipants,
+            };
+            sprint.Participants
+                .ForEach(p =>
+                {
+                    result.AddParticipant(p.User.Id, p.User.Name, p.User.ProfilePicture);
+                });
+            return result;
+        }
+
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
         {
             return sprints

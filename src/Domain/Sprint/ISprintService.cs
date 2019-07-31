@@ -45,6 +45,12 @@
         /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
 
-    
+        /// <summary>
+        /// Get the sprint details and sprint participant details with given
+        /// sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        Task<SprintWithPariticpants> GetSprintWithPaticipants(int sprintId);
     }
 }

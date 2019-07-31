@@ -46,6 +46,14 @@
         Task<Sprint> GetSprint(int sprintID);
 
         /// <summary>
+        /// Get the sprint details and sprint participant details with given
+        /// sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="Sprint">sprint details</see></returns>
+        Task<Sprint> GetSprintWithPaticipants(int sprintId);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();
