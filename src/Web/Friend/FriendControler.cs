@@ -25,7 +25,7 @@
         /// Add friend request
         /// </summary>
         /// <returns><see cref="">sprint details</see></returns>
-        [HttpGet("add-request")]
+        [HttpPost("add-request")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> AddFriend([FromBody] AddFriendModel request)
         {
