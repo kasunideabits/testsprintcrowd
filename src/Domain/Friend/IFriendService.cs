@@ -29,5 +29,12 @@
         /// <param name="userId">user id for lookup friend</param>
         /// <returns><see cref="FriendListDto">friend list</see></returns>
         Task<FriendListDto> GetFriends(int userId);
+
+        /// <summary>
+        /// Remove friend from user list
+        /// </summary>
+        /// <param name="userId">user id for requester</param>
+        /// <param name="frindId">user id of friend</param>
+        Task RemoveFriend(int userId, int frindId);
     }
 }

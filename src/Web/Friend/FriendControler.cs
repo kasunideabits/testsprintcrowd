@@ -29,7 +29,7 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> AddFriend([FromBody] AddFriendModel request)
         {
-            var result = await this.FriendService.AddFriendRequest(request.UserId, request.FrinedId, request.Code);
+            var result = await this.FriendService.AddFriendRequest(request.UserId, request.FriendId, request.Code);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -72,6 +72,18 @@
                 Data = result,
             };
             return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Remove friend from friend list
+        /// </summary>
+        /// <param name="remove"><see cref="RemoveFriendModel"> request body</see></param>
+        /// <returns>empty body</returns>
+        [HttpGet("remove")]
+        public async Task<IActionResult> RemoveFriend([FromBody] RemoveFriendModel remove)
+        {
+            await this.FriendService.RemoveFriend(remove.UserId, remove.FriendId);
+            return this.Ok();
         }
     }
 }

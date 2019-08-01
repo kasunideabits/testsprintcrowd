@@ -62,5 +62,16 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture));
             return friendsList;
         }
+
+        /// <summary>
+        /// Remove friend from user list
+        /// </summary>
+        /// <param name="userId">user id for requester</param>
+        /// <param name="frindId">user id of friend</param>
+        public async Task RemoveFriend(int userId, int friendId)
+        {
+            await this.FriendRepo.RemoveFriend(userId, friendId);
+            return;
+        }
     }
 }

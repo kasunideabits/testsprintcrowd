@@ -13,7 +13,7 @@
         /// <summary>
         ///  Gets or set user id for whom to send
         /// </summary>
-        public int FrinedId { get; set; }
+        public int FriendId { get; set; }
 
         /// <summary>
         ///  Gets or set unique code for friend request

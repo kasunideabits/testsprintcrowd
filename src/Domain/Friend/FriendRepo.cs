@@ -77,5 +77,24 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .Where(f => f.Id == userId && f.RequestStatus == FriendRequestStatus.Accept)
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// Remove friend from user list
+        /// </summary>
+        /// <param name="userId">user id for requester</param>
+        /// <param name="frindId">user id of friend</param>
+        public async Task RemoveFriend(int userId, int friendId)
+        {
+            var friendRel1 = this.Context.Frineds.FirstOrDefaultAsync(f => f.UserId == userId && f.FriendId == friendId);
+            var friendRel2 = this.Context.Frineds.FirstOrDefaultAsync(f => f.UserId == friendId && f.FriendId == userId);
+            if (friendRel1 != null)
+            {
+                this.Context.Remove(friendRel1);
+            }
+            if (friendRel2 != null)
+            {
+                this.Context.Remove(friendRel1);
+            }
+        }
     }
 }
