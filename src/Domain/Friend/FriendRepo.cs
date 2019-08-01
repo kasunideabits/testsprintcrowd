@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using System;
@@ -47,12 +48,12 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// /// </summary>
         /// <param name="friendId">friend user id</param>
         /// <returns>Friend user details</returns>
-        // TODO : Handle not found
+        // TODO : Handle not found, Request status
         public async Task<User> GetFriend(int friendId)
         {
             Friend result = await this.Context.Frineds
                 .Include(f => f.FriendOf)
-                .FirstOrDefaultAsync(f => f.FriendId == friendId);
+                .FirstOrDefaultAsync(f => f.FriendId == friendId && f.RequestStatus == FriendRequestStatus.Accept);
             if (result != null)
             {
                 return result.FriendOf;
@@ -61,6 +62,20 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             {
                 throw new Application.ApplicationException("can find matching friend");
             }
+        }
+
+        /// <summary>
+        /// Get frind list for given user
+        /// </summary>
+        /// <param name="userId">user id for lookup friend</param>
+        /// <returns><see cref="Friend">friend list</see></returns>
+        // TODO : handle request status
+        public async Task<List<Friend>> GetFriends(int userId)
+        {
+            return await this.Context.Frineds
+                .Include(f => f.FriendOf)
+                .Where(f => f.Id == userId && f.RequestStatus == FriendRequestStatus.Accept)
+                .ToListAsync();
         }
     }
 }

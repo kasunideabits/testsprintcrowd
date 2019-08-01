@@ -38,10 +38,34 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Get friend details with given friend id
+        /// </summary>
+        /// <param name="friendId">friend id</param>
+        /// <returns><see cref="FriendDto"> friend details </returns>
         [HttpGet("get/{fiendId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetFriend(int friendId)
         {
             var result = await this.FriendService.GetFriend(friendId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get all friends for given user id
+        /// </summary>
+        /// <param name="userId">user id for get friend list</param>
+        /// <returns><see cref="FriendListDto">friend list</returns>
+        [HttpGet("get-all/{userId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetFriends(int userId)
+        {
+            var result = await this.FriendService.GetFriends(userId);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,

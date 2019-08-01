@@ -22,5 +22,12 @@
         /// <param name="friendId">friend user id for lookup</param>
         /// <returns><see cref="FriendDto"> friend details </see></returns>
         Task<FriendDto> GetFriend(int friendId);
+
+        /// <summary>
+        /// Get frind list for given user
+        /// </summary>
+        /// <param name="userId">user id for lookup friend</param>
+        /// <returns><see cref="FriendListDto">friend list</see></returns>
+        Task<FriendListDto> GetFriends(int userId);
     }
 }

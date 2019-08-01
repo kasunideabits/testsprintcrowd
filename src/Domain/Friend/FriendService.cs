@@ -2,6 +2,7 @@
 
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -47,6 +48,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         {
             User friend = await this.FriendRepo.GetFriend(friendId);
             return new FriendDto(friend.Id, friend.Name, friend.ProfilePicture);
+        }
+
+        /// <summary>
+        /// Get frind list for given user
+        /// </summary>
+        /// <param name="userId">user id for lookup friend</param>
+        /// <returns><see cref="FriendListDto">friend list</see></returns>
+        public async Task<FriendListDto> GetFriends(int userId)
+        {
+            var friends = await this.FriendRepo.GetFriends(userId);
+            var friendsList = new FriendListDto();
+            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture));
+            return friendsList;
         }
     }
 }
