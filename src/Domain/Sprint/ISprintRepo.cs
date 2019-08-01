@@ -9,6 +9,10 @@
     /// </summary>
     public interface ISprintRepo
     {
+        /// <summary>
+        /// Get all sprints
+        /// </summary>
+        /// <returns>all sprints</returns>
         Task<List<Sprint>> GetAllEvents();
 
         /// <summary>
@@ -18,6 +22,12 @@
         /// <returns>all events with given type</returns>
         Task<List<Sprint>> GetAllEvents(int eventType);
 
+        /// <summary>
+        /// Get all events with given date range
+        /// </summary>
+        /// <param name="from">date range from</param>
+        /// <param name="to">date range to</param>
+        /// <returns>All sprint with given date range</returns>
         Task<List<Sprint>> GetAllEvents(DateTime from, DateTime to);
 
         /// <summary>

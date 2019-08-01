@@ -1,6 +1,5 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
-    using System.Collections.Generic;
     using System;
 
     /// <summary>

@@ -1,5 +1,8 @@
 namespace SprintCrowd.BackEnd.Web.Sprint
 {
+    /// <summary>
+    /// Represent exit event request
+    /// </summary>
     public class ExitEventModel
     {
         /// <summary>

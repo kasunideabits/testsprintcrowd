@@ -1,7 +1,7 @@
-using SprintCrowd.BackEnd.Application;
-
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
+    using SprintCrowd.BackEnd.Application;
+
     /// <summary>
     /// Entity which describe sprint invite table
     /// </summary>

@@ -5,7 +5,6 @@ namespace SprintCrowd.BackEnd.Web.Event
     /// </summary>
     public class JoinPrivateSprintModel
     {
-
         /// <summary>
         /// Sprint Id
         /// </summary>

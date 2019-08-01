@@ -18,7 +18,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// gets or sets the sprint.
         /// </summary>
-        /// <value></value>
         public Sprint Sprint { get; set; }
 
         /// <summary>
