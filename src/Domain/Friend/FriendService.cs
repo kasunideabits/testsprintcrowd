@@ -1,9 +1,10 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
     using System.Threading.Tasks;
     using System;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -35,6 +36,17 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             {
                 throw new Application.ApplicationException(AddFriendRequestResult.Faild(), e);
             }
+        }
+
+        /// <summary>
+        /// Get friend details with given friend id
+        /// </summary>
+        /// <param name="friendId">friend user id for lookup</param>
+        /// <returns><see cref="FriendDto"> friend details </see></returns>
+        public async Task<FriendDto> GetFriend(int friendId)
+        {
+            User friend = await this.FriendRepo.GetFriend(friendId);
+            return new FriendDto(friend.Id, friend.Name, friend.ProfilePicture);
         }
     }
 }

@@ -37,5 +37,17 @@
             };
             return this.Ok(response);
         }
+
+        [HttpGet("get/{fiendId:int}")]
+        public async Task<IActionResult> GetFriend(int friendId)
+        {
+            var result = await this.FriendService.GetFriend(friendId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }

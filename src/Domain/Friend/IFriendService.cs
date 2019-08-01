@@ -15,5 +15,12 @@
         /// <param name="code">uniqe code for request</param>
         /// <returns>><see cref="AddFriendRequestResult">success or faild </see></returns>
         Task<string> AddFriendRequest(int userId, int friendId, int code);
+
+        /// <summary>
+        /// Get friend details with given friend id
+        /// </summary>
+        /// <param name="friendId">friend user id for lookup</param>
+        /// <returns><see cref="FriendDto"> friend details </see></returns>
+        Task<FriendDto> GetFriend(int friendId);
     }
 }

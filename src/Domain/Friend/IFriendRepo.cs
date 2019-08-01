@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Friend
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Interface for handle friend
@@ -14,5 +15,12 @@
         /// <param name="friendId">user id for who receive the request</param>
         /// <param name="code">uniqe code for request</param>
         Task AddFriendRequest(int userId, int friendId, int code);
+
+        /// <summary>
+        /// Get firend details with given friend id
+        /// </summary>
+        /// <param name="friendId">friend user id</param>
+        /// <returns>Friend user details</returns>
+        Task<User> GetFriend(int friendId);
     }
 }

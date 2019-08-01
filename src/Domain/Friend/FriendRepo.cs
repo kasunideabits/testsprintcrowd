@@ -1,7 +1,9 @@
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
+    using Microsoft.EntityFrameworkCore;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
@@ -38,6 +40,27 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 SendTime = DateTime.UtcNow,
             };
             await this.Context.Frineds.AddAsync(friend);
+        }
+
+        /// <summary>
+        /// Get firend details with given friend id
+        /// /// </summary>
+        /// <param name="friendId">friend user id</param>
+        /// <returns>Friend user details</returns>
+        // TODO : Handle not found
+        public async Task<User> GetFriend(int friendId)
+        {
+            Friend result = await this.Context.Frineds
+                .Include(f => f.FriendOf)
+                .FirstOrDefaultAsync(f => f.FriendId == friendId);
+            if (result != null)
+            {
+                return result.FriendOf;
+            }
+            else
+            {
+                throw new Application.ApplicationException("can find matching friend");
+            }
         }
     }
 }
