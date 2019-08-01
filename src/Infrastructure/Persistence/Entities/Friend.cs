@@ -22,7 +22,6 @@
         /// <summary>
         ///  Gets or set friend request to
         /// </summary>
-        /// <value></value>
         public int FriendId { get; set; }
 
         /// <summary>
@@ -44,7 +43,6 @@
         /// <summary>
         /// Gets or set accept/decline time
         /// </summary>
-        /// <value></value>
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>

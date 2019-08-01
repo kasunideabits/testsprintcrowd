@@ -15,6 +15,8 @@
     using RestSharp;
     using SprintCrowd.BackEnd.CustomPolicies;
     using SprintCrowd.BackEnd.Domain.Device;
+    using SprintCrowd.BackEnd.Domain.Friend;
+    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
@@ -27,7 +29,6 @@
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
-    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -151,6 +152,8 @@
             services.AddScoped<IDeviceRepo, DeviceRepo>();
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
             services.AddScoped<ISprintParticipantService, SprintParticipantService>();
+            services.AddTransient<IFriendService, FriendService>();
+            services.AddTransient<IFriendRepo, FriendRepo>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
