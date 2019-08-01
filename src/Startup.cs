@@ -4,6 +4,7 @@
     using System.IO;
     using System.Reflection;
     using System;
+    using Coravel;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc.Formatters;
@@ -13,17 +14,20 @@
     using Newtonsoft.Json;
     using RestSharp;
     using SprintCrowd.BackEnd.CustomPolicies;
-    using SprintCrowd.BackEnd.Data;
     using SprintCrowd.BackEnd.Domain.Device;
+    using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
+    using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Migrations.Seed;
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
+    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -50,6 +54,7 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddQueue();
             services.AddCors();
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
@@ -147,6 +152,9 @@
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
             services.AddScoped<ISprintParticipantService, SprintParticipantService>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
+            services.AddTransient<IJoinEventHandler, JoinEventHandler>();
+            services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
+            services.AddTransient<IExitEventHandler, ExitEventHandler>();
             this.AddAuthorizationDIModules(services);
         }
 

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -33,6 +34,11 @@
         /// <param name="fetch">event model</param>
         /// <returns>Get current joined users of a given sprint</returns>
         Task<List<CustomSprintModel>> GetCurrentJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch);
+        /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
+        Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
 
         /// <summary>
         /// saves changed to db

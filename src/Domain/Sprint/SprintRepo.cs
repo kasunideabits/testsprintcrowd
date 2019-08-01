@@ -95,6 +95,36 @@
         }
 
         /// <summary>
+        /// Get the sprint details and sprint participant details with given
+        /// sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="Sprint">sprint details</see></returns>
+        public async Task<Sprint> GetSprintWithPaticipants(int sprintId)
+        {
+            try
+            {
+                var result = await this.dbContext.Sprint
+                    .Where(s => s.Id == sprintId)
+                    .Include(s => s.Participants)
+                    .ThenInclude(p => p.User)
+                    .FirstOrDefaultAsync();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    throw new Application.ApplicationException("sprint not find");
+                }
+            }
+            catch (System.Exception e)
+            {
+                throw new Application.ApplicationException(e.Message.ToString());
+            }
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

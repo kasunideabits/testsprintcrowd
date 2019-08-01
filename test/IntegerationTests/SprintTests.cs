@@ -1,21 +1,13 @@
 ﻿namespace Tests
 {
-    using System.IO;
     using System.Net.Http;
     using System.Net;
     using System.Text;
     using System;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc.Testing;
-    using Microsoft.AspNetCore.TestHost;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using Tests.Helpers;
     using Xunit;
 
@@ -37,7 +29,7 @@
         public async void ShouldCreateNewSprint()
         {
             SprintModel newSprint = new SprintModel("Test", 1000, false, DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, 1, 10);
-            var response = await this._client.PostAsync("/sprint/create", new StringContent(
+            var response = await this._client.PostAsync("/sprintadmin/create", new StringContent(
                 JsonConvert.SerializeObject(newSprint, Formatting.None),
                 Encoding.UTF8,
                 "application/json"));
@@ -64,7 +56,7 @@
             TestStartUp.DbContext.SaveChanges();
             SprintModel updateRequest = new SprintModel("Updated Sprint", 2000, false, DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, addedSprint.Entity.Id, 10);
 
-            var result = await this._client.PutAsync("/sprint/update", new StringContent(
+            var result = await this._client.PutAsync("/sprintadmin/update", new StringContent(
                 JsonConvert.SerializeObject(updateRequest, Formatting.None),
                 Encoding.UTF8,
                 "application/json"));
@@ -103,7 +95,7 @@
             var addedSprint2 = await TestStartUp.DbContext.Sprint.AddAsync(sprint2);
             TestStartUp.DbContext.SaveChanges();
 
-            var response = await this._client.GetAsync("/sprint/get-public");
+            var response = await this._client.GetAsync("/sprintadmin/get-public");
             response.EnsureSuccessStatusCode();
             string strResponse = await response.Content.ReadAsStringAsync();
             dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
@@ -134,7 +126,7 @@
 
             TestStartUp.DbContext.SaveChanges();
 
-            var response = await this._client.GetAsync("/sprint/stat/live-events");
+            var response = await this._client.GetAsync("/sprintadmin/stat/live-events");
             response.EnsureSuccessStatusCode();
             string strResponse = await response.Content.ReadAsStringAsync();
             dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
@@ -164,7 +156,7 @@
 
             var to = DateTime.UtcNow.ToString();
             var from = DateTime.UtcNow.AddDays(-7).ToString();
-            var response = await this._client.GetAsync($"/sprint/stat/created-events?to={to}&from={from}");
+            var response = await this._client.GetAsync($"/sprintadmin/stat/created-events?to={to}&from={from}");
             response.EnsureSuccessStatusCode();
             string strResponse = await response.Content.ReadAsStringAsync();
             dynamic responseObj = JsonConvert.DeserializeObject(strResponse);

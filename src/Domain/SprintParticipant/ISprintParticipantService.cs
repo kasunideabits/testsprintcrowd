@@ -37,5 +37,11 @@
         /// <param name="fetch">amount to retrieve</param>
         /// <returns>Get joined users for the given sprint</returns>
         Task<List<CustomSprintModel>> GetJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch);
+        /// Exit sprint which join for event
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
+        /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
+        Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
     }
 }
