@@ -1,6 +1,8 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
 
@@ -25,5 +27,15 @@
         /// <param name="joinedUserId">sprint information</param>
         /// <returns>update sprint</returns>
         Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId);
+
+        /// <summary>
+        /// Get joined users for the given sprint
+        /// </summary>
+        /// <param name="sprint_id">sprint id</param>
+        /// <param name="sprint_type">sprint type</param>
+        /// <param name="offset">starting position</param>
+        /// <param name="fetch">amount to retrieve</param>
+        /// <returns>Get joined users for the given sprint</returns>
+        Task<List<CustomSprintModel>> GetJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch);
     }
 }

@@ -1,5 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint;
@@ -52,7 +54,7 @@
         }
 
         /// <summary>
-        /// Mark the attendece for the given sprint and join
+        /// Create sprint sprint and join
         /// </summary>
         /// <param name="privateSprintInfo">sprint id for mark attendance</param>
         /// <param name="joinedUserId">user id for for participant</param>
@@ -78,6 +80,31 @@
             catch (System.Exception ex)
             {
                 throw new Application.ApplicationException($"{ex}");
+            }
+        }
+
+
+        /// <summary>
+        /// Return joined users for the given sprint
+        /// </summary>
+        /// <param name="sprint_type">stage type</param>
+        /// <param name="sprint_id">sprint id</param>
+        /// <param name="offset">Retrieve results from mark</param>
+        /// <param name="fetch">Retrieve this much amount of results</param>
+        public async Task<List<CustomSprintModel>> GetJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch)
+        {
+            try
+            {
+                List<CustomSprintModel> joinedUsers = await this.SprintParticipantRepo.GetCurrentJoinedUsers(sprint_type, sprint_id, offset, fetch);
+                if (joinedUsers != null)
+                {
+                    this.SprintParticipantRepo.SaveChanges();
+                }
+                return joinedUsers;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }

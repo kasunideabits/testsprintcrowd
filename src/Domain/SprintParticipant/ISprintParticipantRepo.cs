@@ -1,5 +1,6 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -22,6 +23,16 @@
         /// <param name="privateEventCreate">event model</param>
         /// <returns>Created sprint details</returns>
         Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate);
+
+        /// <summary>
+        /// Get current joined users of a given sprint
+        /// </summary>
+        /// <param name="sprint_type">event model</param>
+        /// <param name="sprint_id">event model</param>
+        /// <param name="offset">event model</param>
+        /// <param name="fetch">event model</param>
+        /// <returns>Get current joined users of a given sprint</returns>
+        Task<List<CustomSprintModel>> GetCurrentJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch);
 
         /// <summary>
         /// saves changed to db

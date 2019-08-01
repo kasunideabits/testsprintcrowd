@@ -5,6 +5,8 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -62,6 +64,27 @@
         {
             var result = await this.Context.SprintParticipant.AddAsync(privateEventCreate);
             return result.Entity;
+        }
+
+        /// <summary>
+        /// Get current joined users
+        /// </summary>
+        /// <param name="sprint_type">type of the sprint</param>
+        /// <param name="sprint_id">id of the sprint</param>
+        /// <param name="offset">Retrieve results from mark</param>
+        /// <param name="fetch">Retrieve this much amount of results</param>
+
+        public async Task<List<CustomSprintModel>> GetCurrentJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch)
+        {
+            var result = await this.Context.SprintParticipant
+                .Include(u => u.Sprint)
+                .Include(u => u.User)
+                .Where(u => u.Sprint.Type == sprint_type && u.Sprint.Id == sprint_id)
+            .Select(u => new CustomSprintModel { SprintId = u.Sprint.Id, UserId = u.User.Id })
+            .Skip(offset).Take(fetch)
+            .ToListAsync();
+
+            return result;
         }
 
         /// <summary>
