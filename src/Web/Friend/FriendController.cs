@@ -8,13 +8,13 @@
     /// <summary>
     /// Handle friend related api request
     /// </summary>
-    public class FriendControler : ControllerBase
+    public class FriendController : ControllerBase
     {
         /// <summary>
-        /// Initialize <see cref="FriendControler"> class </see>
+        /// Initialize <see cref="FriendController"> class </see>
         /// </summary>
         /// <param name="frinedService"><see cref="IFriendService"> friend service </see></param>
-        public FriendControler(IFriendService frinedService)
+        public FriendController(IFriendService frinedService)
         {
             this.FriendService = frinedService;
         }
