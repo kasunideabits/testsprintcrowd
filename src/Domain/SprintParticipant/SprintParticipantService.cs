@@ -1,7 +1,5 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -10,6 +8,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -59,7 +58,7 @@
         }
 
         /// <summary>
-        /// Create sprint sprint and join
+        /// Mark the attendece for the given sprint and join
         /// </summary>
         /// <param name="privateSprintInfo">sprint id for mark attendance</param>
         /// <param name="joinedUserId">user id for for participant</param>
@@ -113,8 +112,6 @@
             }
         }
 
-
-
         /// <summary>
         /// Exit sprint which join for event
         /// </summary>
@@ -142,5 +139,19 @@
                 return new ExitSprintResult { Result = ExitResult.Faild, Reason = ex.Message.ToString() };
             }
         }
+
+
+        /// <summary>
+        /// Accept or reject sprint invitation
+        /// </summary>
+        /// <param name="SprintId">Id of the sprint</param>
+        /// <param name="InviterId">Id of the inviter</param>
+        /// <param name="InviteeId">Id of the invitee</param>
+
+        // Task<SprintInvite> AcceptEvent(int SprintId, int InviterId, int InviteeId)
+        // {
+
+
+        // }
     }
 }

@@ -5,8 +5,8 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
-    using System.Collections.Generic;
     using System.Linq;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -85,11 +85,14 @@
             .ToListAsync();
 
             return result;
-            /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
-            /// </summary>
-            /// <param name="sprintId">exit sprint id</param>
-            /// <param name="userId">user id which leaving the event</param>
+
         }
+
+        /// <summary>
+        /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userId">user id which leaving the event</param>
         public async Task<ParticipantInfo> ExitSprint(int sprintId, int userId)
         {
             var participant = await this.Context.SprintParticipant
@@ -98,7 +101,6 @@
                 .FirstOrDefaultAsync(sp => sp.User.Id == userId && sp.Sprint.Id == sprintId);
             if (participant != null)
             {
-
                 participant.Stage = (int)ParticipantStage.QUIT;
                 this.Context.Update(participant);
                 return new ParticipantInfo(
@@ -112,6 +114,63 @@
             {
                 throw new ApplicationException(ExitFaildReason.UserOrSprintNotMatch);
             }
+        }
+
+        /// <summary>
+        /// Get current joined users
+        /// </summary>
+        /// <param name="SprintId">id of the sprint</param>
+        /// <param name="InviterId">inviter id of the sprint</param>
+        /// <param name="InviteeId">invitee id details of the sprint</param>
+
+        public async Task<SprintInvite> AcceptEvent(int SprintId, int InviterId, int InviteeId)
+        {
+            var result = await this.Context.SprintInvite
+            .Include(sp => sp.SprintId)
+            .Include(sp => sp.InviterId)
+            .Include(sp => sp.InviteeId)
+            //.FirstOrDefaultAsync(sp => sp.Sprint.Id == SprintId && sp.User.Id == InviterId && sp.User.Id == InviteeId);
+            .FirstOrDefaultAsync(sp => sp.SprintId == SprintId && sp.InviterId == InviterId && sp.InviteeId == InviteeId);
+
+            if (result != null)
+            {
+                result.Status = SprintInvitationStatus.Accept;
+                this.Context.Update(result);
+                return result;
+            }
+            else
+            {
+                throw new ApplicationException();
+            }
+
+        }
+
+
+        /// <summary>
+        /// Get current joined users
+        /// </summary>
+        /// <param name="SprintId">invitation details of the sprint</param>
+        /// <param name="InviterId">invitation details of the sprint</param>
+        /// <param name="InviteeId">invitation details of the sprint</param>
+        public async Task<SprintInvite> DeclineEvent(int SprintId, int InviterId, int InviteeId)
+        {
+            var result = await this.Context.SprintInvite
+            .Include(sp => sp.SprintId)
+            .Include(sp => sp.InviterId)
+            .Include(sp => sp.InviteeId)
+            .FirstOrDefaultAsync(sp => sp.SprintId == SprintId && sp.InviterId == InviterId && sp.InviteeId == InviteeId);
+
+            if (result != null)
+            {
+                result.Status = SprintInvitationStatus.Decline;
+                this.Context.Update(result);
+                return result;
+            }
+            else
+            {
+                throw new ApplicationException();
+            }
+
         }
 
         /// <summary>

@@ -82,6 +82,33 @@
         }
 
         /// <summary>
+        /// aacept an event
+        /// </summary>
+        /// <param name="invitationModel">decision details of the Invitation</param>
+
+        // [HttpPost]
+        // [Route("accept")]
+        // public async Task<ResponseObject> AcceptEvent([FromBody] CustomSprintInvitationModel invitationModel)
+        // {
+
+        // }
+
+
+
+        /// <summary>
+        /// decline an event
+        /// </summary>
+        /// <param name="invitationModel">decision details of the Invitation</param>
+
+        // [HttpPost]
+        // [Route("decline")]
+        // public async Task<ResponseObject> DeclineEvent([FromBody] CustomSprintInvitationModel invitationModel)
+        // {
+
+        // }
+
+
+        /// <summary>
         /// Exit an event
         /// </summary>
         /// <param name="exitEvent">Exit event informantion</param>

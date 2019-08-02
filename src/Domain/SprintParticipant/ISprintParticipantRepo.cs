@@ -34,11 +34,30 @@
         /// <param name="fetch">event model</param>
         /// <returns>Get current joined users of a given sprint</returns>
         Task<List<CustomSprintModel>> GetCurrentJoinedUsers(int sprint_type, int sprint_id, int offset, int fetch);
+
+        /// <summary>
         /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
         Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
+
+        /// <summary>
+        /// Accept or reject sprint invitation
+        /// </summary>
+        /// <param name="SprintId">Id of the sprint</param>
+        /// <param name="InviterId">Id of the inviter</param>
+        /// <param name="InviteeId">Id of the invitee</param>
+        Task<SprintInvite> AcceptEvent(int SprintId, int InviterId, int InviteeId);
+
+
+        /// <summary>
+        /// Accept or reject sprint invitation
+        /// </summary>
+        /// <param name="SprintId">Id of the sprint</param>
+        /// <param name="InviterId">Id of the inviter</param>
+        /// <param name="InviteeId">Id of the invitee</param>
+        Task<SprintInvite> DeclineEvent(int SprintId, int InviterId, int InviteeId);
 
         /// <summary>
         /// saves changed to db
