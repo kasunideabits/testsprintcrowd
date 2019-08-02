@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Friend
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Friend;
@@ -10,6 +11,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>

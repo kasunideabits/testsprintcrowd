@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Event
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
@@ -13,6 +14,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class SprintController : ControllerBase
     {
         /// <summary>

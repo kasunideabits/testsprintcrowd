@@ -17,7 +17,6 @@
     [Route("[controller]")]
     [ApiController]
     [Authorize(Policy.ADMIN)]
-
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
