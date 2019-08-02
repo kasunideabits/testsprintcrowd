@@ -46,11 +46,15 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <summary>
         /// Get friend details with given friend id
         /// </summary>
+        /// <param name="userId">user id for lookup</param>
         /// <param name="friendId">friend user id for lookup</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> default is accept</see></param>
         /// <returns><see cref="FriendDto"> friend details </see></returns>
-        public async Task<FriendDto> GetFriend(int friendId)
+
+        public async Task<FriendDto> GetFriend(int userId, int friendId, FriendRequestStatus? requestStatus)
         {
-            User friend = await this.FriendRepo.GetFriend(friendId);
+            var status = requestStatus?? FriendRequestStatus.Accept;
+            User friend = await this.FriendRepo.GetFriend(userId, friendId, status);
             return new FriendDto(friend.Id, friend.Name, friend.ProfilePicture);
         }
 
@@ -58,12 +62,14 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Get frind list for given user
         /// </summary>
         /// <param name="userId">user id for lookup friend</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> default is accept</see></param>
         /// <returns><see cref="FriendListDto">friend list</see></returns>
-        public async Task<FriendListDto> GetFriends(int userId)
+        public async Task<FriendListDto> GetFriends(int userId, FriendRequestStatus? requestStatus)
         {
-            var friends = await this.FriendRepo.GetFriends(userId);
+            var status = requestStatus?? FriendRequestStatus.Accept;
+            var friends = await this.FriendRepo.GetFriends(userId, status);
             var friendsList = new FriendListDto();
-            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture));
+            friends.ForEach(f => friendsList.AddFriend(f.Id, f.Name, f.ProfilePicture));
             return friendsList;
         }
 
@@ -75,6 +81,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         public async Task RemoveFriend(int userId, int friendId)
         {
             await this.FriendRepo.RemoveFriend(userId, friendId);
+            this.FriendRepo.SaveChanges();
             return;
         }
     }

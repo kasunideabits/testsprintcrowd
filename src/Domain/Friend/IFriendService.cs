@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Friend
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     ///  Interface for sprint crowd frined service
@@ -19,16 +20,19 @@
         /// <summary>
         /// Get friend details with given friend id
         /// </summary>
+        /// <param name="userId">user id for lookup</param>
         /// <param name="friendId">friend user id for lookup</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> default is accept</see></param>
         /// <returns><see cref="FriendDto"> friend details </see></returns>
-        Task<FriendDto> GetFriend(int friendId);
+        Task<FriendDto> GetFriend(int userId, int friendId, FriendRequestStatus? requestStatus = FriendRequestStatus.Accept);
 
         /// <summary>
         /// Get frind list for given user
         /// </summary>
         /// <param name="userId">user id for lookup friend</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> default is accept</see></param>
         /// <returns><see cref="FriendListDto">friend list</see></returns>
-        Task<FriendListDto> GetFriends(int userId);
+        Task<FriendListDto> GetFriends(int userId, FriendRequestStatus? requestStatus);
 
         /// <summary>
         /// Remove friend from user list

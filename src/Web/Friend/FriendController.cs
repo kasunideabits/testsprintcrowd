@@ -43,13 +43,14 @@
         /// <summary>
         /// Get friend details with given friend id
         /// </summary>
-        /// <param name="friendId">friend id</param>
+        /// <param name="query">Query string for get friends</param>
+        /// <param name="userId">userId id</param>
         /// <returns><see cref="FriendDto"> friend details </see></returns>
-        [HttpGet("get/{friendId:int}")]
+        [HttpGet("get/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetFriend(int friendId)
+        public async Task<IActionResult> GetFriend([FromQuery] GetFriendQuery query, int userId)
         {
-            var result = await this.FriendService.GetFriend(friendId);
+            var result = await this.FriendService.GetFriend(userId, query.FriendId, query.RequestStatus);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -62,12 +63,13 @@
         /// Get all friends for given user id
         /// </summary>
         /// <param name="userId">user id for get friend list</param>
-        /// <returns><see cref="FriendListDto">friend list</returns>
+        /// <returns><see cref="FriendListDto">friend list </see> </returns>
         [HttpGet("get-all/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetFriends(int userId)
+        public async Task<IActionResult> GetFriends([FromQuery] GetAllFriendQuery query, int userId)
         {
-            var result = await this.FriendService.GetFriends(userId);
+            System.Console.WriteLine(query);
+            var result = await this.FriendService.GetFriends(userId, query.RequestStatus);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -81,9 +83,19 @@
         /// </summary>
         /// <param name="remove"><see cref="RemoveFriendModel"> request body</see></param>
         /// <returns>empty body</returns>
-        [HttpGet("remove")]
+        [HttpDelete("remove")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(RemoveFriendResult), 400)]
         public async Task<IActionResult> RemoveFriend([FromBody] RemoveFriendModel remove)
         {
+            if (remove.UserId == 0)
+            {
+                return this.BadRequest(RemoveFriendResult.NullUserId());
+            }
+            if (remove.FriendId == 0)
+            {
+                return this.BadRequest(RemoveFriendResult.NullFriendId());
+            }
             await this.FriendService.RemoveFriend(remove.UserId, remove.FriendId);
             return this.Ok();
         }

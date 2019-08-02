@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     public class FriendDto
     {
         /// <summary>
-        /// Initialize <see cref="">FriendDto</see>
+        /// Initialize <see cref="FriendDto">FriendDto</see>
         /// </summary>
         /// <param name="userId">user id of the friend</param>
         /// <param name="name">name for the friend</param>

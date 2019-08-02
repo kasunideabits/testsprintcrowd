@@ -10,7 +10,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <summary>
         /// Initialize <see cref="FriendListDto"> class</see>
         /// </summary>
-        /// <typeparam name="FriendDto"> friend details</typeparam>
         public FriendListDto() => this.friends = new List<FriendDto>();
 
         /// <summary>

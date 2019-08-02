@@ -20,16 +20,19 @@
         /// <summary>
         /// Get firend details with given friend id
         /// </summary>
+        /// <param name="userId">user id</param>
         /// <param name="friendId">friend user id</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
         /// <returns>Friend user details</returns>
-        Task<User> GetFriend(int friendId);
+        Task<User> GetFriend(int userId, int friendId, FriendRequestStatus requestStatus);
 
         /// <summary>
         /// Get frind list for given user
         /// </summary>
         /// <param name="userId">user id for lookup friend</param>
+        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
         /// <returns><see cref="FriendListDto">friend list</see></returns>
-        Task<List<Friend>> GetFriends(int userId);
+        Task<List<User>> GetFriends(int userId, FriendRequestStatus requestStatus);
 
         /// <summary>
         /// Remove friend from user list
