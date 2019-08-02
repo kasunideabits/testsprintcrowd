@@ -13,7 +13,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    // [Authorize]
+    [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -125,6 +125,5 @@
             };
             return this.Ok(response);
         }
-
     }
 }
