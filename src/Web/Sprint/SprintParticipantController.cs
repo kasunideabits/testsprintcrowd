@@ -55,8 +55,7 @@
         /// creates an event
         /// </summary>
         /// <param name="modelInfo">Id of the sprint</param>
-        [HttpPost]
-        [Route("join")]
+        [HttpPost("join")]
         public async Task<ResponseObject> JoinEvent([FromBody] JoinPrivateSprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
@@ -85,8 +84,7 @@
         /// Exit an event
         /// </summary>
         /// <param name="exitEvent">Exit event informantion</param>
-        [HttpPost]
-        [Route("exit")]
+        [HttpPost("exit")]
         public async Task<ResponseObject> ExitEvent([FromBody] ExitEventModel exitEvent)
         {
             ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId);

@@ -91,8 +91,7 @@
         /// creates an event
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
-        [HttpPost]
-        [Route("create")]
+        [HttpPost("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
         {
             User user = await this.User.GetUser(this.UserService);
@@ -109,8 +108,7 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        [HttpPut]
-        [Route("update")]
+        [HttpPut("update")]
         public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel sprintData)
         {
             Sprint sprint = await this.SprintService.UpdateSprint(sprintData);

@@ -34,8 +34,7 @@
         /// creates an event
         /// </summary>
         /// <param name="modelInfo">info about the sprint</param>
-        [HttpPost]
-        [Route("create")]
+        [HttpPost("create")]
         public async Task<ResponseObject> CreateEvent([FromBody] SprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
