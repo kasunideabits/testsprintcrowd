@@ -1,5 +1,6 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -18,11 +19,12 @@
         Task<User> MarkAttendence(int sprintId, int userId);
 
         /// <summary>
-        /// adds new private event to database
+        /// User join for an event
         /// </summary>
-        /// <param name="privateEventCreate">event model</param>
-        /// <returns>Created sprint details</returns>
-        Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate);
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId);
 
         /// <summary>
         /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
@@ -30,6 +32,8 @@
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
         Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
+
+        Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>
         /// saves changed to db

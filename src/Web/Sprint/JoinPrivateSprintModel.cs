@@ -12,9 +12,9 @@ namespace SprintCrowd.BackEnd.Web.Event
         public int SprintId { get; set; }
 
         /// <summary>
-        /// IsConfirmed
+        /// User id who joining
         /// </summary>
-        /// <value>if confirmed</value>
-        public bool IsConfirmed { get; set; }
+        /// <value></value>
+        public int UserId { get; set; }
     }
 }

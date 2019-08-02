@@ -1,6 +1,8 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
 
@@ -18,12 +20,11 @@
         Task MarkAttendence(int sprintId, int userId);
 
         /// <summary>
-        /// update sprint
+        /// Join user for a sprint
         /// </summary>
-        /// <param name="privateSprintInfo">sprint information</param>
-        /// <param name="joinedUserId">sprint information</param>
-        /// <returns>update sprint</returns>
-        Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId);
+        /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="userId">user id who going to join</param>
+        Task JoinSprint(int sprintId, int userId);
 
         /// <summary>
         /// Exit sprint which join for event
@@ -32,5 +33,7 @@
         /// <param name="userId">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
         Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
+
+        Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage);
     }
 }

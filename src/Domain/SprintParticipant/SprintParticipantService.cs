@@ -1,5 +1,6 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -17,23 +18,18 @@
         /// <summary>
         /// Initalize SprintParticipantService class
         /// </summary>
-        /// <param name="sprintRepo">sprint repository</param>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="markAttendance">make attendace background notificaiton service</param>
         /// <param name="exitEventHandler">exit event background notificaiton service</param>
         public SprintParticipantService(
-            ISprintRepo sprintRepo,
             ISprintParticipantRepo sprintParticipantRepo,
             IMarkAttendanceHandler markAttendance,
             IExitEventHandler exitEventHandler)
         {
-            this.SprintRepo = sprintRepo;
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.MarkAttendance = markAttendance;
             this.ExitEventHandler = exitEventHandler;
         }
-
-        private ISprintRepo SprintRepo { get; }
 
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
@@ -57,28 +53,18 @@
         }
 
         /// <summary>
-        /// Mark the attendece for the given sprint and join
+        /// Join user for a sprint
         /// </summary>
-        /// <param name="privateSprintInfo">sprint id for mark attendance</param>
-        /// <param name="joinedUserId">user id for for participant</param>
-        public async Task<SprintParticipant> CreateSprintJoinee(JoinPrivateSprintModel privateSprintInfo, User joinedUserId)
+        /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="userId">user id who going to join</param>
+        // TODO : notification
+        public async Task JoinSprint(int sprintId, int userId)
         {
             try
             {
-                Sprint currentSprint = await this.SprintRepo.GetSprint(privateSprintInfo.SprintId);
-                SprintParticipant sprintToBeJoined = new SprintParticipant()
-                {
-                    User = joinedUserId,
-                    Stage = (int)ParticipantStage.MARKED_ATTENDENCE,
-                    Sprint = currentSprint,
-                };
-
-                SprintParticipant sprintParticipant = await this.SprintParticipantRepo.AddSprintParticipant(sprintToBeJoined);
-                if (sprintParticipant != null)
-                {
-                    this.SprintParticipantRepo.SaveChanges();
-                }
-                return sprintParticipant;
+                await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                this.SprintParticipantRepo.SaveChanges();
+                return;
             }
             catch (System.Exception ex)
             {
@@ -113,5 +99,23 @@
                 return new ExitSprintResult { Result = ExitResult.Faild, Reason = ex.Message.ToString() };
             }
         }
+
+        public async Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage)
+        {
+            var joinedParticipants = await this.SprintParticipantRepo.GetParticipants(sprintId, stage);
+            List<ParticipantInfo> participantInfos = new List<ParticipantInfo>();
+            joinedParticipants.ForEach(p =>
+            {
+                var participant = new ParticipantInfo(
+                    p.User.Id,
+                    p.User.Name,
+                    p.User.ProfilePicture,
+                    p.Sprint.Id,
+                    p.Sprint.Name);
+                participantInfos.Add(participant);
+            });
+            return participantInfos;
+        }
+
     }
 }

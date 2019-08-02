@@ -15,7 +15,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -54,32 +54,25 @@
         /// <summary>
         /// creates an event
         /// </summary>
-        /// <param name="modelInfo">Id of the sprint</param>
+        /// <param name="joinUser"><see cref="JoinPrivateSprintModel"> join user data </see></param>
+        // TODO handle bad request
         [HttpPost("join")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ResponseObject), 400)]
-        public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel modelInfo)
+        public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel joinUser)
         {
-            User user = await this.User.GetUser(this.UserService);
-            if (modelInfo.IsConfirmed)
+            // User user = await this.User.GetUser(this.UserService);
+            // if (user.Id != joinUser.UserId)
+            // {
+            //     return this.BadRequest();
+            // }
+            await this.SprintParticipantService.JoinSprint(joinUser.SprintId, joinUser.UserId);
+            ResponseObject response = new ResponseObject()
             {
-                var result = await this.SprintParticipantService.CreateSprintJoinee(modelInfo, user);
-
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result,
-                };
-                return this.Ok(response);
-            }
-            else
-            {
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.BadRequest,
-                };
-                return this.Ok(response);
-            }
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = "Successfully joined for a sprint",
+            };
+            return this.Ok(response);
         }
 
         /// <summary>
@@ -87,6 +80,7 @@
         /// </summary>
         /// <param name="exitEvent">Exit event informantion</param>
         [HttpPost("exit")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> ExitEvent([FromBody] ExitEventModel exitEvent)
         {
             ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId);
@@ -97,5 +91,19 @@
             };
             return this.Ok(response);
         }
+
+        [HttpGet("join/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetJoinParticipants(int sprintId)
+        {
+            var result = await this.SprintParticipantService.GetParticipants(sprintId, ParticipantStage.JOINED);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
     }
 }

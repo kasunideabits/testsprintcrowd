@@ -1,5 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using SprintCrowd.BackEnd.Application;
@@ -37,13 +39,13 @@
                 throw new ApplicationException("Entry not found");
 
             }
-            if (paritipant.Stage == (int)ParticipantStage.JOINED)
+            if (paritipant.Stage == ParticipantStage.JOINED)
             {
-                paritipant.Stage = (int)ParticipantStage.MARKED_ATTENDENCE;
+                paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 this.Context.SprintParticipant.Update(paritipant);
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
-            else if (paritipant.Stage == (int)ParticipantStage.MARKED_ATTENDENCE)
+            else if (paritipant.Stage == ParticipantStage.MARKED_ATTENDENCE)
             {
                 throw new ApplicationException("Already marked attendance");
             }
@@ -54,13 +56,20 @@
         }
 
         /// <summary>
-        /// creates event
+        /// User join for an event
         /// </summary>
-        /// <param name="privateEventCreate">event model</param>
-        /// <returns>added private sprint result</returns>
-        public async Task<SprintParticipant> AddSprintParticipant(SprintParticipant privateEventCreate)
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
-            var result = await this.Context.SprintParticipant.AddAsync(privateEventCreate);
+            SprintParticipant participant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.JOINED,
+            };
+            var result = await this.Context.SprintParticipant.AddAsync(participant);
             return result.Entity;
         }
 
@@ -78,7 +87,7 @@
             if (participant != null)
             {
 
-                participant.Stage = (int)ParticipantStage.QUIT;
+                participant.Stage = ParticipantStage.QUIT;
                 this.Context.Update(participant);
                 return new ParticipantInfo(
                     userId,
@@ -91,6 +100,15 @@
             {
                 throw new ApplicationException(ExitFaildReason.UserOrSprintNotMatch);
             }
+        }
+
+        public async Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage)
+        {
+            return await this.Context.SprintParticipant
+                .Include(p => p.User)
+                .Include(p => p.Sprint)
+                .Where(p => p.SprintId == sprintId && p.Stage == stage)
+                .ToListAsync();
         }
 
         /// <summary>
