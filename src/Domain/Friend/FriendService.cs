@@ -54,8 +54,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         public async Task<FriendDto> GetFriend(int userId, int friendId, FriendRequestStatus? requestStatus)
         {
             var status = requestStatus?? FriendRequestStatus.Accept;
-            User friend = await this.FriendRepo.GetFriend(userId, friendId, status);
-            return new FriendDto(friend.Id, friend.Name, friend.ProfilePicture);
+            var friend = await this.FriendRepo.GetFriend(userId, friendId, status);
+            return new FriendDto(friend.User.Id, friend.User.Name, friend.User.ProfilePicture, status);
         }
 
         /// <summary>
@@ -69,7 +69,20 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             var status = requestStatus?? FriendRequestStatus.Accept;
             var friends = await this.FriendRepo.GetFriends(userId, status);
             var friendsList = new FriendListDto();
-            friends.ForEach(f => friendsList.AddFriend(f.Id, f.Name, f.ProfilePicture));
+            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture, status));
+            return friendsList;
+        }
+
+        /// <summary>
+        /// Get all friend request with filter request status
+        /// </summary>
+        /// <param name="userId">user id to lookup friends</param>
+        /// <returns><see cref="FriendListDto"> friend list</see></returns>
+        public async Task<FriendListDto> GetAllFriends(int userId)
+        {
+            var friends = await this.FriendRepo.GetAllFriends(userId);
+            var friendsList = new FriendListDto();
+            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture, f.Status));
             return friendsList;
         }
 

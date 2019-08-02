@@ -1,3 +1,5 @@
+using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
     /// <summary>
@@ -11,11 +13,13 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="userId">user id of the friend</param>
         /// <param name="name">name for the friend</param>
         /// <param name="profilePicture">profile picture for user</param>
-        public FriendDto(int userId, string name, string profilePicture)
+        /// <param name="status">friend request status</param>
+        public FriendDto(int userId, string name, string profilePicture, FriendRequestStatus status)
         {
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
+            this.Status = status;
         }
 
         /// <summary>
@@ -32,5 +36,10 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Gets friend profile picutre url
         /// </summary>
         public string ProfilePicture { get; }
+
+        /// <summary>
+        /// Friend request status
+        /// </summary>
+        public FriendRequestStatus Status { get; }
     }
 }

@@ -50,7 +50,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="friendId">friend user id</param>
         /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
         /// <returns>Friend user details</returns>
-        public async Task<User> GetFriend(int userId, int friendId, FriendRequestStatus requestStatus)
+        public async Task<FriendData> GetFriend(int userId, int friendId, FriendRequestStatus requestStatus)
         {
             Friend result = await this.Context.Frineds
                 .Include(f => f.FriendOf)
@@ -61,11 +61,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                     f.RequestStatus == requestStatus);
             if (result != null && result.UserId == userId)
             {
-                return result.FriendOf;
+                return new FriendData(result.FriendOf, result.RequestStatus);
             }
             else if (result != null && result.User.Id == friendId)
             {
-                return result.User;
+                return new FriendData(result.User, result.RequestStatus);
             }
             else
             {
@@ -78,8 +78,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="userId">user id for lookup friend</param>
         /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
-        /// <returns><see cref="FriendListDto">friend list</see></returns>
-        public async Task<List<User>> GetFriends(int userId, FriendRequestStatus requestStatus)
+        /// <returns><see cref="FriendData">friend list</see></returns>
+        public async Task<List<FriendData>> GetFriends(int userId, FriendRequestStatus requestStatus)
         {
             var user = await this.Context.User
                 .Include(f => f.Friends)
@@ -87,9 +87,28 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .Include(f => f.FriendRequester)
                 .ThenInclude(f => f.User)
                 .FirstOrDefaultAsync(f => f.Id == userId);
-            List<User> friends = new List<User>();
-            friends.AddRange(user.Friends.Where(f => f.RequestStatus == requestStatus).Select(f => f.User));
-            friends.AddRange(user.FriendRequester.Where(f => f.RequestStatus == requestStatus).Select(f => f.User));
+            List<FriendData> friends = new List<FriendData>();
+            friends.AddRange(user.Friends.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.User, f.RequestStatus)));
+            friends.AddRange(user.FriendRequester.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.User, f.RequestStatus)));
+            return friends;
+        }
+
+        /// <summary>
+        /// Get all friend request with filter request status
+        /// </summary>
+        /// <param name="userId">user id to lookup friends</param>
+        /// <returns><see cref="FriendData"> friend list</see></returns>
+        public async Task<List<FriendData>> GetAllFriends(int userId)
+        {
+            var user = await this.Context.User
+                .Include(f => f.Friends)
+                .ThenInclude(f => f.User)
+                .Include(f => f.FriendRequester)
+                .ThenInclude(f => f.User)
+                .FirstOrDefaultAsync(f => f.Id == userId);
+            List<FriendData> friends = new List<FriendData>();
+            friends.AddRange(user.Friends.Select(f => new FriendData(f.User, f.RequestStatus)));
+            friends.AddRange(user.FriendRequester.Select(f => new FriendData(f.User, f.RequestStatus)));
             return friends;
         }
 

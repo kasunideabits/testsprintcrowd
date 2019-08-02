@@ -11,7 +11,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
@@ -65,19 +65,32 @@
         /// Get all friends for given user id
         /// </summary>
         /// <param name="userId">user id for get friend list</param>
+        /// <param name="query">query string parameters</param>
         /// <returns><see cref="FriendListDto">friend list </see> </returns>
         [HttpGet("get-all/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetFriends([FromQuery] GetAllFriendQuery query, int userId)
         {
-            System.Console.WriteLine(query);
-            var result = await this.FriendService.GetFriends(userId, query.RequestStatus);
-            ResponseObject response = new ResponseObject()
+            if (query.RequestStatus == null)
             {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-            };
-            return this.Ok(response);
+                var result = await this.FriendService.GetAllFriends(userId);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = result,
+                };
+                return this.Ok(response);
+            }
+            else
+            {
+                var result = await this.FriendService.GetFriends(userId, query.RequestStatus);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = result,
+                };
+                return this.Ok(response);
+            }
         }
 
         /// <summary>

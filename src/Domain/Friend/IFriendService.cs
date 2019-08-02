@@ -35,6 +35,13 @@
         Task<FriendListDto> GetFriends(int userId, FriendRequestStatus? requestStatus);
 
         /// <summary>
+        /// Get all friend request with filter request status
+        /// </summary>
+        /// <param name="userId">user id to lookup friends</param>
+        /// <returns><see cref="FriendListDto"> friend list</see></returns>
+        Task<FriendListDto> GetAllFriends(int userId);
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>
