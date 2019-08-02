@@ -12,7 +12,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     public class FriendService : IFriendService
     {
         /// <summary>
-        /// Initialize <see cref="FriendService" class> </see>
+        /// Initialize <see cref="FriendService"> class </see>
         /// </summary>
         /// <param name="friendRepo">friend repository</param>
         public FriendService(IFriendRepo friendRepo)

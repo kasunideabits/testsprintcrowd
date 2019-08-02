@@ -44,8 +44,8 @@
         /// Get friend details with given friend id
         /// </summary>
         /// <param name="friendId">friend id</param>
-        /// <returns><see cref="FriendDto"> friend details </returns>
-        [HttpGet("get/{fiendId:int}")]
+        /// <returns><see cref="FriendDto"> friend details </see></returns>
+        [HttpGet("get/{friendId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetFriend(int friendId)
         {
