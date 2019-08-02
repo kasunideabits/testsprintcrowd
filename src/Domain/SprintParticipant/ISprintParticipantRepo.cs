@@ -33,6 +33,12 @@
         /// <param name="userId">user id which leaving the event</param>
         Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
 
+        /// <summary>
+        /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <param name="stage">filter with stage</param>
+        /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
         Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>

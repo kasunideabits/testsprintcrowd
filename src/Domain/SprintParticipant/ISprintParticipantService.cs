@@ -34,6 +34,12 @@
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
         Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
 
+        /// <summary>
+        /// Get all pariticipant with given stage <see cref="ParticipantStage"> stage </see>
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <param name="stage">filter with stage</param>
+        /// <returns><see cref="ParticipantInfo"> list of participant info</see></returns>
         Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage);
     }
 }
