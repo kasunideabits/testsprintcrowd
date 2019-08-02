@@ -35,12 +35,12 @@
         /// <summary>
         /// Mark attenedance for given sprint id
         /// </summary>
-        /// <param name="markAttendence">sprint and user details</param>
-        [HttpPost("mark-attendence")]
+        /// <param name="markAttendance">sprint and user details</param>
+        [HttpPost("mark-attendance")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> MarkAttendence([FromBody] MarkAttendence markAttendence)
+        public async Task<IActionResult> MarkAttendence([FromBody] MarkAttendance markAttendance)
         {
-            await this.SprintParticipantService.MarkAttendence(markAttendence.SprintId, markAttendence.UserId);
+            await this.SprintParticipantService.MarkAttendence(markAttendance.SprintId, markAttendance.UserId);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -100,6 +100,24 @@
         public async Task<IActionResult> GetJoinParticipants(int sprintId)
         {
             var result = await this.SprintParticipantService.GetParticipants(sprintId, ParticipantStage.JOINED);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get all participant who join with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to look up</param>
+        /// <returns>list of <see cref="ParticipantInfo">participants</see></returns>
+        [HttpGet("mark-attendance/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetMarkAttendanceParticipants(int sprintId)
+        {
+            var result = await this.SprintParticipantService.GetParticipants(sprintId, ParticipantStage.MARKED_ATTENDENCE);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,

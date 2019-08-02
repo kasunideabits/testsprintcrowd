@@ -3,7 +3,7 @@ namespace SprintCrowd.BackEnd.Web.Sprint
     /// <summary>
     ///  Class which reporesent mark attendance
     /// </summary>
-    public class MarkAttendence
+    public class MarkAttendance
     {
         /// <summary>
         /// Sprint id
