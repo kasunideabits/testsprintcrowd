@@ -45,7 +45,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
         /// <summary>
         /// Get firend details with given friend id
-        /// /// </summary>
+        /// </summary>
         /// <param name="friendId">friend user id</param>
         /// <returns>Friend user details</returns>
         // TODO : Handle not found, Request status
@@ -95,6 +95,16 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             {
                 this.Context.Remove(friendRel1);
             }
+        }
+
+        /// <summary>
+        /// commit and save changes to the db
+        /// only call this from the service, DO NOT CALL FROM REPO ITSELF
+        /// Unit of work methology.
+        /// </summary>
+        public void SaveChanges()
+        {
+            this.Context.SaveChanges();
         }
     }
 }

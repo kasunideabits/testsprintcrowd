@@ -37,5 +37,12 @@
         /// <param name="userId">user id for requester</param>
         /// <param name="frindId">user id of friend</param>
         Task RemoveFriend(int userId, int frindId);
+
+        /// <summary>
+        /// commit and save changes to the db
+        /// only call this from the service, DO NOT CALL FROM REPO ITSELF
+        /// Unit of work methology.
+        /// </summary>
+        void SaveChanges();
     }
 }

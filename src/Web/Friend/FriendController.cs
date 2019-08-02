@@ -8,6 +8,8 @@
     /// <summary>
     /// Handle friend related api request
     /// </summary>
+    [Route("[controller]")]
+    [ApiController]
     public class FriendController : ControllerBase
     {
         /// <summary>

@@ -2,7 +2,6 @@
 
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -12,6 +11,10 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     /// </summary>
     public class FriendService : IFriendService
     {
+        /// <summary>
+        /// Initialize <see cref="FriendService" class> </see>
+        /// </summary>
+        /// <param name="friendRepo">friend repository</param>
         public FriendService(IFriendRepo friendRepo)
         {
             this.FriendRepo = friendRepo;
@@ -31,6 +34,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             try
             {
                 await this.FriendRepo.AddFriendRequest(userId, friendId, code);
+                this.FriendRepo.SaveChanges();
                 return AddFriendRequestResult.Success();
             }
             catch (Exception e)
@@ -67,7 +71,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>
-        /// <param name="frindId">user id of friend</param>
+        /// <param name="friendId">user id of friend</param>
         public async Task RemoveFriend(int userId, int friendId)
         {
             await this.FriendRepo.RemoveFriend(userId, friendId);
