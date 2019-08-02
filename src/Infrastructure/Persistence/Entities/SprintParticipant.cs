@@ -1,3 +1,5 @@
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     /// <summary>
@@ -10,20 +12,32 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>unique id.</value>
         public int Id { get; set; }
+
         /// <summary>
-        /// gets or sets value.
+        ///  Gets or set id for participant
         /// </summary>
-        /// <value>user who has participated.</value>
-        public User User { get; set; }
+        public int UserId { get; set; }
+
         /// <summary>
-        /// gets or sets the sprint.
+        /// Gets or set sprint
         /// </summary>
-        public Sprint Sprint { get; set; }
+        public int SprintId { get; set; }
 
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>participant joined or not.</value>
-        public int Stage { get; set; }
+        public ParticipantStage Stage { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>user who has participated.</value>
+        public virtual User User { get; set; }
+        /// <summary>
+        /// gets or sets the sprint.
+        /// </summary>
+        public virtual Sprint Sprint { get; set; }
+
     }
 }

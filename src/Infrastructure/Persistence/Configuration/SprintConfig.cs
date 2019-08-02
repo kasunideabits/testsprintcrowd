@@ -17,7 +17,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
         public void Configure(EntityTypeBuilder<Sprint> builder)
         {
             builder.HasOne(s => s.CreatedBy).WithMany(s => s.Sprint);
-            builder.HasMany(s => s.Participants);
+            // builder.HasMany(s => s.Participants);
             builder.Property<DateTime>("LastUpdated");
         }
     }

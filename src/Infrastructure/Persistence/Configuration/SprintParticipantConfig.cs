@@ -16,8 +16,13 @@
         /// <param name="builder">entity builder instance</param>
         public void Configure(EntityTypeBuilder<SprintParticipant> builder)
         {
-            builder.HasOne(ep => ep.User);
-            builder.HasOne(ep => ep.Sprint);
+            builder
+                .HasOne(ep => ep.User)
+                .WithMany(ep => ep.Participates)
+                .HasForeignKey(ep => ep.UserId);
+            builder
+                .HasOne(ep => ep.Sprint)
+                .WithMany(ep => ep.Participants);
             builder.Property<DateTime>("LastUpdated");
         }
     }
