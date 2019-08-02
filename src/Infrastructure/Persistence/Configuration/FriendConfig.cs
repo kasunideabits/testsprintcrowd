@@ -9,11 +9,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Friend> builder)
         {
-            builder.HasOne(f => f.User).WithMany(u => u.Friends).HasForeignKey(f => f.UserId);
+            builder.HasOne(f => f.User).WithMany(u => u.Friends).HasForeignKey(f => f.FriendId);
             builder
                 .HasOne(f => f.FriendOf)
                 .WithMany(u => u.FriendRequester)
-                .HasForeignKey(f => f.FriendId);
+                .HasForeignKey(f => f.UserId);
             builder.Property<DateTime>("LastUpdated");
         }
     }
