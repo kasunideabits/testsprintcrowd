@@ -56,7 +56,9 @@
         /// </summary>
         /// <param name="modelInfo">Id of the sprint</param>
         [HttpPost("join")]
-        public async Task<ResponseObject> JoinEvent([FromBody] JoinPrivateSprintModel modelInfo)
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ResponseObject), 400)]
+        public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
             if (modelInfo.IsConfirmed)
@@ -68,7 +70,7 @@
                     StatusCode = (int)ApplicationResponseCode.Success,
                     Data = result,
                 };
-                return response;
+                return this.Ok(response);
             }
             else
             {
@@ -76,7 +78,7 @@
                 {
                     StatusCode = (int)ApplicationResponseCode.BadRequest,
                 };
-                return response;
+                return this.Ok(response);
             }
         }
 
@@ -85,7 +87,7 @@
         /// </summary>
         /// <param name="exitEvent">Exit event informantion</param>
         [HttpPost("exit")]
-        public async Task<ResponseObject> ExitEvent([FromBody] ExitEventModel exitEvent)
+        public async Task<IActionResult> ExitEvent([FromBody] ExitEventModel exitEvent)
         {
             ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId);
             ResponseObject response = new ResponseObject()
@@ -93,7 +95,7 @@
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
             };
-            return response;
+            return this.Ok(response);
         }
     }
 }

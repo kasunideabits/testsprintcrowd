@@ -33,11 +33,16 @@ namespace SprintCrowd.BackEnd.Web.PushNotification
         /// <param name="fcmModel">fcm token</param>
         /// <returns>a response object containing the request response code</returns>
         [HttpPost("savefcmtoken")]
-        public async Task<ResponseObject> SaveFcmToken([FromBody] FcmModel fcmModel)
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> SaveFcmToken([FromBody] FcmModel fcmModel)
         {
             User user = await this.User.GetUser(this.userService);
             await this.userService.SaveFcmToken(user.Id, fcmModel.Token);
-            return new ResponseObject() { StatusCode = (int)ApplicationResponseCode.Success };
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+            };
+            return this.Ok(response);
         }
 
     }

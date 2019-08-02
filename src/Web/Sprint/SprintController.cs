@@ -35,7 +35,8 @@
         /// </summary>
         /// <param name="modelInfo">info about the sprint</param>
         [HttpPost("create")]
-        public async Task<ResponseObject> CreateEvent([FromBody] SprintModel modelInfo)
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateEvent([FromBody] SprintModel modelInfo)
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(modelInfo, user);
@@ -45,7 +46,7 @@
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
             };
-            return response;
+            return this.Ok(response);
         }
 
         /// <summary>
@@ -54,7 +55,7 @@
         /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
         [HttpGet("{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<ResponseObject> GetSprintWithPaticipants(int sprintId)
+        public async Task<IActionResult> GetSprintWithPaticipants(int sprintId)
         {
             var result = await this.SprintService.GetSprintWithPaticipants(sprintId);
             ResponseObject response = new ResponseObject()
@@ -62,7 +63,7 @@
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
             };
-            return response;
+            return this.Ok(response);
         }
     }
 }

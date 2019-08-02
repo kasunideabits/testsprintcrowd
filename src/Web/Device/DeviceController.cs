@@ -30,24 +30,24 @@ namespace SprintCrowd.BackEnd.Web.Device
         /// <summary>
         /// save device info uuid and platform
         /// </summary>
-        [HttpPost]
-        [Route("info")]
-        public async Task<ResponseObject> SetDeviceInfo([FromBody] AppDownloads AppData)
+        [HttpPost("info")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> SetDeviceInfo([FromBody] AppDownloads AppData)
         {
             AppDownloads appdownloads = await this.DeviceService.SetDeviceInfo(AppData);
 
-            return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads };
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads });
         }
         /// <summary>
         /// get app downloads devices count
         /// </summary>
-        [HttpGet]
-        [Route("info")]
-        public async Task<ResponseObject> GetDeviceInfo()
+        [HttpGet("info")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetDeviceInfo()
         {
             DeviceModal appdownloads = await this.DeviceService.GetDeviceInfo();
 
-            return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads };
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = appdownloads });
         }
     }
 }

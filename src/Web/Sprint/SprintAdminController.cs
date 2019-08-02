@@ -92,7 +92,8 @@
         /// </summary>
         /// <param name="sprintInfo">info about the sprint</param>
         [HttpPost("create")]
-        public async Task<ResponseObject> CreateEvent([FromBody] SprintModel sprintInfo)
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateEvent([FromBody] SprintModel sprintInfo)
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
@@ -102,18 +103,25 @@
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
             };
-            return response;
+            return this.Ok(response);
         }
 
         /// <summary>
         /// update sprint
         /// </summary>
         [HttpPut("update")]
-        public async Task<ResponseObject> UpdateEvent([FromBody] SprintModel sprintData)
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> UpdateEvent([FromBody] SprintModel sprintData)
         {
             Sprint sprint = await this.SprintService.UpdateSprint(sprintData);
 
-            return new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = sprint };
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = sprint,
+            };
+
+            return this.Ok(response);
         }
     }
 }
