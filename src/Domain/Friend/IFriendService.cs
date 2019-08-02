@@ -18,6 +18,24 @@
         Task<string> AddFriendRequest(int userId, int friendId, int code);
 
         /// <summary>
+        /// Accept friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        Task Accept(int requestId, int userId, int friendId, int code);
+
+        /// <summary>
+        /// Decline friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        Task Decline(int requestId, int userId, int friendId, int code);
+
+        /// <summary>
         /// Get friend details with given friend id
         /// </summary>
         /// <param name="userId">user id for lookup</param>

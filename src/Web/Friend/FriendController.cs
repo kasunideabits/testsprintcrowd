@@ -43,6 +43,75 @@
         }
 
         /// <summary>
+        /// Accept friend request
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel"> friend request response </see></param>
+        /// <returns>TODO</returns>
+        [HttpPost("add-request/accept")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ResponseObject), 400)]
+        public async Task<IActionResult> AcceptFriendReust([FromBody] FriendRequestActionModel request)
+        {
+            try
+            {
+                await this.FriendService.Accept(
+                    request.RequestId,
+                    request.UserId,
+                    request.FriendId,
+                    request.Code);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                };
+                return this.Ok(response);
+            }
+            catch (Application.ApplicationException ex)
+            {
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.BadRequest,
+                    ErrorDescription = ex.Message.ToString(),
+                    Data = ex.ErrorCode,
+                };
+                return this.BadRequest(response);
+            }
+        }
+
+        /// <summary>
+        /// Decline friend request
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel"> friend request response </see></param>
+        /// <returns>TODO</returns>
+        [HttpPost("add-request/decline")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> DeclineFriendReust([FromBody] FriendRequestActionModel request)
+        {
+            try
+            {
+                await this.FriendService.Decline(
+                    request.RequestId,
+                    request.UserId,
+                    request.FriendId,
+                    request.Code);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                };
+                return this.Ok(response);
+            }
+            catch (Application.ApplicationException ex)
+            {
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.BadRequest,
+                    ErrorDescription = ex.Message.ToString(),
+                    Data = ex.ErrorCode,
+                };
+                return this.BadRequest(response);
+            }
+        }
+
+        /// <summary>
         /// Get friend details with given friend id
         /// </summary>
         /// <param name="query">Query string for get friends</param>

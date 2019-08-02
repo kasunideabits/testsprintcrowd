@@ -87,6 +87,36 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         }
 
         /// <summary>
+        /// Accept friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        // TODO  notification:
+        public async Task Accept(int requestId, int userId, int friendId, int code)
+        {
+            await this.FriendRepo.Accept(requestId, userId, friendId, code);
+            this.FriendRepo.SaveChanges();
+            return;
+        }
+
+        /// <summary>
+        /// Decline friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        // TODO  notification:
+        public async Task Decline(int requestId, int userId, int friendId, int code)
+        {
+            await this.FriendRepo.Decline(requestId, userId, friendId, code);
+            this.FriendRepo.SaveChanges();
+            return;
+        }
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>

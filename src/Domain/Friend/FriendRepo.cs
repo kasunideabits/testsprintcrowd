@@ -44,6 +44,88 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         }
 
         /// <summary>
+        /// Accept friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        public async Task Accept(int requestId, int userId, int friendId, int code)
+        {
+            var request = await this.Context.Frineds.FirstOrDefaultAsync(f => f.Id == requestId);
+            if (request == null)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.RequestIdNotFound,
+                    "Request id not found");
+            }
+            else if (request.Code != code)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.CodeNotMatched,
+                    "Request code not valid"
+                );
+            }
+            else if (request.UserId != userId)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.UserIdNotMatched,
+                    "User id not matched"
+                );
+            }
+            else if (request.FriendId != friendId)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.UserIdNotMatched,
+                    "Friend id not matched"
+                );
+            }
+            request.RequestStatus = FriendRequestStatus.Accept;
+            return;
+        }
+
+        /// <summary>
+        /// Decline friend request
+        /// </summary>
+        /// <param name="requestId">unique id for friend request</param>
+        /// <param name="userId">user id who send the request</param>
+        /// <param name="friendId">user id who receive the request</param>
+        /// <param name="code">unique code for friend request</param>
+        public async Task Decline(int requestId, int userId, int friendId, int code)
+        {
+            var request = await this.Context.Frineds.FirstOrDefaultAsync(f => f.Id == requestId);
+            if (request == null)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.RequestIdNotFound,
+                    "Request id not found");
+            }
+            else if (request.Code != code)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.CodeNotMatched,
+                    "Request code not valid"
+                );
+            }
+            else if (request.UserId != userId)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.UserIdNotMatched,
+                    "User id not matched"
+                );
+            }
+            else if (request.FriendId != friendId)
+            {
+                throw new Application.ApplicationException(
+                    (int)StatusUpdateErrorCode.UserIdNotMatched,
+                    "Friend id not matched"
+                );
+            }
+            request.RequestStatus = FriendRequestStatus.Decline;
+            return;
+        }
+
+        /// <summary>
         /// Get firend details with given friend id
         /// </summary>
         /// <param name="userId">user id</param>
