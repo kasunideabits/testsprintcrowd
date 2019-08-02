@@ -61,11 +61,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                     f.RequestStatus == requestStatus);
             if (result != null && result.UserId == userId)
             {
-                return new FriendData(result.FriendOf, result.RequestStatus);
+                return new FriendData(result.Id, result.FriendOf, result.RequestStatus);
             }
             else if (result != null && result.User.Id == friendId)
             {
-                return new FriendData(result.User, result.RequestStatus);
+                return new FriendData(result.Id, result.User, result.RequestStatus);
             }
             else
             {
@@ -88,8 +88,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .ThenInclude(f => f.User)
                 .FirstOrDefaultAsync(f => f.Id == userId);
             List<FriendData> friends = new List<FriendData>();
-            friends.AddRange(user.Friends.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.User, f.RequestStatus)));
-            friends.AddRange(user.FriendRequester.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.User, f.RequestStatus)));
+            friends.AddRange(user.Friends.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
+            friends.AddRange(user.FriendRequester.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
             return friends;
         }
 
@@ -107,8 +107,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .ThenInclude(f => f.User)
                 .FirstOrDefaultAsync(f => f.Id == userId);
             List<FriendData> friends = new List<FriendData>();
-            friends.AddRange(user.Friends.Select(f => new FriendData(f.User, f.RequestStatus)));
-            friends.AddRange(user.FriendRequester.Select(f => new FriendData(f.User, f.RequestStatus)));
+            friends.AddRange(user.Friends.Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
+            friends.AddRange(user.FriendRequester.Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
             return friends;
         }
 

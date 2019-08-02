@@ -55,7 +55,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         {
             var status = requestStatus?? FriendRequestStatus.Accept;
             var friend = await this.FriendRepo.GetFriend(userId, friendId, status);
-            return new FriendDto(friend.User.Id, friend.User.Name, friend.User.ProfilePicture, status);
+            return new FriendDto(friend.RequestId, friend.User.Id, friend.User.Name, friend.User.ProfilePicture, status);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             var status = requestStatus?? FriendRequestStatus.Accept;
             var friends = await this.FriendRepo.GetFriends(userId, status);
             var friendsList = new FriendListDto();
-            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture, status));
+            friends.ForEach(f => friendsList.AddFriend(f.RequestId, f.User.Id, f.User.Name, f.User.ProfilePicture, status));
             return friendsList;
         }
 
@@ -82,7 +82,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         {
             var friends = await this.FriendRepo.GetAllFriends(userId);
             var friendsList = new FriendListDto();
-            friends.ForEach(f => friendsList.AddFriend(f.User.Id, f.User.Name, f.User.ProfilePicture, f.Status));
+            friends.ForEach(f => friendsList.AddFriend(f.RequestId, f.User.Id, f.User.Name, f.User.ProfilePicture, f.Status));
             return friendsList;
         }
 

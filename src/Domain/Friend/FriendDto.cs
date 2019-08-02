@@ -10,17 +10,29 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <summary>
         /// Initialize <see cref="FriendDto">FriendDto</see>
         /// </summary>
+        /// <param name="requestId">request id</param>
         /// <param name="userId">user id of the friend</param>
         /// <param name="name">name for the friend</param>
         /// <param name="profilePicture">profile picture for user</param>
         /// <param name="status">friend request status</param>
-        public FriendDto(int userId, string name, string profilePicture, FriendRequestStatus status)
+        public FriendDto(
+            int requestId,
+            int userId,
+            string name,
+            string profilePicture,
+            FriendRequestStatus status)
         {
+            this.RequestId = requestId;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
             this.Status = status;
         }
+
+        /// <summary>
+        /// Gets request id
+        /// </summary>
+        public int RequestId { get; }
 
         /// <summary>
         /// Gets friend user ids
