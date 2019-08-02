@@ -6,8 +6,6 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
-    using SprintCrowd.BackEnd.Extensions;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
@@ -92,6 +90,11 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Get all participant who join with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to look up</param>
+        /// <returns>list of <see cref="ParticipantInfo">participants</see></returns>
         [HttpGet("join/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetJoinParticipants(int sprintId)
