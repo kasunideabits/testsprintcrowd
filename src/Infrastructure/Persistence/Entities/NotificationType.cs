@@ -8,7 +8,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Friend request invitaion
         FriendInvitation,
 
-        /// Sprint notification
-        SprintNotification,
+        /// Sprint invitation notification
+        SprintInvitation,
+
     }
 }

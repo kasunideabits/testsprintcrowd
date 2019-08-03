@@ -30,13 +30,13 @@
         /// <summary>
         /// Gets or set sprint id if available
         /// </summary>
-        public int SprintId { get; set; }
+        public int? SprintId { get; set; }
 
         /// <summary>
         /// Gets or sets achievement id if available
         /// </summary>
         /// <value></value>
-        public int AchievementId { get; set; }
+        public int? AchievementId { get; set; }
 
         /// <summary>
         /// Gets or set send time of the notification
