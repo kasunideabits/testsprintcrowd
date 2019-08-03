@@ -41,6 +41,40 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         }
 
         /// <summary>
+        /// Add given user with matching friend code
+        /// </summary>
+        /// <param name="userCode">senders unique id</param>
+        /// <param name="friendId">reponders user id</param>
+        /// <param name="friendCode">generate friend code</param>
+        public async Task AddFriend(string userCode, int friendId, string friendCode)
+        {
+            var requester = await this.Context.Frineds
+                .Include(f => f.User)
+                .FirstOrDefaultAsync(f => f.Code == friendCode && f.User.Code == userCode);
+            if (requester == null)
+            {
+                throw new Application.ApplicationException(
+                    (int)FriendRequestActionResult.RequestCodeNotFound,
+                    "Invalid request code");
+            }
+            else
+            {
+                if (requester.FriendId == null)
+                {
+                    requester.FriendId = friendId;
+                    requester.StatusUpdatedTime = DateTime.UtcNow;
+                    return;
+                }
+                else if (requester.FriendId != null)
+                {
+                    throw new Application.ApplicationException(
+                        (int)FriendRequestActionResult.AlreadyUsedCode,
+                        "Already used code");
+                }
+            }
+        }
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>

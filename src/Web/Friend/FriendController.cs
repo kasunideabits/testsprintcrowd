@@ -43,6 +43,38 @@
         }
 
         /// <summary>
+        /// Response to generate friend code. for the success action user will add as a friend
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
+        /// <returns>for the faild result request will send the
+        /// <see cref="FriendRequestActionResult"></see> and reason</returns>
+        [HttpPost("add")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ResponseObject), 400)]
+
+        public async Task<IActionResult> AddFriend([FromBody] FriendRequestActionModel request)
+        {
+            try
+            {
+                await this.FriendService.AddFriend(request.UserId, request.Code);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                };
+                return this.Ok(response);
+            }
+            catch (Application.ApplicationException ex)
+            {
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.BadRequest,
+                    Data = new { ErrorCode = ex.ErrorCode, Reason = ex.Message }
+                };
+                return this.BadRequest(response);
+            }
+        }
+
+        /// <summary>
         /// Remove friend from friend list
         /// </summary>
         /// <param name="remove"><see cref="RemoveFriendModel"> request body</see></param>

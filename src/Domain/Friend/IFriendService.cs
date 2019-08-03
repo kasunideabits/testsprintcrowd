@@ -17,6 +17,13 @@
         Task<string> GenerateFriendCode(int userId, string userCode);
 
         /// <summary>
+        /// Add given user with matching friend code
+        /// </summary>
+        /// <param name="userId">resonder user id</param>
+        /// <param name="friendCode">generate friend code</param>
+        Task AddFriend(int userId, string friendCode);
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>

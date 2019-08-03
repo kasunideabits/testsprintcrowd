@@ -45,6 +45,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         }
 
         /// <summary>
+        /// Add given user with matching friend code
+        /// </summary>
+        /// <param name="userId">resonder user id</param>
+        /// <param name="friendCode">generate friend code</param>
+        public async Task AddFriend(int userId, string friendCode)
+        {
+            var requesterCode = SCrowdUniqueKey.GetUserCode(friendCode);
+            await this.FriendRepo.AddFriend(requesterCode, userId, friendCode);
+            this.FriendRepo.SaveChanges();
+            return;
+        }
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>
