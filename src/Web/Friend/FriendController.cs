@@ -43,57 +43,6 @@
         }
 
         /// <summary>
-        /// Get friend details with given friend id
-        /// </summary>
-        /// <param name="query">Query string for get friends</param>
-        /// <param name="userId">userId id</param>
-        /// <returns><see cref="FriendDto"> friend details </see></returns>
-        [HttpGet("get/{userId:int}")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetFriend([FromQuery] GetFriendQuery query, int userId)
-        {
-            var result = await this.FriendService.GetFriend(userId, query.FriendId, query.RequestStatus);
-            ResponseObject response = new ResponseObject()
-            {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-            };
-            return this.Ok(response);
-        }
-
-        /// <summary>
-        /// Get all friends for given user id
-        /// </summary>
-        /// <param name="userId">user id for get friend list</param>
-        /// <param name="query">query string parameters</param>
-        /// <returns><see cref="FriendListDto">friend list </see> </returns>
-        [HttpGet("get-all/{userId:int}")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetFriends([FromQuery] GetAllFriendQuery query, int userId)
-        {
-            if (query.RequestStatus == null)
-            {
-                var result = await this.FriendService.GetAllFriends(userId);
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result,
-                };
-                return this.Ok(response);
-            }
-            else
-            {
-                var result = await this.FriendService.GetFriends(userId, query.RequestStatus);
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result,
-                };
-                return this.Ok(response);
-            }
-        }
-
-        /// <summary>
         /// Remove friend from friend list
         /// </summary>
         /// <param name="remove"><see cref="RemoveFriendModel"> request body</see></param>
