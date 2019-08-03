@@ -80,6 +80,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             user.ProfilePicture = registerResponse.Data.ProfilePicture;
             user.AccessToken.Token = registerData.AccessToken;
             user.LanguagePreference = registerData.LanguagePreference;
+            user.Code = SCrowdUniqueKey.UniqUserCode<string>(registerData.Email);
             // TODO- Profile Picture
             var result = await this.dbContext.User.AddAsync(user);
             return user;
