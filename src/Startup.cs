@@ -19,6 +19,7 @@
     using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
+    using SprintCrowd.BackEnd.Domain.Notification;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintInvitation;
@@ -157,6 +158,8 @@
             services.AddTransient<IFriendRepo, FriendRepo>();
             services.AddTransient<ISprintInvitationService, SprintInvitationService>();
             services.AddTransient<ISprintInvitationRepo, SprintInvitationRepo>();
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<INotificationRepo, NotificationRepo>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
