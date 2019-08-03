@@ -26,89 +26,20 @@
         private IFriendService FriendService { get; }
 
         /// <summary>
-        /// Add friend request
+        /// Generate friend request code
         /// </summary>
-        /// <returns><see cref="">sprint details</see></returns>
-        [HttpPost("add-request")]
+        /// <returns><see cref="GenerateFriendCodeModel">sprint details</see></returns>
+        [HttpPost("generate-code")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> AddFriend([FromBody] AddFriendModel request)
+        public async Task<IActionResult> GenerateFriendCode([FromBody] GenerateFriendCodeModel request)
         {
-            var result = await this.FriendService.AddFriendRequest(request.UserId, request.FriendId, request.Code);
+            var result = await this.FriendService.GenerateFriendCode(request.UserId, request.Code);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
             };
             return this.Ok(response);
-        }
-
-        /// <summary>
-        /// Accept friend request
-        /// </summary>
-        /// <param name="request"><see cref="FriendRequestActionModel"> friend request response </see></param>
-        /// <returns>TODO</returns>
-        [HttpPost("add-request/accept")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        [ProducesResponseType(typeof(ResponseObject), 400)]
-        public async Task<IActionResult> AcceptFriendReust([FromBody] FriendRequestActionModel request)
-        {
-            try
-            {
-                await this.FriendService.Accept(
-                    request.RequestId,
-                    request.UserId,
-                    request.FriendId,
-                    request.Code);
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                };
-                return this.Ok(response);
-            }
-            catch (Application.ApplicationException ex)
-            {
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.BadRequest,
-                    ErrorDescription = ex.Message.ToString(),
-                    Data = ex.ErrorCode,
-                };
-                return this.BadRequest(response);
-            }
-        }
-
-        /// <summary>
-        /// Decline friend request
-        /// </summary>
-        /// <param name="request"><see cref="FriendRequestActionModel"> friend request response </see></param>
-        /// <returns>TODO</returns>
-        [HttpPost("add-request/decline")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> DeclineFriendReust([FromBody] FriendRequestActionModel request)
-        {
-            try
-            {
-                await this.FriendService.Decline(
-                    request.RequestId,
-                    request.UserId,
-                    request.FriendId,
-                    request.Code);
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                };
-                return this.Ok(response);
-            }
-            catch (Application.ApplicationException ex)
-            {
-                ResponseObject response = new ResponseObject()
-                {
-                    StatusCode = (int)ApplicationResponseCode.BadRequest,
-                    ErrorDescription = ex.Message.ToString(),
-                    Data = ex.ErrorCode,
-                };
-                return this.BadRequest(response);
-            }
         }
 
         /// <summary>

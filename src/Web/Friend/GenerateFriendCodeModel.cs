@@ -3,7 +3,7 @@
     /// <summary>
     /// Add friend request representation
     /// </summary>
-    public class AddFriendModel
+    public class GenerateFriendCodeModel
     {
         /// <summary>
         /// Gets or set user id who send the request
@@ -11,13 +11,8 @@
         public int UserId { get; set; }
 
         /// <summary>
-        ///  Gets or set user id for whom to send
+        ///  Gets or set unique code for user
         /// </summary>
-        public int FriendId { get; set; }
-
-        /// <summary>
-        ///  Gets or set unique code for friend request
-        /// </summary>
-        public int Code { get; set; }
+        public string Code { get; set; }
     }
 }

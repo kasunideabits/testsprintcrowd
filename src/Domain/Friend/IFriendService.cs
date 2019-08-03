@@ -9,31 +9,12 @@
     public interface IFriendService
     {
         /// <summary>
-        /// Keep track friend request
+        /// Generate friend code
         /// </summary>
         /// <param name="userId">user id for who send the request</param>
-        /// <param name="friendId">user id for who receive the request</param>
-        /// <param name="code">uniqe code for request</param>
-        /// <returns>><see cref="AddFriendRequestResult">success or faild </see></returns>
-        Task<string> AddFriendRequest(int userId, int friendId, int code);
-
-        /// <summary>
-        /// Accept friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Accept(int requestId, int userId, int friendId, int code);
-
-        /// <summary>
-        /// Decline friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Decline(int requestId, int userId, int friendId, int code);
+        /// <param name="userCode">uniqe code for user</param>
+        /// <returns>><see cref="GenerateFriendCodeResult">success or faild </see></returns>
+        Task<string> GenerateFriendCode(int userId, string userCode);
 
         /// <summary>
         /// Get friend details with given friend id

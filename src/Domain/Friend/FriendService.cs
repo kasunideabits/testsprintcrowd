@@ -4,6 +4,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 {
     using System.Threading.Tasks;
     using System;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -23,23 +24,23 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         private IFriendRepo FriendRepo { get; }
 
         /// <summary>
-        /// Keep track friend request
+        /// Generate friend code
         /// </summary>
         /// <param name="userId">user id for who send the request</param>
-        /// <param name="friendId">user id for who receive the request</param>
-        /// <param name="code">uniqe code for request</param>
-        /// <returns>><see cref="AddFriendRequestResult">success or faild </see></returns>
-        public async Task<string> AddFriendRequest(int userId, int friendId, int code)
+        /// <param name="userCode">uniqe code for user</param>
+        /// <returns>><see cref="GenerateFriendCodeResult">success or faild </see></returns>
+        public async Task<string> GenerateFriendCode(int userId, string userCode)
         {
             try
             {
-                await this.FriendRepo.AddFriendRequest(userId, friendId, code);
+                var code = SCrowdUniqueKey.UniqFriendCode(userCode);
+                await this.FriendRepo.GenerateFriendCode(userId, code);
                 this.FriendRepo.SaveChanges();
-                return AddFriendRequestResult.Success();
+                return GenerateFriendCodeResult.Success();
             }
             catch (Exception e)
             {
-                throw new Application.ApplicationException(AddFriendRequestResult.Faild(), e);
+                throw new Application.ApplicationException(GenerateFriendCodeResult.Faild(), e);
             }
         }
 
@@ -60,8 +61,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 friend.User.Id,
                 friend.User.Name,
                 friend.User.ProfilePicture,
-                friend.User.Code,
-                status);
+                friend.User.Code);
         }
 
         /// <summary>
@@ -82,8 +82,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                     f.User.Id,
                     f.User.Name,
                     f.User.ProfilePicture,
-                    f.User.Code,
-                    status);
+                    f.User.Code);
             });
             return friendsList;
         }
@@ -104,40 +103,9 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                     f.User.Id,
                     f.User.Name,
                     f.User.ProfilePicture,
-                    f.User.Code,
-                    f.Status);
+                    f.User.Code);
             });
             return friendsList;
-        }
-
-        /// <summary>
-        /// Accept friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        // TODO  notification:
-        public async Task Accept(int requestId, int userId, int friendId, int code)
-        {
-            await this.FriendRepo.Accept(requestId, userId, friendId, code);
-            this.FriendRepo.SaveChanges();
-            return;
-        }
-
-        /// <summary>
-        /// Decline friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        // TODO  notification:
-        public async Task Decline(int requestId, int userId, int friendId, int code)
-        {
-            await this.FriendRepo.Decline(requestId, userId, friendId, code);
-            this.FriendRepo.SaveChanges();
-            return;
         }
 
         /// <summary>

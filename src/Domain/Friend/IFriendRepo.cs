@@ -10,30 +10,11 @@
     public interface IFriendRepo
     {
         /// <summary>
-        /// Add friend request which store request
+        /// Generate friend request code and store
         /// </summary>
         /// <param name="userId">user id for who send the request</param>
-        /// <param name="friendId">user id for who receive the request</param>
         /// <param name="code">uniqe code for request</param>
-        Task AddFriendRequest(int userId, int friendId, int code);
-
-        /// <summary>
-        /// Accept friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Accept(int requestId, int userId, int friendId, int code);
-
-        /// <summary>
-        /// Decline friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Decline(int requestId, int userId, int friendId, int code);
+        Task GenerateFriendCode(int userId, string code);
 
         /// <summary>
         /// Get firend details with given friend id
