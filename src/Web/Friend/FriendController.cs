@@ -95,5 +95,22 @@
             await this.FriendService.RemoveFriend(remove.UserId, remove.FriendId);
             return this.Ok();
         }
+
+        /// <summary>
+        /// Get friends for given user
+        /// </summary>
+        /// <param name="userId">user id for look up</param>
+        /// <returns><see cref ="FriendListDto">friend list</see></returns>
+        [HttpGet("get/{userId:int}")]
+        public async Task<IActionResult> GetFriends(int userId)
+        {
+            var result = await this.FriendService.GetFriends(userId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }

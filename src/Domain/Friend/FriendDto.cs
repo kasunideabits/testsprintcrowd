@@ -16,23 +16,16 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="profilePicture">profile picture for user</param>
         /// <param name="userCode">frined request code</param>
         public FriendDto(
-            int requestId,
             int userId,
             string name,
             string profilePicture,
             string userCode)
         {
-            this.RequestId = requestId;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
             this.Code = userCode;
         }
-
-        /// <summary>
-        /// Gets request id
-        /// </summary>
-        public int RequestId { get; }
 
         /// <summary>
         /// Gets friend user ids

@@ -24,6 +24,13 @@
         Task AddFriend(int userId, string friendCode);
 
         /// <summary>
+        /// Get firends for given user id
+        /// </summary>
+        /// <param name="userId">user id to lookup</param>
+        /// <returns><see cref="FriendListDto">list of users</see></returns>
+        Task<FriendListDto> GetFriends(int userId);
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>

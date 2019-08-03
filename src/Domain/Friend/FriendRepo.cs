@@ -75,6 +75,29 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         }
 
         /// <summary>
+        /// Get firends for given user id
+        /// </summary>
+        /// <param name="userId">user id to lookup</param>
+        /// <returns><see cref="User">list of users</see></returns>
+        public async Task<List<User>> GetFriends(int userId)
+        {
+            var user = await this.Context.User
+                .Include(f => f.Friends)
+                .ThenInclude(f => f.User)
+                .Include(f => f.FriendRequester)
+                .ThenInclude(f => f.FriendOf)
+                .FirstOrDefaultAsync(f => f.Id == userId);
+
+            List<User> friends = new List<User>();
+            if (user != null)
+            {
+                user.FriendRequester.ForEach(f => friends.Add(f.FriendOf));
+                user.Friends.ForEach(f => friends.Add(f.User));
+            }
+            return friends;
+        }
+
+        /// <summary>
         /// Remove friend from user list
         /// </summary>
         /// <param name="userId">user id for requester</param>
