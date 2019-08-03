@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence;
 namespace SprintCrowd.BackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190803131127_RefactorRelationship")]
+    partial class RefactorRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +111,7 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.Property<string>("Code")
                         .HasColumnName("code");
 
-                    b.Property<int?>("FriendId")
+                    b.Property<int>("FriendId")
                         .HasColumnName("friend_id");
 
                     b.Property<DateTime>("GenerateTime")
@@ -351,7 +353,8 @@ namespace SprintCrowd.BackEnd.Migrations
                 {
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
                         .WithMany("Friends")
-                        .HasForeignKey("FriendId");
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "FriendOf")
                         .WithMany("FriendRequester")
