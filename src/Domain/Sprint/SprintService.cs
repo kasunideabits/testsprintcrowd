@@ -152,7 +152,7 @@
             sprint.Participants
                 .ForEach(p =>
                 {
-                    result.AddParticipant(p.User.Id, p.User.Name, p.User.ProfilePicture);
+                    result.AddParticipant(p.User.Id, p.User.Name, p.User.ProfilePicture, p.User.Code);
                 });
             return result;
         }

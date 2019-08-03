@@ -20,12 +20,14 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             int userId,
             string name,
             string profilePicture,
+            string userCode,
             FriendRequestStatus status)
         {
             this.RequestId = requestId;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
+            this.Code = userCode;
             this.Status = status;
         }
 
@@ -48,6 +50,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Gets friend profile picutre url
         /// </summary>
         public string ProfilePicture { get; }
+
+        /// <summary>
+        /// Gets user code
+        /// </summary>
+        public string Code { get; }
 
         /// <summary>
         /// Friend request status
