@@ -7,10 +7,18 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
 
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
+
+    /// <summary>
+    /// Sprint invitation api controller
+    /// </summary>
     public class SprintInvitationController : ControllerBase
     {
 
+        /// <summary>
+        /// Initialize <see cref="SprintInvitationController"> class </see>
+        /// </summary>
+        /// <param name="sprintInvitationService">sprint invitation serivce</param>
         public SprintInvitationController(ISprintInvitationService sprintInvitationService)
         {
             this.SprintInvitationService = sprintInvitationService;
@@ -18,6 +26,10 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
 
         private ISprintInvitationService SprintInvitationService { get; }
 
+        /// <summary>
+        /// Invite friend to a sprint
+        /// </summary>
+        /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
         [HttpPost("invite")]
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
