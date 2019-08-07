@@ -1,7 +1,9 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintInvitation
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
+    using Microsoft.EntityFrameworkCore;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
@@ -64,7 +66,15 @@
             {
                 throw new Application.ApplicationException(ex.Message.ToString());
             }
+        }
 
+        public async Task<SprintInvite> Get(int inviterId, int inviteeId, int sprintId)
+        {
+            return await this.Context.SprintInvite
+                .FirstOrDefaultAsync(s =>
+                    s.InviterId == inviterId &&
+                    s.InviteeId == inviteeId &&
+                    s.SprintId == sprintId);
         }
 
         /// <summary>

@@ -6,13 +6,12 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintInvitation;
 
-    [Route("[controller]")]
-    [ApiController]
-    [Authorize]
-
     /// <summary>
     /// Sprint invitation api controller
     /// </summary>
+    [Route("[controller]")]
+    [ApiController]
+    [Authorize]
     public class SprintInvitationController : ControllerBase
     {
 
@@ -34,12 +33,25 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
         [HttpPost("invite")]
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
-            await this.SprintInvitationService.Invite(invite.InviterId, invite.InviteeId, invite.SprintId);
-            ResponseObject response = new ResponseObject()
+            try
             {
-                StatusCode = (int)ApplicationResponseCode.Success,
-            };
-            return this.Ok(response);
+                await this.SprintInvitationService.Invite(invite.InviterId, invite.InviteeId, invite.SprintId);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                };
+                return this.Ok(response);
+            }
+            catch (ApplicationException ex)
+            {
+
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.BadRequest,
+                    Data = new { ErrorCode = ex.ErrorCode, Reason = ex.Message.ToString() }
+                };
+                return this.Ok(response);
+            }
         }
     }
 }

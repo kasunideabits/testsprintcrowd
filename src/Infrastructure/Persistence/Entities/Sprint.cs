@@ -69,6 +69,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>sprint created date</value>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        /// <summary>
+        /// Create date time
+        /// </summary>
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>

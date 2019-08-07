@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintInvitation
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     public interface ISprintInvitationRepo
     {
@@ -20,6 +21,8 @@
         /// <param name="receiverId">Receiver user id</param>
         /// <param name="sprintInviteId">Sprint invite id</param>
         Task AddNotification(int senderId, int receiverId, int sprintInviteId);
+
+        Task<SprintInvite> Get(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>
         /// commit and save changes to the db
