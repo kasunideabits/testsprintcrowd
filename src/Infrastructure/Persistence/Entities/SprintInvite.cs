@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Application;
 
     /// <summary>
@@ -36,11 +37,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Gets or set inviter reference
         /// </summary>
-        public User Inviter { get; set; }
+        public virtual User Inviter { get; set; }
 
         /// <summary>
         ///  Gets or set invitee reference
         /// </summary>
-        public User Invitee { get; set; }
+        public virtual User Invitee { get; set; }
+
+        /// <summary>
+        /// Referance for sprint
+        /// </summary>
+        public virtual Sprint Sprint { get; set; }
+
+        /// <summary>
+        /// Add refenrece for notificaton
+        /// </summary>
+        public virtual List<Notification> Notification { get; set; }
     }
 }
