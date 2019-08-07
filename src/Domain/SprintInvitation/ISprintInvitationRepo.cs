@@ -4,8 +4,20 @@
 
     public interface ISprintInvitationRepo
     {
+        /// <summary>
+        /// Add sprint invitaiton
+        /// </summary>
+        /// <param name="inviterId">inviter user id</param>
+        /// <param name="inviteeId">invite user id</param>
+        /// <param name="sprintId">sprint id</param>
         Task Invite(int inviterId, int inviteeId, int sprintId);
 
+        /// <summary>
+        /// Add sprint notification to notifcation table
+        /// </summary>
+        /// <param name="senderId">Sender user id</param>
+        /// <param name="receiverId">Receiver user id</param>
+        /// <param name="sprintId">Sprint id</param>
         Task AddNotification(int senderId, int receiverId, int sprintId);
 
         /// <summary>

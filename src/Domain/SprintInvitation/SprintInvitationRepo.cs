@@ -5,14 +5,45 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
+    /// <summary>
+    /// Storing and retirve sprint invitations
+    /// </summary>
     public class SprintInvitationRepo : ISprintInvitationRepo
     {
+        /// <summary>
+        /// Initialize <see cref="SprintInvitationRepo"> class</see>
+        /// </summary>
+        /// <param name="context">database context</param>
         public SprintInvitationRepo(ScrowdDbContext context)
         {
             this.Context = context;
         }
         private ScrowdDbContext Context { get; }
 
+        /// <summary>
+        /// Add sprint invitaiton
+        /// </summary>
+        /// <param name="inviterId">inviter user id</param>
+        /// <param name="inviteeId">invite user id</param>
+        /// <param name="sprintId">sprint id</param>
+        public async Task Invite(int inviterId, int inviteeId, int sprintId)
+        {
+            SprintInvite invite = new SprintInvite()
+            {
+                SprintId = sprintId,
+                InviterId = inviterId,
+                InviteeId = inviteeId
+            };
+            await this.Context.SprintInvite.AddAsync(invite);
+            return;
+        }
+
+        /// <summary>
+        /// Add sprint notification to notifcation table
+        /// </summary>
+        /// <param name="senderId">Sender user id</param>
+        /// <param name="receiverId">Receiver user id</param>
+        /// <param name="sprintId">Sprint id</param>
         public async Task AddNotification(int senderId, int receiverId, int sprintId)
         {
             try
@@ -33,18 +64,6 @@
                 throw new Application.ApplicationException(ex.Message.ToString());
             }
 
-        }
-
-        public async Task Invite(int inviterId, int inviteeId, int sprintId)
-        {
-            SprintInvite invite = new SprintInvite()
-            {
-                SprintId = sprintId,
-                InviterId = inviterId,
-                InviteeId = inviteeId
-            };
-            await this.Context.SprintInvite.AddAsync(invite);
-            return;
         }
 
         /// <summary>

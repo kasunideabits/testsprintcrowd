@@ -3,6 +3,7 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintInvitation;
 
     [Route("[controller]")]
@@ -34,7 +35,11 @@ namespace SprintCrowd.BackEnd.Web.SprintInvitation
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
             await this.SprintInvitationService.Invite(invite.InviterId, invite.InviteeId, invite.SprintId);
-            return this.Ok();
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+            };
+            return this.Ok(response);
         }
     }
 }
