@@ -49,11 +49,12 @@ namespace SprintCrowd.BackEnd.Domain.Notification
             return new UserInfo(user.Id, user.Name, user.ProfilePicture, user.Code);
         }
 
-        private SprintInfo SprintInviteData(SprintInvite sprintInvite)
+        private SprintInviteInfo SprintInviteData(SprintInvite sprintInvite)
         {
-            SprintInfo sprintInfo = new SprintInfo()
+            SprintInviteInfo sprintInfo = new SprintInviteInfo()
             {
-                SprintId = sprintInvite.Id,
+                SprintInviteId = sprintInvite.Id,
+                SprintId = sprintInvite.Sprint.Id,
                 Name = sprintInvite.Sprint.Name,
                 Distance = sprintInvite.Sprint.Distance,
                 StartTime = sprintInvite.Sprint.StartDateTime,

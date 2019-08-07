@@ -3,8 +3,9 @@ namespace SprintCrowd.BackEnd.Domain.Notification
     using System;
     using SprintCrowd.BackEnd.Application;
 
-    public class SprintInfo
+    public class SprintInviteInfo
     {
+        public int SprintInviteId { get; set; }
 
         public int SprintId { get; set; }
 
