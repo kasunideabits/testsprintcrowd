@@ -26,7 +26,8 @@
         /// <param name="inviterId">inviter user id</param>
         /// <param name="inviteeId">invite user id</param>
         /// <param name="sprintId">sprint id</param>
-        public async Task Invite(int inviterId, int inviteeId, int sprintId)
+        /// <returns> sprint invite id </returns>
+        public async Task<int> Invite(int inviterId, int inviteeId, int sprintId)
         {
             SprintInvite invite = new SprintInvite()
             {
@@ -34,8 +35,8 @@
                 InviterId = inviterId,
                 InviteeId = inviteeId
             };
-            await this.Context.SprintInvite.AddAsync(invite);
-            return;
+            var result = await this.Context.SprintInvite.AddAsync(invite);
+            return result.Entity.Id;
         }
 
         /// <summary>
@@ -43,8 +44,8 @@
         /// </summary>
         /// <param name="senderId">Sender user id</param>
         /// <param name="receiverId">Receiver user id</param>
-        /// <param name="sprintId">Sprint id</param>
-        public async Task AddNotification(int senderId, int receiverId, int sprintId)
+        /// <param name="sprintInviteId">Sprint invite id</param>
+        public async Task AddNotification(int senderId, int receiverId, int sprintInviteId)
         {
             try
             {
@@ -53,7 +54,7 @@
                     NotiticationType = NotificationType.SprintInvitation,
                     SenderId = senderId,
                     ReceiverId = receiverId,
-                    SprintId = sprintId,
+                    SprintInviteId = sprintInviteId,
                     SendTime = DateTime.UtcNow,
                     IsRead = false,
                 };

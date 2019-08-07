@@ -26,8 +26,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintInvitation
         /// <param name="sprintId">sprint id</param>
         public async Task Invite(int inviterId, int inviteeId, int sprintId)
         {
-            await this.SprintInvitationRepo.Invite(inviterId, inviteeId, sprintId);
-            await this.SprintInvitationRepo.AddNotification(inviterId, inviteeId, sprintId);
+            var sprintInviteId = await this.SprintInvitationRepo.Invite(inviterId, inviteeId, sprintId);
+            await this.SprintInvitationRepo.AddNotification(inviterId, inviteeId, sprintInviteId);
             this.SprintInvitationRepo.SaveChanges();
             return;
         }

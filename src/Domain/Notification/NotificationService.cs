@@ -22,7 +22,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification
                     case NotificationType.FriendInvitation:
                         break;
                     case NotificationType.SprintInvitation:
-                        result.Notifications.Add(this.BuildSprintInvitation(n));
+                        result.Notifications.Add(this.BuildSprintInvitation(NotificationType.SprintInvitation, n));
                         break;
                     default:
                         break;
@@ -31,14 +31,15 @@ namespace SprintCrowd.BackEnd.Domain.Notification
             return result;
         }
 
-        private NotificationBaseMessage BuildSprintInvitation(Notification notification)
+        private NotificationBaseMessage BuildSprintInvitation(NotificationType notifyType, Notification notification)
         {
             NotificationBaseMessage message = new NotificationBaseMessage()
             {
                 Sender = this.BuildUserInfo(notification.Sender),
                 Receiver = this.BuildUserInfo(notification.Receiver),
                 SendTime = notification.SendTime,
-                EventData = this.SprintDate(notification.Sprint),
+                NotificationType = notifyType,
+                EventData = this.SprintInviteData(notification.SprintInvite),
             };
             return message;
         }
@@ -48,14 +49,15 @@ namespace SprintCrowd.BackEnd.Domain.Notification
             return new UserInfo(user.Id, user.Name, user.ProfilePicture, user.Code);
         }
 
-        private SprintInfo SprintDate(Sprint sprint)
+        private SprintInfo SprintInviteData(SprintInvite sprintInvite)
         {
             SprintInfo sprintInfo = new SprintInfo()
             {
-                SprintId = sprint.Id,
-                Name = sprint.Name,
-                Distance = sprint.Distance,
-                StartTime = sprint.StartDateTime,
+                SprintId = sprintInvite.Id,
+                Name = sprintInvite.Sprint.Name,
+                Distance = sprintInvite.Sprint.Distance,
+                StartTime = sprintInvite.Sprint.StartDateTime,
+                Status = sprintInvite.Status,
             };
             return sprintInfo;
         }

@@ -20,7 +20,7 @@ namespace SprintCrowd.BackEnd.Domain.Notification
             return await this.Context.Notification
                 .Include(n => n.Sender)
                 .Include(n => n.Receiver)
-                .Include(n => n.Sprint)
+                .Include(n => n.SprintInvite).ThenInclude(s => s.Sprint)
                 .Include(n => n.Achievement)
                 .Where(n => n.ReceiverId == userId || n.SenderId == userId)
                 .ToListAsync();
