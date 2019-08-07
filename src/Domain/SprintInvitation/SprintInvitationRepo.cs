@@ -72,7 +72,7 @@
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
         /// </summary>
-        public void SaveChanges()
+        public Task SaveChanges()
         {
             this.Context.SaveChanges();
         }

@@ -26,6 +26,6 @@
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
         /// </summary>
-        void SaveChanges();
+        Task SaveChanges();
     }
 }
