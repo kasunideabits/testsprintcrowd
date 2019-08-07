@@ -75,6 +75,7 @@
         public Task SaveChanges()
         {
             this.Context.SaveChanges();
+            return Task.CompletedTask;
         }
     }
 }
