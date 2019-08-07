@@ -42,7 +42,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// <summary>
         /// Event distance
         /// </summary>
-        /// <value>Distance for the sprint</value>
+        /// <value>Distance in meters for the sprint</value>
         public int Distance { get; set; }
 
         /// <summary>

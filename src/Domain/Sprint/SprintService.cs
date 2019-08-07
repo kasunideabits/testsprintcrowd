@@ -87,7 +87,7 @@
             sprintAavail.LocationProvided = sprintData.LocationProvided;
             sprintAavail.Lattitude = sprintData.Lattitude;
             sprintAavail.Longitutude = sprintData.Longitutude;
-            sprintAavail.NumberOfParticipants = sprintData.NumberOfParticipants;
+            sprintAavail.NumberOfParticipants = NumberOfParticipants(sprintData.SprintType);
             var value = sprintAavail.Id;
             if (sprintAavail != null)
             {
@@ -121,7 +121,7 @@
             sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
             sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
             sprintToBeCreated.Distance = sprintInfo.Distance;
-            sprintToBeCreated.NumberOfParticipants = sprintInfo.NumberOfParticipants;
+            sprintToBeCreated.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
             Sprint sprint = await this.SprintRepo.AddSprint(sprintToBeCreated);
             if (sprint != null)
             {
@@ -161,6 +161,19 @@
         {
             return sprints
                 .Where(s => s.Distance >= from * 1000 && s.Distance <= to * 1000).ToList();
+        }
+
+        private static int NumberOfParticipants(int sprintType)
+        {
+            if (sprintType == (int)SprintType.PrivateSprint)
+            {
+                return 3;
+            }
+            if (sprintType == (int)SprintType.PublicSprint)
+            {
+                return 30;
+            }
+            throw new Application.ApplicationException("Invalid sprint type");
         }
     }
 }
