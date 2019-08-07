@@ -3,14 +3,27 @@ namespace SprintCrowd.BackEnd.Domain.Notification
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
+    /// <summary>
+    /// Notification handling service
+    /// </summary>
     public class NotificationService : INotificationService
     {
+        /// <summary>
+        /// Initialize <see cref="NotificationService"> class </see>
+        /// </summary>
+        /// <param name="notificationRepo">notification repo</param>
         public NotificationService(INotificationRepo notificationRepo)
         {
             this.NotificationRepo = notificationRepo;
         }
 
         private INotificationRepo NotificationRepo { get; }
+
+        /// <summary>
+        /// Get notificaitons related to given user id
+        /// </summary>
+        /// <param name="userId">user id to lookup</param>
+        /// <returns><see cref="NotificationList">notificaitons realted to user </see></returns>
         public async Task<NotificationList> GetNotifications(int userId)
         {
             var notifications = await this.NotificationRepo.GetNotifications(userId);
