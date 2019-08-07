@@ -97,12 +97,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Gets or set inviter rederence
         /// </summary>
-        public virtual SprintInvite Inviter { get; set; }
+        public virtual List<SprintInvite> Inviter { get; set; }
 
         /// <summary>
         /// Gets or set invitee reference
         /// </summary>
-        public virtual SprintInvite Invitee { get; set; }
+        public virtual List<SprintInvite> Invitee { get; set; }
 
         /// <summary>
         /// Gets or set friend requester reference

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence;
 namespace SprintCrowd.BackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190807112455_CorrectRelationForInviterInvitee")]
+    partial class CorrectRelationForInviterInvitee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,9 +251,9 @@ namespace SprintCrowd.BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("InviterId", "InviteeId", "SprintId");
-
                     b.HasIndex("InviteeId");
+
+                    b.HasIndex("InviterId");
 
                     b.HasIndex("SprintId");
 

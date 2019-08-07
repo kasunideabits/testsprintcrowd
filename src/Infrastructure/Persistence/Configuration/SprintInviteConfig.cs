@@ -18,16 +18,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
         {
             builder
                 .HasOne(s => s.Invitee)
-                .WithOne(s => s.Invitee)
-                .HasForeignKey<SprintInvite>(s => s.InviteeId);
+                .WithMany(s => s.Invitee)
+                .HasForeignKey(s => s.InviteeId);
             builder
                 .HasOne(s => s.Inviter)
-                .WithOne(s => s.Inviter)
-                .HasForeignKey<SprintInvite>(s => s.InviterId);
+                .WithMany(s => s.Inviter)
+                .HasForeignKey(s => s.InviterId);
             builder
                 .HasOne(s => s.Sprint)
                 .WithMany(s => s.SprintInvites)
                 .HasForeignKey(s => s.SprintId);
+            builder
+                .HasAlternateKey(s => new { s.InviterId, s.InviteeId, s.SprintId });
             builder.Property<DateTime>("LastUpdated");
         }
     }
