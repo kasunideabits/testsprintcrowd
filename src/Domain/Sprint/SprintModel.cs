@@ -7,12 +7,20 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
     public class SprintModel
     {
         /// <inheritdoc />
-        public SprintModel(string name, int distance, Boolean locationProvided, DateTime startTime, int sprintType,
-            double lattitude, double longitutude, int id, int numOfParticiapants)
+        public SprintModel(
+            string name,
+            int distance,
+            string location,
+            DateTime startTime,
+            int sprintType,
+            double lattitude,
+            double longitutude,
+            int id,
+            int numOfParticiapants)
         {
             this.Name = name;
             this.Distance = distance;
-            this.LocationProvided = locationProvided;
+            this.Location = location;
             this.StartTime = startTime;
             this.SprintType = sprintType;
             this.Lattitude = lattitude;
@@ -46,10 +54,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public int Distance { get; set; }
 
         /// <summary>
-        /// Wether location is provided or not
+        /// Gets or set location
         /// </summary>
-        /// <value>Location details</value>
-        public Boolean LocationProvided { get; set; }
+        public string Location { get; set; }
 
         /// <summary>
         /// Start Time of the event

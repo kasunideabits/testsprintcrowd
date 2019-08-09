@@ -26,6 +26,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public int Distance { get; set; }
 
         /// <summary>
+        /// Gets or set sprint location
+        /// </summary>
+        public string Location { get; set; }
+
+        /// <summary>
         ///  Gets or set sprint start date time
         /// </summary>
         public DateTime StartDateTime { get; set; }

@@ -45,20 +45,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <value>event status, started or not.</value>
         public int Status { get; set; }
         /// <summary>
-        /// gets or sets value.
+        /// gets or sets location.
         /// </summary>
-        /// <value>is a event location provided by user.</value>
-        public bool LocationProvided { get; set; }
-        /// <summary>
-        /// gets or sets value.
-        /// </summary>
-        /// <value>lattitude for the event.</value>
-        public double Lattitude { get; set; }
-        /// <summary>
-        /// gets or sets value.
-        /// </summary>
-        /// <value>longitutude for the event.</value>
-        public double Longitutude { get; set; }
+        public string Location { get; set; }
+
         /// <summary>
         /// Number of participant
         /// </summary>
