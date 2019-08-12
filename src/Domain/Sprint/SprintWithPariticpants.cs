@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SprintCrowd.BackEnd.Application;
 
 namespace SprintCrowd.BackEnd.Domain.Sprint
 {
@@ -51,9 +52,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// <param name="userId">user id for the participant</param>
         /// <param name="name">name for the participant</param>
         /// <param name="profilePicture">profile picture url for the participant</param>
-        public void AddParticipant(int userId, string name, string profilePicture)
+        /// <param name="code">user code</param>
+        public void AddParticipant(int userId, string name, string profilePicture, string code)
         {
-            this.Participants.Add(new JoindedRunner(userId, name, profilePicture));
+            this.Participants.Add(new JoindedRunner(userId, name, profilePicture, code));
         }
     }
 
@@ -68,11 +70,13 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// <param name="userId">user id for the participant</param>
         /// <param name="name">name for the participant</param>
         /// <param name="profilePicture">profile picture url for the participant</param>
-        public JoindedRunner(int userId, string name, string profilePicture)
+        /// <param name="userCode">user code</param>
+        public JoindedRunner(int userId, string name, string profilePicture, string userCode)
         {
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicutre = profilePicture;
+            this.Code = userCode;
         }
 
         /// <summary>
@@ -89,5 +93,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// Gets or set profile picture url
         /// </summary>
         public string ProfilePicutre { get; }
+
+        /// <summary>
+        /// Gets user code
+        /// </summary>
+        public string Code { get; }
     }
 }

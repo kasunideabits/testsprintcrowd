@@ -21,23 +21,17 @@
         /// <summary>
         ///  Gets or set friend request to
         /// </summary>
-        public int FriendId { get; set; }
+        public int? FriendId { get; set; }
 
         /// <summary>
         /// Gets or set unique code for friend request
         /// </summary>
-        public int Code { get; set; }
-
-        /// <summary>
-        /// Gets or set request status for send
-        /// request <see cref="FriendRequestStatus"> status </see>
-        /// </summary>
-        public FriendRequestStatus RequestStatus { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// Gets or set request message recieve time
         /// </summary>
-        public DateTime SendTime { get; set; }
+        public DateTime GenerateTime { get; set; }
 
         /// <summary>
         /// Gets or set accept/decline time

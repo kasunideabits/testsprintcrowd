@@ -10,54 +10,26 @@
     public interface IFriendRepo
     {
         /// <summary>
-        /// Add friend request which store request
+        /// Generate friend request code and store
         /// </summary>
         /// <param name="userId">user id for who send the request</param>
-        /// <param name="friendId">user id for who receive the request</param>
         /// <param name="code">uniqe code for request</param>
-        Task AddFriendRequest(int userId, int friendId, int code);
+        Task GenerateFriendCode(int userId, string code);
 
         /// <summary>
-        /// Accept friend request
+        /// Add given user with matching friend code
         /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Accept(int requestId, int userId, int friendId, int code);
+        /// <param name="userCode">senders unique id</param>
+        /// <param name="friendId">reponders user id</param>
+        /// <param name="friendCode">generate friend code</param>
+        Task AddFriend(string userCode, int friendId, string friendCode);
 
         /// <summary>
-        /// Decline friend request
+        /// Get firends for given user id
         /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        Task Decline(int requestId, int userId, int friendId, int code);
-
-        /// <summary>
-        /// Get firend details with given friend id
-        /// </summary>
-        /// <param name="userId">user id</param>
-        /// <param name="friendId">friend user id</param>
-        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
-        /// <returns>Friend user details</returns>
-        Task<FriendData> GetFriend(int userId, int friendId, FriendRequestStatus requestStatus);
-
-        /// <summary>
-        /// Get frind list for given user
-        /// </summary>
-        /// <param name="userId">user id for lookup friend</param>
-        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
-        /// <returns><see cref="FriendData">friend list</see></returns>
-        Task<List<FriendData>> GetFriends(int userId, FriendRequestStatus requestStatus);
-
-        /// <summary>
-        /// Get all friend request with filter request status
-        /// </summary>
-        /// <param name="userId">user id to lookup friends</param>
-        /// <returns><see cref="FriendData"> friend list</see></returns>
-        Task<List<FriendData>> GetAllFriends(int userId);
+        /// <param name="userId">user id to lookup</param>
+        /// <returns><see cref="User">list of users</see></returns>
+        Task<List<User>> GetFriends(int userId);
 
         /// <summary>
         /// Remove friend from user list

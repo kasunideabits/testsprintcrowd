@@ -69,12 +69,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>sprint created date</value>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        /// <summary>
+        /// Create date time
+        /// </summary>
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>participants of the event.</value>
-        public List<SprintParticipant> Participants { get; set; }
+        public virtual List<SprintParticipant> Participants { get; set; }
+
+        // <summary>
+        /// get or ser sprint invite reference
+        /// </summary>
+        /// <value></value>
+        public virtual List<SprintInvite> SprintInvites { get; set; }
     }
 }

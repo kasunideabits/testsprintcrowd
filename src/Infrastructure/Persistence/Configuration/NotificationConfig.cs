@@ -28,6 +28,10 @@
                 .HasOne(s => s.Achievement)
                 .WithMany(s => s.Notificatoins)
                 .HasForeignKey(s => s.AchievementId);
+            builder
+                .HasOne(n => n.SprintInvite)
+                .WithMany(s => s.Notification)
+                .HasForeignKey(n => n.SprintInviteId);
             builder.Property<DateTime>("LastUpdated");
         }
     }

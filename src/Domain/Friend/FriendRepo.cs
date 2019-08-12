@@ -25,172 +25,75 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         private ScrowdDbContext Context { get; }
 
         /// <summary>
-        /// Add friend request which store request
+        /// Generate friend request code and store
         /// </summary>
         /// <param name="userId">user id for who send the request</param>
-        /// <param name="friendId">user id for who receive the request</param>
         /// <param name="code">uniqe code for request</param>
-        public async Task AddFriendRequest(int userId, int friendId, int code)
+        public async Task GenerateFriendCode(int userId, string code)
         {
             Friend friend = new Friend()
             {
                 UserId = userId,
-                FriendId = friendId,
                 Code = code,
-                RequestStatus = FriendRequestStatus.Pendding,
-                SendTime = DateTime.UtcNow,
+                GenerateTime = DateTime.UtcNow,
             };
             await this.Context.Frineds.AddAsync(friend);
         }
 
         /// <summary>
-        /// Accept friend request
+        /// Add given user with matching friend code
         /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        public async Task Accept(int requestId, int userId, int friendId, int code)
+        /// <param name="userCode">senders unique id</param>
+        /// <param name="friendId">reponders user id</param>
+        /// <param name="friendCode">generate friend code</param>
+        public async Task AddFriend(string userCode, int friendId, string friendCode)
         {
-            var request = await this.Context.Frineds.FirstOrDefaultAsync(f => f.Id == requestId);
-            if (request == null)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.RequestIdNotFound,
-                    "Request id not found");
-            }
-            else if (request.Code != code)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.CodeNotMatched,
-                    "Request code not valid"
-                );
-            }
-            else if (request.UserId != userId)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.UserIdNotMatched,
-                    "User id not matched"
-                );
-            }
-            else if (request.FriendId != friendId)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.UserIdNotMatched,
-                    "Friend id not matched"
-                );
-            }
-            request.RequestStatus = FriendRequestStatus.Accept;
-            return;
-        }
-
-        /// <summary>
-        /// Decline friend request
-        /// </summary>
-        /// <param name="requestId">unique id for friend request</param>
-        /// <param name="userId">user id who send the request</param>
-        /// <param name="friendId">user id who receive the request</param>
-        /// <param name="code">unique code for friend request</param>
-        public async Task Decline(int requestId, int userId, int friendId, int code)
-        {
-            var request = await this.Context.Frineds.FirstOrDefaultAsync(f => f.Id == requestId);
-            if (request == null)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.RequestIdNotFound,
-                    "Request id not found");
-            }
-            else if (request.Code != code)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.CodeNotMatched,
-                    "Request code not valid"
-                );
-            }
-            else if (request.UserId != userId)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.UserIdNotMatched,
-                    "User id not matched"
-                );
-            }
-            else if (request.FriendId != friendId)
-            {
-                throw new Application.ApplicationException(
-                    (int)StatusUpdateErrorCode.UserIdNotMatched,
-                    "Friend id not matched"
-                );
-            }
-            request.RequestStatus = FriendRequestStatus.Decline;
-            return;
-        }
-
-        /// <summary>
-        /// Get firend details with given friend id
-        /// </summary>
-        /// <param name="userId">user id</param>
-        /// <param name="friendId">friend user id</param>
-        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
-        /// <returns>Friend user details</returns>
-        public async Task<FriendData> GetFriend(int userId, int friendId, FriendRequestStatus requestStatus)
-        {
-            Friend result = await this.Context.Frineds
-                .Include(f => f.FriendOf)
+            var requester = await this.Context.Frineds
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(f =>
-                    ((f.UserId == userId && f.FriendId == friendId) ||
-                        (f.FriendId == userId && f.UserId == friendId)) &&
-                    f.RequestStatus == requestStatus);
-            if (result != null && result.UserId == userId)
+                .FirstOrDefaultAsync(f => f.Code == friendCode && f.User.Code == userCode);
+            if (requester == null)
             {
-                return new FriendData(result.Id, result.FriendOf, result.RequestStatus);
-            }
-            else if (result != null && result.User.Id == friendId)
-            {
-                return new FriendData(result.Id, result.User, result.RequestStatus);
+                throw new Application.ApplicationException(
+                    (int)FriendRequestActionResult.RequestCodeNotFound,
+                    "Invalid request code");
             }
             else
             {
-                throw new Application.ApplicationException("can find matching friend");
+                if (requester.FriendId == null)
+                {
+                    requester.FriendId = friendId;
+                    requester.StatusUpdatedTime = DateTime.UtcNow;
+                    return;
+                }
+                else if (requester.FriendId != null)
+                {
+                    throw new Application.ApplicationException(
+                        (int)FriendRequestActionResult.AlreadyUsedCode,
+                        "Already used code");
+                }
             }
         }
 
         /// <summary>
-        /// Get frind list for given user
+        /// Get firends for given user id
         /// </summary>
-        /// <param name="userId">user id for lookup friend</param>
-        /// <param name="requestStatus"><see cref="FriendRequestStatus"> reuqest status </see></param>
-        /// <returns><see cref="FriendData">friend list</see></returns>
-        public async Task<List<FriendData>> GetFriends(int userId, FriendRequestStatus requestStatus)
+        /// <param name="userId">user id to lookup</param>
+        /// <returns><see cref="User">list of users</see></returns>
+        public async Task<List<User>> GetFriends(int userId)
         {
             var user = await this.Context.User
                 .Include(f => f.Friends)
                 .ThenInclude(f => f.User)
                 .Include(f => f.FriendRequester)
-                .ThenInclude(f => f.User)
+                .ThenInclude(f => f.FriendOf)
                 .FirstOrDefaultAsync(f => f.Id == userId);
-            List<FriendData> friends = new List<FriendData>();
-            friends.AddRange(user.Friends.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
-            friends.AddRange(user.FriendRequester.Where(f => f.RequestStatus == requestStatus).Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
-            return friends;
-        }
 
-        /// <summary>
-        /// Get all friend request with filter request status
-        /// </summary>
-        /// <param name="userId">user id to lookup friends</param>
-        /// <returns><see cref="FriendData"> friend list</see></returns>
-        public async Task<List<FriendData>> GetAllFriends(int userId)
-        {
-            var user = await this.Context.User
-                .Include(f => f.Friends)
-                .ThenInclude(f => f.User)
-                .Include(f => f.FriendRequester)
-                .ThenInclude(f => f.User)
-                .FirstOrDefaultAsync(f => f.Id == userId);
-            List<FriendData> friends = new List<FriendData>();
-            friends.AddRange(user.Friends.Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
-            friends.AddRange(user.FriendRequester.Select(f => new FriendData(f.Id, f.User, f.RequestStatus)));
+            List<User> friends = new List<User>();
+            if (user != null)
+            {
+                user.FriendRequester.ForEach(f => friends.Add(f.FriendOf));
+                user.Friends.ForEach(f => friends.Add(f.User));
+            }
             return friends;
         }
 

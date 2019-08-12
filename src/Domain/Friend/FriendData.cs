@@ -12,12 +12,10 @@
         /// </summary>
         /// <param name="requestId">requset id</param>
         /// <param name="user">user object</param>
-        /// <param name="status">status for request</param>
-        public FriendData(int requestId, User user, FriendRequestStatus status)
+        public FriendData(int requestId, User user)
         {
             this.RequestId = requestId;
             this.User = user;
-            this.Status = status;
         }
 
         /// <summary>
@@ -33,6 +31,5 @@
         /// <summary>
         /// Gets request status
         /// </summary>
-        public FriendRequestStatus Status { get; }
     }
 }

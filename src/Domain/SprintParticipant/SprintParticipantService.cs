@@ -116,6 +116,7 @@
                     p.User.Id,
                     p.User.Name,
                     p.User.ProfilePicture,
+                    p.User.Code,
                     p.Sprint.Id,
                     p.Sprint.Name);
                 participantInfos.Add(participant);

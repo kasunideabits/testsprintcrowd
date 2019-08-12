@@ -106,20 +106,17 @@ namespace SprintCrowd.BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id");
 
-                    b.Property<int>("Code")
+                    b.Property<string>("Code")
                         .HasColumnName("code");
 
-                    b.Property<int>("FriendId")
+                    b.Property<int?>("FriendId")
                         .HasColumnName("friend_id");
+
+                    b.Property<DateTime>("GenerateTime")
+                        .HasColumnName("generate_time");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnName("last_updated");
-
-                    b.Property<int>("RequestStatus")
-                        .HasColumnName("request_status");
-
-                    b.Property<DateTime>("SendTime")
-                        .HasColumnName("send_time");
 
                     b.Property<DateTime>("StatusUpdatedTime")
                         .HasColumnName("status_updated_time");
@@ -142,7 +139,7 @@ namespace SprintCrowd.BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id");
 
-                    b.Property<int>("AchievementId")
+                    b.Property<int?>("AchievementId")
                         .HasColumnName("achievement_id");
 
                     b.Property<bool>("IsRead")
@@ -163,8 +160,8 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.Property<int>("SenderId")
                         .HasColumnName("sender_id");
 
-                    b.Property<int>("SprintId")
-                        .HasColumnName("sprint_id");
+                    b.Property<int?>("SprintInviteId")
+                        .HasColumnName("sprint_invite_id");
 
                     b.HasKey("Id");
 
@@ -174,7 +171,7 @@ namespace SprintCrowd.BackEnd.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.HasIndex("SprintId");
+                    b.HasIndex("SprintInviteId");
 
                     b.ToTable("notification");
                 });
@@ -252,11 +249,11 @@ namespace SprintCrowd.BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InviteeId")
-                        .IsUnique();
+                    b.HasAlternateKey("InviterId", "InviteeId", "SprintId");
 
-                    b.HasIndex("InviterId")
-                        .IsUnique();
+                    b.HasIndex("InviteeId");
+
+                    b.HasIndex("SprintId");
 
                     b.ToTable("sprint_invite");
                 });
@@ -297,6 +294,10 @@ namespace SprintCrowd.BackEnd.Migrations
                     b.Property<int?>("AccessTokenId")
                         .HasColumnName("access_token_id");
 
+                    b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("code");
+
                     b.Property<string>("Email")
                         .HasColumnName("email");
 
@@ -322,6 +323,9 @@ namespace SprintCrowd.BackEnd.Migrations
 
                     b.HasIndex("AccessTokenId");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -345,12 +349,11 @@ namespace SprintCrowd.BackEnd.Migrations
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Friend", b =>
                 {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithMany("Friends")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "FriendOf")
+                        .WithMany("Friends")
+                        .HasForeignKey("FriendId");
+
+                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
                         .WithMany("FriendRequester")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -360,8 +363,7 @@ namespace SprintCrowd.BackEnd.Migrations
                 {
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Achievement", "Achievement")
                         .WithMany("Notificatoins")
-                        .HasForeignKey("AchievementId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AchievementId");
 
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Receiver")
                         .WithMany("ReceiverNotification")
@@ -373,10 +375,9 @@ namespace SprintCrowd.BackEnd.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", "Sprint")
-                        .WithMany()
-                        .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvite", "SprintInvite")
+                        .WithMany("Notification")
+                        .HasForeignKey("SprintInviteId");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", b =>
@@ -389,13 +390,18 @@ namespace SprintCrowd.BackEnd.Migrations
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvite", b =>
                 {
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Invitee")
-                        .WithOne("Invitee")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvite", "InviteeId")
+                        .WithMany("Invitee")
+                        .HasForeignKey("InviteeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Inviter")
-                        .WithOne("Inviter")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvite", "InviterId")
+                        .WithMany("Inviter")
+                        .HasForeignKey("InviterId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", "Sprint")
+                        .WithMany("SprintInvites")
+                        .HasForeignKey("SprintId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -29,19 +29,17 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <summary>
         /// Add friend to a list
         /// </summary>
-        /// <param name="requestId">request id</param>
         /// <param name="userId">user id for friend</param>
         /// <param name="name">name for friend</param>
         /// <param name="profilePicture">profile picutre for user</param>
-        /// <param name="status">friend request status</param>
+        /// <param name="userCode">profile picutre for user</param>
         public void AddFriend(
-            int requestId,
             int userId,
             string name,
             string profilePicture,
-            FriendRequestStatus status)
+            string userCode)
         {
-            this.friends.Add(new FriendDto(requestId, userId, name, profilePicture, status));
+            this.friends.Add(new FriendDto(userId, name, profilePicture, userCode));
         }
 
     }
