@@ -28,7 +28,7 @@
         [Fact]
         public async void ShouldCreateNewSprint()
         {
-            SprintModel newSprint = new SprintModel("Test", 1000, false, DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, 1, 10);
+            SprintModel newSprint = new SprintModel("Test", 1000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, 1, 10);
             var response = await this._client.PostAsync("/sprintadmin/create", new StringContent(
                 JsonConvert.SerializeObject(newSprint, Formatting.None),
                 Encoding.UTF8,
@@ -47,14 +47,11 @@
             Sprint sprint = new Sprint();
             sprint.Distance = 1000;
             sprint.Name = "Test Sprint";
-            sprint.LocationProvided = false;
-            sprint.Lattitude = 0;
-            sprint.Longitutude = 0;
             sprint.StartDateTime = DateTime.UtcNow;
             sprint.Type = (int)SprintType.PrivateSprint;
             var addedSprint = await TestStartUp.DbContext.Sprint.AddAsync(sprint);
             TestStartUp.DbContext.SaveChanges();
-            SprintModel updateRequest = new SprintModel("Updated Sprint", 2000, false, DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, addedSprint.Entity.Id, 10);
+            SprintModel updateRequest = new SprintModel("Updated Sprint", 2000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, addedSprint.Entity.Id, 10);
 
             var result = await this._client.PutAsync("/sprintadmin/update", new StringContent(
                 JsonConvert.SerializeObject(updateRequest, Formatting.None),
@@ -77,18 +74,11 @@
         {
             Sprint sprint1 = new Sprint();
             sprint1.Distance = 1000;
-            sprint1.Name = "Test Sprint";
-            sprint1.LocationProvided = false;
-            sprint1.Lattitude = 0;
-            sprint1.Longitutude = 0;
             sprint1.StartDateTime = DateTime.UtcNow;
             sprint1.Type = (int)SprintType.PublicSprint;
             Sprint sprint2 = new Sprint();
             sprint2.Distance = 1000;
             sprint2.Name = "Test Sprint";
-            sprint2.LocationProvided = false;
-            sprint2.Lattitude = 0;
-            sprint2.Longitutude = 0;
             sprint2.StartDateTime = DateTime.UtcNow;
             sprint2.Type = (int)SprintType.PublicSprint;
             var addedSprint1 = await TestStartUp.DbContext.Sprint.AddAsync(sprint1);
@@ -178,9 +168,6 @@
             {
                 Distance = distance,
                 Name = "Test Sprint" + r.Next(10, 100).ToString(),
-                LocationProvided = false,
-                Lattitude = 0,
-                Longitutude = 0,
                 StartDateTime = startDateTime,
                 Status = (int)status,
                 Type = (int)type,

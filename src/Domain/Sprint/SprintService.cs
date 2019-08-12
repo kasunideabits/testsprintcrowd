@@ -84,9 +84,7 @@
             sprintAavail.Distance = sprintData.Distance;
             sprintAavail.StartDateTime = sprintData.StartTime;
             sprintAavail.Type = sprintData.SprintType;
-            sprintAavail.LocationProvided = sprintData.LocationProvided;
-            sprintAavail.Lattitude = sprintData.Lattitude;
-            sprintAavail.Longitutude = sprintData.Longitutude;
+            sprintAavail.Location = sprintData.Location;
             sprintAavail.NumberOfParticipants = NumberOfParticipants(sprintData.SprintType);
             var value = sprintAavail.Id;
             if (sprintAavail != null)
@@ -114,9 +112,7 @@
             Sprint sprintToBeCreated = new Sprint();
             sprintToBeCreated.CreatedBy = ownerOfSprint;
             sprintToBeCreated.Type = sprintInfo.SprintType;
-            sprintToBeCreated.LocationProvided = sprintInfo.LocationProvided;
-            sprintToBeCreated.Lattitude = sprintInfo.Lattitude;
-            sprintToBeCreated.Longitutude = sprintInfo.Longitutude;
+            sprintToBeCreated.Location = sprintInfo.Location;
             sprintToBeCreated.Name = sprintInfo.Name;
             sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
             sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
@@ -145,6 +141,7 @@
                 SprintId = sprint.Id,
                 SprintName = sprint.Name,
                 Distance = sprint.Distance,
+                Location = sprint.Location,
                 StartDateTime = sprint.StartDateTime,
                 Type = sprint.Type,
                 NumberOfParticipants = sprint.NumberOfParticipants,
