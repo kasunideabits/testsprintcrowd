@@ -118,6 +118,12 @@
                 .ToListAsync();
         }
 
+        public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
+        {
+            SprintParticipant result = await this.Context.SprintParticipant.FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
+            return result;
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
@@ -127,5 +133,6 @@
         {
             this.Context.SaveChanges();
         }
+
     }
 }

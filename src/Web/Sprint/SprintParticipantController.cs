@@ -64,6 +64,7 @@
             // {
             //     return this.BadRequest();
             // }
+            //throw new System.Exception("ERROR");
             await this.SprintParticipantService.JoinSprint(joinUser.SprintId, joinUser.UserId);
             ResponseObject response = new ResponseObject()
             {

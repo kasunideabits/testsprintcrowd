@@ -62,13 +62,24 @@
         {
             try
             {
-                await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                this.SprintParticipantRepo.SaveChanges();
-                return;
+                var result = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
+
+                if (result == null)
+                {
+                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+
+                    this.SprintParticipantRepo.SaveChanges();
+                    return;
+                }
+                else
+                {
+                    throw new Application.ApplicationException((int)ApplicationErrorCode.BadRequest, "Duplicate participant");
+                }
+
             }
-            catch (System.Exception ex)
+            catch (Application.ApplicationException ex)
             {
-                throw new Application.ApplicationException($"{ex}");
+                throw new Application.ApplicationException(ex.ErrorCode, ex.Message);
             }
         }
 

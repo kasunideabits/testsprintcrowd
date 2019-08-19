@@ -133,7 +133,6 @@
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
                 c.RoutePrefix = string.Empty;
             });
-            app.UseAuthentication();
             app.UseSwagger();
             app.UseMiddleware<ErrorHandlingMiddleware>();
             DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);

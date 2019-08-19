@@ -14,5 +14,7 @@ namespace SprintCrowd.BackEnd.Application
         /// Internal server error occured
         /// </summary>
         InternalError = 500,
+
+        BadRequest = 400
     }
 }
