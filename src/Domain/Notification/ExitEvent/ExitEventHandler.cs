@@ -17,8 +17,6 @@
         /// <param name="notifyFactory">notification factory</param>
         public ExitEventHandler(INotifyFactory notifyFactory)
         {
-            System.Console.WriteLine("Send Notification Constrcuter");
-
             this.NotifyFactory = notifyFactory;
         }
 
@@ -33,7 +31,6 @@
         /// <returns>task completed or not</returns>
         public async Task Execute(ExitEvent exitEvent)
         {
-            System.Console.WriteLine("Send Notification");
             using(var context = new ScrowdDbFactory().CreateDbContext())
             {
                 var message = new ExitNotification(
@@ -51,7 +48,6 @@
         /// <param name="message"><see cref="ExitNotification"> notification message </see></param>
         private async Task SendNotification(int sprintId, ExitNotification message)
         {
-            System.Console.WriteLine("Send Notification");
             IChannel sprintChannel = this.NotifyFactory.CreateChannel(ChannelNames.Sprint(sprintId));
             await sprintChannel.Publish(EventNames.GetExitSprintEvent(), message);
         }
