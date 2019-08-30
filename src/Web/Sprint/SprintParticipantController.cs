@@ -59,12 +59,6 @@
         [ProducesResponseType(typeof(ResponseObject), 400)]
         public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel joinUser)
         {
-            // User user = await this.User.GetUser(this.UserService);
-            // if (user.Id != joinUser.UserId)
-            // {
-            //     return this.BadRequest();
-            // }
-            //throw new System.Exception("ERROR");
             await this.SprintParticipantService.JoinSprint(joinUser.SprintId, joinUser.UserId);
             ResponseObject response = new ResponseObject()
             {
