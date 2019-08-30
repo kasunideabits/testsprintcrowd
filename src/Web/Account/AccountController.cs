@@ -4,6 +4,7 @@ namespace SprintCrowd.BackEnd.Web.Account
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -13,7 +14,7 @@ namespace SprintCrowd.BackEnd.Web.Account
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IUserService UserService;
         /// <summary>
         /// No authorization is happening here, just registering a new user.
         /// Sends request to authorization server, authorization server registers and returns user data, those data are saved in the
@@ -22,7 +23,7 @@ namespace SprintCrowd.BackEnd.Web.Account
         /// </summary>
         public AccountController(IUserService userService)
         {
-            this.userService = userService;
+            this.UserService = userService;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace SprintCrowd.BackEnd.Web.Account
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerData)
         {
-            User user = await this.userService.RegisterUser(registerData);
+            User user = await this.UserService.RegisterUser(registerData);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = user });
         }
     }

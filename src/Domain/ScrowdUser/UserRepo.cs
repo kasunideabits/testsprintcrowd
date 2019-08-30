@@ -17,10 +17,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// </summary>
     public class UserRepo : IUserRepo
     {
-        private readonly ScrowdDbContext dbContext;
-        private readonly RestClient restClient;
-        private readonly AppSettings appSettings;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserRepo"/> class.
         /// </summary>
@@ -31,6 +27,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.dbContext = dbContext;
             this.appSettings = appSettings.Value;
             this.restClient = new RestClient(this.appSettings.AuthorizationServer);
+        }
+
+        private readonly ScrowdDbContext dbContext;
+        private readonly RestClient restClient;
+        private readonly AppSettings appSettings;
+
+        /// <summary>
+        /// Gets user info
+        /// </summary>
+        /// <param name="userId">user id for lookup</param>
+        /// <returns><see cref="User"> user info details </see></returns>
+        public Task<User> GetUser(int userId)
+        {
+            return this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         /// <summary>
