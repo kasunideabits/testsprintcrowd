@@ -125,5 +125,18 @@
             };
             return this.Ok(response);
         }
+
+        [HttpGet("marked-attendance-sprint/{userId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetMarkAttendanceSprnt(int userId)
+        {
+            var result = await this.SprintParticipantService.GetSprintWhichMarkedAttendance(userId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
