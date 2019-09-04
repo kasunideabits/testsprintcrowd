@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -46,7 +47,14 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            var mA = new MarkAttendance(sprintId, userId, result.Name, result.ProfilePicture);
+            var mA = new MarkAttendance(
+                sprintId,
+                userId,
+                result.Name,
+                result.ProfilePicture,
+                result.Country,
+                result.CountryCode,
+                result.City);
             await this.MarkAttendance.Execute(mA);
             this.SprintParticipantRepo.SaveChanges();
             return;
@@ -124,5 +132,29 @@
             return participantInfos;
         }
 
+        /// <summary>
+        /// Get sprint details with who marked attendance with given user id
+        /// </summary>
+        /// <param name="userId">user id to get record</param>
+        /// <returns><see cref="SprintInfo">class </see></returns>
+        public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
+        {
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                s.Stage == ParticipantStage.MARKED_ATTENDENCE;
+            var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
+            if (markedAttendaceDetails != null)
+            {
+                return new SprintInfo(
+                    markedAttendaceDetails.Sprint.Id,
+                    markedAttendaceDetails.Sprint.Name,
+                    markedAttendaceDetails.Sprint.Distance,
+                    markedAttendaceDetails.Sprint.StartDateTime);
+            }
+            else
+            {
+                throw new Application.ApplicationException("NOT_FOUND_MARKED_ATTENDACE");
+            }
+        }
     }
 }
