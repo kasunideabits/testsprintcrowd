@@ -134,8 +134,7 @@
         {
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
-                s.Stage == ParticipantStage.MARKED_ATTENDENCE &&
-                s.Sprint.Status == (int)SprintStatus.INPROGRESS;
+                s.Stage == ParticipantStage.MARKED_ATTENDENCE;
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
