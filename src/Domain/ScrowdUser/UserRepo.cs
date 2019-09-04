@@ -95,8 +95,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user.AccessToken.Token = registerData.AccessToken;
                 user.Country = registerResponse.Data.Country;
                 user.City = registerResponse.Data.City;
-                user.Country = registerResponse.Data.CountryCode;
-
+                user.CountryCode = registerResponse.Data.CountryCode;
                 var FbUser = await this.dbContext.User.AddAsync(user);
                 return FbUser.Entity;
             }
