@@ -47,7 +47,14 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            var mA = new MarkAttendance(sprintId, userId, result.Name, result.ProfilePicture);
+            var mA = new MarkAttendance(
+                sprintId,
+                userId,
+                result.Name,
+                result.ProfilePicture,
+                result.Country,
+                result.CountryCode,
+                result.City);
             await this.MarkAttendance.Execute(mA);
             this.SprintParticipantRepo.SaveChanges();
             return;
