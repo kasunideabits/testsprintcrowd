@@ -75,6 +75,24 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public string LanguagePreference { get; set; } = LanguageCode.English;
 
         /// <summary>
+        /// gets or set value.
+        /// </summary>
+        /// <value>country name of the user</value>
+        public string Country { get; set; }
+
+        /// <summary>
+        /// gets or set value.
+        /// </summary>
+        /// <value>country code of the user</value>
+        public string CountryCode { get; set; }
+
+        /// <summary>
+        /// gets or set value.
+        /// </summary>
+        /// <value>city name of the user</value>
+        public string City { get; set; }
+
+        /// <summary>
         /// Gets or set reference for participates
         /// </summary>
         public List<SprintParticipant> Participates { get; set; }

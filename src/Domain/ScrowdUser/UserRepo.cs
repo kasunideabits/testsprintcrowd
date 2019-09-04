@@ -82,18 +82,26 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
             }
 
-            User user = new User();
-            user.Email = registerData.Email;
-            user.FacebookUserId = registerResponse.Data.UserId;
-            user.Name = registerResponse.Data.Name;
-            user.UserType = (int)UserType.Facebook;
-            user.ProfilePicture = registerResponse.Data.ProfilePicture;
-            user.AccessToken.Token = registerData.AccessToken;
-            user.LanguagePreference = registerData.LanguagePreference;
-            user.Code = SCrowdUniqueKey.UniqUserCode<string>(registerData.Email);
-            // TODO- Profile Picture
-            var result = await this.dbContext.User.AddAsync(user);
-            return user;
+            var exist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Equals(registerData.Email));
+
+            if (exist == null)
+            {
+                User user = new User();
+                user.Email = registerData.Email;
+                user.FacebookUserId = registerResponse.Data.UserId;
+                user.Name = registerResponse.Data.Name;
+                user.UserType = (int)UserType.Facebook;
+                user.ProfilePicture = registerResponse.Data.ProfilePicture;
+                user.AccessToken.Token = registerData.AccessToken;
+                user.Country = registerResponse.Data.Country;
+                user.City = registerResponse.Data.City;
+                user.Country = registerResponse.Data.CountryCode;
+
+                var FbUser = await this.dbContext.User.AddAsync(user);
+                return FbUser.Entity;
+            }
+            return exist;
+
         }
 
         /// <summary>
