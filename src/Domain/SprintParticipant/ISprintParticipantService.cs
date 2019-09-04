@@ -41,5 +41,12 @@
         /// <param name="stage">filter with stage</param>
         /// <returns><see cref="ParticipantInfo"> list of participant info</see></returns>
         Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage);
+
+        /// <summary>
+        /// Get sprint details with who marked attendance with given user id
+        /// </summary>
+        /// <param name="userId">user id to get record</param>
+        /// <returns><see cref="SprintInfo">class </see></returns>
+        Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
     }
 }

@@ -1,7 +1,9 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -40,6 +42,13 @@
         /// <param name="stage">filter with stage</param>
         /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
         Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
+
+        /// <summary>
+        /// Filter sprint pariticipant detials with sprint and user details with given query
+        /// </summary>
+        /// <param name="query">query to filter record</param>
+        /// <returns><see cref="SprintParticipant"> entity</see>/<returns>
+        Task<SprintParticipant> Get(Expression<Func<SprintParticipant, bool>> query);
 
         /// <summary>
         /// saves changed to db
