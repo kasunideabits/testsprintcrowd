@@ -15,12 +15,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="distance">sprint distance</param>
         /// <param name="startTime">start date time</param>
         /// <param name="sprintCreator">sprint creator or not</param>
-        public SprintInfo(int id, string name, int distance, DateTime startTime, bool sprintCreator = false)
+        public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool sprintCreator = false)
         {
             this.Id = id;
             this.Name = name;
             this.Distance = distance;
             this.StartTime = startTime;
+            this.SprintType = sprintType;
             this.SprintCreator = sprintCreator;
         }
 
@@ -43,6 +44,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// Gets sprint start time
         /// </summary>
         public DateTime StartTime { get; }
+
+        /// <summary>
+        /// Gets sprint type, public or private
+        /// </summary>
+        public int SprintType { get; }
 
         /// <summary>
         ///  Get sprint creator or not

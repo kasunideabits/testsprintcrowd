@@ -8,9 +8,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
-    using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -162,6 +160,7 @@
                     s.Sprint.Name,
                     s.Sprint.Distance,
                     s.Sprint.StartDateTime,
+                    s.Sprint.Type,
                     s.Sprint.CreatedBy.Id == s.UserId
                 );
                 sprintInfo.Add(sprint);
@@ -186,7 +185,8 @@
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
-                    markedAttendaceDetails.Sprint.StartDateTime);
+                    markedAttendaceDetails.Sprint.StartDateTime,
+                    markedAttendaceDetails.Sprint.Type);
             }
             else
             {
