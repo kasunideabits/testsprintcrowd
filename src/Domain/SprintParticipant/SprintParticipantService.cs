@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -130,6 +131,40 @@
                 participantInfos.Add(participant);
             });
             return participantInfos;
+        }
+
+        /// <summary>
+        /// Get all sprint info with given filters
+        /// </summary>
+        /// <param name="userId">participant id</param>
+        /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
+        /// <param name="stage"><see cref="ParticipantStage"> participant stage</see></param>
+        /// <param name="distance">distance in meters</param>
+        /// <param name="startFrom">start from time in minutes</param>
+        /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
+        public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distance, int? startFrom)
+        {
+            var time = DateTime.UtcNow.AddMinutes((int)startFrom);
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                (s.Sprint.Type == (int)sprintType || sprintType == null) &&
+                (s.Stage == stage || stage == null) &&
+                (s.Sprint.Distance == distance || distance == 0) &&
+                (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0);
+            var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
+            List<SprintInfo> sprintInfo = new List<SprintInfo>();
+            sprints.ForEach(s =>
+            {
+                var sprint = new SprintInfo(
+                    s.Sprint.Id,
+                    s.Sprint.Name,
+                    s.Sprint.Distance,
+                    s.Sprint.StartDateTime,
+                    s.Sprint.CreatedBy.Id == s.UserId
+                );
+                sprintInfo.Add(sprint);
+            });
+            return sprintInfo;
         }
 
         /// <summary>
