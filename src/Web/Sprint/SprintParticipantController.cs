@@ -13,7 +13,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -149,7 +149,7 @@
 
         [HttpGet("marked-attendance-sprint/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetMarkAttendanceSprnt(int userId)
+        public async Task<IActionResult> GetMarkAttendanceSprint(int userId)
         {
             var result = await this.SprintParticipantService.GetSprintWhichMarkedAttendance(userId);
             ResponseObject response = new ResponseObject()

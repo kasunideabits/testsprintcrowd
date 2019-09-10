@@ -136,20 +136,25 @@
         public async Task<SprintWithPariticpants> GetSprintWithPaticipants(int sprintId)
         {
             var sprint = await this.SprintRepo.GetSprintWithPaticipants(sprintId);
-            SprintWithPariticpants result = new SprintWithPariticpants()
-            {
-                SprintId = sprint.Id,
-                SprintName = sprint.Name,
-                Distance = sprint.Distance,
-                Location = sprint.Location,
-                StartDateTime = sprint.StartDateTime,
-                Type = sprint.Type,
-                NumberOfParticipants = sprint.NumberOfParticipants,
-            };
+            SprintWithPariticpants result = new SprintWithPariticpants(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                sprint.Location);
             sprint.Participants
                 .ForEach(p =>
                 {
-                    result.AddParticipant(p.User.Id, p.User.Name, p.User.ProfilePicture, p.User.Code);
+                    result.AddParticipant(
+                        p.User.Id,
+                        p.User.Name,
+                        p.User.ProfilePicture,
+                        p.User.City,
+                        p.User.Country,
+                        p.User.CountryCode,
+                        p.User.Id == sprint.CreatedBy.Id);
                 });
             return result;
         }
