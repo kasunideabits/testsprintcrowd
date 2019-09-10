@@ -48,10 +48,11 @@
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
         /// <param name="stage"><see cref="ParticipantStage"> participant stage</see></param>
-        /// <param name="distance">distance in meters</param>
+        /// <param name="distanceFrom">distance in meters from</param>
+        /// <param name="distanceTo">distance in meters from</param>
         /// <param name="startFrom">start from time in minutes</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distance, int? startFrom);
+        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom);
 
         /// <summary>
         /// Get sprint details with who marked attendance with given user id

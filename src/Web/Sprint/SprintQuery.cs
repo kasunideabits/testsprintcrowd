@@ -22,9 +22,14 @@ namespace SprintCrowd.BackEnd.Web.Sprint
         public ParticipantStage ParticipantStage { get; set; }
 
         /// <summary>
-        /// Distance in meters
+        /// Distance in meters from
         /// </summary>
-        public int Distance { get; set; }
+        public int DistanceFrom { get; set; }
+
+        /// <summary>
+        /// Distance in meters to
+        /// </summary>
+        public int DistanceTo { get; set; }
 
         /// <summary>
         /// sprint start form minutes

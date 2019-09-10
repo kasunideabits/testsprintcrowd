@@ -139,17 +139,19 @@
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
         /// <param name="stage"><see cref="ParticipantStage"> participant stage</see></param>
-        /// <param name="distance">distance in meters</param>
+        /// <param name="distanceFrom">distance in meters from</param>
+        /// <param name="distanceTo">distance in meters from</param>
         /// <param name="startFrom">start from time in minutes</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distance, int? startFrom)
+        public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom)
         {
             var time = DateTime.UtcNow.AddMinutes((int)startFrom);
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
                 (s.Stage == stage || stage == null) &&
-                (s.Sprint.Distance == distance || distance == 0) &&
+                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
+                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
                 (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0);
             var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
             List<SprintInfo> sprintInfo = new List<SprintInfo>();

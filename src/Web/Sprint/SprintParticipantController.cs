@@ -88,7 +88,8 @@
                 userId,
                 query.SprintType,
                 query.ParticipantStage,
-                query.Distance,
+                query.DistanceFrom,
+                query.DistanceTo,
                 query.StartFrom);
             return this.Ok(result);
         }
