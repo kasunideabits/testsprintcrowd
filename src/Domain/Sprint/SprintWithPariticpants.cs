@@ -17,16 +17,16 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string sprintLocation)
         {
             this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation);
-            this.PariticipantInfo = new List<PariticipantInfoDto>();
+            this.PariticipantInfo = new List<ParticipantInfoDto>();
         }
 
         public SprintInfoDto SprintInfo { get; set; }
 
-        public List<PariticipantInfoDto> PariticipantInfo { get; set; }
+        public List<ParticipantInfoDto> PariticipantInfo { get; set; }
 
         public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, bool creator)
         {
-            this.PariticipantInfo.Add(new PariticipantInfoDto(id, name, profilePicture, city, country, countryCode, creator));
+            this.PariticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, creator));
         }
     }
 
@@ -47,9 +47,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public string Location { get; }
     }
 
-    public class PariticipantInfoDto : PariticipantBaseDto
+    public class ParticipantInfoDto : ParticipantBaseDto
     {
-        public PariticipantInfoDto(
+        public ParticipantInfoDto(
             int id,
             string name,
             string profilePicture,
