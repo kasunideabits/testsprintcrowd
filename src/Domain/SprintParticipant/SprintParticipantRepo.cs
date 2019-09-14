@@ -143,6 +143,7 @@
             return this.Context.SprintParticipant
                 .Include(s => s.User)
                 .Include(s => s.Sprint)
+                .ThenInclude(s => s.CreatedBy)
                 .Where(query);
         }
 
