@@ -13,13 +13,13 @@ namespace SprintCrowd.BackEnd.Web.Sprint
         /// Sprint type public or private
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public SprintType SprintType { get; set; }
+        public SprintType? SprintType { get; set; }
 
         /// <summary>
         /// Paticipant stage joined, mark attandance or exit
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public ParticipantStage ParticipantStage { get; set; }
+        public ParticipantStage? ParticipantStage { get; set; }
 
         /// <summary>
         /// Distance in meters from
