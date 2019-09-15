@@ -42,9 +42,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string location) : base(id, name, distance, numberOfParticipants, startTime, type)
         {
             this.Location = location;
+            this.ExtendedTime = startTime.AddMinutes(15);
         }
 
         public string Location { get; }
+        public DateTime ExtendedTime { get; }
     }
 
     public class ParticipantInfoDto : ParticipantBaseDto
