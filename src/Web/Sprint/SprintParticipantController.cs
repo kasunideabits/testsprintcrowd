@@ -13,7 +13,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -91,7 +91,13 @@
                 query.DistanceFrom,
                 query.DistanceTo,
                 query.StartFrom);
-            return this.Ok(result);
+
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
 
         /// <summary>
