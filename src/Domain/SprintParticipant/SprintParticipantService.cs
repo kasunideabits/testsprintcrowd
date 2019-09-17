@@ -150,7 +150,8 @@
                 (s.Stage == stage || stage == null) &&
                 (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                 (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-                (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0);
+                (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0) &&
+                (s.Sprint.StartDateTime > DateTime.UtcNow);
             var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
             List<SprintInfo> sprintInfo = new List<SprintInfo>();
             sprints.ForEach(s =>
