@@ -20,7 +20,7 @@ pipeline {
     }
     stage("push-image") {
         agent { label 'LinuxSlave' }
-        when { anyOf { branch 'master'; branch 'development' } }
+        when { anyOf { branch 'master'; branch 'development'; branch ; branch 'qa' } }
         steps {
             script {
                 docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
