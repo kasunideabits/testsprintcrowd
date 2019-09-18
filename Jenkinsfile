@@ -18,14 +18,6 @@ pipeline {
             }
         }
     }
-    // stage("test") {
-    //     agent { label 'LinuxSlave' }
-    //     steps {
-    //         script {
-    //             sh 'cd Tests/; dotnet restore; dotnet test'
-    //         }
-    //     }
-    // }
     stage("push-image") {
         agent { label 'LinuxSlave' }
         when { anyOf { branch 'master'; branch 'development' } }
@@ -39,7 +31,35 @@ pipeline {
             }
         }
     }
-    stage("deploy") {
+    stage("deploy-dev") {
+      agent { label 'scrowd-slave' }
+      when {
+            branch 'development'
+      }
+      steps {
+        script {
+            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+              sh 'cd ~/devops; git pull'
+              sh 'cd ~/devops/sprintcrowd-backend/dev; chmod 744 ./deploy.sh; ./deploy.sh'
+            }
+        }
+      }
+    }
+    stage("deploy-qa") {
+      agent { label 'scrowd-slave' }
+      when {
+            branch 'qa'
+      }
+      steps {
+        script {
+            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+              sh 'cd ~/devops; git pull'
+              sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
+            }
+        }
+      }
+    }
+    stage("deploy-live") {
       agent { label 'scrowd-slave' }
       when {
             branch 'master'
