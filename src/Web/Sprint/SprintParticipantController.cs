@@ -13,7 +13,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -74,6 +74,33 @@
         }
 
         /// <summary>
+        /// Get all sprints with given user id
+        /// </summary>
+        /// <param name="query">query params for filter sprints</param>
+        /// <param name="userId">user id to look up</param>
+        /// <returns><see cref="SprintInfo"> all sprints </see></returns>
+        [HttpGet("all/{userId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ResponseObject), 400)]
+        public IActionResult GetSprints([FromQuery] SprintQuery query, int userId)
+        {
+            var result = this.SprintParticipantService.GetSprints(
+                userId,
+                query.SprintType,
+                query.ParticipantStage,
+                query.DistanceFrom,
+                query.DistanceTo,
+                query.StartFrom);
+
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// Exit an event
         /// </summary>
         /// <param name="exitEvent">Exit event informantion</param>
@@ -128,7 +155,7 @@
 
         [HttpGet("marked-attendance-sprint/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetMarkAttendanceSprnt(int userId)
+        public async Task<IActionResult> GetMarkAttendanceSprint(int userId)
         {
             var result = await this.SprintParticipantService.GetSprintWhichMarkedAttendance(userId);
             ResponseObject response = new ResponseObject()

@@ -2,14 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
-    using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -133,6 +132,44 @@
         }
 
         /// <summary>
+        /// Get all sprint info with given filters
+        /// </summary>
+        /// <param name="userId">participant id</param>
+        /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
+        /// <param name="stage"><see cref="ParticipantStage"> participant stage</see></param>
+        /// <param name="distanceFrom">distance in meters from</param>
+        /// <param name="distanceTo">distance in meters from</param>
+        /// <param name="startFrom">start from time in minutes</param>
+        /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
+        public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom)
+        {
+            var time = DateTime.UtcNow.AddMinutes((int)startFrom);
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                (s.Sprint.Type == (int)sprintType || sprintType == null) &&
+                (s.Stage == stage || stage == null) &&
+                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
+                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
+                (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0) &&
+                (s.Sprint.StartDateTime > DateTime.UtcNow);
+            var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
+            List<SprintInfo> sprintInfo = new List<SprintInfo>();
+            sprints.ForEach(s =>
+            {
+                var sprint = new SprintInfo(
+                    s.Sprint.Id,
+                    s.Sprint.Name,
+                    s.Sprint.Distance,
+                    s.Sprint.StartDateTime,
+                    s.Sprint.Type,
+                    s.Sprint.CreatedBy.Id == s.UserId
+                );
+                sprintInfo.Add(sprint);
+            });
+            return sprintInfo;
+        }
+
+        /// <summary>
         /// Get sprint details with who marked attendance with given user id
         /// </summary>
         /// <param name="userId">user id to get record</param>
@@ -149,7 +186,8 @@
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
-                    markedAttendaceDetails.Sprint.StartDateTime);
+                    markedAttendaceDetails.Sprint.StartDateTime,
+                    markedAttendaceDetails.Sprint.Type);
             }
             else
             {

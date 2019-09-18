@@ -44,6 +44,13 @@
         Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>
+        /// Get all sprints paritipant details with given query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns>all pariticpant details</returns>
+        IEnumerable<SprintParticipant> GetAll(Expression<Func<SprintParticipant, bool>> query);
+
+        /// <summary>
         /// Filter sprint pariticipant detials with sprint and user details with given query
         /// </summary>
         /// <param name="query">query to filter record</param>

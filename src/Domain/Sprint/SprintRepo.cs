@@ -106,6 +106,7 @@
             {
                 var result = await this.dbContext.Sprint
                     .Where(s => s.Id == sprintId)
+                    .Include(s => s.CreatedBy)
                     .Include(s => s.Participants)
                     .ThenInclude(p => p.User)
                     .FirstOrDefaultAsync();
