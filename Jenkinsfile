@@ -46,7 +46,7 @@ pipeline {
       }
     }
     stage("deploy-qa") {
-      agent { label 'scrowd-slave' }
+      agent { label 'scrowd-qa' }
       when {
             branch 'qa'
       }
