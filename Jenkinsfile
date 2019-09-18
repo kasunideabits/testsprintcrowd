@@ -60,7 +60,7 @@ pipeline {
       }
     }
     stage("deploy-live") {
-      agent { label 'scrowd-slave' }
+      agent { label 'scrowd-prod' }
       when {
             branch 'master'
       }
