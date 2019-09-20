@@ -131,6 +131,7 @@
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
+                c.RoutePrefix = "api/swagger";
             });
             app.UseAuthentication();
             app.UseSwagger();
