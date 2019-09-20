@@ -131,10 +131,16 @@
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
-                c.RoutePrefix = "api/swagger";
             });
+
             app.UseAuthentication();
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    swaggerDoc.BasePath = httpReq.PathBase;
+                });
+            });
             app.UseMiddleware<ErrorHandlingMiddleware>();
             DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);
             app.UseMvc();
