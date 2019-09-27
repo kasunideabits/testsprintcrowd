@@ -143,7 +143,7 @@
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
         public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom)
         {
-            var time = DateTime.UtcNow.AddMinutes((int)startFrom);
+            var time = DateTime.UtcNow.AddHours((int)startFrom);
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
