@@ -19,7 +19,7 @@ pipeline {
         }
     }
     stage("push-image") {
-        agent { label 'LinuxSlave' }
+        agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
             script {
