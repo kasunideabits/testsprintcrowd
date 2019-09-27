@@ -10,7 +10,7 @@ pipeline {
   }
   stages {
     stage("build") {
-        agent { label 'LinuxSlave' }
+        agent { label 'scrowd-slave' }
         // when { anyOf { branch 'master'; branch 'development' } } //build every branch
         steps {
             script {
