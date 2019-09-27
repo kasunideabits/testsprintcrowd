@@ -10,8 +10,8 @@ pipeline {
   }
   stages {
     stage("build") {
-        agent { label 'LinuxSlave' }
-        // when { anyOf { branch 'master'; branch 'development' } } //build every branch
+        agent { label 'scrowd-slave' }
+        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
             script {
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
@@ -19,7 +19,7 @@ pipeline {
         }
     }
     stage("push-image") {
-        agent { label 'LinuxSlave' }
+        agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
             script {
