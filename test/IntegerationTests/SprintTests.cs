@@ -28,7 +28,7 @@
         [Fact]
         public async void ShouldCreateNewSprint()
         {
-            SprintModel newSprint = new SprintModel("Test", 1000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, 1, 10);
+            SprintModel newSprint = new SprintModel("Test", 1000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, 1, 10, true, "chamindi099@gmail.com");
             var response = await this._client.PostAsync("/sprintadmin/create", new StringContent(
                 JsonConvert.SerializeObject(newSprint, Formatting.None),
                 Encoding.UTF8,
@@ -51,7 +51,7 @@
             sprint.Type = (int)SprintType.PrivateSprint;
             var addedSprint = await TestStartUp.DbContext.Sprint.AddAsync(sprint);
             TestStartUp.DbContext.SaveChanges();
-            SprintModel updateRequest = new SprintModel("Updated Sprint", 2000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, addedSprint.Entity.Id, 10);
+            SprintModel updateRequest = new SprintModel("Updated Sprint", 2000, "Colombo", DateTime.UtcNow, (int)SprintType.PublicSprint, 0, 0, addedSprint.Entity.Id, 10, true, "chamindi099@gmail.com");
 
             var result = await this._client.PutAsync("/sprintadmin/update", new StringContent(
                 JsonConvert.SerializeObject(updateRequest, Formatting.None),
@@ -121,7 +121,8 @@
             string strResponse = await response.Content.ReadAsStringAsync();
             dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
             Assert.Equal(5, (int)responseObj.Data.All);
-            Assert.Equal(3, (int)responseObj.Data.TenToTwenty);
+            Assert.Equal(1, (int)responseObj.Data.TwoToTen);
+            Assert.Equal(2, (int)responseObj.Data.TenToTwenty);
             Assert.Equal(2, (int)responseObj.Data.TwentyOneToThirty);
         }
 
