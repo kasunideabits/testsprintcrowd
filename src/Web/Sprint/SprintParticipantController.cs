@@ -30,6 +30,7 @@
         }
 
         private IUserService UserService { get; }
+
         private ISprintParticipantService SprintParticipantService { get; }
 
         /// <summary>
@@ -90,7 +91,8 @@
                 query.ParticipantStage,
                 query.DistanceFrom,
                 query.DistanceTo,
-                query.StartFrom);
+                query.StartFrom,
+                query.CurrentTimeBuff);
 
             ResponseObject response = new ResponseObject()
             {

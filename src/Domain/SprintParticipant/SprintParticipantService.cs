@@ -140,18 +140,37 @@
         /// <param name="distanceFrom">distance in meters from</param>
         /// <param name="distanceTo">distance in meters from</param>
         /// <param name="startFrom">start from time in minutes</param>
+        /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        public List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom)
+        public List<SprintInfo> GetSprints(
+            int userId,
+            SprintType? sprintType,
+            ParticipantStage? stage,
+            int? distanceFrom,
+            int? distanceTo,
+            int? startFrom,
+            int? currentTimeBuff)
         {
-            var time = DateTime.UtcNow.AddHours((int)startFrom);
+            var time = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
+            if (currentTimeBuff != null)
+            {
+                now = DateTime.UtcNow.AddMinutes((int)currentTimeBuff);
+            }
+
+            if (startFrom != null)
+            {
+                time = time.AddHours((int)startFrom);
+            }
+
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
                 (s.Stage == stage || stage == null) &&
                 (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                 (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-                (s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > DateTime.UtcNow || startFrom == 0) &&
-                (s.Sprint.StartDateTime > DateTime.UtcNow);
+                ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
+                (s.Sprint.StartDateTime > now);
             var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
             List<SprintInfo> sprintInfo = new List<SprintInfo>();
             sprints.ForEach(s =>

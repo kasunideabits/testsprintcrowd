@@ -32,8 +32,13 @@ namespace SprintCrowd.BackEnd.Web.Sprint
         public int DistanceTo { get; set; }
 
         /// <summary>
-        /// sprint start form minutes
+        /// sprint start form hourse
         /// </summary>
         public int StartFrom { get; set; }
+
+        /// <summary>
+        /// Add or Substract Current time in minutes
+        /// </summary>
+        public int? CurrentTimeBuff { get; set; }
     }
 }

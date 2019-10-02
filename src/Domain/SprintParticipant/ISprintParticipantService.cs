@@ -51,8 +51,9 @@
         /// <param name="distanceFrom">distance in meters from</param>
         /// <param name="distanceTo">distance in meters from</param>
         /// <param name="startFrom">start from time in minutes</param>
+        /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom);
+        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
         /// <summary>
         /// Get sprint details with who marked attendance with given user id
