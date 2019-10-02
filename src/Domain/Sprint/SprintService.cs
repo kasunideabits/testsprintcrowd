@@ -65,9 +65,10 @@
         {
             List<Sprint> allSprints = await this.SprintRepo.GetLiveSprints();
             int all = allSprints.Count();
+            int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
             int tenToTwenty = this.FilterWithDistance(allSprints, 10, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
-            return new LiveSprintCount(all, tenToTwenty, twentyOneToThirty);
+            return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
         }
 
         /// <summary>
@@ -86,6 +87,8 @@
             sprintAavail.Type = sprintData.SprintType;
             sprintAavail.Location = sprintData.Location;
             sprintAavail.NumberOfParticipants = NumberOfParticipants(sprintData.SprintType);
+            sprintAavail.InfluencerAvailability = sprintData.InfluencerAvailability;
+            sprintAavail.InfluencerEmail = sprintData.InfluencerEmail;
             var value = sprintAavail.Id;
             if (sprintAavail != null)
             {
@@ -117,7 +120,10 @@
             sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
             sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
             sprintToBeCreated.Distance = sprintInfo.Distance;
+            sprintToBeCreated.InfluencerAvailability = sprintInfo.InfluencerAvailability;
+            sprintToBeCreated.InfluencerEmail = sprintInfo.InfluencerEmail;
             sprintToBeCreated.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
+
             Sprint sprint = await this.SprintRepo.AddSprint(sprintToBeCreated);
             if (sprint != null)
             {

@@ -76,5 +76,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value></value>
         public virtual List<SprintInvite> SprintInvites { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>Influencer Availability.</value>
+        public bool InfluencerAvailability { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>Influencer Email.</value>
+        public string InfluencerEmail { get; set; }
+
     }
 }

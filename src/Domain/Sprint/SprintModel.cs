@@ -16,7 +16,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             double lattitude,
             double longitutude,
             int id,
-            int numOfParticiapants)
+            int numOfParticiapants,
+            bool influencerAvailability,
+            string influencerEmail)
         {
             this.Name = name;
             this.Distance = distance;
@@ -27,6 +29,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             this.Longitutude = longitutude;
             this.Id = id;
             this.NumberOfParticipants = numOfParticiapants;
+            this.InfluencerAvailability = influencerAvailability;
+            this.InfluencerEmail = influencerEmail;
         }
 
         /// <summary>
@@ -46,6 +50,18 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// </summary>
         /// <value>Name of the sprint</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Influencer Availability
+        /// </summary>
+        /// <value>Influencer Availability</value>
+        public bool InfluencerAvailability { get; set; }
+
+        /// <summary>
+        /// Influencer Email
+        /// </summary>
+        /// <value>Influencer Email</value>
+        public string InfluencerEmail { get; set; }
 
         /// <summary>
         /// Event distance
