@@ -98,13 +98,15 @@
         [Fact]
         public async void GetLiveSprints()
         {
-            Sprint sprint1 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 10000);
+            Sprint sprint1 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 12000);
             Sprint sprint2 = GenerateSprint(DateTime.UtcNow.AddDays(1), SprintStatus.NOTSTARTEDYET, SprintType.PublicSprint, 10);
             Sprint sprint3 = GenerateSprint(DateTime.UtcNow.AddDays(-1), SprintStatus.ENDED, SprintType.PublicSprint, 10);
             Sprint sprint4 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 15000);
             Sprint sprint5 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 20000);
             Sprint sprint6 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 21000);
             Sprint sprint7 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 30000);
+            Sprint sprint8 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 2000);
+            Sprint sprint9 = GenerateSprint(DateTime.UtcNow, SprintStatus.INPROGRESS, SprintType.PublicSprint, 7000);
 
             await TestStartUp.DbContext.Sprint.AddAsync(sprint1);
             await TestStartUp.DbContext.Sprint.AddAsync(sprint2);
@@ -113,6 +115,8 @@
             await TestStartUp.DbContext.Sprint.AddAsync(sprint5);
             await TestStartUp.DbContext.Sprint.AddAsync(sprint6);
             await TestStartUp.DbContext.Sprint.AddAsync(sprint7);
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint8);
+            await TestStartUp.DbContext.Sprint.AddAsync(sprint9);
 
             TestStartUp.DbContext.SaveChanges();
 
@@ -120,9 +124,9 @@
             response.EnsureSuccessStatusCode();
             string strResponse = await response.Content.ReadAsStringAsync();
             dynamic responseObj = JsonConvert.DeserializeObject(strResponse);
-            Assert.Equal(5, (int)responseObj.Data.All);
-            Assert.Equal(1, (int)responseObj.Data.TwoToTen);
-            Assert.Equal(2, (int)responseObj.Data.TenToTwenty);
+            Assert.Equal(7, (int)responseObj.Data.All);
+            Assert.Equal(2, (int)responseObj.Data.TwoToTen);
+            Assert.Equal(3, (int)responseObj.Data.TenToTwenty);
             Assert.Equal(2, (int)responseObj.Data.TwentyOneToThirty);
         }
 
