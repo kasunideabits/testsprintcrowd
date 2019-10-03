@@ -44,6 +44,13 @@
         Task<Sprint> AddSprint(Sprint eventToCreate);
 
         /// <summary>
+        /// adds new event to database
+        /// </summary>
+        /// <param name="eventToDraft">event model</param>
+        /// <returns>Created sprint details</returns>
+        Task<Sprint> DraftSprint(Sprint eventToDraft);
+
+        /// <summary>
         /// Updates event in database
         /// </summary>
         /// <param name="sprintData">event model</param>

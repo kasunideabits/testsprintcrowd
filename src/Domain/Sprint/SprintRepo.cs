@@ -74,6 +74,17 @@
         }
 
         /// <summary>
+        /// creates event
+        /// </summary>
+        /// <param name="sprintToAdd">event model</param>
+        /// <returns>added sprint result</returns>
+        public async Task<Sprint> DraftSprint(Sprint sprintToAdd)
+        {
+            var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
+            return result.Entity;
+        }
+
+        /// <summary>
         /// Update event details instance of SprintService
         /// </summary>
         /// <param name="sprintData">sprint repository</param>

@@ -43,6 +43,12 @@
         /// </summary>
         /// <param name="sprintData">sprint information</param>
         /// <returns>update sprint</returns>
+        Task<Sprint> DraftNewSprint(SprintModel sprintInfo, User ownerOfSprint);
+        /// <summary>
+        /// update sprint
+        /// </summary>
+        /// <param name="sprintData">sprint information</param>
+        /// <returns>update sprint</returns>
         Task<Sprint> UpdateSprint(SprintModel sprintData);
 
         /// <summary>
