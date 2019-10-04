@@ -106,6 +106,25 @@
         }
 
         /// <summary>
+        /// drafts an event
+        /// </summary>
+        /// <param name="sprintInfo">info about the sprint</param>
+        [HttpPost("draft")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> DraftEvent([FromBody] SprintModel sprintInfo)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.DraftNewSprint(sprintInfo, user);
+
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// update sprint
         /// </summary>
         [HttpPut("update")]

@@ -89,5 +89,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <value>Influencer Email.</value>
         public string InfluencerEmail { get; set; }
 
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>draft event status, drafted or not.</value>
+        public int DraftEvent { get; set; }
+
     }
 }

@@ -110,6 +110,36 @@
         /// <param name="sprintInfo">info about the sprint</param>
         /// <param name="ownerOfSprint">user who created the sprint</param>
         /// <returns>created sprint</returns>
+        public async Task<Sprint> DraftNewSprint(SprintModel sprintInfo, User ownerOfSprint)
+        {
+            Sprint sprintToBeDrafted = new Sprint();
+            sprintToBeDrafted.CreatedBy = ownerOfSprint;
+            sprintToBeDrafted.Type = sprintInfo.SprintType;
+            sprintToBeDrafted.Location = sprintInfo.Location;
+            sprintToBeDrafted.Name = sprintInfo.Name;
+            sprintToBeDrafted.StartDateTime = sprintInfo.StartTime;
+            sprintToBeDrafted.Status = (int)SprintStatus.NOTSTARTEDYET;
+            sprintToBeDrafted.Distance = sprintInfo.Distance;
+            sprintToBeDrafted.InfluencerAvailability = sprintInfo.InfluencerAvailability;
+            sprintToBeDrafted.InfluencerEmail = sprintInfo.InfluencerEmail;
+            sprintToBeDrafted.DraftEvent = sprintInfo.DraftEvent;
+            sprintToBeDrafted.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
+
+            Sprint sprint = await this.SprintRepo.DraftSprint(sprintToBeDrafted);
+            if (sprint != null)
+            {
+                this.SprintRepo.SaveChanges();
+            }
+
+            return sprint;
+        }
+
+        /// <summary>
+        /// creates a new sprint
+        /// </summary>
+        /// <param name="sprintInfo">info about the sprint</param>
+        /// <param name="ownerOfSprint">user who created the sprint</param>
+        /// <returns>created sprint</returns>
         public async Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint)
         {
             Sprint sprintToBeCreated = new Sprint();

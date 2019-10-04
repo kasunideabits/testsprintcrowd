@@ -18,7 +18,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             int id,
             int numOfParticiapants,
             bool influencerAvailability,
-            string influencerEmail)
+            string influencerEmail,
+            int draftEvent)
         {
             this.Name = name;
             this.Distance = distance;
@@ -31,6 +32,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             this.NumberOfParticipants = numOfParticiapants;
             this.InfluencerAvailability = influencerAvailability;
             this.InfluencerEmail = influencerEmail;
+            this.DraftEvent = draftEvent;
         }
 
         /// <summary>
@@ -103,5 +105,12 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         /// </summary>
         /// <value>longitutude</value>
         public double Longitutude { get; set; }
+
+        /// <summary>
+        /// Draft or not
+        /// </summary>
+        /// <value>Draft Event status</value>
+        public int DraftEvent { get; set; }
+
     }
 }
