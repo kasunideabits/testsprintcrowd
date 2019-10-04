@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence;
 namespace SprintCrowd.BackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191004055621_AddUniqueIndexSprintParticipants")]
+    partial class AddUniqueIndexSprintParticipants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,8 +282,7 @@ namespace SprintCrowd.BackEnd.Migrations
 
                     b.HasIndex("SprintId");
 
-                    b.HasIndex("UserId", "SprintId")
-                        .IsUnique();
+                    b.HasIndex("UserId", "SprintId");
 
                     b.ToTable("sprint_participant");
                 });

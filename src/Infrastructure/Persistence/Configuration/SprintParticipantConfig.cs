@@ -17,6 +17,9 @@
         public void Configure(EntityTypeBuilder<SprintParticipant> builder)
         {
             builder
+                .HasIndex(s => new { s.UserId, s.SprintId })
+                .IsUnique();
+            builder
                 .HasOne(ep => ep.User)
                 .WithMany(ep => ep.Participates)
                 .HasForeignKey(ep => ep.UserId);
