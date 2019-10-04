@@ -120,6 +120,12 @@
                 .ToListAsync();
         }
 
+        public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
+        {
+            SprintParticipant result = await this.Context.SprintParticipant.FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
+            return result;
+        }
+
         /// <summary>
         /// Filter sprint pariticipant detials with sprint and user details with given query
         /// </summary>
@@ -156,5 +162,6 @@
         {
             this.Context.SaveChanges();
         }
+
     }
 }

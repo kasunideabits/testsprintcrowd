@@ -43,6 +43,8 @@
         /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
         Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
 
+        Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId);
+
         /// <summary>
         /// Get all sprints paritipant details with given query
         /// </summary>

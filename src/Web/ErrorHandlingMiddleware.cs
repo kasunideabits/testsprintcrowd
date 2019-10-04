@@ -45,14 +45,29 @@ namespace SprintCrowd.BackEnd.Web
     {
       HttpResponse response = context.Response;
       Application.ApplicationException applicationException = exception as Application.ApplicationException;
-      ResponseObject responseObject = new ResponseObject
+      if (exception is Application.ApplicationException)
       {
-        StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
-        ErrorDescription = exception.Message.ToString(),
-      };
-      response.ContentType = "application/json";
-      response.StatusCode = (int)ApplicationErrorCode.InternalError;
-      await response.WriteAsync(JsonConvert.SerializeObject(responseObject));
+        ResponseObject ApplicationresponseObject = new ResponseObject
+        {
+          StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
+          ErrorDescription = exception.Message.ToString(),
+        };
+        response.ContentType = "application/json";
+        response.StatusCode = applicationException.ErrorCode;
+        await response.WriteAsync(JsonConvert.SerializeObject(ApplicationresponseObject));
+      }
+      else
+      {
+        ResponseObject SystemresponseObject = new ResponseObject
+        {
+          StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
+          ErrorDescription = exception.Message.ToString(),
+        };
+        response.ContentType = "application/json";
+        response.StatusCode = (int)ApplicationErrorCode.InternalError;
+        await response.WriteAsync(JsonConvert.SerializeObject(SystemresponseObject));
+      }
+
     }
   }
 }

@@ -138,7 +138,7 @@
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Host = httpReq.Host.Value;;
+                    swaggerDoc.Host = httpReq.Host.Value; ;
                     swaggerDoc.BasePath = httpReq.PathBase;
                 });
             });
