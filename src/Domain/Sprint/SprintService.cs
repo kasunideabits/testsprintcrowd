@@ -122,6 +122,7 @@
             sprintToBeDrafted.Distance = sprintInfo.Distance;
             sprintToBeDrafted.InfluencerAvailability = sprintInfo.InfluencerAvailability;
             sprintToBeDrafted.InfluencerEmail = sprintInfo.InfluencerEmail;
+            sprintToBeDrafted.DraftEvent = sprintInfo.DraftEvent;
             sprintToBeDrafted.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
 
             Sprint sprint = await this.SprintRepo.DraftSprint(sprintToBeDrafted);
