@@ -41,10 +41,10 @@
                         markAttendance.SprintId,
                         markAttendance.UserId,
                         markAttendance.Name,
-                        markAttendance.ProfilePicture,
-                        markAttendance.Country,
-                        markAttendance.CountryCode,
-                        markAttendance.City);
+                        markAttendance.ProfilePicture == null ? string.Empty : markAttendance.ProfilePicture,
+                        markAttendance.Country == null ? string.Empty : markAttendance.Country,
+                        markAttendance.CountryCode == null ? string.Empty : markAttendance.CountryCode,
+                        markAttendance.City == null ? string.Empty : markAttendance.City);
                     this.SendNotification(markAttendance.SprintId, message);
                 }
             });
