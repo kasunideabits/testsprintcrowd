@@ -1,9 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     using System.Threading.Tasks;
-    using Coravel.Queuing.Interfaces;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
     /// <summary>
     /// Class responsible for send notification which indicating x user mark
@@ -14,15 +12,11 @@
         /// <summary>
         /// Initialize MarkAttendanceHandler class
         /// </summary>
-        /// <param name="queue">queue task instance</param>
         /// <param name="notifyFactory">notification factory</param>
-        public MarkAttendanceHandler(IQueue queue, INotifyFactory notifyFactory)
+        public MarkAttendanceHandler(INotifyFactory notifyFactory)
         {
-            this.Queue = queue;
             this.NotifyFactory = notifyFactory;
         }
-
-        private IQueue Queue { get; }
 
         private INotifyFactory NotifyFactory { get; }
 
@@ -33,21 +27,16 @@
         /// <returns>task completed or not</returns>
         public Task Execute(MarkAttendance markAttendance)
         {
-            this.Queue.QueueTask(() =>
-            {
-                using(var context = new ScrowdDbFactory().CreateDbContext())
-                {
-                    var message = new MarkAttendanceNotification(
-                        markAttendance.SprintId,
-                        markAttendance.UserId,
-                        markAttendance.Name,
-                        markAttendance.ProfilePicture == null ? string.Empty : markAttendance.ProfilePicture,
-                        markAttendance.Country == null ? string.Empty : markAttendance.Country,
-                        markAttendance.CountryCode == null ? string.Empty : markAttendance.CountryCode,
-                        markAttendance.City == null ? string.Empty : markAttendance.City);
-                    this.SendNotification(markAttendance.SprintId, message);
-                }
-            });
+            var message = new MarkAttendanceNotification(
+                markAttendance.SprintId,
+                markAttendance.UserId,
+                markAttendance.Name,
+                markAttendance.ProfilePicture == null ? string.Empty : markAttendance.ProfilePicture,
+                markAttendance.Country == null ? string.Empty : markAttendance.Country,
+                markAttendance.CountryCode == null ? string.Empty : markAttendance.CountryCode,
+                markAttendance.City == null ? string.Empty : markAttendance.City);
+            this.SendNotification(markAttendance.SprintId, message);
+
             return Task.CompletedTask;
         }
 
