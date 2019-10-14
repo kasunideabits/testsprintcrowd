@@ -6,7 +6,6 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Sprint service
@@ -74,93 +73,100 @@
         /// <summary>
         /// Update instance of SprintService
         /// </summary>
-        /// <param name="sprintData">sprint repository</param>
-        public async Task<Sprint> UpdateSprint(SprintModel sprintData)
+        public async Task<UpdateSprintDto> UpdateSprint(
+            int sprintId,
+            string name,
+            int? distance,
+            DateTime? startTime,
+            int? numberOfParticipants,
+            string influencerEmail,
+            int? draftEvent)
         {
-            Sprint updateSprint = new Sprint();
-            updateSprint.Id = sprintData.Id;
-
-            var sprintAavail = await this.SprintRepo.GetSprint(updateSprint.Id);
-            sprintAavail.Name = sprintData.Name;
-            sprintAavail.Distance = sprintData.Distance;
-            sprintAavail.StartDateTime = sprintData.StartTime;
-            sprintAavail.Type = sprintData.SprintType;
-            sprintAavail.Location = sprintData.Location;
-            sprintAavail.NumberOfParticipants = NumberOfParticipants(sprintData.SprintType);
-            sprintAavail.InfluencerAvailability = sprintData.InfluencerAvailability;
-            sprintAavail.InfluencerEmail = sprintData.InfluencerEmail;
-            var value = sprintAavail.Id;
-            if (sprintAavail != null)
+            var sprintAavail = await this.SprintRepo.GetSprint(sprintId);
+            if (name != String.Empty)
             {
-                Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
-                if (sprint != null)
-                {
-                    this.SprintRepo.SaveChanges();
-                }
-
-                return sprint;
+                sprintAavail.Name = name;
             }
-
-            return null;
+            if (distance != null)
+            {
+                sprintAavail.Distance = (int)distance;
+            }
+            if (startTime != null)
+            {
+                sprintAavail.StartDateTime = (DateTime)startTime;
+            }
+            if (distance != null)
+            {
+                sprintAavail.Distance = (int)distance;
+            }
+            if (numberOfParticipants != null)
+            {
+                sprintAavail.NumberOfParticipants = (int)numberOfParticipants;
+            }
+            if (influencerEmail != String.Empty)
+            {
+                sprintAavail.InfluencerAvailability = true;
+                sprintAavail.InfluencerEmail = influencerEmail;
+            }
+            if (draftEvent != null)
+            {
+                sprintAavail.DraftEvent = (int)draftEvent;
+            }
+            Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
+            this.SprintRepo.SaveChanges();
+            UpdateSprintDto result = new UpdateSprintDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability,
+                sprint.InfluencerEmail);
+            return result;
         }
 
         /// <summary>
         /// creates a new sprint
         /// </summary>
-        /// <param name="sprintInfo">info about the sprint</param>
-        /// <param name="ownerOfSprint">user who created the sprint</param>
-        /// <returns>created sprint</returns>
-        public async Task<Sprint> DraftNewSprint(SprintModel sprintInfo, User ownerOfSprint)
+        public async Task<CreateSprintDto> CreateNewSprint(
+            User user,
+            string name,
+            int distance, DateTime startTime,
+            int type,
+            int? numberOfParticipants,
+            string infulenceEmail,
+            int draft)
         {
-            Sprint sprintToBeDrafted = new Sprint();
-            sprintToBeDrafted.CreatedBy = ownerOfSprint;
-            sprintToBeDrafted.Type = sprintInfo.SprintType;
-            sprintToBeDrafted.Location = sprintInfo.Location;
-            sprintToBeDrafted.Name = sprintInfo.Name;
-            sprintToBeDrafted.StartDateTime = sprintInfo.StartTime;
-            sprintToBeDrafted.Status = (int)SprintStatus.NOTSTARTEDYET;
-            sprintToBeDrafted.Distance = sprintInfo.Distance;
-            sprintToBeDrafted.InfluencerAvailability = sprintInfo.InfluencerAvailability;
-            sprintToBeDrafted.InfluencerEmail = sprintInfo.InfluencerEmail;
-            sprintToBeDrafted.DraftEvent = sprintInfo.DraftEvent;
-            sprintToBeDrafted.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
+            Sprint sprint = new Sprint();
+            sprint.Name = name;
+            sprint.Distance = distance;
+            sprint.StartDateTime = startTime;
+            sprint.CreatedBy = user;
+            sprint.Type = type;
+            sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+            sprint.InfluencerAvailability = infulenceEmail != null;
+            sprint.InfluencerEmail = infulenceEmail;
+            sprint.DraftEvent = draft;
+            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
 
-            Sprint sprint = await this.SprintRepo.DraftSprint(sprintToBeDrafted);
-            if (sprint != null)
-            {
-                this.SprintRepo.SaveChanges();
-            }
+            this.SprintRepo.SaveChanges();
 
-            return sprint;
-        }
+            CreateSprintDto result = new CreateSprintDto(
+                addedSprint.Id,
+                addedSprint.Name,
+                addedSprint.Distance,
+                addedSprint.NumberOfParticipants,
+                addedSprint.StartDateTime,
+                (SprintType)addedSprint.Type,
+                addedSprint.DraftEvent,
+                addedSprint.InfluencerAvailability,
+                addedSprint.InfluencerEmail);
 
-        /// <summary>
-        /// creates a new sprint
-        /// </summary>
-        /// <param name="sprintInfo">info about the sprint</param>
-        /// <param name="ownerOfSprint">user who created the sprint</param>
-        /// <returns>created sprint</returns>
-        public async Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint)
-        {
-            Sprint sprintToBeCreated = new Sprint();
-            sprintToBeCreated.CreatedBy = ownerOfSprint;
-            sprintToBeCreated.Type = sprintInfo.SprintType;
-            sprintToBeCreated.Location = sprintInfo.Location;
-            sprintToBeCreated.Name = sprintInfo.Name;
-            sprintToBeCreated.StartDateTime = sprintInfo.StartTime;
-            sprintToBeCreated.Status = (int)SprintStatus.NOTSTARTEDYET;
-            sprintToBeCreated.Distance = sprintInfo.Distance;
-            sprintToBeCreated.InfluencerAvailability = sprintInfo.InfluencerAvailability;
-            sprintToBeCreated.InfluencerEmail = sprintInfo.InfluencerEmail;
-            sprintToBeCreated.NumberOfParticipants = NumberOfParticipants(sprintInfo.SprintType);
+            return result;
 
-            Sprint sprint = await this.SprintRepo.AddSprint(sprintToBeCreated);
-            if (sprint != null)
-            {
-                this.SprintRepo.SaveChanges();
-            }
-
-            return sprint;
         }
 
         /// <summary>
