@@ -35,14 +35,21 @@
         /// <summary>
         /// creates an event
         /// </summary>
-        /// <param name="modelInfo">info about the sprint</param>
+        /// <param name="sprint">info about the sprint</param>
         [HttpPost("create")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> CreateEvent([FromBody] SprintModel modelInfo)
+        public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.CreateNewSprint(modelInfo, user);
-
+            var result = await this.SprintService.CreateNewSprint(
+                user,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.SprintType,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
