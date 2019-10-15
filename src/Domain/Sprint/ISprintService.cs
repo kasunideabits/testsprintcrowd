@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using System;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
 
@@ -32,24 +33,22 @@
         Task<LiveSprintCount> GetLiveSprintCount();
 
         /// <summary>
-        /// Create a new sprint
+        /// Create a new sprint, TODO : remove user object passing
         /// </summary>
-        /// <param name="sprintInfo">sprint information</param>
-        /// /// <param name="ownerOfSprint">user who creatse the sprint</param>
+        /// <param name="user">user who creating the sprint</param>
+        /// <param name="name"> name for sprint</param>
+        /// <param name="distance"> distance in meters for sprint</param>
+        /// <param name="startTime"> start time for sprint</param>
+        /// <param name="type"><see cref="SprintType">sprint type, public or private</see></param>
+        /// <param name="numberOfParticipants">number of pariticipant for sprint</param>
+        /// <param name="infulenceEmail">infulence email</param>
+        /// <param name="draft">sprint draft or publish</param>
         /// <returns>cereated sprint</returns>
-        Task<Sprint> CreateNewSprint(SprintModel sprintInfo, User ownerOfSprint);
+        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft);
+
         /// <summary>
         /// update sprint
-        /// </summary>
-        /// <param name="sprintData">sprint information</param>
-        /// <returns>update sprint</returns>
-        Task<Sprint> DraftNewSprint(SprintModel sprintInfo, User ownerOfSprint);
-        /// <summary>
-        /// update sprint
-        /// </summary>
-        /// <param name="sprintData">sprint information</param>
-        /// <returns>update sprint</returns>
-        Task<Sprint> UpdateSprint(SprintModel sprintData);
+        Task<UpdateSprintDto> UpdateSprint(int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
 
         /// <summary>
         /// Get the sprint details and sprint participant details with given

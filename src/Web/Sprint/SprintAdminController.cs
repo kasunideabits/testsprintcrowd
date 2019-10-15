@@ -89,14 +89,21 @@
         /// <summary>
         /// creates an event
         /// </summary>
-        /// <param name="sprintInfo">info about the sprint</param>
+        /// <param name="sprint">info about the sprint</param>
         [HttpPost("create")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> CreateEvent([FromBody] SprintModel sprintInfo)
+        public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.CreateNewSprint(sprintInfo, user);
-
+            var result = await this.SprintService.CreateNewSprint(
+                user,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.SprintType,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -108,14 +115,21 @@
         /// <summary>
         /// drafts an event
         /// </summary>
-        /// <param name="sprintInfo">info about the sprint</param>
+        /// <param name="sprint">info about the sprint</param>
         [HttpPost("draft")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> DraftEvent([FromBody] SprintModel sprintInfo)
+        public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.DraftNewSprint(sprintInfo, user);
-
+            var result = await this.SprintService.CreateNewSprint(
+                user,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.SprintType,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -127,16 +141,23 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        [HttpPut("update")]
+        [HttpPut("update/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> UpdateEvent([FromBody] SprintModel sprintData)
+        public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
         {
-            Sprint sprint = await this.SprintService.UpdateSprint(sprintData);
+            var result = await this.SprintService.UpdateSprint(
+                sprintId,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
 
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = sprint,
+                Data = result,
             };
 
             return this.Ok(response);
