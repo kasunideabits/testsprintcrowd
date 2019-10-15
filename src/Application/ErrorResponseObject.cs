@@ -10,12 +10,12 @@ namespace SprintCrowd.BackEnd.Application
     /// gets or set value.
     /// </summary>
     /// <value>custom error code for the operation.</value>
-    public int Code { get; set; }
+    public int ErrorCode { get; set; }
 
     /// <summary>
     /// gets or set value.
     /// </summary>
     /// <value>error message.</value>
-    public dynamic Message { get; set; }
+    public dynamic ErrorMessage { get; set; }
   }
 }

@@ -102,10 +102,9 @@
       var outputObj = new Dictionary<string, string>();
       outputObj.Add("name", addedFriend.Name);
       outputObj.Add("ProfilePicture", addedFriend.ProfilePicture);
-      ResponseObject response = new ResponseObject()
+      SuccessResponseObject response = new SuccessResponseObject()
       {
-        StatusCode = (int)ApplicationResponseCode.Success,
-        Data = outputObj,
+        data = outputObj,
       };
       return this.Ok(response);
     }
