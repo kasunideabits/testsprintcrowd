@@ -81,6 +81,12 @@
         Task AddParticipant(int userId, int sprintId);
 
         /// <summary>
+        /// Remove sprint with given id
+        /// </summary>
+        /// <param name="sprint">sprint entity</param>
+        void RemoveSprint(Sprint sprint);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

@@ -89,5 +89,20 @@
             var result = await this.SprintService.GetSprintByCreator(userId);
             return this.Ok(new SuccessDTO<SprintWithPariticpantsDto>(result));
         }
+
+        /// <summary>
+        /// Remove sprint with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to remove</param>
+        [HttpPost("remove/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveSprint(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintService.Remove(user.Id, sprintId);
+            return this.Ok();
+        }
+
     }
 }

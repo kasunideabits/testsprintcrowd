@@ -5,7 +5,6 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// ISprintService interface
@@ -46,18 +45,31 @@
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft);
 
+        /// <summary>
+        /// Get sprint with pariticipants by creator id
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId);
 
         /// <summary>
         /// update sprint
+        /// </summary>
         Task<UpdateSprintDto> UpdateSprint(int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
+
+        /// <summary>
+        /// Remove sprint
+        /// </summary>
+        /// <param name="userId">creator id </param>
+        /// <param name="sprintId">sprint id to remove</param>
+        Task Remove(int userId, int sprintId);
 
         /// <summary>
         /// Get the sprint details and sprint participant details with given
         /// sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
-        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
     }
 }

@@ -147,7 +147,7 @@
                 var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
                 if (isAlreadyCreatedSprint != null)
                 {
-                    throw new SCApplicationException(1, "Already exist event");
+                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
                 }
             }
             Sprint sprint = new Sprint();
@@ -177,7 +177,7 @@
         /// Get sprint with pariticipants by creator id
         /// </summary>
         /// <param name="userId"> creator id </param>
-        /// <returns></returns>
+        /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
         public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
         {
             Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId;
@@ -207,6 +207,33 @@
             Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId;
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
+        }
+
+        /// <summary>
+        /// Remove sprint
+        /// </summary>
+        /// <param name="userId">creator id </param>
+        /// <param name="sprintId">sprint id to remove</param>
+        public async Task Remove(int userId, int sprintId)
+        {
+            Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
+            var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
+            if (sprint == null)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found with given id");
+            }
+            else
+            {
+                Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId && s.UserId != userId;
+                var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
+                if (pariticipants.Count() != 0)
+                {
+                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistParticipants, "Can't remove paritipant, Already exist other participants");
+                }
+
+                this.SprintRepo.RemoveSprint(sprint);
+                this.SprintRepo.SaveChanges();
+            }
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)

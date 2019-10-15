@@ -136,6 +136,15 @@
         }
 
         /// <summary>
+        /// Remove sprint with given id
+        /// </summary>
+        /// <param name="sprint">sprint entity</param>
+        public void RemoveSprint(Sprint sprint)
+        {
+            this.dbContext.Set<Sprint>().Remove(sprint);
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
