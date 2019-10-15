@@ -64,5 +64,11 @@
     /// <param name="acceptedId">accepted user id</param>
     /// <param name="sharedId">shared user id</param>
     Task<Friend> checkFiendShip(int acceptedId, int sharedId);
+
+    /// <summary>
+    /// Add friend relation
+    /// </summary>
+    /// <param name="userId">loggedin user id</param>
+    Task<List<Friend>> GetAllFriends(int userId);
   }
 }

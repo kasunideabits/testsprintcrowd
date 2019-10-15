@@ -9,6 +9,7 @@
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Extensions;
   using System.Collections.Generic;
+  using SprintCrowd.BackEnd.Common;
 
   /// <summary>
   /// Handle friend related api request
@@ -94,19 +95,27 @@
     /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
     /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
     [HttpPost("add")]
-    [ProducesResponseType(typeof(ResponseObject), 200)]
+    [ProducesResponseType(typeof(SuccessDTO<AddFriendDTO>), 200)]
+    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+
     public async Task<IActionResult> PlusFriend([FromBody] FriendRequestActionModel request)
     {
       User user = await this.User.GetUser(this.UserService);
       var addedFriend = await this.FriendService.PlusFriend(user.Id, request.Code);
-      var outputObj = new Dictionary<string, string>();
-      outputObj.Add("name", addedFriend.Name);
-      outputObj.Add("ProfilePicture", addedFriend.ProfilePicture);
-      SuccessResponseObject response = new SuccessResponseObject()
-      {
-        data = outputObj,
-      };
-      return this.Ok(response);
+      return this.Ok(new SuccessDTO<AddFriendDTO>(addedFriend));
+    }
+
+    /// <summary>
+    /// Get all friends
+    /// </summary>
+    /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
+    [HttpGet("all")]
+    [ProducesResponseType(typeof(ResponseObject), 200)]
+    public async Task<IActionResult> AllFriends()
+    {
+      User user = await this.User.GetUser(this.UserService);
+      var allFriends = await this.FriendService.AllFriends(user.Id);
+      return this.Ok(allFriends);
     }
   }
 }
