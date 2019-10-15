@@ -129,10 +129,27 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     /// Get all friends of loggedin user
     /// </summary>
     /// <param name="userId">loggedin user id</param>
-    public async Task<List<Friend>> AllFriends(int userId)
+    public async Task<List<FriendListDTO>> AllFriends(int userId)
     {
-      List<Friend> user = await this.FriendRepo.GetAllFriends(userId);
-      return user;
+      List<Friend> friends = await this.FriendRepo.GetAllFriends(userId);
+      List<FriendListDTO> parts = new List<FriendListDTO>();
+      friends.ForEach(obj =>
+      {
+        var friend = new FriendListDTO();
+        if (obj.AcceptedUserId == userId)
+        {
+          friend.Name = obj.SharedUser.Name;
+          friend.ProfilePicture = obj.SharedUser.ProfilePicture;
+
+        }
+        else if (obj.SharedUserId == userId)
+        {
+          friend.Name = obj.AcceptedUser.Name;
+          friend.ProfilePicture = obj.AcceptedUser.ProfilePicture;
+        }
+        parts.Add(friend);
+      });
+      return parts;
     }
   }
 }

@@ -52,6 +52,6 @@
     /// </summary>
     /// <param name="userId">loggedin user id</param>
     /// <returns><see cref="User"></see> and reason</returns>
-    Task<List<Friend>> AllFriends(int userId);
+    Task<List<FriendListDTO>> AllFriends(int userId);
   }
 }

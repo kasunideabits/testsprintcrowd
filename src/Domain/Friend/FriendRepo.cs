@@ -165,6 +165,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     public async Task<List<Friend>> GetAllFriends(int userId)
     {
       return await this.dbContext.Frineds
+          .Include(s => s.AcceptedUser)
           .Where(s => s.AcceptedUserId == userId || s.SharedUserId == userId)
           .ToListAsync();
     }

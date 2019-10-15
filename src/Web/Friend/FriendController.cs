@@ -110,12 +110,13 @@
     /// </summary>
     /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
     [HttpGet("all")]
-    [ProducesResponseType(typeof(ResponseObject), 200)]
+    [ProducesResponseType(typeof(SuccessDTO<List<FriendListDTO>>), 200)]
+    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
     public async Task<IActionResult> AllFriends()
     {
       User user = await this.User.GetUser(this.UserService);
       var allFriends = await this.FriendService.AllFriends(user.Id);
-      return this.Ok(allFriends);
+      return this.Ok(new SuccessDTO<List<FriendListDTO>>(allFriends));
     }
   }
 }
