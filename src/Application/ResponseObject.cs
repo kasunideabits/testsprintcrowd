@@ -15,7 +15,7 @@ namespace SprintCrowd.BackEnd.Application
     /// gets or set value.
     /// </summary>
     /// <value>if error then the error description.</value>
-    public string ErrorDescription { get; set; }
+    public dynamic ErrorDescription { get; set; }
     /// <summary>
     /// gets or set value.
     /// </summary>
