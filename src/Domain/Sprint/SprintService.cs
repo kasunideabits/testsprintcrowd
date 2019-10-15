@@ -141,6 +141,15 @@
             string infulenceEmail,
             int draft)
         {
+            if (type == (int)SprintType.PrivateSprint)
+            {
+                Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow;
+                var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
+                if (isAlreadyCreatedSprint != null)
+                {
+                    throw new SCApplicationException(1, "Already exist event");
+                }
+            }
             Sprint sprint = new Sprint();
             sprint.Name = name;
             sprint.Distance = distance;
@@ -153,6 +162,11 @@
             sprint.InfluencerEmail = infulenceEmail;
             sprint.DraftEvent = draft;
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+
+            if (type == (int)SprintType.PrivateSprint)
+            {
+                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id);
+            }
 
             this.SprintRepo.SaveChanges();
 

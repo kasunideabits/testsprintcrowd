@@ -120,6 +120,22 @@
         }
 
         /// <summary>
+        /// Add paritipant to sprint
+        /// </summary>
+        /// <param name="userId">user id for pariticipant</param>
+        /// <param name="sprintId">sprint id which going to join</param>
+        public async Task AddParticipant(int userId, int sprintId)
+        {
+            SprintParticipant pariticipant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.JOINED,
+            };
+            await this.dbContext.AddAsync(pariticipant);
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

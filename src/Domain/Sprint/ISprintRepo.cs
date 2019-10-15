@@ -74,6 +74,13 @@
         IEnumerable<SprintParticipant> GetParticipants(Expression<Func<SprintParticipant, bool>> predicate);
 
         /// <summary>
+        /// Add paritipant to sprint
+        /// </summary>
+        /// <param name="userId">user id for pariticipant</param>
+        /// <param name="sprintId">sprint id which going to join</param>
+        Task AddParticipant(int userId, int sprintId);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

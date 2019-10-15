@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
@@ -79,17 +80,14 @@
         /// Get created sprint with userId
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns><see cref="">sprint pariticipants details with sprint</see></returns>
         [HttpGet("sprint-by-creator/{userId:int}")]
+        [ProducesResponseType(typeof(SuccessDTO<SprintWithPariticpantsDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId)
         {
             var result = await this.SprintService.GetSprintByCreator(userId);
-            ResponseObject response = new ResponseObject()
-            {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-            };
-            return this.Ok(response);
+            return this.Ok(new SuccessDTO<SprintWithPariticpantsDto>(result));
         }
     }
 }
