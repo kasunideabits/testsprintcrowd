@@ -82,12 +82,12 @@
         /// <param name="userId"></param>
         /// <returns><see cref="">sprint pariticipants details with sprint</see></returns>
         [HttpGet("sprint-by-creator/{userId:int}")]
-        [ProducesResponseType(typeof(SuccessDTO<SprintWithPariticpantsDto>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<SprintWithPariticpantsDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId)
         {
             var result = await this.SprintService.GetSprintByCreator(userId);
-            return this.Ok(new SuccessDTO<SprintWithPariticpantsDto>(result));
+            return this.Ok(new SuccessResponse<SprintWithPariticpantsDto>(result));
         }
 
         /// <summary>
