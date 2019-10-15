@@ -46,6 +46,8 @@
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft);
 
+        Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId);
+
         /// <summary>
         /// update sprint
         Task<UpdateSprintDto> UpdateSprint(int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
@@ -56,6 +58,6 @@
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
         /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
-        Task<SprintWithPariticpants> GetSprintWithPaticipants(int sprintId);
+        Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
     }
 }

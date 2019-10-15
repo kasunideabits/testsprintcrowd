@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Sprint
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Linq;
     using System.Threading.Tasks;
     using System;
@@ -22,6 +23,15 @@
         public SprintRepo(ScrowdDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        /// <summary>
+        /// Get sprint by given predicate
+        /// </summary>
+        /// <param name="predicate"> predicate</param>
+        public async Task<Sprint> GetSprint(Expression<Func<Sprint, bool>> predicate)
+        {
+            return await this.dbContext.Set<Sprint>().FirstOrDefaultAsync(predicate);
         }
 
         public async Task<List<Sprint>> GetAllEvents()
@@ -95,45 +105,18 @@
         }
 
         /// <summary>
-        /// Update event details instance of SprintService
-        /// </summary>
-        /// <param name="sprintID">sprint repository</param>
-        public async Task<Sprint> GetSprint(int sprintID)
-        {
-            Sprint sprint = await this.dbContext.Sprint.FindAsync(sprintID);
-
-            return sprint;
-        }
-
-        /// <summary>
-        /// Get the sprint details and sprint participant details with given
+        /// Get the participants with given predicate
         /// sprint id
         /// </summary>
-        /// <param name="sprintId">sprint id to lookup</param>
-        /// <returns><see cref="Sprint">sprint details</see></returns>
-        public async Task<Sprint> GetSprintWithPaticipants(int sprintId)
+        /// <param name="predicate">predicate for lookup</param>
+        /// <returns><see cref="SprintParticipant">sprint pariticipants</see></returns>
+        public IEnumerable<SprintParticipant> GetParticipants(Expression<Func<SprintParticipant, bool>> predicate)
         {
-            try
-            {
-                var result = await this.dbContext.Sprint
-                    .Where(s => s.Id == sprintId)
-                    .Include(s => s.CreatedBy)
-                    .Include(s => s.Participants)
-                    .ThenInclude(p => p.User)
-                    .FirstOrDefaultAsync();
-                if (result != null)
-                {
-                    return result;
-                }
-                else
-                {
-                    throw new Application.ApplicationException("sprint not find");
-                }
-            }
-            catch (System.Exception e)
-            {
-                throw new Application.ApplicationException(e.Message.ToString());
-            }
+            return this.dbContext.SprintParticipant
+                .Include(s => s.Sprint)
+                .Include(s => s.User)
+                .Where(predicate)
+                .AsEnumerable();
         }
 
         /// <summary>

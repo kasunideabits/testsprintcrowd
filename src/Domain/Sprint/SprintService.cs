@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Sprint
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Linq;
     using System.Threading.Tasks;
     using System;
@@ -82,7 +83,8 @@
             string influencerEmail,
             int? draftEvent)
         {
-            var sprintAavail = await this.SprintRepo.GetSprint(sprintId);
+            Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
+            var sprintAavail = await this.SprintRepo.GetSprint(predicate);
             if (name != String.Empty)
             {
                 sprintAavail.Name = name;
@@ -154,19 +156,28 @@
 
             this.SprintRepo.SaveChanges();
 
-            CreateSprintDto result = new CreateSprintDto(
-                addedSprint.Id,
-                addedSprint.Name,
-                addedSprint.Distance,
-                addedSprint.NumberOfParticipants,
-                addedSprint.StartDateTime,
-                (SprintType)addedSprint.Type,
-                addedSprint.DraftEvent,
-                addedSprint.InfluencerAvailability,
-                addedSprint.InfluencerEmail);
+            return CreateSprintDtoMapper(sprint);
+        }
 
-            return result;
-
+        /// <summary>
+        /// Get sprint with pariticipants by creator id
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <returns></returns>
+        public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
+        {
+            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId;
+            var sprint = await this.SprintRepo.GetSprint(predicate);
+            if (sprint == null)
+            {
+                return null;
+            }
+            else
+            {
+                Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprint.Id;
+                var participants = this.SprintRepo.GetParticipants(participantPredicate);
+                return SprintWithPariticpantsMapper(sprint, participants.ToList());
+            }
         }
 
         /// <summary>
@@ -174,31 +185,14 @@
         /// sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
-        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
-        public async Task<SprintWithPariticpants> GetSprintWithPaticipants(int sprintId)
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
+        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId)
         {
-            var sprint = await this.SprintRepo.GetSprintWithPaticipants(sprintId);
-            SprintWithPariticpants result = new SprintWithPariticpants(
-                sprint.Id,
-                sprint.Name,
-                sprint.Distance,
-                sprint.NumberOfParticipants,
-                sprint.StartDateTime,
-                (SprintType)sprint.Type,
-                sprint.Location);
-            sprint.Participants
-                .ForEach(p =>
-                {
-                    result.AddParticipant(
-                        p.User.Id,
-                        p.User.Name,
-                        p.User.ProfilePicture,
-                        p.User.City,
-                        p.User.Country,
-                        p.User.CountryCode,
-                        p.User.Id == sprint.CreatedBy.Id);
-                });
-            return result;
+            Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
+            var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId;
+            var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
+            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
@@ -218,6 +212,46 @@
                 return 30;
             }
             throw new Application.ApplicationException("Invalid sprint type");
+        }
+
+        public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint)
+        {
+            CreateSprintDto result = new CreateSprintDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability,
+                sprint.InfluencerEmail);
+            return result;
+        }
+
+        public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants)
+        {
+            SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                sprint.Location);
+            participants
+                .ForEach(p =>
+                {
+                    result.AddParticipant(
+                        p.User.Id,
+                        p.User.Name,
+                        p.User.ProfilePicture,
+                        p.User.City,
+                        p.User.Country,
+                        p.User.CountryCode,
+                        p.User.Id == sprint.CreatedBy.Id);
+                });
+            return result;
         }
     }
 }

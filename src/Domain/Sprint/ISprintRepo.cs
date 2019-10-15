@@ -1,14 +1,23 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Sprint
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+
     /// <summary>
     /// inerface for event repo
     /// </summary>
     public interface ISprintRepo
     {
+
+        /// <summary>
+        /// Get sprint by given predicate
+        /// </summary>
+        /// <param name="predicate"> predicate</param>
+        Task<Sprint> GetSprint(Expression<Func<Sprint, bool>> predicate);
+
         /// <summary>
         /// Get all sprints
         /// </summary>
@@ -57,18 +66,12 @@
         Task<Sprint> UpdateSprint(Sprint sprintData);
 
         /// <summary>
-        /// Check event in database
-        /// </summary>
-        /// <param name="sprintID">event model</param>
-        Task<Sprint> GetSprint(int sprintID);
-
-        /// <summary>
-        /// Get the sprint details and sprint participant details with given
+        /// Get the participants with given predicate
         /// sprint id
         /// </summary>
-        /// <param name="sprintId">sprint id to lookup</param>
-        /// <returns><see cref="Sprint">sprint details</see></returns>
-        Task<Sprint> GetSprintWithPaticipants(int sprintId);
+        /// <param name="predicate">predicate for lookup</param>
+        /// <returns><see cref="SprintParticipant">sprint pariticipants</see></returns>
+        IEnumerable<SprintParticipant> GetParticipants(Expression<Func<SprintParticipant, bool>> predicate);
 
         /// <summary>
         /// saves changed to db

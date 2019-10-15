@@ -5,9 +5,9 @@ using SprintCrowd.BackEnd.Common;
 
 namespace SprintCrowd.BackEnd.Domain.Sprint
 {
-    public class SprintWithPariticpants
+    public class SprintWithPariticpantsDto
     {
-        public SprintWithPariticpants(
+        public SprintWithPariticpantsDto(
             int sprintId,
             string sprintName,
             int distance,

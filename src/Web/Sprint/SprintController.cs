@@ -74,5 +74,22 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Get created sprint with userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("sprint-by-creator/{userId:int}")]
+        public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId)
+        {
+            var result = await this.SprintService.GetSprintByCreator(userId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
