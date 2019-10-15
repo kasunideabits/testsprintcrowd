@@ -59,7 +59,6 @@
     {
       services.AddQueue();
       services.AddCors();
-
       // configure strongly typed settings objects
       var appSettingsSection = this.Configuration.GetSection("AppSettings");
       services.Configure<AppSettings>(appSettingsSection);
@@ -68,13 +67,13 @@
       this.AddDatabase(services);
       services.AddMvc(options =>
       {
-        // ignore self referencing loops newtonsoft.
-        options.OutputFormatters.Clear();
+              // ignore self referencing loops newtonsoft.
+              options.OutputFormatters.Clear();
         options.OutputFormatters.Add(new JsonOutputFormatter(
                   new JsonSerializerSettings()
-                  {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                  }, ArrayPool<char>.Shared));
+              {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+              }, ArrayPool<char>.Shared));
       });
       this.AddSwagger(services);
       this.RegisterDependencyInjection(services);
@@ -139,9 +138,9 @@
       {
         c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
               {
-                swaggerDoc.Host = httpReq.Host.Value; ;
-                swaggerDoc.BasePath = httpReq.PathBase;
-              });
+            swaggerDoc.Host = httpReq.Host.Value; ;
+            swaggerDoc.BasePath = httpReq.PathBase;
+          });
       });
       app.UseMiddleware<ErrorHandlingMiddleware>();
       DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);
