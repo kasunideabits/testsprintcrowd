@@ -26,65 +26,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     private IFriendRepo FriendRepo { get; }
 
     /// <summary>
-    /// Generate friend code
-    /// </summary>
-    /// <param name="userId">user id for who send the request</param>
-    /// <param name="userCode">uniqe code for user</param>
-    /// <returns>><see cref="GenerateFriendCodeResult">success or faild </see></returns>
-    public async Task<string> GenerateFriendCode(int userId, string userCode)
-    {
-      try
-      {
-        var code = SCrowdUniqueKey.UniqFriendCode(userCode);
-        await this.FriendRepo.GenerateFriendCode(userId, code);
-        this.FriendRepo.SaveChanges();
-        return GenerateFriendCodeResult.Success();
-      }
-      catch (Exception e)
-      {
-        throw new Application.ApplicationException(GenerateFriendCodeResult.Faild(), e);
-      }
-    }
-
-    /// <summary>
-    /// Add given user with matching friend code
-    /// </summary>
-    /// <param name="userId">resonder user id</param>
-    /// <param name="friendCode">generate friend code</param>
-    public async Task AddFriend(int userId, string friendCode)
-    {
-      var requesterCode = SCrowdUniqueKey.GetUserCode(friendCode);
-      await this.FriendRepo.AddFriend(requesterCode, userId, friendCode);
-      this.FriendRepo.SaveChanges();
-      return;
-    }
-
-    /// <summary>
-    /// Get firends for given user id
-    /// </summary>
-    /// <param name="userId">user id to lookup</param>
-    /// <returns><see cref="FriendListDto">list of users</see></returns>
-    // public async Task<FriendListDto> GetFriends(int userId)
-    // {
-    // var friends = await this.FriendRepo.GetFriends(userId);
-    // var result = new FriendListDto();
-    // friends.ForEach(u => result.AddFriend(u.Id, u.Name, u.ProfilePicture, u.Code));
-    // return result;
-    // }
-
-    /// <summary>
-    /// Remove friend from user list
-    /// </summary>
-    /// <param name="userId">user id for requester</param>
-    /// <param name="friendId">user id of friend</param>
-    public async Task RemoveFriend(int userId, int friendId)
-    {
-      await this.FriendRepo.RemoveFriend(userId, friendId);
-      this.FriendRepo.SaveChanges();
-      return;
-    }
-
-    /// <summary>
     /// Add given user with matching friend code
     /// </summary>
     /// <param name="userId">resonder user id</param>
@@ -99,29 +40,37 @@ namespace SprintCrowd.BackEnd.Domain.Friend
       }
       else
       {
-        var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userId);
-        if (isFriends == null)
+        if ((int)user.Id == (int)userId)
         {
-          Friend friend = new Friend();
-          friend.AcceptedUserId = (int)user.Id;
-          friend.SharedUserId = (int)userId;
-          friend.CreatedTime = DateTime.Now;
-          friend.UpdatedTime = DateTime.Now;
-          await this.FriendRepo.PlusFriend(friend);
-          this.FriendRepo.SaveChanges();
-
-          var addFriendDTO = new AddFriendDTO()
-          {
-            Name = user.Name,
-            ProfilePicture = user.ProfilePicture
-          };
-
-          return addFriendDTO;
+          throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserCode, "You cannot be friends with you");
         }
         else
         {
-          throw new Application.SCApplicationException((int)FriendCustomErrorCodes.AlreadyFriends, "Already Friends");
+          var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userId);
+          if (isFriends == null)
+          {
+            Friend friend = new Friend();
+            friend.AcceptedUserId = (int)user.Id;
+            friend.SharedUserId = (int)userId;
+            friend.CreatedTime = DateTime.Now;
+            friend.UpdatedTime = DateTime.Now;
+            await this.FriendRepo.PlusFriend(friend);
+            this.FriendRepo.SaveChanges();
+
+            var addFriendDTO = new AddFriendDTO()
+            {
+              Name = user.Name,
+              ProfilePicture = user.ProfilePicture
+            };
+
+            return addFriendDTO;
+          }
+          else
+          {
+            throw new Application.SCApplicationException((int)FriendCustomErrorCodes.AlreadyFriends, "Already Friends");
+          }
         }
+
       }
     }
 
@@ -136,20 +85,82 @@ namespace SprintCrowd.BackEnd.Domain.Friend
       friends.ForEach(obj =>
       {
         var friend = new FriendListDTO();
+
         if (obj.AcceptedUserId == userId)
         {
+          friend.Id = obj.SharedUser.Id;
           friend.Name = obj.SharedUser.Name;
           friend.ProfilePicture = obj.SharedUser.ProfilePicture;
-
+          friend.Code = obj.SharedUser.Code;
+          friend.CreatedDate = obj.CreatedTime;
         }
         else if (obj.SharedUserId == userId)
         {
+          friend.Id = obj.AcceptedUser.Id;
           friend.Name = obj.AcceptedUser.Name;
           friend.ProfilePicture = obj.AcceptedUser.ProfilePicture;
+          friend.Code = obj.AcceptedUser.Code;
+          friend.CreatedDate = obj.CreatedTime;
         }
         parts.Add(friend);
       });
       return parts;
+    }
+
+    /// <summary>
+    /// Remove friend from friend list
+    /// </summary>
+    /// <param name="userId">loggedin user id</param>
+    /// <param name="friendId">friend id</param>
+    public async Task<RemoveFriendDTO> DeleteFriend(int userId, int friendId)
+    {
+      Friend isFriends = await this.FriendRepo.CheckAlreadyFriends(userId, friendId);
+
+      if (isFriends == null)
+      {
+        throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserId, "Invalid user Id");
+      }
+      else
+      {
+        await this.FriendRepo.RemoveFriend(isFriends);
+
+        this.FriendRepo.SaveChanges();
+
+        var res = new RemoveFriendDTO()
+        {
+          Message = "User successfully removed"
+        };
+
+        return res;
+      }
+    }
+
+    /// <summary>
+    /// Get user with user id
+    /// </summary>
+    /// <param name="userId">user id of the user to be retrieved</param>
+    public async Task<GetFriendDto> GetFriend(int userId)
+    {
+
+      var user = await this.FriendRepo.GetFriend(userId);
+
+      if (user == null)
+      {
+        throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserId, "Invalid user Id");
+      }
+      else
+      {
+        var res = new GetFriendDto()
+        {
+          Id = user.Id,
+          Name = user.Name,
+          ProfilePicture = user.ProfilePicture,
+          Code = user.Code,
+          Email = user.Email
+        };
+        return res;
+      }
+
     }
   }
 }
