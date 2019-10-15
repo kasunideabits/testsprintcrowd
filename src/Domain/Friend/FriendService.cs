@@ -6,6 +6,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
   using System;
   using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Common;
+  using System.Collections.Generic;
 
   /// <summary>
   ///  Implement <see cref="IFriendService" > interface </see>
@@ -87,7 +89,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     /// </summary>
     /// <param name="userId">resonder user id</param>
     /// <param name="friendCode">generate friend code</param>
-    public async Task<User> PlusFriend(int userId, string friendCode)
+    public async Task<AddFriendDTO> PlusFriend(int userId, string friendCode)
     {
       User user = await this.FriendRepo.GetUserWithCode(friendCode);
 
@@ -107,13 +109,47 @@ namespace SprintCrowd.BackEnd.Domain.Friend
           friend.UpdatedTime = DateTime.Now;
           await this.FriendRepo.PlusFriend(friend);
           this.FriendRepo.SaveChanges();
-          return user;
+
+          var addFriendDTO = new AddFriendDTO()
+          {
+            Name = user.Name,
+            ProfilePicture = user.ProfilePicture
+          };
+
+          return addFriendDTO;
         }
         else
         {
           throw new Application.SCApplicationException((int)FriendCustomErrorCodes.AlreadyFriends, "Already Friends");
         }
       }
+    }
+
+    /// <summary>
+    /// Get all friends of loggedin user
+    /// </summary>
+    /// <param name="userId">loggedin user id</param>
+    public async Task<List<FriendListDTO>> AllFriends(int userId)
+    {
+      List<Friend> friends = await this.FriendRepo.GetAllFriends(userId);
+      List<FriendListDTO> parts = new List<FriendListDTO>();
+      friends.ForEach(obj =>
+      {
+        var friend = new FriendListDTO();
+        if (obj.AcceptedUserId == userId)
+        {
+          friend.Name = obj.SharedUser.Name;
+          friend.ProfilePicture = obj.SharedUser.ProfilePicture;
+
+        }
+        else if (obj.SharedUserId == userId)
+        {
+          friend.Name = obj.AcceptedUser.Name;
+          friend.ProfilePicture = obj.AcceptedUser.ProfilePicture;
+        }
+        parts.Add(friend);
+      });
+      return parts;
     }
   }
 }

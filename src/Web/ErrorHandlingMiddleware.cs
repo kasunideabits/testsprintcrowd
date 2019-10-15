@@ -61,8 +61,8 @@ namespace SprintCrowd.BackEnd.Web
       {
         ErrorResponseObject ApplicationresponseObject = new ErrorResponseObject
         {
-          Code = scapplicationException.ErrorCode,
-          Message = exception.Message.ToString(),
+          ErrorCode = scapplicationException.ErrorCode,
+          ErrorMessage = exception.Message.ToString(),
         };
         response.ContentType = "application/json";
         response.StatusCode = (int)ApplicationErrorCode.BadRequest;

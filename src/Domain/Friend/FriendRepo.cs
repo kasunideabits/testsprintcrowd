@@ -156,5 +156,18 @@ namespace SprintCrowd.BackEnd.Domain.Friend
       var res = await this.dbContext.Frineds.FirstOrDefaultAsync(u => (u.AcceptedUser.Equals(acceptedId) && u.SharedUserId.Equals(sharedId)) || (u.AcceptedUser.Equals(sharedId) && u.SharedUserId.Equals(acceptedId)));
       return res;
     }
+
+    /// <summary>
+    /// Get all friend of logged in user
+    /// </summary>
+    /// <param name="userId">loggedin user id</param>
+    /// <returns>All friends</returns>
+    public async Task<List<Friend>> GetAllFriends(int userId)
+    {
+      return await this.dbContext.Frineds
+          .Include(s => s.AcceptedUser)
+          .Where(s => s.AcceptedUserId == userId || s.SharedUserId == userId)
+          .ToListAsync();
+    }
   }
 }
