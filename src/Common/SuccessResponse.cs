@@ -1,8 +1,8 @@
 namespace SprintCrowd.BackEnd.Common
 {
-  public class SuccessDTO<T>
+  public class SuccessResponse<T>
   {
-    public SuccessDTO(T data)
+    public SuccessResponse(T data)
     {
       this.Data = data;
     }

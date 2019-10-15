@@ -13,6 +13,11 @@ namespace SprintCrowd.BackEnd.Application
     /// <summary>
     /// Already friends.
     /// </summary>
-    AlreadyFriends = 1200
+    AlreadyFriends = 1200,
+
+    /// <summary>
+    /// Not friends.
+    /// </summary>
+    InvalidUserId = 1230
   }
 }
