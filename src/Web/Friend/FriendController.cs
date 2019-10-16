@@ -1,96 +1,96 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Friend
 {
-  using System.Threading.Tasks;
-  using Microsoft.AspNetCore.Authorization;
-  using Microsoft.AspNetCore.Mvc;
-  using SprintCrowd.BackEnd.Application;
-  using SprintCrowd.BackEnd.Domain.Friend;
-  using SprintCrowd.BackEnd.Domain.ScrowdUser;
-  using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-  using SprintCrowd.BackEnd.Extensions;
-  using System.Collections.Generic;
-  using SprintCrowd.BackEnd.Common;
-  using SprintCrowd.BackEnd.Domain.Crons;
-
-  /// <summary>
-  /// Handle friend related api request
-  /// </summary>
-  [Route("[controller]")]
-  [ApiController]
-  [Authorize]
-  public class FriendController : ControllerBase
-  {
-    /// <summary>
-    /// Initialize <see cref="FriendController"> class </see>
-    /// </summary>
-    /// <param name="userService">user service</param>
-    /// <param name="resetUserCodeService">resetUserCodeService service</param>
-    /// <param name="frinedService"><see cref="IFriendService"> friend service </see></param>
-    public FriendController(IFriendService frinedService, IUserService userService, IResetUserCodeService resetUserCodeService)
-    {
-      this.FriendService = frinedService;
-      this.UserService = userService;
-      this.ResetUserCodeService = resetUserCodeService;
-    }
-
-    private IFriendService FriendService { get; }
-    private IUserService UserService { get; }
-    private IResetUserCodeService ResetUserCodeService { get; }
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Common;
+    using SprintCrowd.BackEnd.Domain.Crons;
+    using SprintCrowd.BackEnd.Domain.Friend;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Extensions;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
-    /// Get friends for given user
+    /// Handle friend related api request
     /// </summary>
-    /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
-    /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
-    [HttpPost("add")]
-    [ProducesResponseType(typeof(SuccessResponse<AddFriendDTO>), 200)]
-    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-
-    public async Task<IActionResult> PlusFriend([FromBody] FriendRequestActionModel request)
+    [Route("[controller]")]
+    [ApiController]
+    [Authorize]
+    public class FriendController : ControllerBase
     {
-      User user = await this.User.GetUser(this.UserService);
-      var addedFriend = await this.FriendService.PlusFriend(user.Id, request.Code);
-      return this.Ok(new SuccessResponse<AddFriendDTO>(addedFriend));
-    }
+        /// <summary>
+        /// Initialize <see cref="FriendController"> class </see>
+        /// </summary>
+        /// <param name="userService">user service</param>
+        /// <param name="resetUserCodeService">resetUserCodeService service</param>
+        /// <param name="frinedService"><see cref="IFriendService"> friend service </see></param>
+        public FriendController(IFriendService frinedService, IUserService userService, IResetUserCodeService resetUserCodeService)
+        {
+            this.FriendService = frinedService;
+            this.UserService = userService;
+            this.ResetUserCodeService = resetUserCodeService;
+        }
 
-    /// <summary>
-    /// Get all friends
-    /// </summary>
-    /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
-    [HttpGet("all")]
-    [ProducesResponseType(typeof(SuccessResponse<List<FriendListDTO>>), 200)]
-    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-    public async Task<IActionResult> AllFriends()
-    {
-      User user = await this.User.GetUser(this.UserService);
-      var allFriends = await this.FriendService.AllFriends(user.Id);
-      return this.Ok(new SuccessResponse<List<FriendListDTO>>(allFriends));
-    }
+        private IFriendService FriendService { get; }
+        private IUserService UserService { get; }
+        private IResetUserCodeService ResetUserCodeService { get; }
 
-    /// <summary>
-    /// Remove specific friend
-    /// </summary>
-    [HttpDelete("remove")]
-    [ProducesResponseType(typeof(SuccessResponse<RemoveFriendDTO>), 200)]
-    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-    public async Task<IActionResult> RemoveFriend([FromBody] RemoveFriendActionModel request)
-    {
-      User user = await this.User.GetUser(this.UserService);
-      var removedFriend = await this.FriendService.DeleteFriend(user.Id, request.FriendId);
-      return this.Ok(new SuccessResponse<RemoveFriendDTO>(removedFriend));
-    }
+        /// <summary>
+        /// Get friends for given user
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
+        /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
+        [HttpPost("add")]
+        [ProducesResponseType(typeof(SuccessResponse<AddFriendDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
 
-    /// <summary>
-    /// Get all friends
-    /// </summary>
-    /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
-    [HttpGet("{userId:int}")]
-    [ProducesResponseType(typeof(SuccessResponse<GetFriendDto>), 200)]
-    [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-    public async Task<IActionResult> GetFriend(int userId)
-    {
-      var allFriends = await this.FriendService.GetFriend(userId);
-      return this.Ok(new SuccessResponse<GetFriendDto>(allFriends));
+        public async Task<IActionResult> PlusFriend([FromBody] FriendRequestActionModel request)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var addedFriend = await this.FriendService.PlusFriend(user.Id, request.Code);
+            return this.Ok(new SuccessResponse<AddFriendDto>(addedFriend));
+        }
+
+        /// <summary>
+        /// Get all friends
+        /// </summary>
+        /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
+        [HttpGet("all")]
+        [ProducesResponseType(typeof(SuccessResponse<List<FriendListDto>>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> AllFriends()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var allFriends = await this.FriendService.AllFriends(user.Id);
+            return this.Ok(new SuccessResponse<List<FriendListDto>>(allFriends));
+        }
+
+        /// <summary>
+        /// Remove specific friend
+        /// </summary>
+        [HttpDelete("remove")]
+        [ProducesResponseType(typeof(SuccessResponse<RemoveFriendDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveFriend([FromBody] RemoveFriendActionModel request)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var removedFriend = await this.FriendService.DeleteFriend(user.Id, request.FriendId);
+            return this.Ok(new SuccessResponse<RemoveFriendDTO>(removedFriend));
+        }
+
+        /// <summary>
+        /// Get all friends
+        /// </summary>
+        /// <returns><see cref="FriendRequestActionResult"></see> and reason</returns>
+        [HttpGet("{userId:int}")]
+        [ProducesResponseType(typeof(SuccessResponse<GetFriendDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetFriend(int userId)
+        {
+            var allFriends = await this.FriendService.GetFriend(userId);
+            return this.Ok(new SuccessResponse<GetFriendDto>(allFriends));
+        }
     }
-  }
 }

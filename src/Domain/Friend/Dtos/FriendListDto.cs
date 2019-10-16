@@ -1,16 +1,16 @@
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
-  using System;
-  public class FriendListDTO
-  {
-    public string Name { get; set; }
-    public string ProfilePicture { get; set; }
+    using System;
+    public class FriendListDto
+    {
+        public string Name { get; set; }
+        public string ProfilePicture { get; set; }
 
-    public int Id { get; set; }
+        public int Id { get; set; }
 
-    public string Code { get; set; }
+        public string Code { get; set; }
 
-    public DateTime CreatedDate { get; set; }
-  }
+        public DateTime CreatedDate { get; set; }
+    }
 
 }
