@@ -31,6 +31,7 @@
   using SprintCrowd.BackEnd.Models;
   using SprintCrowd.BackEnd.Web;
   using Swashbuckle.AspNetCore.Swagger;
+  using SprintCrowd.BackEnd.Domain.Crons;
 
   /// <summary>
   /// start class for the dotnet core application.
@@ -67,13 +68,13 @@
       this.AddDatabase(services);
       services.AddMvc(options =>
       {
-              // ignore self referencing loops newtonsoft.
-              options.OutputFormatters.Clear();
+        // ignore self referencing loops newtonsoft.
+        options.OutputFormatters.Clear();
         options.OutputFormatters.Add(new JsonOutputFormatter(
                   new JsonSerializerSettings()
-              {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-              }, ArrayPool<char>.Shared));
+                  {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                  }, ArrayPool<char>.Shared));
       });
       this.AddSwagger(services);
       this.RegisterDependencyInjection(services);
@@ -138,9 +139,9 @@
       {
         c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
               {
-            swaggerDoc.Host = httpReq.Host.Value; ;
-            swaggerDoc.BasePath = httpReq.PathBase;
-          });
+                swaggerDoc.Host = httpReq.Host.Value; ;
+                swaggerDoc.BasePath = httpReq.PathBase;
+              });
       });
       app.UseMiddleware<ErrorHandlingMiddleware>();
       DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);
@@ -171,6 +172,8 @@
       services.AddTransient<IJoinEventHandler, JoinEventHandler>();
       services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
       services.AddTransient<IExitEventHandler, ExitEventHandler>();
+      services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
+      services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
 
       this.AddAuthorizationDIModules(services);
     }
