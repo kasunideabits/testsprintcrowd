@@ -53,7 +53,8 @@
                 result.ProfilePicture,
                 result.Country,
                 result.CountryCode,
-                result.City);
+                result.City,
+                result.ColorCode);
             await this.MarkAttendance.Execute(mA);
             this.SprintParticipantRepo.SaveChanges();
             return;

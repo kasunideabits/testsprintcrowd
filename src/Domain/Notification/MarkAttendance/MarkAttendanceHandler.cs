@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Domain.Notification.MarkAttendance
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
 
     /// <summary>
@@ -34,7 +35,8 @@
                 markAttendance.ProfilePicture == null ? string.Empty : markAttendance.ProfilePicture,
                 markAttendance.Country == null ? string.Empty : markAttendance.Country,
                 markAttendance.CountryCode == null ? string.Empty : markAttendance.CountryCode,
-                markAttendance.City == null ? string.Empty : markAttendance.City);
+                markAttendance.City == null ? string.Empty : markAttendance.City,
+                markAttendance.ColorCode == null ? new UserColorCode().PickColor() : markAttendance.ColorCode);
             this.SendNotification(markAttendance.SprintId, message);
 
             return Task.CompletedTask;
@@ -67,7 +69,7 @@
             /// <param name="country">country for user</param>
             /// <param name="countryCode">country code for user</param>
             /// <param name="city">city for user</param>
-
+            /// <param name="colorCode">color code for user</param>
             public MarkAttendanceNotification(
                 int sprintId,
                 int userId,
@@ -75,7 +77,8 @@
                 string profilePicture,
                 string country,
                 string countryCode,
-                string city)
+                string city,
+                string colorCode)
             {
                 this.SprintId = sprintId;
                 this.UserId = userId;
@@ -84,6 +87,7 @@
                 this.Country = country;
                 this.CountryCode = countryCode;
                 this.City = city;
+                this.ColorCode = colorCode;
             }
 
             /// <summary>
@@ -120,6 +124,11 @@
             /// Gets  city
             /// </summary>
             public string City { get; }
+
+            /// <summary>
+            /// Gets color code
+            /// </summary>
+            public string ColorCode { get; }
         }
     }
 }

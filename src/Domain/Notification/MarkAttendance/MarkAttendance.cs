@@ -15,6 +15,7 @@
         /// <param name="country">country for user</param>
         /// <param name="countryCode">country code for user</param>
         /// <param name="city">city for user</param>
+        /// <param name="colorCode">color code user</param>
         public MarkAttendance(
             int sprintId,
             int userId,
@@ -22,7 +23,8 @@
             string profilePicture,
             string country,
             string countryCode,
-            string city)
+            string city,
+            string colorCode)
         {
             this.SprintId = sprintId;
             this.UserId = userId;
@@ -31,6 +33,7 @@
             this.Country = country;
             this.CountryCode = countryCode;
             this.City = city;
+            this.ColorCode = colorCode;
         }
 
         /// <summary>
@@ -67,5 +70,10 @@
         /// Gets city
         /// </summary>
         public string City { get; }
+
+        /// <summary>
+        /// Gets color code for user
+        /// </summary>
+        public string ColorCode { get; }
     }
 }
