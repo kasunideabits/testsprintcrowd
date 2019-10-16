@@ -19,11 +19,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         {
             this.Code = code;
             this.Email = email;
-            this.ColoCode = colorCode;
+            this.ColorCode = colorCode;
             this.CreatedDate = createdDate;
         }
         public string Code { get; }
-        public string ColoCode { get; }
+        public string ColorCode { get; }
         public string Email { get; }
         public DateTime CreatedDate { get; set; }
     }
