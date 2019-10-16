@@ -96,6 +96,7 @@
                     participant.User.Name,
                     participant.User.ProfilePicture,
                     participant.User.Code,
+                    participant.User.ColorCode,
                     sprintId,
                     participant.Sprint.Name);
             }

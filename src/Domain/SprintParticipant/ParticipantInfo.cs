@@ -19,6 +19,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             string userName,
             string profilePicture,
             string userCode,
+            string colorCode,
             int sprintId,
             string sprintName)
         {
@@ -26,6 +27,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.UserName = userName;
             this.ProfilePicture = profilePicture;
             this.Code = userCode;
+            this.ColorCode = colorCode;
             this.SprintId = sprintId;
             this.SprintName = sprintName;
         }
@@ -49,6 +51,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// User code
         /// </summary>
         public string Code { get; }
+
+        /// <summary>
+        /// Gets color code
+        /// </summary>
+        public string ColorCode { get; }
 
         /// <summary>
         /// Gets sprint id which participate

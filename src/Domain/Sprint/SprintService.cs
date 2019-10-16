@@ -290,6 +290,7 @@
                         p.User.City,
                         p.User.Country,
                         p.User.CountryCode,
+                        p.User.ColorCode,
                         p.User.Id == sprint.CreatedBy.Id);
                 });
             return result;

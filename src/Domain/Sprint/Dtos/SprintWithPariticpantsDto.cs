@@ -24,9 +24,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public List<ParticipantInfoDto> PariticipantInfo { get; set; }
 
-        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, bool creator)
+        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator)
         {
-            this.PariticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, creator));
+            this.PariticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator));
         }
     }
 
@@ -58,11 +58,13 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string city,
             string country,
             string countryCode,
+            string colorCode,
             bool creator) : base(id, name, profilePicture, city, country, countryCode)
         {
+            this.ColorCode = colorCode;
             this.Creator = creator;
         }
-
+        public string ColorCode { get; }
         public bool Creator { get; }
     }
 
