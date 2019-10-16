@@ -1,9 +1,13 @@
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
+    public class RemoveFriendDto
+    {
+        public RemoveFriendDto(string message)
+        {
+            this.Message = message;
+        }
 
-  public class RemoveFriendDTO
-  {
-    public string Message { get; set; }
-  }
+        public string Message { get; }
+    }
 
 }

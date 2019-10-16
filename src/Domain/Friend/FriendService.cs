@@ -6,7 +6,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -30,7 +29,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="userId">resonder user id</param>
         /// <param name="friendCode">generate friend code</param>
-        public async Task<AddFriendDto> PlusFriend(int userId, string friendCode)
+        public async Task<FriendDto> PlusFriend(int userId, string friendCode)
         {
             User user = await this.FriendRepo.GetUserWithCode(friendCode);
 
@@ -57,13 +56,17 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         await this.FriendRepo.PlusFriend(friend);
                         this.FriendRepo.SaveChanges();
 
-                        var addFriendDTO = new AddFriendDto()
-                        {
-                            Name = user.Name,
-                            ProfilePicture = user.ProfilePicture
-                        };
-
-                        return addFriendDTO;
+                        return new FriendDto(
+                            user.Id,
+                            user.Name,
+                            user.ProfilePicture,
+                            user.Code,
+                            user.Email,
+                            user.City,
+                            user.Country,
+                            user.CountryCode,
+                            user.ColorCode,
+                            friend.CreatedTime);
                     }
                     else
                     {
@@ -78,31 +81,41 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Get all friends of loggedin user
         /// </summary>
         /// <param name="userId">loggedin user id</param>
-        public async Task<List<FriendListDto>> AllFriends(int userId)
+        public async Task<List<FriendDto>> AllFriends(int userId)
         {
             List<Friend> friends = await this.FriendRepo.GetAllFriends(userId);
-            List<FriendListDto> parts = new List<FriendListDto>();
+            List<FriendDto> parts = new List<FriendDto>();
             friends.ForEach(obj =>
             {
-                var friend = new FriendListDto();
-
                 if (obj.AcceptedUserId == userId)
                 {
-                    friend.Id = obj.SharedUser.Id;
-                    friend.Name = obj.SharedUser.Name;
-                    friend.ProfilePicture = obj.SharedUser.ProfilePicture;
-                    friend.Code = obj.SharedUser.Code;
-                    friend.CreatedDate = obj.CreatedTime;
+                    parts.Add(new FriendDto(
+                        obj.SharedUser.Id,
+                        obj.SharedUser.Name,
+                        obj.SharedUser.ProfilePicture,
+                        obj.SharedUser.Code,
+                        obj.SharedUser.Email,
+                        obj.SharedUser.City,
+                        obj.SharedUser.Country,
+                        obj.SharedUser.CountryCode,
+                        obj.SharedUser.ColorCode,
+                        obj.CreatedTime));
                 }
+
                 else if (obj.SharedUserId == userId)
                 {
-                    friend.Id = obj.AcceptedUser.Id;
-                    friend.Name = obj.AcceptedUser.Name;
-                    friend.ProfilePicture = obj.AcceptedUser.ProfilePicture;
-                    friend.Code = obj.AcceptedUser.Code;
-                    friend.CreatedDate = obj.CreatedTime;
+                    parts.Add(new FriendDto(
+                        obj.AcceptedUser.Id,
+                        obj.AcceptedUser.Name,
+                        obj.AcceptedUser.ProfilePicture,
+                        obj.AcceptedUser.Code,
+                        obj.AcceptedUser.Email,
+                        obj.AcceptedUser.City,
+                        obj.AcceptedUser.Country,
+                        obj.AcceptedUser.CountryCode,
+                        obj.AcceptedUser.ColorCode,
+                        obj.CreatedTime));
                 }
-                parts.Add(friend);
             });
             return parts;
         }
@@ -112,7 +125,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="userId">loggedin user id</param>
         /// <param name="friendId">friend id</param>
-        public async Task<RemoveFriendDTO> DeleteFriend(int userId, int friendId)
+        public async Task<RemoveFriendDto> DeleteFriend(int userId, int friendId)
         {
             Friend isFriends = await this.FriendRepo.CheckAlreadyFriends(userId, friendId);
 
@@ -126,12 +139,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
                 this.FriendRepo.SaveChanges();
 
-                var res = new RemoveFriendDTO()
-                {
-                    Message = "User successfully removed"
-                };
-
-                return res;
+                return new RemoveFriendDto("User successfully removed");
             }
         }
 
@@ -139,28 +147,45 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Get user with user id
         /// </summary>
         /// <param name="userId">user id of the user to be retrieved</param>
-        public async Task<GetFriendDto> GetFriend(int userId)
+        public async Task<FriendDto> GetFriend(int userId)
         {
 
-            var user = await this.FriendRepo.GetFriend(userId);
-
-            if (user == null)
+            var friend = await this.FriendRepo.GetFriendship(userId);
+            if (friend == null)
             {
                 throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserId, "Invalid user Id");
             }
             else
             {
-                var res = new GetFriendDto()
+                if (friend.SharedUserId == userId)
                 {
-                    Id = user.Id,
-                    Name = user.Name,
-                    ProfilePicture = user.ProfilePicture,
-                    Code = user.Code,
-                    Email = user.Email
-                };
-                return res;
+                    return new FriendDto(
+                        friend.SharedUser.Id,
+                        friend.SharedUser.Name,
+                        friend.SharedUser.ProfilePicture,
+                        friend.SharedUser.Code,
+                        friend.SharedUser.Email,
+                        friend.SharedUser.City,
+                        friend.SharedUser.Country,
+                        friend.SharedUser.CountryCode,
+                        friend.SharedUser.ColorCode,
+                        friend.CreatedTime);
+                }
+                else
+                {
+                    return new FriendDto(
+                        friend.AcceptedUser.Id,
+                        friend.AcceptedUser.Name,
+                        friend.AcceptedUser.ProfilePicture,
+                        friend.AcceptedUser.Code,
+                        friend.AcceptedUser.Email,
+                        friend.AcceptedUser.City,
+                        friend.AcceptedUser.Country,
+                        friend.AcceptedUser.CountryCode,
+                        friend.AcceptedUser.ColorCode,
+                        friend.CreatedTime);
+                }
             }
-
         }
     }
 }
