@@ -10,6 +10,7 @@
   using SprintCrowd.BackEnd.Extensions;
   using System.Collections.Generic;
   using SprintCrowd.BackEnd.Common;
+  using SprintCrowd.BackEnd.Domain.Crons;
 
   /// <summary>
   /// Handle friend related api request
@@ -23,15 +24,18 @@
     /// Initialize <see cref="FriendController"> class </see>
     /// </summary>
     /// <param name="userService">user service</param>
+    /// <param name="resetUserCodeService">resetUserCodeService service</param>
     /// <param name="frinedService"><see cref="IFriendService"> friend service </see></param>
-    public FriendController(IFriendService frinedService, IUserService userService)
+    public FriendController(IFriendService frinedService, IUserService userService, IResetUserCodeService resetUserCodeService)
     {
       this.FriendService = frinedService;
       this.UserService = userService;
+      this.ResetUserCodeService = resetUserCodeService;
     }
 
     private IFriendService FriendService { get; }
     private IUserService UserService { get; }
+    private IResetUserCodeService ResetUserCodeService { get; }
 
     /// <summary>
     /// Get friends for given user
