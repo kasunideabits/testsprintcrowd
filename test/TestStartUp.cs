@@ -2,6 +2,7 @@ namespace Tests
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,7 @@ namespace Tests
                 options.UseInMemoryDatabase("InMemory"));
         }
 
-        public override void Configure(IApplicationBuilder app)
+        public override void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseStaticFiles();
             // global cors policy
