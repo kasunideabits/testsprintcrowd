@@ -68,7 +68,7 @@
         /// <summary>
         /// Remove specific friend
         /// </summary>
-        [HttpDelete("remove")]
+        [HttpPost("remove")]
         [ProducesResponseType(typeof(SuccessResponse<RemoveFriendDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> RemoveFriend([FromBody] RemoveFriendActionModel request)
