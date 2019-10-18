@@ -9,5 +9,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// Sprint invite
         /// </summary>
         void SprintInvite();
+
+        /// <summary>
+        /// Sprint mark attendance
+        /// </summary>
+        void SprintMarkAttendace(int sprintId, int userId, string name, string profilePicture, string country, string countryCode, string city, string colorCode);
+
     }
 }

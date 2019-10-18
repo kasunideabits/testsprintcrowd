@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
+    using src.Infrastructure.NotificationWorker.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs;
 
     /// <summary>
@@ -13,6 +14,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         public void SprintInvite()
         {
             new NotificationWorker<SprintInvite>().Invoke();
+        }
+
+        /// <summary>
+        /// Sprint mark attendance
+        /// </summary>
+        public void SprintMarkAttendace(int sprintId, int userId, string name, string profilePicture, string country, string countryCode, string city, string colorCode)
+        {
+            var message = new MarkAttendance(sprintId, userId, name, profilePicture, country, countryCode, city, colorCode);
+            new NotificationWorker<SprintMarkAttendance>().Invoke(message);
         }
     }
 }

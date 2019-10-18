@@ -30,6 +30,7 @@
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
     using SprintCrowd.BackEnd.Migrations.Seed;
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
@@ -177,6 +178,7 @@
             services.AddTransient<ISprintInvitationRepo, SprintInvitationRepo>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<INotificationRepo, NotificationRepo>();
+            services.AddSingleton<IAblyConnectionFactory, AblyConnectionFactory>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
