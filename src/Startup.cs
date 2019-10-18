@@ -7,7 +7,6 @@
     using Coravel;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -20,7 +19,6 @@
     using SprintCrowd.BackEnd.Domain.Friend;
     using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
-    using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
     using SprintCrowd.BackEnd.Domain.Notification;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
@@ -181,7 +179,6 @@
             services.AddSingleton<IAblyConnectionFactory, AblyConnectionFactory>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IJoinEventHandler, JoinEventHandler>();
-            services.AddTransient<IMarkAttendanceHandler, MarkAttendanceHandler>();
             services.AddTransient<IExitEventHandler, ExitEventHandler>();
             services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
             services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
