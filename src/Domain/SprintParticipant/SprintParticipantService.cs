@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -19,21 +18,16 @@
         /// Initalize SprintParticipantService class
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
-        /// <param name="exitEventHandler">exit event background notificaiton service</param>
         /// <param name="notificationClient">notification client</param>
         public SprintParticipantService(
             ISprintParticipantRepo sprintParticipantRepo,
-            IExitEventHandler exitEventHandler,
             INotificationClient notificationClient)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
-            this.ExitEventHandler = exitEventHandler;
             this.NotificationClient = notificationClient;
         }
 
         private ISprintParticipantRepo SprintParticipantRepo { get; }
-
-        private IExitEventHandler ExitEventHandler { get; }
 
         private INotificationClient NotificationClient { get; }
 
@@ -103,13 +97,12 @@
             {
                 ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
                 this.SprintParticipantRepo.SaveChanges();
-                var exitEvent = new ExitEvent(
+                this.NotificationClient.SprintNotification.SprintExit(
                     participant.SprintId,
                     participant.SprintName,
                     participant.UserId,
                     participant.UserName,
                     participant.ProfilePicture);
-                await this.ExitEventHandler.Execute(exitEvent);
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)
