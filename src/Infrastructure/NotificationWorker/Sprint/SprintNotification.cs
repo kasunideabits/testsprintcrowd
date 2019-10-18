@@ -24,5 +24,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             var message = new MarkAttendance(sprintId, userId, name, profilePicture, country, countryCode, city, colorCode);
             new NotificationWorker<SprintMarkAttendance>().Invoke(message);
         }
+
+        public void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture)
+        {
+
+        }
     }
 }

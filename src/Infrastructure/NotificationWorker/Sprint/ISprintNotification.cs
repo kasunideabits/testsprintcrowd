@@ -15,5 +15,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// </summary>
         void SprintMarkAttendace(int sprintId, int userId, string name, string profilePicture, string country, string countryCode, string city, string colorCode);
 
+        /// <summary>
+        /// Sprint exit
+        /// </summary>
+        void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture);
     }
 }
