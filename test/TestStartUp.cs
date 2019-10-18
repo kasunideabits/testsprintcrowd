@@ -44,7 +44,7 @@ namespace Tests
                 options.UseInMemoryDatabase("InMemory"));
         }
 
-        public override void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public override void Configure(IApplicationBuilder app)
         {
             app.UseStaticFiles();
             // global cors policy

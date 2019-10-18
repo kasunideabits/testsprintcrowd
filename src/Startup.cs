@@ -126,12 +126,9 @@
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app">generated automatically</param>
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public virtual void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                NotificationWorkerEntry.EnableWorkerDashboard(app);
-            }
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
             // global cors policy
@@ -186,6 +183,7 @@
             services.AddTransient<IExitEventHandler, ExitEventHandler>();
             services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
             services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
+            services.AddScoped<INotificationClient, NotificationClient>();
 
             this.AddAuthorizationDIModules(services);
         }
