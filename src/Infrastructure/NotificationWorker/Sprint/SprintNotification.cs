@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
     using src.Infrastructure.NotificationWorker.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 
     /// <summary>
     /// Available sprint notificaitons
@@ -25,9 +26,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             new NotificationWorker<SprintMarkAttendance>().Invoke(message);
         }
 
+        /// <summary>
+        /// Sprint exit
+        /// </summary>
         public void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture)
         {
+            var message = new ExitSprint(sprintId, sprintName, userId, name, profilePicture);
+            new NotificationWorker<SprintExit>().Invoke(message);
+        }
 
+        /// <summary>
+        /// Sprint join
+        /// </summary>
+        public void SprintJoin(int sprintId, string sprintName, int userId, string name, string profilePicture)
+        {
+            var message = new JoinSprint(sprintId, sprintName, userId, name, profilePicture);
+            new NotificationWorker<SprintJoin>().Invoke(message);
         }
     }
 }

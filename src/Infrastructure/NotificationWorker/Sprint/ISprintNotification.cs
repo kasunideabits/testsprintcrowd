@@ -19,5 +19,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// Sprint exit
         /// </summary>
         void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture);
+
+        /// <summary>
+        /// Sprint join
+        /// </summary>
+        void SprintJoin(int sprintId, string sprintName, int userId, string name, string profilePicture);
     }
 }
