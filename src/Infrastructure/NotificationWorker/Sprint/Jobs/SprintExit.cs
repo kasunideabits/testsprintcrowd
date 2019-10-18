@@ -46,7 +46,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification() { }
 
-        private ExitNotification NotificationMessageMapper(ExitSprint exitSprint)
+        private static ExitNotification NotificationMessageMapper(ExitSprint exitSprint)
         {
             return new ExitNotification(
                 exitSprint.UserId,
