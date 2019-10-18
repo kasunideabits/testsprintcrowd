@@ -17,7 +17,6 @@
     using SprintCrowd.BackEnd.Domain.Crons;
     using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.Friend;
-    using SprintCrowd.BackEnd.Domain.Notification;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintInvitation;
@@ -172,8 +171,6 @@
             services.AddTransient<IFriendRepo, FriendRepo>();
             services.AddTransient<ISprintInvitationService, SprintInvitationService>();
             services.AddTransient<ISprintInvitationRepo, SprintInvitationRepo>();
-            services.AddTransient<INotificationService, NotificationService>();
-            services.AddTransient<INotificationRepo, NotificationRepo>();
             services.AddSingleton<IAblyConnectionFactory, AblyConnectionFactory>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
             services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
