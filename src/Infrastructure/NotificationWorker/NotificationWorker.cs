@@ -10,6 +10,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// <summary>
         /// Invoke notification in background, to run the job implement <see cref="INotificationJob"> job class </see>
         /// </summary>
+        public virtual void Invoke()
+        {
+            BackgroundJob.Enqueue<T>(x => x.Run(null));
+        }
+
+        /// <summary>
+        /// Invoke notification in background, to run the job implement <see cref="INotificationJob"> job class </see>
+        /// </summary>
         public virtual void Invoke(object message)
         {
             BackgroundJob.Enqueue<T>(x => x.Run(message));

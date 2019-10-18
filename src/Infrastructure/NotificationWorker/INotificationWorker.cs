@@ -8,6 +8,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// <summary>
         /// Invoke notification in background, to run the job implement <see cref="INotificationJob"> job class </see>
         /// </summary>
+        void Invoke();
+
+        /// <summary>
+        /// Invoke notification in background, to run the job implement <see cref="INotificationJob"> job class </see>
+        /// </summary>
         /// <param name="message"> optional message object for execute job</param>
         void Invoke(object message);
     }
