@@ -14,10 +14,5 @@
   "license": "ISC",
   "devDependencies": {
     "husky": "^2.1.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "chmod 777 ./scripts/commit_pre_hook.sh; ./scripts/commit_pre_hook.sh"
-    }
   }
 }
