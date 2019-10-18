@@ -17,7 +17,6 @@
     using SprintCrowd.BackEnd.Domain.Crons;
     using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.Friend;
-    using SprintCrowd.BackEnd.Domain.Notification.JoinEvent;
     using SprintCrowd.BackEnd.Domain.Notification;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint;
@@ -177,7 +176,6 @@
             services.AddTransient<INotificationRepo, NotificationRepo>();
             services.AddSingleton<IAblyConnectionFactory, AblyConnectionFactory>();
             services.AddSingleton<INotifyFactory, NotifyFactory>();
-            services.AddTransient<IJoinEventHandler, JoinEventHandler>();
             services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
             services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
             services.AddScoped<INotificationClient, NotificationClient>();

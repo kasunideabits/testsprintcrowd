@@ -19,9 +19,7 @@
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintParticipantService(
-            ISprintParticipantRepo sprintParticipantRepo,
-            INotificationClient notificationClient)
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.NotificationClient = notificationClient;
