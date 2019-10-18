@@ -4,7 +4,6 @@
     using System.IO;
     using System.Reflection;
     using System;
-    using Coravel;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc.Formatters;
@@ -56,7 +55,6 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddQueue();
             services.AddCors();
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");

@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <PackageReference Include="ably.io" Version="0.8.11" />
-    <PackageReference Include="Coravel" Version="2.5.1" />
     <PackageReference Include="IdentityServer4" Version="2.3.2" />
 
     <PackageReference Include="Microsoft.AspNetCore.App" />
