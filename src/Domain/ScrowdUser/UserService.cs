@@ -34,7 +34,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user.Id, user.Name, user.ProfilePicture);
+                return new UserDto(user.Id, user.Name, user.ProfilePicture, user.Code);
             }
             else
             {
