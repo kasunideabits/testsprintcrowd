@@ -1,22 +1,22 @@
-using System.Collections.Generic;
-using FirebaseAdmin.Messaging;
-
 namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
 {
-    // <summary>
-    /// Muticast message builder for send notification for multiple devices
-    /// </summary>/
-    public class PushNotificationMulticastMessageBuilder : IPushNotificationMulticastMessageBuilder
+    using System.Collections.Generic;
+    using FirebaseAdmin.Messaging;
+
+    /// <summary>
+    /// Push notification message builder
+    /// </summary>
+    public class PushNotificationMessageBuilder : IPushNotificationMessageBuilder
     {
         /// <summary>
-        /// Initialize PushNotificationMulticastMessageBuilder class
+        /// Initialize PushNotificationMessageBuilder class
         /// </summary>
-        public PushNotificationMulticastMessageBuilder()
+        public PushNotificationMessageBuilder()
         {
-            this.FireBaseMessage = new MulticastMessage();
+            this.FireBaseMessage = new Message();
         }
 
-        private MulticastMessage FireBaseMessage { get; set; }
+        private Message FireBaseMessage { get; set; }
 
         /// <summary>
         /// Data for message
@@ -27,11 +27,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         }
 
         /// <summary>
-        /// Tokens for devices
+        /// Token for device
         /// </summary>
-        public void Tokens(List<string> tokens)
+        public void Token(string token)
         {
-            this.FireBaseMessage.Tokens = tokens;
+            this.FireBaseMessage.Token = token;
         }
 
         /// <summary>
@@ -48,9 +48,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         }
 
         /// <summary>
-        /// Build multicast message
+        /// Message topic
         /// </summary>
-        public MulticastMessage Build()
+        public void Topic(string topic)
+        {
+            this.FireBaseMessage.Topic = topic;
+        }
+
+        /// <summary>
+        /// Build  message
+        /// </summary>
+        public Message Build()
         {
             return this.FireBaseMessage;
         }
