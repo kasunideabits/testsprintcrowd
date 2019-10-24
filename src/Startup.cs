@@ -64,6 +64,9 @@
             var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
             services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
 
+            var firebaseConfigSection = this.Configuration.GetSection("FirebaseConfig");
+            services.Configure<FirebaseConfig>(firebaseConfigSection);
+
             var appSettings = appSettingsSection.Get<AppSettings>();
             this.AddAuthentication(services, appSettings);
             this.AddDatabase(services);

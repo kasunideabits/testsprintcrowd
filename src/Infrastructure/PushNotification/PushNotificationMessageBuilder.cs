@@ -25,7 +25,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         {
             this.FireBaseMessage.Data = data;
             return this;
-
         }
 
         /// <summary>
