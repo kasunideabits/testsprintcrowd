@@ -29,7 +29,8 @@ namespace SprintCrowd.BackEnd.Migrations.Seed
                 UserType = (int)UserType.AdminUser,
                 Email = adminUserEmail,
                 FacebookUserId = "SprintCrowdAdmin",
-                Name = "Mikael"
+                Name = "Mikael",
+                ColorCode = new UserColorCode().PickColor(),
                 };
 
                 context.AddRange(user);
