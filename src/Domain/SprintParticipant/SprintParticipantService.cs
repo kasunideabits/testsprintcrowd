@@ -6,8 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Domain.Notification.ExitEvent;
-    using SprintCrowd.BackEnd.Domain.Notification.MarkAttendance;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -19,23 +18,16 @@
         /// Initalize SprintParticipantService class
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
-        /// <param name="markAttendance">make attendace background notificaiton service</param>
-        /// <param name="exitEventHandler">exit event background notificaiton service</param>
-        public SprintParticipantService(
-            ISprintParticipantRepo sprintParticipantRepo,
-            IMarkAttendanceHandler markAttendance,
-            IExitEventHandler exitEventHandler)
+        /// <param name="notificationClient">notification client</param>
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
-            this.MarkAttendance = markAttendance;
-            this.ExitEventHandler = exitEventHandler;
+            this.NotificationClient = notificationClient;
         }
 
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
-        private IMarkAttendanceHandler MarkAttendance { get; }
-
-        private IExitEventHandler ExitEventHandler { get; }
+        private INotificationClient NotificationClient { get; }
 
         /// <summary>
         /// Mark the attendece for the given sprint and notify with evnet
@@ -46,7 +38,7 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            var mA = new MarkAttendance(
+            this.NotificationClient.SprintNotification.SprintMarkAttendace(
                 sprintId,
                 userId,
                 result.Name,
@@ -55,7 +47,6 @@
                 result.CountryCode,
                 result.City,
                 result.ColorCode);
-            await this.MarkAttendance.Execute(mA);
             this.SprintParticipantRepo.SaveChanges();
             return;
         }
@@ -104,13 +95,12 @@
             {
                 ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
                 this.SprintParticipantRepo.SaveChanges();
-                var exitEvent = new ExitEvent(
+                this.NotificationClient.SprintNotification.SprintExit(
                     participant.SprintId,
                     participant.SprintName,
                     participant.UserId,
                     participant.UserName,
                     participant.ProfilePicture);
-                await this.ExitEventHandler.Execute(exitEvent);
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)
