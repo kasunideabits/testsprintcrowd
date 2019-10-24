@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
     // <summary>
     /// Muticast message builder for send notification for multiple devices
     /// </summary>/
-    public class PushNotificationMulticastMessageBuilder : IPushNotificationMulticastMessageBuilder
+    public class PushNotificationMulticastMessageBuilder
     {
         /// <summary>
         /// Initialize PushNotificationMulticastMessageBuilder class
@@ -21,23 +21,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         /// <summary>
         /// Data for message
         /// </summary>
-        public void Message(Dictionary<string, string> data)
+        public PushNotificationMulticastMessageBuilder Message(Dictionary<string, string> data)
         {
             this.FireBaseMessage.Data = data;
+            return this;
         }
 
         /// <summary>
         /// Tokens for devices
         /// </summary>
-        public void Tokens(List<string> tokens)
+        public PushNotificationMulticastMessageBuilder Tokens(List<string> tokens)
         {
             this.FireBaseMessage.Tokens = tokens;
+            return this;
         }
 
         /// <summary>
         /// Add notification title and body
         /// </summary>
-        public void Notification(string title, string body)
+        public PushNotificationMulticastMessageBuilder Notification(string title, string body)
         {
             var notificaiton = new Notification()
             {
@@ -45,6 +47,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
                 Body = body,
             };
             this.FireBaseMessage.Notification = notificaiton;
+            return this;
         }
 
         /// <summary>

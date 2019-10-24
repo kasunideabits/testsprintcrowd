@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
     /// <summary>
     /// Push notification message builder
     /// </summary>
-    public class PushNotificationMessageBuilder : IPushNotificationMessageBuilder
+    public class PushNotificationMessageBuilder
     {
         /// <summary>
         /// Initialize PushNotificationMessageBuilder class
@@ -21,23 +21,26 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         /// <summary>
         /// Data for message
         /// </summary>
-        public void Message(Dictionary<string, string> data)
+        public PushNotificationMessageBuilder Message(Dictionary<string, string> data)
         {
             this.FireBaseMessage.Data = data;
+            return this;
+
         }
 
         /// <summary>
         /// Token for device
         /// </summary>
-        public void Token(string token)
+        public PushNotificationMessageBuilder Token(string token)
         {
             this.FireBaseMessage.Token = token;
+            return this;
         }
 
         /// <summary>
         /// Add notification title and body
         /// </summary>
-        public void Notification(string title, string body)
+        public PushNotificationMessageBuilder Notification(string title, string body)
         {
             var notificaiton = new Notification()
             {
@@ -45,14 +48,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
                 Body = body,
             };
             this.FireBaseMessage.Notification = notificaiton;
+            return this;
         }
 
         /// <summary>
         /// Message topic
         /// </summary>
-        public void Topic(string topic)
+        public PushNotificationMessageBuilder Topic(string topic)
         {
             this.FireBaseMessage.Topic = topic;
+            return this;
         }
 
         /// <summary>
