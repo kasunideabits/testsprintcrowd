@@ -7,43 +7,50 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// <summary>
     /// Sprint Model.
     /// </summary>
-    public class Sprint
+    public class Sprint : BaseEntity
     {
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
         public int Id { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>event name.</value>
         public string Name { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>distance for the event.</value>
         public int Distance { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>created by the user.</value>
         public User CreatedBy { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>event date start time.</value>
         public DateTime StartDateTime { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>event type private or public.</value>
         public int Type { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>event status, started or not.</value>
         public int Status { get; set; }
+
         /// <summary>
         /// gets or sets location.
         /// </summary>
@@ -54,16 +61,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>Number of pariticipants for the event</value>
         public int NumberOfParticipants { get; set; }
+
         /// <summary>
         /// Sprint created date
         /// </summary>
         /// <value>sprint created date</value>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-        /// <summary>
-        /// Create date time
-        /// </summary>
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// gets or sets value.

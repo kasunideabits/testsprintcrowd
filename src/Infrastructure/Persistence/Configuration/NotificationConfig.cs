@@ -32,7 +32,6 @@
                 .HasOne(n => n.SprintInvite)
                 .WithMany(s => s.Notification)
                 .HasForeignKey(n => n.SprintInviteId);
-            builder.Property<DateTime>("LastUpdated");
         }
     }
 }

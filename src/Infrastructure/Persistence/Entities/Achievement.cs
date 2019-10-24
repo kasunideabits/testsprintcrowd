@@ -6,7 +6,7 @@
     /// <summary>
     /// Achievement table attributes
     /// </summary>
-    public class Achievement
+    public class Achievement : BaseEntity
     {
         /// <summary>
         /// Gets or sets value.

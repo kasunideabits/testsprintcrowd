@@ -30,7 +30,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
                 .HasForeignKey(s => s.SprintId);
             builder
                 .HasAlternateKey(s => new { s.InviterId, s.InviteeId, s.SprintId });
-            builder.Property<DateTime>("LastUpdated");
         }
     }
 }

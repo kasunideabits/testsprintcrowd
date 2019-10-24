@@ -4,7 +4,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// model for holding download device info
     /// </summary>
     /// <value></value>
-    public class AppDownloads
+    public class AppDownloads : BaseEntity
     {
         /// <summary>
         /// AppDownload id

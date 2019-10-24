@@ -5,7 +5,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// <summary>
     /// Sprint participant model.
     /// </summary>
-    public class SprintParticipant
+    public class SprintParticipant : BaseEntity
     {
         /// <summary>
         /// gets or sets value.

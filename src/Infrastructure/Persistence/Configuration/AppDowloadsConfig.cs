@@ -13,9 +13,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration
         /// Configure table AppDownloads
         /// </summary>
         /// <param name="builder">entity builder instance</param>
-        public void Configure(EntityTypeBuilder<AppDownloads> builder)
-        {
-            builder.Property<DateTime>("LastUpdated");
-        }
+        public void Configure(EntityTypeBuilder<AppDownloads> builder) { }
     }
 }

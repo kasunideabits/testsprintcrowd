@@ -51,7 +51,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         Friend friend = new Friend();
                         friend.AcceptedUserId = (int)user.Id;
                         friend.SharedUserId = (int)userId;
-                        friend.CreatedTime = DateTime.Now;
+                        friend.CreatedDate = DateTime.Now;
                         friend.UpdatedTime = DateTime.Now;
                         await this.FriendRepo.PlusFriend(friend);
                         this.FriendRepo.SaveChanges();
@@ -66,7 +66,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             user.Country,
                             user.CountryCode,
                             user.ColorCode,
-                            friend.CreatedTime);
+                            friend.CreatedDate);
                     }
                     else
                     {
@@ -99,7 +99,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.SharedUser.Country,
                         obj.SharedUser.CountryCode,
                         obj.SharedUser.ColorCode,
-                        obj.CreatedTime));
+                        obj.CreatedDate));
                 }
 
                 else if (obj.SharedUserId == userId)
@@ -114,7 +114,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.AcceptedUser.Country,
                         obj.AcceptedUser.CountryCode,
                         obj.AcceptedUser.ColorCode,
-                        obj.CreatedTime));
+                        obj.CreatedDate));
                 }
             });
             return parts;
@@ -169,7 +169,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         friend.SharedUser.Country,
                         friend.SharedUser.CountryCode,
                         friend.SharedUser.ColorCode,
-                        friend.CreatedTime);
+                        friend.CreatedDate);
                 }
                 else
                 {
@@ -183,7 +183,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         friend.AcceptedUser.Country,
                         friend.AcceptedUser.CountryCode,
                         friend.AcceptedUser.ColorCode,
-                        friend.CreatedTime);
+                        friend.CreatedDate);
                 }
             }
         }

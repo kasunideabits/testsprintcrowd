@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// <summary>
     /// User model.
     /// </summary>
-    public class User
+    public class User : BaseEntity
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.

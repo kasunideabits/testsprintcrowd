@@ -5,7 +5,7 @@
     /// <summary>
     /// Class define Notification table attributes
     /// </summary>
-    public class Notification
+    public class Notification : BaseEntity
     {
         /// <summary>
         /// Gets or set unique id for notificaiton

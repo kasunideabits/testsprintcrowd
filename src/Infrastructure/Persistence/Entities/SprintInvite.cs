@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// <summary>
     /// Entity which describe sprint invite table
     /// </summary>
-    public class SprintInvite
+    public class SprintInvite : BaseEntity
     {
         /// <summary>
         /// Gets or set unique id for sprint invitation

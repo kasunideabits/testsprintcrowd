@@ -1,6 +1,5 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence
 {
-    using System.ComponentModel.DataAnnotations.Schema;
     using System;
     using Microsoft.EntityFrameworkCore;
     using Npgsql.NameTranslation;
@@ -90,10 +89,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new NotificationConfig());
             builder.ApplyConfiguration(new FriendConfig());
             builder.ApplyConfiguration(new SprintInviteConfig());
-            builder
-                .Entity<AccessToken>()
-                .Property<DateTime>("LastUpdated");
-
             this.FixSnakeCaseNames(builder);
         }
 
