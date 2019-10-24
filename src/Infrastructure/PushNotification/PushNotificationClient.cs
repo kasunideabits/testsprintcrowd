@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 
 namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
 {
@@ -9,6 +11,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
     /// </summary>
     public class PushNotificationClient : IPushNotificationClient
     {
+        /// <summary>
+        /// Initialize PushNotificationClient client
+        /// </summary>
+        public PushNotificationClient()
+        {
+            this.CreateFireBaseApp();
+        }
+
         /// <summary>
         /// Send multitple messages async
         /// </summary>
@@ -31,6 +41,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         public async Task SendMulticaseMessage(MulticastMessage message)
         {
             await FirebaseMessaging.DefaultInstance.SendMulticastAsync(message);
+        }
+
+        private void CreateFireBaseApp()
+        {
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile("../config/firebase-token.json"),
+                });
+            }
         }
     }
 }

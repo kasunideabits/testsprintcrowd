@@ -24,6 +24,7 @@
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Notifier;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
     using SprintCrowd.BackEnd.Migrations.Seed;
     using SprintCrowd.BackEnd.Models;
@@ -174,6 +175,7 @@
             services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
             services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
             services.AddScoped<INotificationClient, NotificationClient>();
+            services.AddScoped<IPushNotificationClient, PushNotificationClient>();
 
             this.AddAuthorizationDIModules(services);
         }
