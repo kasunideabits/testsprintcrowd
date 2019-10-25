@@ -1,71 +1,65 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
-    using System;
-
     /// <summary>
     /// Class define Notification table attributes
     /// </summary>
-    public class Notification : BaseEntity
+    public abstract class Notification : BaseEntity
     {
-        /// <summary>
-        /// Gets or set unique id for notificaiton
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or set type of notification
-        /// </summary>
-        public NotificationType NotiticationType { get; set; }
-
-        /// <summary>
-        /// Gets or set id reference for notificaiton sender
-        /// </summary>
-        public int SenderId { get; set; }
-
-        /// <summary>
-        /// Gets or set id for notification receiver
-        /// </summary>
+        public int? SenderId { get; set; }
         public int ReceiverId { get; set; }
-
-        /// <summary>
-        /// Gets or set sprint id if available
-        /// </summary>
-        public int? SprintInviteId { get; set; }
-
-        /// <summary>
-        /// Gets or sets achievement id if available
-        /// </summary>
-        /// <value></value>
-        public int? AchievementId { get; set; }
-
-        /// <summary>
-        /// Gets or set send time of the notification
-        /// </summary>
-        public DateTime SendTime { get; set; }
-
-        /// <summary>
-        /// Gets or set notificaiton read or not
-        /// </summary>
-        public bool IsRead { get; set; }
-
-        /// <summary>
-        /// Gets or set reference for notificaiton sender
-        /// </summary>
         public virtual User Sender { get; set; }
-
-        /// <summary>
-        /// Gets or set reference for notification receiver
-        /// </summary>
         public virtual User Receiver { get; set; }
+    }
 
-        /// <summary>
-        /// Gets or set reference for sprint
-        /// </summary>
-        public virtual SprintInvite SprintInvite { get; set; }
+    public class SprintNotification : Notification
+    {
+        public int Id { get; set; }
+        public SprintNotificaitonType Type { get; set; }
+        public int SprintId { get; set; }
+        public int? UpdatorId { get; set; }
+        public virtual User SprintUpdateBy { get; set; }
+        public virtual Sprint Sprint { get; set; }
+    }
 
-        /// <summary>
-        /// Gets or set reference for achievement
-        /// </summary>
-        public virtual Achievement Achievement { get; set; }
+    public class FriendNoticiation : Notification
+    {
+        public int Id { get; set; }
+        public FriendNoticiationType Type { get; set; }
+        public string Status { get; set; }
+        public int? RequesterId { get; set; }
+        public int? AccepterId { get; set; }
+        public virtual User Requester { get; }
+        public virtual User Accepter { get; }
+    }
+
+    public class AchievementNoticiation : Notification
+    {
+        public int Id { get; set; }
+    }
+
+    public enum NotificationType
+    {
+        SprintNotification,
+        FriendNotification,
+        AchivementNotification,
+    }
+
+    public enum SprintNotificaitonType
+    {
+        InvitationRequest,
+        InvitationAccept,
+        InvitationDecline,
+        TimeReminderBeforeStart,
+        TimeReminderStarted,
+        TimeReminderExpired,
+        Edit,
+        Remove,
+    }
+
+    public enum FriendNoticiationType
+    {
+        Request,
+        Accepet,
+        Decline,
     }
 }

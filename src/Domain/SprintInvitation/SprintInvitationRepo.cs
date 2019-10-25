@@ -47,26 +47,26 @@
         /// <param name="senderId">Sender user id</param>
         /// <param name="receiverId">Receiver user id</param>
         /// <param name="sprintInviteId">Sprint invite id</param>
-        public async Task AddNotification(int senderId, int receiverId, int sprintInviteId)
-        {
-            try
-            {
-                Notification notification = new Notification()
-                {
-                    NotiticationType = NotificationType.SprintInvitation,
-                    SenderId = senderId,
-                    ReceiverId = receiverId,
-                    SprintInviteId = sprintInviteId,
-                    SendTime = DateTime.UtcNow,
-                    IsRead = false,
-                };
-                await this.Context.Notification.AddAsync(notification);
-            }
-            catch (System.Exception ex)
-            {
-                throw new Application.ApplicationException(ex.Message.ToString());
-            }
-        }
+        // public async Task AddNotification(int senderId, int receiverId, int sprintInviteId)
+        // {
+        //     try
+        //     {
+        //         Notification notification = new Notification()
+        //         {
+        //             NotiticationType = NotificationType.SprintInvitation,
+        //             SenderId = senderId,
+        //             ReceiverId = receiverId,
+        //             SprintInviteId = sprintInviteId,
+        //             SendTime = DateTime.UtcNow,
+        //             IsRead = false,
+        //         };
+        //         await this.Context.Notification.AddAsync(notification);
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //         throw new Application.ApplicationException(ex.Message.ToString());
+        //     }
+        // }
 
         public async Task<SprintInvite> Get(int inviterId, int inviteeId, int sprintId)
         {

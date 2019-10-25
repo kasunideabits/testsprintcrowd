@@ -58,6 +58,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// <value></value>
         public DbSet<SprintInvite> SprintInvite { get; set; }
 
+        public DbSet<SprintNotification> SprintNotifications { get; set; }
+
+        public DbSet<FriendNoticiation> FriendNoticiations { get; set; }
+
+        public DbSet<AchievementNoticiation> AchievementNoticiations { get; set; }
+
         /// <summary>
         /// override save changes to insert last updated value.
         /// </summary>
