@@ -42,16 +42,19 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this._sprintId = inviteSprint.SprintId;
                 this._inviterId = inviteSprint.InviterId;
                 this._inviteeId = inviteSprint.InviteeId;
-                this.AddToDatabaase();
-                this.SendPushNotification();
+                this.Sprint = this.GetSprint(this._sprintId);
+                this.Inviter = this.GetParticipant(this._inviterId);
+                this.Invitee = this.GetParticipant(this._inviteeId);
+                if (this.Sprint != null && this.Invitee != null && this.Inviter != null)
+                {
+                    this.AddToDatabaase();
+                    this.SendPushNotification();
+                }
             }
         }
 
         private void SendPushNotification()
         {
-            this.Sprint = this.GetSprint(this._sprintId);
-            this.Inviter = this.GetParticipant(this._inviterId);
-            this.Invitee = this.GetParticipant(this._inviteeId);
             var notificationMessage = this.BuildNotificationMessage();
             this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
         }
