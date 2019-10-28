@@ -11,11 +11,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// Sprint notification
         /// </summary>
         /// <value></value>
-        public ISprintNotification SprintNotification
+        public ISprintNotificationJobs SprintNotificationJobs
         {
             get
             {
-                return new SprintNotification();
+                return new SprintNotificationJobs();
             }
         }
     }

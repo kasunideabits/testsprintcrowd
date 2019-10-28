@@ -7,14 +7,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
     /// <summary>
     /// Available sprint notificaitons
     /// </summary>
-    public class SprintNotification : ISprintNotification
+    public class SprintNotificationJobs : ISprintNotificationJobs
     {
         /// <summary>
         /// Sprint invite notifications
         /// </summary>
-        public void SprintInvite()
+        public void SprintInvite(int sprintId, int iniviteId, int inviteeId)
         {
-            new NotificationWorker<SprintInvite>().Invoke();
+            var message = new InviteSprint(sprintId, iniviteId, inviteeId);
+            new NotificationWorker<SprintInvite>().Invoke(message);
         }
 
         /// <summary>

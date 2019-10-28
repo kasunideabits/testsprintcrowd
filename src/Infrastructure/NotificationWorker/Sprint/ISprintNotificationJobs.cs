@@ -3,12 +3,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
     /// <summary>
     /// Sprint notification types interface
     /// </summary>
-    public interface ISprintNotification
+    public interface ISprintNotificationJobs
     {
         /// <summary>
         /// Sprint invite
         /// </summary>
-        void SprintInvite();
+        void SprintInvite(int sprintId, int iniviteId, int inviteeId);
 
         /// <summary>
         /// Sprint mark attendance
