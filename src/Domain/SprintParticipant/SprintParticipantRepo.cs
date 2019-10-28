@@ -176,6 +176,14 @@
             return await this.Context.Sprint.FirstOrDefaultAsync(u => u.Id == sprintId);
         }
 
+        public IQueryable<Notification> GetNotification(int userId)
+        {
+            return this.Context.SprintNotifications
+                .Include(n => n.Sender)
+                .Include(n => n.Receiver)
+                .Where(n => n.ReceiverId == userId);
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

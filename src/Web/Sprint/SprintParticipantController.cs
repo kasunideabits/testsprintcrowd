@@ -1,5 +1,6 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Sprint
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,8 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Extensions;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Web.Sprint.Models;
 
@@ -16,7 +19,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    // [Authorize]
+    [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -176,6 +179,15 @@
         {
             var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeId);
             return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
+        }
+
+        [HttpGet("notification")]
+        [ProducesResponseType(typeof(SuccessResponse<>), 200)]
+        public async Task<IActionResult> GetNotification()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetNotification(user.Id);
+            return this.Ok(new SuccessResponse<List<dynamic>>(result));
         }
     }
 }

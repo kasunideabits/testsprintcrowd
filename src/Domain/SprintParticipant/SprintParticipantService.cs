@@ -240,5 +240,24 @@
                 invitee.CountryCode);
         }
 
+        public async Task<dynamic> GetNotification(int userId)
+        {
+            var notifications = this.SprintParticipantRepo.GetNotification(userId);
+            var result = new List<object>();
+
+            notifications.ToList().ForEach(s =>
+            {
+                switch (s)
+                {
+                    case SprintNotification a:
+                        result.Add(new { SprintType = NotificationDto.BuildNotification(a) });
+                        break;
+                    default:
+                        break;
+                }
+            });
+            return result;
+        }
+
     }
 }

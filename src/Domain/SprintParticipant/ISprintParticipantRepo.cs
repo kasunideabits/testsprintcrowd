@@ -6,6 +6,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using System.Linq;
 
     /// <summary>
     /// Interface for sprint participant repository
@@ -63,6 +64,7 @@
 
         Task<Sprint> GetSprint(int sprintId);
         Task<User> GetParticipant(int userId);
+        IQueryable<Notification> GetNotification(int userId);
 
         /// <summary>
         /// saves changed to db
