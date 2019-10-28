@@ -59,6 +59,11 @@
         /// <returns><see cref="SprintParticipant"> entity</see>/<returns>
         Task<SprintParticipant> Get(Expression<Func<SprintParticipant, bool>> query);
 
+        Task<SprintParticipant> AddParticipant(int sprintId, int userId);
+
+        Task<Sprint> GetSprint(int sprintId);
+        Task<User> GetParticipant(int userId);
+
         /// <summary>
         /// saves changed to db
         /// </summary>

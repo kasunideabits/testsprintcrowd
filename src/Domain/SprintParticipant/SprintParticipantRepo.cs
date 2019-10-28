@@ -154,6 +154,28 @@
                 .Where(query);
         }
 
+        public async Task<SprintParticipant> AddParticipant(int sprintId, int userId)
+        {
+            SprintParticipant pariticipant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.PENDING,
+            };
+            var result = await this.Context.AddAsync(pariticipant);
+            return result.Entity;
+        }
+
+        public async Task<User> GetParticipant(int userId)
+        {
+            return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+        public async Task<Sprint> GetSprint(int sprintId)
+        {
+            return await this.Context.Sprint.FirstOrDefaultAsync(u => u.Id == sprintId);
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

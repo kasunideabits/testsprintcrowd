@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -38,7 +39,7 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            this.NotificationClient.SprintNotification.SprintMarkAttendace(
+            this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
                 result.Name,
@@ -95,7 +96,7 @@
             {
                 ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
                 this.SprintParticipantRepo.SaveChanges();
-                this.NotificationClient.SprintNotification.SprintExit(
+                this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.SprintName,
                     participant.UserId,
@@ -216,5 +217,28 @@
                 throw new Application.ApplicationException("NOT_FOUND_MARKED_ATTENDACE");
             }
         }
+
+        public async Task<SprintParticipantDto> SprintInvite(int sprintId, int inviterId, int inviteeId)
+        {
+            await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
+            this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
+            this.SprintParticipantRepo.SaveChanges();
+            return new SprintParticipantDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                invitee.Id,
+                invitee.Name,
+                invitee.ProfilePicture,
+                invitee.City,
+                invitee.Country,
+                invitee.CountryCode);
+        }
+
     }
 }
