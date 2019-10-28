@@ -95,7 +95,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new NotificationConfig());
             builder.ApplyConfiguration(new FriendConfig());
             builder.ApplyConfiguration(new SprintInviteConfig());
-            this.FixSnakeCaseNames(builder);
         }
 
         private void FixSnakeCaseNames(ModelBuilder modelBuilder)

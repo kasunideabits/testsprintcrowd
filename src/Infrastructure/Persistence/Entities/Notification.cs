@@ -1,5 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
+    using System;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration;
 
     public abstract class Notification : BaseEntity
@@ -13,15 +15,19 @@
 
     public class SprintNotification : Notification
     {
-        public int Id { get; set; }
         public SprintNotificaitonType Type { get; set; }
         public int? UpdatorId { get; set; }
-        public SprintBase Sprint { get; set; }
+        public int SprintId { get; set; }
+        public string SprintName { get; set; }
+        public int Distance { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public SprintType SprintType { get; set; }
+        public SprintStatus Status { get; set; }
+        public int NumberOfParticipants { get; set; }
     }
 
     public class FriendNoticiation : Notification
     {
-        public int Id { get; set; }
         public FriendNoticiationType Type { get; set; }
         public string Status { get; set; }
         public int? RequesterId { get; set; }
@@ -32,7 +38,7 @@
 
     public class AchievementNoticiation : Notification
     {
-        public int Id { get; set; }
+        public int AchievementId { get; set; }
     }
 
     public enum NotificationType
