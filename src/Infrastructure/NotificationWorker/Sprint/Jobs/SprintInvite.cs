@@ -3,7 +3,6 @@ using System.Linq;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 using SprintCrowd.BackEnd.Infrastructure.PushNotification;
 
@@ -64,8 +63,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void AddToDatabaase()
         {
             var sprint = this.GetSprint();
-            var sprintNotificaiton = new SprintNotification()
+            if (sprint != null)
             {
+                SprintNotification sprintNotificaiton = new SprintNotification()
+                {
                 SenderId = this._inviterId,
                 ReceiverId = this._inviteeId,
                 Type = SprintNotificaitonType.InvitationRequest,
@@ -77,9 +78,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 SprintType = (SprintType)sprint.Type,
                 Status = (SprintStatus)sprint.Status,
                 NumberOfParticipants = sprint.NumberOfParticipants
-            };
-            this.Context.SprintNotifications.Add(sprintNotificaiton);
-            this.Context.SaveChanges();
+                };
+                this.Context.SprintNotifications.Add(sprintNotificaiton);
+                this.Context.SaveChanges();
+            }
 
         }
 
