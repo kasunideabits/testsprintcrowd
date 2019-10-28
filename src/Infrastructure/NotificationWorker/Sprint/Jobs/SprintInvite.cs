@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -24,6 +26,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private int _sprintId { get; set; }
         private int _inviterId { get; set; }
         private int _inviteeId { get; set; }
+        private Infrastructure.Persistence.Entities.Sprint Sprint { get; set; }
+        private User Inviter { get; set; }
+        private User Invitee { get; set; }
 
         /// <summary>
         /// Run notification logic
@@ -44,6 +49,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification()
         {
+            this.Sprint = this.GetSprint(this._sprintId);
+            this.Inviter = this.GetParticipant(this._inviterId);
+            this.Invitee = this.GetParticipant(this._inviteeId);
             var notificationMessage = this.BuildNotificationMessage();
             this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
         }
@@ -51,6 +59,40 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private dynamic BuildNotificationMessage()
         {
             var data = new Dictionary<string, string>();
+            var inviter = new
+            {
+                id = this.Inviter.Id,
+                name = this.Inviter.Name,
+                email = this.Inviter.Email,
+                profilePicture = this.Inviter.ProfilePicture
+            };
+            var invitee = new
+            {
+                id = this.Invitee.Id,
+                name = this.Invitee.Name,
+                email = this.Invitee.Email,
+                profilePicture = this.Invitee.ProfilePicture
+            };
+            var sprint = new
+            {
+                id = this.Sprint.Id,
+                name = this.Sprint.Name,
+                distance = this.Sprint.Distance,
+                startTime = this.Sprint.StartDateTime,
+                numberOfParticipants = this.Sprint.NumberOfParticipants
+            };
+            var sprintTypeObj = new
+            {
+                type = "invitation_request",
+                createDate = DateTime.UtcNow,
+                data = new
+                {
+                inviter = inviter,
+                invitee = invitee,
+                sprint = sprint,
+                }
+            };
+            data.Add("SprintType", JsonConvert.SerializeObject(sprintTypeObj));
             var tokens = this.GetTokens();
             var message = new PushNotificationMulticastMessageBuilder()
                 .Notification("Sprint Invite Notification", "sprint demo")
@@ -62,8 +104,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void AddToDatabaase()
         {
-            var sprint = this.GetSprint();
-            if (sprint != null)
+            if (this.Sprint != null)
             {
                 SprintNotification sprintNotificaiton = new SprintNotification()
                 {
@@ -71,13 +112,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 ReceiverId = this._inviteeId,
                 Type = SprintNotificaitonType.InvitationRequest,
                 UpdatorId = this._inviterId,
-                SprintId = sprint.Id,
-                SprintName = sprint.Name,
-                Distance = sprint.Distance,
-                StartDateTime = sprint.StartDateTime,
-                SprintType = (SprintType)sprint.Type,
-                Status = (SprintStatus)sprint.Status,
-                NumberOfParticipants = sprint.NumberOfParticipants
+                SprintId = this.Sprint.Id,
+                SprintName = this.Sprint.Name,
+                Distance = this.Sprint.Distance,
+                StartDateTime = this.Sprint.StartDateTime,
+                SprintType = (SprintType)this.Sprint.Type,
+                Status = (SprintStatus)this.Sprint.Status,
+                NumberOfParticipants = this.Sprint.NumberOfParticipants
                 };
                 this.Context.SprintNotifications.Add(sprintNotificaiton);
                 this.Context.SaveChanges();
@@ -85,9 +126,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         }
 
-        private Infrastructure.Persistence.Entities.Sprint GetSprint()
+        private Infrastructure.Persistence.Entities.Sprint GetSprint(int sprintId)
         {
-            return this.Context.Sprint.Where(s => s.Id == this._sprintId).FirstOrDefault();
+            return this.Context.Sprint.Where(s => s.Id == sprintId).FirstOrDefault();
         }
 
         private List<string> GetTokens()
@@ -98,6 +139,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .ToList();
         }
 
+        private User GetParticipant(int userId)
+        {
+            return this.Context.User.FirstOrDefault(u => u.Id == userId);
+        }
     }
 
 }
