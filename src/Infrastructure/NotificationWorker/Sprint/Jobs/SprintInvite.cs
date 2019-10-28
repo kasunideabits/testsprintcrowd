@@ -86,7 +86,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             };
             var sprintTypeObj = new
             {
-                type = "invitation_request",
+                type = SprintNotificaitonType.InvitationRequest,
                 createDate = DateTime.UtcNow,
                 data = new
                 {
