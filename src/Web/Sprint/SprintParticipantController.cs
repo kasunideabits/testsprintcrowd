@@ -4,9 +4,12 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Web.Event;
+    using SprintCrowd.BackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Controller for handle sprint participants
@@ -161,6 +164,18 @@
                 Data = result,
             };
             return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Invite friend to a sprint
+        /// </summary>
+        /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
+        [HttpPost("invite-request")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintParticipantDto>), 200)]
+        public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
+        {
+            var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeId);
+            return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
         }
     }
 }
