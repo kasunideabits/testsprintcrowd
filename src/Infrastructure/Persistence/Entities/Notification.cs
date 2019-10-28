@@ -1,10 +1,10 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
-    /// <summary>
-    /// Class define Notification table attributes
-    /// </summary>
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration;
+
     public abstract class Notification : BaseEntity
     {
+        public int Id { get; set; }
         public int? SenderId { get; set; }
         public int ReceiverId { get; set; }
         public virtual User Sender { get; set; }
@@ -15,10 +15,8 @@
     {
         public int Id { get; set; }
         public SprintNotificaitonType Type { get; set; }
-        public int SprintId { get; set; }
         public int? UpdatorId { get; set; }
-        public virtual User SprintUpdateBy { get; set; }
-        public virtual Sprint Sprint { get; set; }
+        public SprintBase Sprint { get; set; }
     }
 
     public class FriendNoticiation : Notification

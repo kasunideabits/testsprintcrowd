@@ -165,7 +165,7 @@
 
             if (type == (int)SprintType.PrivateSprint)
             {
-                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id);
+                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
             }
 
             this.SprintRepo.SaveChanges();
@@ -234,6 +234,11 @@
                 this.SprintRepo.RemoveSprint(sprint);
                 this.SprintRepo.SaveChanges();
             }
+        }
+
+        public async Task InviteRequest(int inviterId, int inviteeId, int sprintId)
+        {
+            await this.SprintRepo.AddParticipant(inviteeId, sprintId);
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)

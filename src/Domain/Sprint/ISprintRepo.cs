@@ -4,6 +4,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using System;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -78,7 +79,8 @@
         /// </summary>
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
-        Task AddParticipant(int userId, int sprintId);
+        /// <param name="participantStage">sprint participant stage</param>
+        Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage = ParticipantStage.PENDING);
 
         /// <summary>
         /// Remove sprint with given id

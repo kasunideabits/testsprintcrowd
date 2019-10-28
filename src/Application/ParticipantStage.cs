@@ -23,6 +23,8 @@ namespace SprintCrowd.BackEnd.Application
         /// <summary>
         /// completed the sprint
         /// </summary>
-        COMPLETED = 3
+        COMPLETED = 3,
+
+        PENDING = 4,
     }
 }

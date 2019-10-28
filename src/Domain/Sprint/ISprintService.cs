@@ -71,5 +71,7 @@
         /// <param name="sprintId">sprint id to lookup</param>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
+
+        Task InviteRequest(int inviterId, int inviteeId, int sprintId);
     }
 }
