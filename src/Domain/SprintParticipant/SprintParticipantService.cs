@@ -61,7 +61,10 @@
         /// <param name="accept">accept or decline</param>
         public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept)
         {
-            var inviteUser = this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                s.Sprint.Type == (int)sprintType && s.SprintId == sprintId;
+            var inviteUser = await this.SprintParticipantRepo.Get(query);
             if (sprintType == SprintType.PrivateSprint)
             {
                 if (inviteUser == null)
@@ -70,7 +73,15 @@
                 }
                 else
                 {
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                        inviteUser.Sprint.Id,
+                        inviteUser.Sprint.Name,
+                        (SprintType)inviteUser.Sprint.Type,
+                        inviteUser.User.Id,
+                        inviteUser.User.Name,
+                        inviteUser.User.ProfilePicture);
                     await this.SprintParticipantRepo.JoinSprint(userId);
+
                     this.SprintParticipantRepo.SaveChanges();
                     return;
                 }

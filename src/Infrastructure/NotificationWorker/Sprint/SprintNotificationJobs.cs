@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
     using src.Infrastructure.NotificationWorker.Sprint.Models;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 
@@ -39,9 +40,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint join
         /// </summary>
-        public void SprintJoin(int sprintId, string sprintName, int userId, string name, string profilePicture)
+        public void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture)
         {
-            var message = new JoinSprint(sprintId, sprintName, userId, name, profilePicture);
+            var message = new JoinSprint(sprintId, sprintName, sprintType, userId, name, profilePicture);
             new NotificationWorker<SprintJoin>().Invoke(message);
         }
     }

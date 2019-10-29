@@ -1,3 +1,5 @@
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
     /// <summary>
@@ -23,6 +25,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint join
         /// </summary>
-        void SprintJoin(int sprintId, string sprintName, int userId, string name, string profilePicture);
+        void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture);
     }
 }
