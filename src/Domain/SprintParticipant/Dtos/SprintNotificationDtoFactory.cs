@@ -14,7 +14,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notificaitonType == SprintNotificaitonType.InvitationAccept ||
                 notificaitonType == SprintNotificaitonType.InvitationDecline:
                     return new SprintInvitationDto(notification);
-                
+
             }
             throw new ApplicationException();
         }
@@ -24,6 +24,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public SprintInvitationDto(SprintNotification notification)
         {
+            this.Id = notification.Id;
             this.Type = notification.Type;
             this.CreateDate = notification.CreatedDate;
             this.Data = new SprintNotificationPayload(
@@ -37,6 +38,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             );
         }
 
+        public int Id { get; }
         public SprintNotificaitonType Type { get; }
         public DateTime CreateDate { get; }
         public dynamic Data { get; }
