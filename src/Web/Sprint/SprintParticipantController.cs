@@ -59,12 +59,11 @@
         /// <summary>
         /// creates an event
         /// </summary>
-        /// <param name="joinUser"><see cref="JoinPrivateSprintModel"> join user data </see></param>
-        // TODO handle bad request
-        [HttpPost("join/private")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        [ProducesResponseType(typeof(ResponseObject), 400)]
-        public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel joinUser)
+        /// <param name="joinUser"><see cref="JoinSprintModel"> join user data </see></param>
+        [HttpPost("join")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinEvent([FromBody] JoinSprintModel joinUser)
         {
             User user = await this.User.GetUser(this.UserService);
             await this.SprintParticipantService.JoinSprint(
@@ -72,12 +71,7 @@
                 joinUser.Type,
                 user.Id,
                 joinUser.Status);
-            ResponseObject response = new ResponseObject()
-            {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = "Successfully joined for a sprint",
-            };
-            return this.Ok(response);
+            return this.Ok();
         }
 
         /// <summary>
