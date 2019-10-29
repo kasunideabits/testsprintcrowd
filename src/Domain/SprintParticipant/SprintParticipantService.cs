@@ -249,8 +249,8 @@
             {
                 switch (s)
                 {
-                    case SprintNotification a:
-                        result.Add(new { SprintType = NotificationDto.BuildNotification(a) });
+                    case SprintNotification sprintTypeNotification:
+                        result.Add(new { SprintType = NotificationDtoFactory.Build(sprintTypeNotification) });
                         break;
                     default:
                         break;

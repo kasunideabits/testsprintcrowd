@@ -1,36 +1,48 @@
+using System;
+using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 {
-    using System;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    public static class NotificationDto
+    public static class SprintNotificationDtoFactory
     {
-        public static NotificaitonPayload<SprintNotificationPayload> BuildNotification(SprintNotification notification)
+        public static ISprintNotification Build(SprintNotification notification)
         {
-            var sprintNotificationDto = new SprintNotificationPayload(
+            switch (notification.Type)
+            {
+                case SprintNotificaitonType notificaitonType when
+                notificaitonType == SprintNotificaitonType.InvitationRequest ||
+                notificaitonType == SprintNotificaitonType.InvitationAccept ||
+                notificaitonType == SprintNotificaitonType.InvitationDecline:
+                    return new SprintInvitationDto(notification);
+                
+            }
+            throw new ApplicationException();
+        }
+    }
+
+    internal class SprintInvitationDto : ISprintNotification
+    {
+        public SprintInvitationDto(SprintNotification notification)
+        {
+            this.Type = notification.Type;
+            this.CreateDate = notification.CreatedDate;
+            this.Data = new SprintNotificationPayload(
                 notification.SprintId,
                 notification.SprintName,
                 notification.Distance,
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
                 notification.Sender,
-                notification.Receiver);
-            return new NotificaitonPayload<SprintNotificationPayload>()
-            {
-                Type = notification.Type,
-                    CreateDate = notification.CreatedDate,
-                    Data = sprintNotificationDto
-            };
+                notification.Receiver
+            );
         }
+
+        public SprintNotificaitonType Type { get; }
+        public DateTime CreateDate { get; }
+        public dynamic Data { get; }
     }
 
-    public class NotificaitonPayload<T>
-    {
-        public SprintNotificaitonType Type { get; set; }
-        public DateTime CreateDate { get; set; }
-        public T Data { get; set; }
-    }
-
-    public class SprintNotificationPayload
+    internal class SprintNotificationPayload
     {
         public SprintNotificationPayload(int sprintId, string sprintName, int distance, DateTime startDateTime, int numberOfParticipants, User inviter, User invitee)
         {
@@ -44,7 +56,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public InvitationUser Invitee { get; }
     }
 
-    public class SprintNotificationInfo
+    internal class SprintNotificationInfo
     {
         public SprintNotificationInfo(int id, string name, int distance, DateTime startTime, int numberOfParticipant)
         {
@@ -62,7 +74,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int NumberOfParticipant { get; }
     }
 
-    public class InvitationUser
+    internal class InvitationUser
     {
         public InvitationUser(int id, string name, string email, string profile)
         {
@@ -76,4 +88,5 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public string Email { get; }
         public string Profile { get; }
     }
+
 }
