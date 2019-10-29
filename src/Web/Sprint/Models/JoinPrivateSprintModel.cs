@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Web.Event
 {
     /// <summary>
@@ -16,5 +19,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         /// <value></value>
         public int UserId { get; set; }
+
+        [Required]
+        public SprintType Type { get; set; }
+
+        public bool Status { get; set; }
     }
 }

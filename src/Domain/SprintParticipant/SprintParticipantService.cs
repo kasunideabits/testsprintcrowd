@@ -56,30 +56,37 @@
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
-        // TODO : notification
-        public async Task JoinSprint(int sprintId, int userId)
+        /// <param name="accept">accept or decline</param>
+        public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept)
         {
-            try
+            var inviteUser = this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
+            if (sprintType == SprintType.PrivateSprint)
             {
-                var result = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
-
-                if (result == null)
+                if (inviteUser == null)
                 {
-                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-
-                    this.SprintParticipantRepo.SaveChanges();
-                    return;
+                    throw new Application.SCApplicationException(1, "Not found invitation");
                 }
                 else
                 {
-                    throw new Application.ApplicationException((int)ApplicationErrorCode.BadRequest, "Duplicate participant");
+                    await this.SprintParticipantRepo.JoinSprint(userId);
+                    this.SprintParticipantRepo.SaveChanges();
+                    return;
                 }
-
             }
-            catch (Application.ApplicationException ex)
+            else
             {
-                throw new Application.ApplicationException(ex.ErrorCode, ex.Message);
+                if (inviteUser != null)
+                {
+                    throw new Application.SCApplicationException(1, "Already join for sprint");
+                }
+                else
+                {
+                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                    this.SprintParticipantRepo.SaveChanges();
+                    return;
+                }
             }
         }
 

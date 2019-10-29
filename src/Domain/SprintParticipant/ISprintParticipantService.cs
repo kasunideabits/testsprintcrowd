@@ -24,8 +24,10 @@
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
-        Task JoinSprint(int sprintId, int userId);
+        /// <param name="accept">accept or decline</param>
+        Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept);
 
         /// <summary>
         /// Exit sprint which join for event

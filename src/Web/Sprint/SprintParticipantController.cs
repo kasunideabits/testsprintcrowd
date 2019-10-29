@@ -61,12 +61,17 @@
         /// </summary>
         /// <param name="joinUser"><see cref="JoinPrivateSprintModel"> join user data </see></param>
         // TODO handle bad request
-        [HttpPost("join")]
+        [HttpPost("join/private")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ResponseObject), 400)]
         public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel joinUser)
         {
-            await this.SprintParticipantService.JoinSprint(joinUser.SprintId, joinUser.UserId);
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintParticipantService.JoinSprint(
+                joinUser.SprintId,
+                joinUser.Type,
+                user.Id,
+                joinUser.Status);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,

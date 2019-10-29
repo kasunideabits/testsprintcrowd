@@ -26,5 +26,7 @@ namespace SprintCrowd.BackEnd.Application
         COMPLETED = 3,
 
         PENDING = 4,
+
+        DECLINE = 5,
     }
 }

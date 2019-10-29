@@ -123,7 +123,8 @@
 
         public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
         {
-            SprintParticipant result = await this.Context.SprintParticipant.FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
+            SprintParticipant result = await this.Context.SprintParticipant
+                .FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
             return result;
         }
 
@@ -182,6 +183,14 @@
                 .Include(n => n.Sender)
                 .Include(n => n.Receiver)
                 .Where(n => n.ReceiverId == userId);
+        }
+
+        public async Task JoinSprint(int userId)
+        {
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+            participant.Stage = ParticipantStage.JOINED;
+            this.Context.Update(participant);
+            return;
         }
 
         /// <summary>
