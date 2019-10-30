@@ -169,6 +169,7 @@
                     p.User.ProfilePicture,
                     p.User.Code,
                     p.User.ColorCode,
+                    p.Stage,
                     p.Sprint.Id,
                     p.Sprint.Name);
                 participantInfos.Add(participant);

@@ -296,7 +296,8 @@
                         p.User.Country,
                         p.User.CountryCode,
                         p.User.ColorCode,
-                        p.User.Id == sprint.CreatedBy.Id);
+                        p.User.Id == sprint.CreatedBy.Id,
+                        p.Stage);
                 });
             return result;
         }
