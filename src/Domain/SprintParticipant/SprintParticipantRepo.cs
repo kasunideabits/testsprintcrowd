@@ -193,6 +193,14 @@
             return;
         }
 
+        public async Task DeleteParticipant(int userId)
+        {
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+            participant.Stage = ParticipantStage.DECLINE;
+            this.Context.Update(participant);
+            return;
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

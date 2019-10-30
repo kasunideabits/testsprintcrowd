@@ -73,17 +73,27 @@
                 }
                 else
                 {
+
+                    if (accept)
+                    {
+                        await this.SprintParticipantRepo.JoinSprint(userId);
+                    }
+                    else
+                    {
+                        await this.SprintParticipantRepo.DeleteParticipant(userId);
+                    }
+
+                    this.SprintParticipantRepo.SaveChanges();
+                    return;
+
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                         inviteUser.Sprint.Id,
                         inviteUser.Sprint.Name,
                         (SprintType)inviteUser.Sprint.Type,
                         inviteUser.User.Id,
                         inviteUser.User.Name,
-                        inviteUser.User.ProfilePicture);
-                    await this.SprintParticipantRepo.JoinSprint(userId);
-
-                    this.SprintParticipantRepo.SaveChanges();
-                    return;
+                        inviteUser.User.ProfilePicture,
+                        accept);
                 }
             }
             else

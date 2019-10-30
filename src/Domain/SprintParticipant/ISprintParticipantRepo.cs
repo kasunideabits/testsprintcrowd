@@ -66,6 +66,7 @@
         Task<User> GetParticipant(int userId);
         IQueryable<Notification> GetNotification(int userId);
         Task JoinSprint(int userId);
+        Task DeleteParticipant(int userId);
 
         /// <summary>
         /// saves changed to db
