@@ -15,14 +15,14 @@
 
     public class SprintNotification : Notification
     {
-        public SprintNotificaitonType Type { get; set; }
+        public SprintNotificaitonType SprintNotificationType { get; set; }
         public int? UpdatorId { get; set; }
         public int SprintId { get; set; }
         public string SprintName { get; set; }
         public int Distance { get; set; }
         public DateTime StartDateTime { get; set; }
         public SprintType SprintType { get; set; }
-        public SprintStatus Status { get; set; }
+        public SprintStatus SprintStatus { get; set; }
         public int NumberOfParticipants { get; set; }
     }
 

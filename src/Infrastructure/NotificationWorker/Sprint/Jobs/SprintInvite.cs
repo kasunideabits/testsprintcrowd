@@ -47,19 +47,19 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this.Invitee = this.GetParticipant(this._inviteeId);
                 if (this.Sprint != null && this.Invitee != null && this.Inviter != null)
                 {
-                    this.AddToDatabaase();
-                    this.SendPushNotification();
+                    var notifcationId = this.AddToDatabaase();
+                    this.SendPushNotification(notifcationId);
                 }
             }
         }
 
-        private void SendPushNotification()
+        private void SendPushNotification(int notificationId)
         {
-            var notificationMessage = this.BuildNotificationMessage();
+            var notificationMessage = this.BuildNotificationMessage(notificationId);
             this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
         }
 
-        private dynamic BuildNotificationMessage()
+        private dynamic BuildNotificationMessage(int notificationId)
         {
             var data = new Dictionary<string, string>();
             var inviter = new
@@ -84,18 +84,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 startTime = this.Sprint.StartDateTime,
                 numberOfParticipants = this.Sprint.NumberOfParticipants
             };
-            var sprintTypeObj = new
+            var payload = new
             {
-                type = SprintNotificaitonType.InvitationRequest,
-                createDate = DateTime.UtcNow,
-                data = new
-                {
                 inviter = inviter,
                 invitee = invitee,
                 sprint = sprint,
-                }
             };
-            data.Add("SprintType", JsonConvert.SerializeObject(sprintTypeObj));
+            data.Add("notificationId", notificationId.ToString());
+            data.Add("mainType", "SprintType");
+            data.Add("subType", ((int)SprintNotificaitonType.InvitationRequest).ToString());
+            data.Add("createDate", DateTime.UtcNow.ToString());
+            data.Add("data", JsonConvert.SerializeObject(payload));
             var tokens = this.GetTokens();
             var message = new PushNotificationMulticastMessageBuilder()
                 .Notification("Sprint Invite Notification", "sprint demo")
@@ -105,7 +104,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return message;
         }
 
-        private void AddToDatabaase()
+        private int AddToDatabaase()
         {
             if (this.Sprint != null)
             {
@@ -113,20 +112,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 {
                 SenderId = this._inviterId,
                 ReceiverId = this._inviteeId,
-                Type = SprintNotificaitonType.InvitationRequest,
+                SprintNotificationType = SprintNotificaitonType.InvitationRequest,
                 UpdatorId = this._inviterId,
                 SprintId = this.Sprint.Id,
                 SprintName = this.Sprint.Name,
                 Distance = this.Sprint.Distance,
                 StartDateTime = this.Sprint.StartDateTime,
                 SprintType = (SprintType)this.Sprint.Type,
-                Status = (SprintStatus)this.Sprint.Status,
+                SprintStatus = (SprintStatus)this.Sprint.Status,
                 NumberOfParticipants = this.Sprint.NumberOfParticipants
                 };
-                this.Context.SprintNotifications.Add(sprintNotificaiton);
+                var result = this.Context.SprintNotifications.Add(sprintNotificaiton);
                 this.Context.SaveChanges();
+                return result.Entity.Id;
             }
-
+            return -1;
         }
 
         private Infrastructure.Persistence.Entities.Sprint GetSprint(int sprintId)

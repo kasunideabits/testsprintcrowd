@@ -8,7 +8,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public static ISprintNotification Build(SprintNotification notification)
         {
-            switch (notification.Type)
+            switch (notification.SprintNotificationType)
             {
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.InvitationRequest:
@@ -26,8 +26,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public SprintInvitationRequestDto(SprintNotification notification)
         {
-            this.Id = notification.Id;
-            this.Type = notification.Type;
+            this.MainType = "SprintType";
+            this.NotificationId = notification.Id;
+            this.SubType = notification.SprintNotificationType;
             this.CreateDate = notification.CreatedDate;
             this.Data = new SprintNotificationPayload(
                 notification.SprintId,
@@ -36,14 +37,15 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
                 notification.SprintType,
-                notification.Status,
+                notification.SprintStatus,
                 notification.Sender,
                 notification.Receiver
             );
         }
 
-        public int Id { get; }
-        public SprintNotificaitonType Type { get; }
+        public string MainType { get; }
+        public int NotificationId { get; }
+        public SprintNotificaitonType SubType { get; }
         public DateTime CreateDate { get; }
         public dynamic Data { get; }
     }
@@ -52,8 +54,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public SprintInvitationResponseDto(SprintNotification notification)
         {
-            this.Id = notification.Id;
-            this.Type = notification.Type;
+            this.MainType = "SprintType";
+            this.NotificationId = notification.Id;
+            this.SubType = notification.SprintNotificationType;
             this.CreateDate = notification.CreatedDate;
             this.Data = new SprintInvitationResponsePayload(
                 notification.SprintId,
@@ -62,13 +65,14 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
                 notification.SprintType,
-                notification.Status,
+                notification.SprintStatus,
                 notification.Sender
             );
         }
 
-        public int Id { get; }
-        public SprintNotificaitonType Type { get; }
+        public string MainType { get; }
+        public int NotificationId { get; }
+        public SprintNotificaitonType SubType { get; }
         public DateTime CreateDate { get; }
         public dynamic Data { get; }
     }

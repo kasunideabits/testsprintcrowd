@@ -251,8 +251,8 @@
             await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
-            this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
             this.SprintParticipantRepo.SaveChanges();
+            this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
             return new SprintParticipantDto(
                 sprint.Id,
                 sprint.Name,
@@ -278,7 +278,7 @@
                 switch (s)
                 {
                     case SprintNotification sprintTypeNotification:
-                        result.Add(new { SprintType = NotificationDtoFactory.Build(sprintTypeNotification) });
+                        result.Add(NotificationDtoFactory.Build(sprintTypeNotification));
                         break;
                     default:
                         break;

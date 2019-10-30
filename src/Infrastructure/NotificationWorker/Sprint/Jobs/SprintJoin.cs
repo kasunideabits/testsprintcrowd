@@ -93,17 +93,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private dynamic BuildNotificationMessage(List<string> tokens, Participant participant, EventInfo eventInfo, SprintNotificaitonType notificationType)
         {
             var data = new Dictionary<string, string>();
-            var sprintTypeObj = new
+            var payload = new
             {
-                type = notificationType,
-                createDate = DateTime.UtcNow,
-                data = new
-                {
-                User = participant,
-                Sprint = eventInfo,
-                }
+                user = participant,
+                sprint = eventInfo,
             };
-            data.Add("SprintType", JsonConvert.SerializeObject(sprintTypeObj));
+
+            data.Add("mainType", "SprintType");
+            data.Add("subType", ((int)notificationType).ToString());
+            data.Add("createDate", DateTime.UtcNow.ToString());
+            data.Add("data", JsonConvert.SerializeObject(payload));
             var message = new PushNotificationMulticastMessageBuilder()
                 .Notification("Sprint Invite Notification", "sprint demo")
                 .Message(data)
@@ -146,7 +145,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         Distance = s.Distance,
                         StartTime = s.StartDateTime,
                         SprintStatus = (SprintStatus)s.Status,
-                        SprintType = (SprintType)s.Type
+                        SprintType = (SprintType)s.Type,
+                        NumberOfPariticipants = s.NumberOfParticipants
                 })
                 .FirstOrDefault();
         }
@@ -170,24 +170,24 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             List<SprintNotification> notifications = new List<SprintNotification>();
             receiverIds.ForEach(receiverId =>
             {
-                notifications.Add(new SprintNotification()
+                notifications.Add(new SprintNotification
                 {
                     SenderId = user.Id,
                         ReceiverId = receiverId,
-                        Type = notificationType,
+                        SprintNotificationType = notificationType,
                         UpdatorId = user.Id,
                         SprintId = eventInfo.Id,
                         SprintName = eventInfo.Name,
                         Distance = eventInfo.Distance,
                         StartDateTime = eventInfo.StartTime,
                         SprintType = eventInfo.SprintType,
-                        Status = eventInfo.SprintStatus,
+                        SprintStatus = eventInfo.SprintStatus,
                         NumberOfParticipants = eventInfo.NumberOfPariticipants
                 });
             });
             if (notifications.Count > 0)
             {
-                this.Context.SprintNotifications.AddRange(notifications);
+                this.Context.Notification.AddRange(notifications);
                 this.Context.SaveChanges();
             }
         }
