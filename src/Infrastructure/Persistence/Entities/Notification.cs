@@ -53,6 +53,7 @@
         InvitationRequest,
         InvitationAccept,
         InvitationDecline,
+        FriendJoin,
         TimeReminderBeforeStart,
         TimeReminderStarted,
         TimeReminderExpired,

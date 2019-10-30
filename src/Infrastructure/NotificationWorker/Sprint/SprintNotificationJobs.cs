@@ -40,9 +40,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint join
         /// </summary>
-        public void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture)
+        public void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture, bool accept)
         {
-            var message = new JoinSprint(sprintId, sprintName, sprintType, userId, name, profilePicture);
+            var message = new JoinSprint(sprintId, sprintName, sprintType, userId, name, profilePicture, accept);
             new NotificationWorker<SprintJoin>().Invoke(message);
         }
     }
