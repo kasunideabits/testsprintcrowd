@@ -196,8 +196,10 @@
         public async Task DeleteParticipant(int userId)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
-            participant.Stage = ParticipantStage.DECLINE;
-            this.Context.Update(participant);
+            if (participant != null)
+            {
+                this.Context.Remove(participant);
+            }
             return;
         }
 

@@ -61,19 +61,28 @@
         /// <param name="accept">accept or decline</param>
         public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept)
         {
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (sprint != null && sprint.StartDateTime > DateTime.UtcNow)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "sprint expired");
+            }
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 s.Sprint.Type == (int)sprintType && s.SprintId == sprintId;
             var inviteUser = await this.SprintParticipantRepo.Get(query);
+
             if (sprintType == SprintType.PrivateSprint)
             {
                 if (inviteUser == null)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.NotFounInvitation, "Not found invitation");
                 }
+                else if (inviteUser.Stage != ParticipantStage.PENDING)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                }
                 else
                 {
-
                     if (accept)
                     {
                         await this.SprintParticipantRepo.JoinSprint(userId);
