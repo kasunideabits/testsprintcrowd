@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using System;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -53,7 +54,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             System.Console.WriteLine(this._joinSprint.Name);
         }
 
-        // Add to db
         private void SendPushNotification()
         {
             if (this._joinSprint.SprintType == Application.SprintType.PrivateSprint)
@@ -141,7 +141,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     Id = s.Id,
                         Name = s.Name,
                         Distance = s.Distance,
-                        StartTime = s.StartDateTime
+                        StartTime = s.StartDateTime,
+                        SprintStatus = (SprintStatus)s.Status,
+                        SprintType = (SprintType)s.Type
                 })
                 .FirstOrDefault();
         }
@@ -158,6 +160,33 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<string> GetTokens(List<int> userIds)
         {
             return this.Context.FirebaseToken.Where(f => userIds.Contains(f.User.Id)).Select(f => f.Token).ToList();
+        }
+
+        private void AddToDatabaase(EventInfo eventInfo, List<Participant> participants, int senderId, SprintNotificaitonType notificationType)
+        {
+            List<SprintNotification> notifications = new List<SprintNotification>();
+            participants.ForEach(p =>
+            {
+                notifications.Add(new SprintNotification()
+                {
+                    SenderId = senderId,
+                        ReceiverId = p.Id,
+                        Type = notificationType,
+                        UpdatorId = senderId,
+                        SprintId = eventInfo.Id,
+                        SprintName = eventInfo.Name,
+                        Distance = eventInfo.Distance,
+                        StartDateTime = eventInfo.StartTime,
+                        SprintType = eventInfo.SprintType,
+                        Status = eventInfo.SprintStatus,
+                        NumberOfParticipants = eventInfo.NumberOfPariticipants
+                });
+            });
+            if (notifications.Count > 0)
+            {
+                this.Context.SprintNotifications.AddRange(notifications);
+                this.Context.SaveChanges();
+            }
         }
 
         internal class Participant
@@ -182,6 +211,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             public int Distance { get; set; }
             public DateTime StartTime { get; set; }
             public int NumberOfPariticipants { get; set; }
+            public SprintType SprintType { get; set; }
+            public SprintStatus SprintStatus { get; set; }
         }
 
     }
