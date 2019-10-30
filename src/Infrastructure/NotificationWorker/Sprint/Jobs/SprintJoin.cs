@@ -122,7 +122,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private Participant GetParticipant()
         {
             return this.Context.User
-                .Select(u => new Participant()
+                .Select(u => new Participant
                 {
                     Id = u.Id,
                         Name = u.Name,
@@ -139,7 +139,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private EventInfo GetEvent()
         {
-            return this.Context.Sprint.Select(s => new EventInfo()
+            return this.Context.Sprint.Select(s => new EventInfo
                 {
                     Id = s.Id,
                         Name = s.Name,
