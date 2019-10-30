@@ -69,7 +69,7 @@
             {
                 if (inviteUser == null)
                 {
-                    throw new Application.SCApplicationException(1, "Not found invitation");
+                    throw new Application.SCApplicationException((int)ErrorCodes.NotFounInvitation, "Not found invitation");
                 }
                 else
                 {
@@ -100,7 +100,7 @@
             {
                 if (inviteUser != null)
                 {
-                    throw new Application.SCApplicationException(1, "Already join for sprint");
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadJoinForSprint, "Already join for sprint");
                 }
                 else
                 {
@@ -248,6 +248,11 @@
 
         public async Task<SprintParticipantDto> SprintInvite(int sprintId, int inviterId, int inviteeId)
         {
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, inviteeId);
+            if (user != null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, "Already invited to sprint");
+            }
             await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
