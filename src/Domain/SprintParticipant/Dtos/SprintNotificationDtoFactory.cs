@@ -1,4 +1,5 @@
 using System;
+using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
@@ -10,19 +11,20 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             switch (notification.Type)
             {
                 case SprintNotificaitonType notificaitonType when
-                notificaitonType == SprintNotificaitonType.InvitationRequest ||
+                notificaitonType == SprintNotificaitonType.InvitationRequest:
+                    return new SprintInvitationRequestDto(notification);
+                case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.InvitationAccept ||
                 notificaitonType == SprintNotificaitonType.InvitationDecline:
-                    return new SprintInvitationDto(notification);
-
+                    return new SprintInvitationResponseDto(notification);
             }
-            throw new ApplicationException();
+            throw new Application.ApplicationException();
         }
     }
 
-    internal class SprintInvitationDto : ISprintNotification
+    internal class SprintInvitationRequestDto : ISprintNotification
     {
-        public SprintInvitationDto(SprintNotification notification)
+        public SprintInvitationRequestDto(SprintNotification notification)
         {
             this.Id = notification.Id;
             this.Type = notification.Type;
@@ -33,6 +35,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.Distance,
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
+                notification.SprintType,
+                notification.Status,
                 notification.Sender,
                 notification.Receiver
             );
@@ -44,13 +48,66 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public dynamic Data { get; }
     }
 
+    internal class SprintInvitationResponseDto : ISprintNotification
+    {
+        public SprintInvitationResponseDto(SprintNotification notification)
+        {
+            this.Id = notification.Id;
+            this.Type = notification.Type;
+            this.CreateDate = notification.CreatedDate;
+            this.Data = new SprintInvitationResponsePayload(
+                notification.SprintId,
+                notification.SprintName,
+                notification.Distance,
+                notification.StartDateTime,
+                notification.NumberOfParticipants,
+                notification.SprintType,
+                notification.Status,
+                notification.Sender
+            );
+        }
+
+        public int Id { get; }
+        public SprintNotificaitonType Type { get; }
+        public DateTime CreateDate { get; }
+        public dynamic Data { get; }
+    }
+
+    internal class SprintInvitationResponsePayload
+    {
+        public SprintInvitationResponsePayload(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startDateTime,
+            int numberOfParticipants,
+            SprintType sprintType,
+            SprintStatus sprintStatus,
+            User user)
+        {
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
+            this.User = new InvitationUser(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
+        }
+        public SprintNotificationInfo Sprint { get; }
+        public InvitationUser User { get; }
+    }
+
     internal class SprintNotificationPayload
     {
-        public SprintNotificationPayload(int sprintId, string sprintName, int distance, DateTime startDateTime, int numberOfParticipants, User inviter, User invitee)
+        public SprintNotificationPayload(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startDateTime,
+            int numberOfParticipants,
+            SprintType sprintType,
+            SprintStatus sprintStatus,
+            User inviter,
+            User invitee)
         {
-            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants);
-            this.Inviter = new InvitationUser(inviter.Id, inviter.Name, inviter.Email, inviter.ProfilePicture);
-            this.Invitee = new InvitationUser(invitee.Id, invitee.Name, invitee.Email, invitee.ProfilePicture);
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
+            this.Inviter = new InvitationUser(inviter.Id, inviter.Name, inviter.Email, inviter.ProfilePicture, inviter.Code, inviter.City, inviter.Country, inviter.CountryCode);
+            this.Invitee = new InvitationUser(invitee.Id, invitee.Name, invitee.Email, invitee.ProfilePicture, invitee.Code, invitee.City, invitee.Country, invitee.CountryCode);
 
         }
         public SprintNotificationInfo Sprint { get; }
@@ -60,13 +117,22 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintNotificationInfo
     {
-        public SprintNotificationInfo(int id, string name, int distance, DateTime startTime, int numberOfParticipant)
+        public SprintNotificationInfo(
+            int id,
+            string name,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintType sprintType,
+            SprintStatus sprintStatus)
         {
             this.Id = id;
             this.Name = name;
             this.Distance = distance;
             this.StartTime = startTime;
             this.NumberOfParticipant = numberOfParticipant;
+            this.SprintStatus = sprintStatus;
+            this.SprintType = sprintType;
         }
 
         public int Id { get; }
@@ -74,21 +140,32 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int Distance { get; }
         public DateTime StartTime { get; }
         public int NumberOfParticipant { get; }
+        public SprintStatus SprintStatus { get; }
+        public SprintType SprintType { get; }
+
     }
 
     internal class InvitationUser
     {
-        public InvitationUser(int id, string name, string email, string profile)
+        public InvitationUser(int id, string name, string email, string profile, string code, string city, string country, string countryCode)
         {
             this.Id = id;
             this.Name = name;
             this.Email = email;
             this.Profile = profile;
+            this.Code = code;
+            this.City = city;
+            this.Country = country;
+            this.CountryCode = countryCode;
         }
         public int Id { get; }
         public string Name { get; }
         public string Email { get; }
         public string Profile { get; }
+        public string Code { get; }
+        public string City { get; }
+        public string Country { get; }
+        public string CountryCode { get; }
     }
 
 }

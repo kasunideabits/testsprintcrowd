@@ -73,7 +73,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var tokens = this.GetTokens(ids);
             var participant = this.GetParticipant();
             var eventInfo = this.GetEvent();
-            var message = this.BuildNotificationMessage(tokens, participant, eventInfo, this._joinSprint.Accept ? SprintNotificaitonType.InvitationAccept : SprintNotificaitonType.InvitationDecline);
+            var notificationType = this._joinSprint.Accept ? SprintNotificaitonType.InvitationAccept : SprintNotificaitonType.InvitationDecline;
+            this.AddToDatabase(eventInfo, participant, ids, notificationType);
+            var message = this.BuildNotificationMessage(tokens, participant, eventInfo, notificationType);
             this.PushNotificationClient.SendMulticaseMessage(message);
         }
 
@@ -84,6 +86,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var participant = this.GetParticipant();
             var eventInfo = this.GetEvent();
             var message = this.BuildNotificationMessage(tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
+            this.AddToDatabase(eventInfo, participant, ids, SprintNotificaitonType.FriendJoin);
             this.PushNotificationClient.SendMulticaseMessage(message);
         }
 
@@ -162,17 +165,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return this.Context.FirebaseToken.Where(f => userIds.Contains(f.User.Id)).Select(f => f.Token).ToList();
         }
 
-        private void AddToDatabaase(EventInfo eventInfo, List<Participant> participants, int senderId, SprintNotificaitonType notificationType)
+        private void AddToDatabase(EventInfo eventInfo, Participant user, List<int> receiverIds, SprintNotificaitonType notificationType)
         {
             List<SprintNotification> notifications = new List<SprintNotification>();
-            participants.ForEach(p =>
+            receiverIds.ForEach(receiverId =>
             {
                 notifications.Add(new SprintNotification()
                 {
-                    SenderId = senderId,
-                        ReceiverId = p.Id,
+                    SenderId = user.Id,
+                        ReceiverId = receiverId,
                         Type = notificationType,
-                        UpdatorId = senderId,
+                        UpdatorId = user.Id,
                         SprintId = eventInfo.Id,
                         SprintName = eventInfo.Name,
                         Distance = eventInfo.Distance,
