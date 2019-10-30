@@ -59,13 +59,22 @@
         /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
         /// <param name="accept">accept or decline</param>
-        public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept)
+        public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept = true)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
-            if (sprint != null && sprint.StartDateTime > DateTime.UtcNow)
+            if (sprint != null && sprint.StartDateTime < DateTime.UtcNow)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "sprint expired");
             }
+            else
+            {
+                var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                if (sprint.NumberOfParticipants <= numberOfParticipants)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                }
+            }
+
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 s.Sprint.Type == (int)sprintType && s.SprintId == sprintId;
@@ -91,33 +100,28 @@
                     {
                         await this.SprintParticipantRepo.DeleteParticipant(userId);
                     }
-
-                    this.SprintParticipantRepo.SaveChanges();
-
-                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                        inviteUser.Sprint.Id,
-                        inviteUser.Sprint.Name,
-                        (SprintType)inviteUser.Sprint.Type,
-                        inviteUser.User.Id,
-                        inviteUser.User.Name,
-                        inviteUser.User.ProfilePicture,
-                        accept);
-                    return;
                 }
             }
             else
             {
                 if (inviteUser != null)
                 {
-                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadJoinForSprint, "Already join for sprint");
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
                 }
-                else
-                {
-                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    this.SprintParticipantRepo.SaveChanges();
-                    return;
-                }
+                var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+
+                this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                    sprint.Id,
+                    sprint.Name,
+                    (SprintType)sprint.Type,
+                    joinedUser.User.Id,
+                    joinedUser.User.Name,
+                    joinedUser.User.ProfilePicture,
+                    accept);
             }
+
+            this.SprintParticipantRepo.SaveChanges();
+            return;
         }
 
         /// <summary>

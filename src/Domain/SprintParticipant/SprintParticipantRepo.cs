@@ -203,6 +203,11 @@
             return;
         }
 
+        public int GetParticipantCount(int sprintId)
+        {
+            return this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.PENDING).Count();
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
@@ -210,7 +215,7 @@
         /// </summary>
         public void SaveChanges()
         {
-            this.Context.SaveChanges();
+            this.Context.SaveChangesAsync();
         }
 
     }

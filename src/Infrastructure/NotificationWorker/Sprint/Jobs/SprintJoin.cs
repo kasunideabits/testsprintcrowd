@@ -153,11 +153,30 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private List<int> GetParticipantsIds()
         {
-            var ids = from v in this.Context.SprintParticipant
-            from b in this.Context.Frineds
-            where v.UserId == b.SharedUserId || v.UserId == b.AcceptedUserId
-            select v.UserId;
-            return ids.ToList();
+            List<int> ids = new List<int>();
+            var ids1 = this.Context.SprintParticipant
+                .Where(s => s.SprintId == this._joinSprint.SprintId)
+                .Join(this.Context.Frineds,
+                    p => p.UserId,
+                    f => f.SharedUserId,
+                    ((p, f) =>
+                        new { UserId = p.UserId, FriendId = f.AcceptedUserId }))
+                .Where(s => s.UserId == this._joinSprint.UserId)
+                .Select(s => s.FriendId)
+                .ToList();
+            var ids2 = this.Context.SprintParticipant
+                .Where(s => s.SprintId == this._joinSprint.SprintId)
+                .Join(this.Context.Frineds,
+                    p => p.UserId,
+                    f => f.AcceptedUserId,
+                    ((p, f) =>
+                        new { UserId = p.UserId, FriendId = f.SharedUserId }))
+                .Where(s => s.UserId == this._joinSprint.UserId)
+                .Select(s => s.FriendId)
+                .ToList();
+            ids.AddRange(ids1);
+            ids.AddRange(ids2);
+            return ids;
         }
 
         private List<string> GetTokens(List<int> userIds)

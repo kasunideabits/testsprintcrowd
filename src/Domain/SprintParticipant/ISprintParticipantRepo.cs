@@ -67,6 +67,7 @@
         IQueryable<Notification> GetNotification(int userId);
         Task JoinSprint(int userId);
         Task DeleteParticipant(int userId);
+        int GetParticipantCount(int sprintId);
 
         /// <summary>
         /// saves changed to db
