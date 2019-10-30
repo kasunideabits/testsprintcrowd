@@ -84,7 +84,6 @@
                     }
 
                     this.SprintParticipantRepo.SaveChanges();
-                    return;
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                         inviteUser.Sprint.Id,
@@ -94,6 +93,7 @@
                         inviteUser.User.Name,
                         inviteUser.User.ProfilePicture,
                         accept);
+                    return;
                 }
             }
             else
