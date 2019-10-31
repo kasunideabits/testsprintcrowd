@@ -58,7 +58,7 @@
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
         List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
-        Task<SprintParticipantDto> SprintInvite(int sprintId, int inviterId, int invteeId);
+        Task SprintInvite(int sprintId, int inviterId, List<int> invteeIds);
 
         Task<dynamic> GetNotification(int userId);
 
