@@ -1,3 +1,5 @@
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     /// <summary>
@@ -20,6 +22,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             string profilePicture,
             string userCode,
             string colorCode,
+            ParticipantStage stage,
             int sprintId,
             string sprintName)
         {
@@ -28,6 +31,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.ProfilePicture = profilePicture;
             this.Code = userCode;
             this.ColorCode = colorCode;
+            this.Stage = stage;
             this.SprintId = sprintId;
             this.SprintName = sprintName;
         }
@@ -66,5 +70,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// Gets sprint name which participate
         /// </summary>
         public string SprintName { get; }
+
+        public ParticipantStage Stage { get; }
     }
 }

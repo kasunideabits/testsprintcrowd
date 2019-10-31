@@ -18,7 +18,7 @@ namespace SprintCrowd.BackEnd.Application
 
         private const string c8e4f5 = "#c8e4f5";
         private const string c8f1f4 = "#c8f1f4";
-        private const string c8f4dc = "#c8e4f5";
+        private const string c8f4dc = "#c8f4dc";
         private List<string> Colors { get; set; }
 
         /// <summary>

@@ -1,14 +1,16 @@
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
     /// <summary>
     /// Sprint notification types interface
     /// </summary>
-    public interface ISprintNotification
+    public interface ISprintNotificationJobs
     {
         /// <summary>
         /// Sprint invite
         /// </summary>
-        void SprintInvite();
+        void SprintInvite(int sprintId, int iniviteId, int inviteeId);
 
         /// <summary>
         /// Sprint mark attendance
@@ -23,6 +25,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint join
         /// </summary>
-        void SprintJoin(int sprintId, string sprintName, int userId, string name, string profilePicture);
+        void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture, bool accepet);
     }
 }

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -58,6 +59,15 @@
         /// <param name="query">query to filter record</param>
         /// <returns><see cref="SprintParticipant"> entity</see>/<returns>
         Task<SprintParticipant> Get(Expression<Func<SprintParticipant, bool>> query);
+
+        Task<SprintParticipant> AddParticipant(int sprintId, int userId);
+
+        Task<Sprint> GetSprint(int sprintId);
+        Task<User> GetParticipant(int userId);
+        IQueryable<Notification> GetNotification(int userId);
+        Task JoinSprint(int userId);
+        Task DeleteParticipant(int userId);
+        int GetParticipantCount(int sprintId);
 
         /// <summary>
         /// saves changed to db

@@ -30,7 +30,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintInvitation
             if (alreadyExist == null)
             {
                 var sprintInviteId = await this.SprintInvitationRepo.Invite(inviterId, inviteeId, sprintId);
-                await this.SprintInvitationRepo.AddNotification(inviterId, inviteeId, sprintInviteId);
+                // await this.SprintInvitationRepo.AddNotification(inviterId, inviteeId, sprintInviteId);
                 await this.SprintInvitationRepo.SaveChanges();
                 return;
             }

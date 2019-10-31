@@ -10,6 +10,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// <summary>
         /// Sprint notification type
         /// </summary>
-        ISprintNotification SprintNotification { get; }
+        ISprintNotificationJobs SprintNotificationJobs { get; }
     }
 }

@@ -124,13 +124,14 @@
         /// </summary>
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
-        public async Task AddParticipant(int userId, int sprintId)
+        /// <param name="participantStage">sprint participant stage</param>
+        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage)
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
-                Stage = ParticipantStage.JOINED,
+                Stage = participantStage,
             };
             await this.dbContext.AddAsync(pariticipant);
         }

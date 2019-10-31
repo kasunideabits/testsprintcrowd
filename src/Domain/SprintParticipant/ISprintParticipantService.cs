@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
 
@@ -23,8 +24,10 @@
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
-        Task JoinSprint(int sprintId, int userId);
+        /// <param name="accept">accept or decline</param>
+        Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept);
 
         /// <summary>
         /// Exit sprint which join for event
@@ -54,6 +57,10 @@
         /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
         List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
+
+        Task<SprintParticipantDto> SprintInvite(int sprintId, int inviterId, int invteeId);
+
+        Task<dynamic> GetNotification(int userId);
 
         /// <summary>
         /// Get sprint details with who marked attendance with given user id

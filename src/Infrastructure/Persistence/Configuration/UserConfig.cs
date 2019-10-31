@@ -21,7 +21,6 @@
             builder.HasMany(u => u.Sprint);
             builder.HasIndex(u => u.Code).IsUnique();
             builder.Property(u => u.Code).ValueGeneratedOnAdd();
-            builder.Property<DateTime>("LastUpdated");
         }
     }
 }

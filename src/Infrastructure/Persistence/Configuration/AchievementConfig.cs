@@ -20,7 +20,6 @@
                 .HasOne(a => a.User)
                 .WithMany(a => a.Achievements)
                 .HasForeignKey(a => a.UserId);
-            builder.Property<DateTime>("LastUpdated");
         }
     }
 }

@@ -17,22 +17,18 @@
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
             builder
-                .HasOne(s => s.Sender)
-                .WithMany(s => s.SenderNotification)
-                .HasForeignKey(s => s.SenderId);
+                .HasDiscriminator<NotificationType>("Type")
+                .HasValue<SprintNotification>(NotificationType.SprintNotification)
+                .HasValue<FriendNoticiation>(NotificationType.FriendNotification)
+                .HasValue<AchievementNoticiation>(NotificationType.AchivementNotification);
             builder
-                .HasOne(s => s.Receiver)
-                .WithMany(s => s.ReceiverNotification)
-                .HasForeignKey(s => s.ReceiverId);
+                .HasOne(n => n.Sender)
+                .WithMany(u => u.SenderNotification)
+                .HasForeignKey(n => n.SenderId);
             builder
-                .HasOne(s => s.Achievement)
-                .WithMany(s => s.Notificatoins)
-                .HasForeignKey(s => s.AchievementId);
-            builder
-                .HasOne(n => n.SprintInvite)
-                .WithMany(s => s.Notification)
-                .HasForeignKey(n => n.SprintInviteId);
-            builder.Property<DateTime>("LastUpdated");
+                .HasOne(n => n.Receiver)
+                .WithMany(u => u.ReceiverNotification)
+                .HasForeignKey(n => n.ReceiverId);
         }
     }
 }

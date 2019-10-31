@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191028124821_UpdateNotificationTable")]
+    partial class UpdateNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,13 +342,12 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("SprintName");
 
-                    b.Property<int>("SprintNotificationType");
-
-                    b.Property<int>("SprintStatus");
-
                     b.Property<int>("SprintType");
 
                     b.Property<DateTime>("StartDateTime");
+
+                    b.Property<int>("Status")
+                        .HasColumnName("SprintNotification_Status");
 
                     b.Property<int?>("UpdatorId");
 

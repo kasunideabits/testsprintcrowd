@@ -1,3 +1,5 @@
+using SprintCrowd.BackEnd.Application;
+
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
 {
     public class JoinSprint
@@ -10,13 +12,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         /// <param name="userId">user id for who has joined</param>
         /// <param name="name">name for who has joined</param>
         /// <param name="profilePicture">profile picture url for who has joined</param>
-        public JoinSprint(int sprintId, string sprintName, int userId, string name, string profilePicture)
+        public JoinSprint(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture, bool accept)
         {
             this.SprintId = sprintId;
             this.SprintName = sprintName;
+            this.SprintType = sprintType;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
+            this.Accept = accept;
         }
 
         /// <summary>
@@ -28,6 +32,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         /// Gets sprint name
         /// </summary>
         public string SprintName { get; }
+
+        public SprintType SprintType { get; }
 
         /// <summary>
         /// Gets user id
@@ -43,5 +49,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         /// Gets user's profile picture url
         /// </summary>
         public string ProfilePicture { get; }
+
+        public bool Accept { get; }
     }
 }

@@ -26,7 +26,6 @@
             builder
                 .HasOne(ep => ep.Sprint)
                 .WithMany(ep => ep.Participants);
-            builder.Property<DateTime>("LastUpdated");
         }
     }
 }

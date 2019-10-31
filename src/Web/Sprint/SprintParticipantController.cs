@@ -1,19 +1,25 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Sprint
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Extensions;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
+    using SprintCrowd.BackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Controller for handle sprint participants
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    // [Authorize]
+    [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -53,20 +59,19 @@
         /// <summary>
         /// creates an event
         /// </summary>
-        /// <param name="joinUser"><see cref="JoinPrivateSprintModel"> join user data </see></param>
-        // TODO handle bad request
+        /// <param name="joinUser"><see cref="JoinSprintModel"> join user data </see></param>
         [HttpPost("join")]
-        [ProducesResponseType(typeof(ResponseObject), 200)]
-        [ProducesResponseType(typeof(ResponseObject), 400)]
-        public async Task<IActionResult> JoinEvent([FromBody] JoinPrivateSprintModel joinUser)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinEvent([FromBody] JoinSprintModel joinUser)
         {
-            await this.SprintParticipantService.JoinSprint(joinUser.SprintId, joinUser.UserId);
-            ResponseObject response = new ResponseObject()
-            {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = "Successfully joined for a sprint",
-            };
-            return this.Ok(response);
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintParticipantService.JoinSprint(
+                joinUser.SprintId,
+                joinUser.Type,
+                user.Id,
+                joinUser.Status);
+            return this.Ok();
         }
 
         /// <summary>
@@ -161,6 +166,27 @@
                 Data = result,
             };
             return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Invite friend to a sprint
+        /// </summary>
+        /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
+        [HttpPost("invite-request")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintParticipantDto>), 200)]
+        public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
+        {
+            var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeId);
+            return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
+        }
+
+        [HttpGet("notification")]
+        [ProducesResponseType(typeof(SuccessResponse<>), 200)]
+        public async Task<IActionResult> GetNotification()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetNotification(user.Id);
+            return this.Ok(new SuccessResponse<List<dynamic>>(result));
         }
     }
 }

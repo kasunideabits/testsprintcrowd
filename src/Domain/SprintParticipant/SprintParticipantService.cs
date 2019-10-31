@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -38,7 +39,7 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            this.NotificationClient.SprintNotification.SprintMarkAttendace(
+            this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
                 result.Name,
@@ -55,31 +56,72 @@
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
-        // TODO : notification
-        public async Task JoinSprint(int sprintId, int userId)
+        /// <param name="accept">accept or decline</param>
+        public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept = true)
         {
-            try
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (sprint != null && sprint.StartDateTime < DateTime.UtcNow)
             {
-                var result = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
-
-                if (result == null)
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "sprint expired");
+            }
+            else
+            {
+                var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                if (sprint.NumberOfParticipants <= numberOfParticipants)
                 {
-                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                }
+            }
 
-                    this.SprintParticipantRepo.SaveChanges();
-                    return;
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                s.Sprint.Type == (int)sprintType && s.SprintId == sprintId;
+            var inviteUser = await this.SprintParticipantRepo.Get(query);
+
+            if (sprintType == SprintType.PrivateSprint)
+            {
+                if (inviteUser == null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.NotFounInvitation, "Not found invitation");
+                }
+                else if (inviteUser.Stage != ParticipantStage.PENDING)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
                 }
                 else
                 {
-                    throw new Application.ApplicationException((int)ApplicationErrorCode.BadRequest, "Duplicate participant");
+                    if (accept)
+                    {
+                        await this.SprintParticipantRepo.JoinSprint(userId);
+                    }
+                    else
+                    {
+                        await this.SprintParticipantRepo.DeleteParticipant(userId);
+                    }
                 }
-
             }
-            catch (Application.ApplicationException ex)
+            else
             {
-                throw new Application.ApplicationException(ex.ErrorCode, ex.Message);
+                if (inviteUser != null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                }
+                var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+
+                this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                    sprint.Id,
+                    sprint.Name,
+                    (SprintType)sprint.Type,
+                    joinedUser.User.Id,
+                    joinedUser.User.Name,
+                    joinedUser.User.ProfilePicture,
+                    accept);
             }
+
+            this.SprintParticipantRepo.SaveChanges();
+            return;
         }
 
         /// <summary>
@@ -95,7 +137,7 @@
             {
                 ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
                 this.SprintParticipantRepo.SaveChanges();
-                this.NotificationClient.SprintNotification.SprintExit(
+                this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.SprintName,
                     participant.UserId,
@@ -127,6 +169,7 @@
                     p.User.ProfilePicture,
                     p.User.Code,
                     p.User.ColorCode,
+                    p.Stage,
                     p.Sprint.Id,
                     p.Sprint.Name);
                 participantInfos.Add(participant);
@@ -216,5 +259,52 @@
                 throw new Application.ApplicationException("NOT_FOUND_MARKED_ATTENDACE");
             }
         }
+
+        public async Task<SprintParticipantDto> SprintInvite(int sprintId, int inviterId, int inviteeId)
+        {
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, inviteeId);
+            if (user != null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, "Already invited to sprint");
+            }
+            await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
+            this.SprintParticipantRepo.SaveChanges();
+            this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
+            return new SprintParticipantDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                invitee.Id,
+                invitee.Name,
+                invitee.ProfilePicture,
+                invitee.City,
+                invitee.Country,
+                invitee.CountryCode);
+        }
+
+        public async Task<dynamic> GetNotification(int userId)
+        {
+            var notifications = this.SprintParticipantRepo.GetNotification(userId);
+            var result = new List<object>();
+
+            notifications.ToList().ForEach(s =>
+            {
+                switch (s)
+                {
+                    case SprintNotification sprintTypeNotification:
+                        result.Add(NotificationDtoFactory.Build(sprintTypeNotification));
+                        break;
+                    default:
+                        break;
+                }
+            });
+            return result;
+        }
+
     }
 }

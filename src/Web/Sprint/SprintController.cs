@@ -103,6 +103,5 @@
             await this.SprintService.Remove(user.Id, sprintId);
             return this.Ok();
         }
-
     }
 }

@@ -20,7 +20,7 @@
         /// <param name="senderId">Sender user id</param>
         /// <param name="receiverId">Receiver user id</param>
         /// <param name="sprintInviteId">Sprint invite id</param>
-        Task AddNotification(int senderId, int receiverId, int sprintInviteId);
+        // Task AddNotification(int senderId, int receiverId, int sprintInviteId);
 
         Task<SprintInvite> Get(int inviterId, int inviteeId, int sprintId);
 

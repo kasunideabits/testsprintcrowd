@@ -97,6 +97,7 @@
                     participant.User.ProfilePicture,
                     participant.User.Code,
                     participant.User.ColorCode,
+                    participant.Stage,
                     sprintId,
                     participant.Sprint.Name);
             }
@@ -123,7 +124,8 @@
 
         public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
         {
-            SprintParticipant result = await this.Context.SprintParticipant.FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
+            SprintParticipant result = await this.Context.SprintParticipant
+                .FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
             return result;
         }
 
@@ -154,6 +156,59 @@
                 .Where(query);
         }
 
+        public async Task<SprintParticipant> AddParticipant(int sprintId, int userId)
+        {
+            SprintParticipant pariticipant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.PENDING,
+            };
+            var result = await this.Context.AddAsync(pariticipant);
+            return result.Entity;
+        }
+
+        public async Task<User> GetParticipant(int userId)
+        {
+            return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+        public async Task<Sprint> GetSprint(int sprintId)
+        {
+            return await this.Context.Sprint.FirstOrDefaultAsync(u => u.Id == sprintId);
+        }
+
+        public IQueryable<Notification> GetNotification(int userId)
+        {
+            return this.Context.SprintNotifications
+                .Include(n => n.Sender)
+                .Include(n => n.Receiver)
+                .Where(n => n.ReceiverId == userId);
+        }
+
+        public async Task JoinSprint(int userId)
+        {
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+            participant.Stage = ParticipantStage.JOINED;
+            this.Context.Update(participant);
+            return;
+        }
+
+        public async Task DeleteParticipant(int userId)
+        {
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+            if (participant != null)
+            {
+                this.Context.Remove(participant);
+            }
+            return;
+        }
+
+        public int GetParticipantCount(int sprintId)
+        {
+            return this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.PENDING).Count();
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
@@ -161,7 +216,7 @@
         /// </summary>
         public void SaveChanges()
         {
-            this.Context.SaveChanges();
+            this.Context.SaveChangesAsync();
         }
 
     }
