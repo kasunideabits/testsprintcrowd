@@ -19,7 +19,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    //   [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -173,11 +173,11 @@
         /// </summary>
         /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
         [HttpPost("invite-request")]
-        [ProducesResponseType(typeof(SuccessResponse<SprintParticipantDto>), 200)]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
-            var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeId);
-            return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
+            await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
+            return this.Ok();
         }
 
         [HttpGet("notification")]
