@@ -213,6 +213,7 @@
                 s.UserId == userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
                 (s.Stage == stage || stage == null) &&
+                (s.Sprint.Status != (int)SprintStatus.ARCHIVED) &&
                 (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                 (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
                 ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
