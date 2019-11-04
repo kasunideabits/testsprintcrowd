@@ -338,6 +338,7 @@
                     f.City,
                     f.Country,
                     f.CountryCode,
+                    f.ColorCode,
                     sprintParticipantsIds.Contains(f.Id)
                 ))
                 .ToList();
