@@ -64,6 +64,8 @@
 
         Task RemoveParticipant(int requesterId, int sprintId, int pariticipantId);
 
+        List<FriendInSprintDto> GetFriendsStatusInSprint(int userId, int sprintId);
+
         /// <summary>
         /// Get sprint details with who marked attendance with given user id
         /// </summary>

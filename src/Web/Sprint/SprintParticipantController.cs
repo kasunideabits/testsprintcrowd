@@ -7,6 +7,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -194,6 +195,14 @@
             User user = await this.User.GetUser(this.UserService);
             await this.SprintParticipantService.RemoveParticipant(user.Id, sprintId, participantId);
             return this.Ok();
+        }
+
+        [HttpGet("friends/{sprintId:int}")]
+        public async Task<IActionResult> GetFriendsStatusInSprint(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetFriendsStatusInSprint(user.Id, sprintId);
+            return this.Ok(new SuccessResponse<List<FriendInSprintDto>>(result));
         }
     }
 }

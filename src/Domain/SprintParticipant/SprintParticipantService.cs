@@ -324,5 +324,24 @@
 
         }
 
+        public List<FriendInSprintDto> GetFriendsStatusInSprint(int userId, int sprintId)
+        {
+            var friendsRelations = this.SprintParticipantRepo.GetFriends(userId);
+            var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUser : f.AcceptedUser);
+            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId != userId;
+            var sprintParticipantsIds = this.SprintParticipantRepo.GetAll(query).Select(s => s.UserId).ToList();
+            var result = friends.Select(f => new FriendInSprintDto(
+                    f.Id,
+                    f.Name,
+                    f.ProfilePicture,
+                    f.City,
+                    f.Country,
+                    f.CountryCode,
+                    sprintParticipantsIds.Contains(f.Id)
+                ))
+                .ToList();
+            return result;
+        }
+
     }
 }

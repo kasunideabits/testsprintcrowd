@@ -215,6 +215,14 @@
             this.Context.SprintParticipant.Remove(participant);
         }
 
+        public IEnumerable<Friend> GetFriends(int userId)
+        {
+            return this.Context.Frineds
+                .Include(f => f.AcceptedUser)
+                .Include(f => f.SharedUser)
+                .Where(f => f.AcceptedUserId == userId || f.SharedUserId == userId);
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

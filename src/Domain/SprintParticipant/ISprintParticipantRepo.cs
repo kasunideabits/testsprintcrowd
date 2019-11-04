@@ -69,6 +69,7 @@
         Task DeleteParticipant(int userId);
         int GetParticipantCount(int sprintId);
         void RemoveParticipant(SprintParticipant participant);
+        IEnumerable<Friend> GetFriends(int userId);
 
         /// <summary>
         /// saves changed to db
