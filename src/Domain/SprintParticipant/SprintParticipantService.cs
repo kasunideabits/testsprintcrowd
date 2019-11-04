@@ -298,5 +298,31 @@
             return result;
         }
 
+        public async Task RemoveParticipant(int requesterId, int sprintId, int participantId)
+        {
+            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId == participantId;
+            var sprintParticipant = await this.SprintParticipantRepo.Get(query);
+            if (sprintParticipant == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.ParticipantNotFound, "Participant not found");
+            }
+            if (sprintParticipant.Sprint.CreatedBy.Id != requesterId)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.CanNotRemoveParticipant, "Creator only remove participant");
+            }
+            else if (sprintParticipant.Sprint.Type != (int)SprintType.PrivateSprint)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Can only remove participant from private event");
+            }
+            else if (sprintParticipant.Sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.MarkAttendanceEnable, "Mark Attendance enable. can't remove pariticiapnt");
+            }
+
+            this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
+            this.SprintParticipantRepo.SaveChanges();
+
+        }
+
     }
 }
