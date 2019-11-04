@@ -139,6 +139,7 @@
             return await this.Context.SprintParticipant
                 .Include(s => s.User)
                 .Include(s => s.Sprint)
+                .ThenInclude(s => s.CreatedBy)
                 .FirstOrDefaultAsync(query);
         }
 
@@ -207,6 +208,11 @@
         public int GetParticipantCount(int sprintId)
         {
             return this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.PENDING).Count();
+        }
+
+        public void RemoveParticipant(SprintParticipant participant)
+        {
+            this.Context.SprintParticipant.Remove(participant);
         }
 
         /// <summary>

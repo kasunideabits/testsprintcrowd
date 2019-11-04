@@ -68,6 +68,7 @@
         Task JoinSprint(int userId);
         Task DeleteParticipant(int userId);
         int GetParticipantCount(int sprintId);
+        void RemoveParticipant(SprintParticipant participant);
 
         /// <summary>
         /// saves changed to db

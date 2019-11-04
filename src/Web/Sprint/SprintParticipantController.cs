@@ -7,7 +7,6 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
-    using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -19,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    //   [Authorize]
+    [Authorize]
     public class SprintParticipantController : ControllerBase
     {
         /// <summary>
@@ -187,6 +186,14 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintParticipantService.GetNotification(user.Id);
             return this.Ok(new SuccessResponse<List<dynamic>>(result));
+        }
+
+        [HttpDelete("participant/{sprintId:int}/{participantId:int}/")]
+        public async Task<IActionResult> RemoveParticipant(int sprintId, int participantId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintParticipantService.RemoveParticipant(user.Id, sprintId, participantId);
+            return this.Ok();
         }
     }
 }
