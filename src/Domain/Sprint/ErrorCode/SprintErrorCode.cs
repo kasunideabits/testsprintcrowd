@@ -5,5 +5,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         AlreadyExistSprint = 2000,
         NotMatchingSprintWithId = 2001,
         AlreadyExistParticipants = 2002,
+        NotAllowedOperation = 2003,
+        MarkAttendanceEnable = 2004,
     }
 }

@@ -19,5 +19,7 @@ namespace SprintCrowd.BackEnd.Application
         /// sprint has ended
         /// </summary>
         ENDED = 2,
+
+        ARCHIVED = 3,
     }
 }

@@ -143,7 +143,7 @@
         {
             if (type == (int)SprintType.PrivateSprint)
             {
-                Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow;
+                Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
                 var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
                 if (isAlreadyCreatedSprint != null)
                 {
@@ -180,7 +180,7 @@
         /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
         public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
         {
-            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId;
+            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Type != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
             var sprint = await this.SprintRepo.GetSprint(predicate);
             if (sprint == null)
             {
@@ -222,16 +222,18 @@
             {
                 throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found with given id");
             }
+            else if (sprint.CreatedBy.Id != userId)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
+            }
+            else if (sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.MarkAttendanceEnable, "Mark attendance enable");
+            }
             else
             {
-                Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId && s.UserId != userId;
-                var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
-                if (pariticipants.Count() != 0)
-                {
-                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistParticipants, "Can't remove paritipant, Already exist other participants");
-                }
-
-                this.SprintRepo.RemoveSprint(sprint);
+                sprint.Status = (int)SprintStatus.ARCHIVED;
+                await this.SprintRepo.UpdateSprint(sprint);
                 this.SprintRepo.SaveChanges();
             }
         }
