@@ -60,7 +60,7 @@
         /// creates an event
         /// </summary>
         /// <param name="joinUser"><see cref="JoinSprintModel"> join user data </see></param>
-        [HttpPost("join")]
+        [HttpPost("private/join")]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> JoinEvent([FromBody] JoinSprintModel joinUser)
@@ -71,6 +71,19 @@
                 user.Id,
                 joinUser.Status);
             await this.SprintParticipantService.RemoveNotification(joinUser.NotificationId);
+            return this.Ok();
+        }
+
+        [HttpPost("public/join")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinEventPublic([FromBody] JoinSprintModel joinUser)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintParticipantService.JoinSprint(
+                joinUser.SprintId,
+                user.Id,
+                joinUser.Status);
             return this.Ok();
         }
 
