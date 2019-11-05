@@ -6,6 +6,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public FriendInSprintDto(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool isInSprint) : base(id, name, profilePicture, city, country, countryCode)
         {
+            this.ColorCode = colorCode;
             this.IsInSprint = isInSprint;
         }
 
