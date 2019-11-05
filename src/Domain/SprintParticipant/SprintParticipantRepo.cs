@@ -223,6 +223,16 @@
                 .Where(f => f.AcceptedUserId == userId || f.SharedUserId == userId);
         }
 
+        public async Task RemoveNotification(int notificationId)
+        {
+            var notification = await this.Context.Notification.Where(n => n.Id == notificationId).FirstOrDefaultAsync();
+            if (notification != null)
+            {
+                this.Context.Remove(notification);
+            }
+            return;
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

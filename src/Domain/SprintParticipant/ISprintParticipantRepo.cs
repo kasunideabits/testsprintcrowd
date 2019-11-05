@@ -70,7 +70,7 @@
         int GetParticipantCount(int sprintId);
         void RemoveParticipant(SprintParticipant participant);
         IEnumerable<Friend> GetFriends(int userId);
-
+        Task RemoveNotification(int notificationId);
         /// <summary>
         /// saves changed to db
         /// </summary>

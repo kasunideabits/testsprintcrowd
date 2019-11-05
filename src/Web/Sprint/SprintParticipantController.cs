@@ -68,9 +68,9 @@
             User user = await this.User.GetUser(this.UserService);
             await this.SprintParticipantService.JoinSprint(
                 joinUser.SprintId,
-                joinUser.Type,
                 user.Id,
                 joinUser.Status);
+            await this.SprintParticipantService.RemoveNotification(joinUser.NotificationId);
             return this.Ok();
         }
 

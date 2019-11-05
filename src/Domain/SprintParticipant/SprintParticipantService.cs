@@ -56,10 +56,9 @@
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
-        /// <param name="sprintType">public or private</param>
         /// <param name="userId">user id who going to join</param>
         /// <param name="accept">accept or decline</param>
-        public async Task JoinSprint(int sprintId, SprintType sprintType, int userId, bool accept = true)
+        public async Task JoinSprint(int sprintId, int userId, bool accept = true)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             if (sprint != null && sprint.StartDateTime < DateTime.UtcNow)
@@ -75,12 +74,10 @@
                 }
             }
 
-            Expression<Func<SprintParticipant, bool>> query = s =>
-                s.UserId == userId &&
-                s.Sprint.Type == (int)sprintType && s.SprintId == sprintId;
+            Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
             var inviteUser = await this.SprintParticipantRepo.Get(query);
 
-            if (sprintType == SprintType.PrivateSprint)
+            if (sprint.Type == (int)SprintType.PrivateSprint)
             {
                 if (inviteUser == null)
                 {
@@ -343,6 +340,12 @@
                 ))
                 .ToList();
             return result;
+        }
+
+        public async Task RemoveNotification(int notificationId)
+        {
+            await this.SprintParticipantRepo.RemoveNotification(notificationId);
+            return;
         }
 
     }
