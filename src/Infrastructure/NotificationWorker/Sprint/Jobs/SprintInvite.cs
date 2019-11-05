@@ -67,14 +67,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 Id = this.Inviter.Id,
                 Name = this.Inviter.Name,
                 Email = this.Inviter.Email,
-                ProfilePicture = this.Inviter.ProfilePicture
+                ProfilePicture = this.Inviter.ProfilePicture,
+                Code = this.Inviter.Code,
+                ColorCode = this.Inviter.ColorCode,
+                City = this.Inviter.City,
+                Country = this.Inviter.Country,
+                CountryCode = this.Inviter.CountryCode,
+
             };
             var invitee = new
             {
                 Id = this.Invitee.Id,
                 Name = this.Invitee.Name,
                 Email = this.Invitee.Email,
-                ProfilePicture = this.Invitee.ProfilePicture
+                ProfilePicture = this.Invitee.ProfilePicture,
+                Code = this.Invitee.Code,
+                ColorCode = this.Invitee.ColorCode,
+                City = this.Invitee.City,
+                Country = this.Invitee.Country,
+                CountryCode = this.Invitee.CountryCode,
             };
             var sprint = new
             {
@@ -82,7 +93,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 Name = this.Sprint.Name,
                 Distance = this.Sprint.Distance,
                 StartTime = this.Sprint.StartDateTime,
-                NumberOfParticipants = this.Sprint.NumberOfParticipants
+                NumberOfParticipants = this.Sprint.NumberOfParticipants,
+                SprintStatus = this.Sprint.Status,
+                SprintType = this.Sprint.Type
             };
             var payload = new
             {
