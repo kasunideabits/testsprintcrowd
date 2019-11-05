@@ -95,8 +95,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var data = new Dictionary<string, string>();
             var payload = new
             {
-                user = participant,
-                sprint = eventInfo,
+                User = participant,
+                Sprint = eventInfo,
             };
 
             data.Add("mainType", "SprintType");
