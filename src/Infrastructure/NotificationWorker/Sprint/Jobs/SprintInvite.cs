@@ -64,31 +64,31 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var data = new Dictionary<string, string>();
             var inviter = new
             {
-                id = this.Inviter.Id,
-                name = this.Inviter.Name,
-                email = this.Inviter.Email,
-                profilePicture = this.Inviter.ProfilePicture
+                Id = this.Inviter.Id,
+                Name = this.Inviter.Name,
+                Email = this.Inviter.Email,
+                ProfilePicture = this.Inviter.ProfilePicture
             };
             var invitee = new
             {
-                id = this.Invitee.Id,
-                name = this.Invitee.Name,
-                email = this.Invitee.Email,
-                profilePicture = this.Invitee.ProfilePicture
+                Id = this.Invitee.Id,
+                Name = this.Invitee.Name,
+                Email = this.Invitee.Email,
+                ProfilePicture = this.Invitee.ProfilePicture
             };
             var sprint = new
             {
-                id = this.Sprint.Id,
-                name = this.Sprint.Name,
-                distance = this.Sprint.Distance,
-                startTime = this.Sprint.StartDateTime,
-                numberOfParticipants = this.Sprint.NumberOfParticipants
+                Id = this.Sprint.Id,
+                Name = this.Sprint.Name,
+                Distance = this.Sprint.Distance,
+                StartTime = this.Sprint.StartDateTime,
+                NumberOfParticipants = this.Sprint.NumberOfParticipants
             };
             var payload = new
             {
-                inviter = inviter,
-                invitee = invitee,
-                sprint = sprint,
+                Inviter = inviter,
+                Invitee = invitee,
+                Sprint = sprint,
             };
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "SprintType");
