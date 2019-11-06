@@ -58,7 +58,7 @@
         /// <param name="sprintId">sprint id going to join</param>
         /// <param name="userId">user id who going to join</param>
         /// <param name="accept">accept or decline</param>
-        public async Task JoinSprint(int sprintId, int userId, bool accept = true)
+        public async Task JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             if (sprint != null && sprint.StartDateTime < DateTime.UtcNow)
@@ -97,6 +97,7 @@
                     {
                         await this.SprintParticipantRepo.DeleteParticipant(userId);
                     }
+                    this.SprintParticipantRepo.RemoveNotification(notificationId);
                 }
             }
             else

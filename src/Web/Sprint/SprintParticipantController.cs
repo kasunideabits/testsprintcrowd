@@ -69,8 +69,9 @@
             await this.SprintParticipantService.JoinSprint(
                 joinUser.SprintId,
                 user.Id,
-                joinUser.Status);
-            await this.SprintParticipantService.RemoveNotification(joinUser.NotificationId);
+                joinUser.NotificationId,
+                joinUser.Status
+            );
             return this.Ok();
         }
 
@@ -83,7 +84,9 @@
             await this.SprintParticipantService.JoinSprint(
                 joinUser.SprintId,
                 user.Id,
-                joinUser.Status);
+                joinUser.NotificationId,
+                joinUser.Status
+            );
             return this.Ok();
         }
 
