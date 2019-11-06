@@ -97,7 +97,16 @@
                     {
                         await this.SprintParticipantRepo.DeleteParticipant(userId, sprintId);
                     }
+
                     await this.SprintParticipantRepo.RemoveNotification(notificationId);
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                        sprint.Id,
+                        sprint.Name,
+                        (SprintType)sprint.Type,
+                        inviteUser.User.Id,
+                        inviteUser.User.Name,
+                        inviteUser.User.ProfilePicture,
+                        accept);
                 }
             }
             else
