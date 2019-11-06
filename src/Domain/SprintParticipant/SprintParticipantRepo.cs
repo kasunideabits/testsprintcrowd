@@ -195,8 +195,6 @@
                 participant.Stage = ParticipantStage.JOINED;
                 this.Context.Update(participant);
             }
-
-            return;
         }
 
         public async Task DeleteParticipant(int userId, int sprintId)
@@ -254,7 +252,7 @@
         /// </summary>
         public void SaveChanges()
         {
-            this.Context.SaveChangesAsync();
+            this.Context.SaveChanges();
         }
 
     }

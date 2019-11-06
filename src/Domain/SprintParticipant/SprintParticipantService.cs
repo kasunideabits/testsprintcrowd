@@ -119,7 +119,6 @@
             }
 
             this.SprintParticipantRepo.SaveChanges();
-            return;
         }
 
         /// <summary>
