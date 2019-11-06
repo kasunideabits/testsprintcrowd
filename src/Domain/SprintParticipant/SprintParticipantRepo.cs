@@ -233,6 +233,16 @@
             return;
         }
 
+        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new()
+        {
+            IQueryable<T> query = this.Context.Set<T>();
+            foreach (var includePropertie in includeProperties)
+            {
+                query = query.Include(includePropertie);
+            }
+            return await query.Where(predicate).FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

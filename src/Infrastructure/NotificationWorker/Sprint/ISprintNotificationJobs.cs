@@ -1,3 +1,4 @@
+using System;
 using SprintCrowd.BackEnd.Application;
 
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
@@ -20,7 +21,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint exit
         /// </summary>
-        void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture);
+        void SprintExit(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string city,
+            string country,
+            string countryCode);
 
         /// <summary>
         /// Sprint join
