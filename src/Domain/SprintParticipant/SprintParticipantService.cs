@@ -132,14 +132,25 @@
         {
             try
             {
-                ParticipantInfo participant = await this.SprintParticipantRepo.ExitSprint(sprintId, userId);
+                Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId;
+                var participant = await this.SprintParticipantRepo.FindWithInclude<SprintParticipant>(participantQuery, "Sprint", "User");
+                participant.Stage = ParticipantStage.QUIT;
                 this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
-                    participant.SprintName,
+                    participant.Sprint.Name,
+                    participant.Sprint.Distance,
+                    participant.Sprint.StartDateTime,
+                    participant.Sprint.NumberOfParticipants,
+                    (SprintStatus)participant.Sprint.Status,
+                    (SprintType)participant.Sprint.Type,
                     participant.UserId,
-                    participant.UserName,
-                    participant.ProfilePicture);
+                    participant.User.Name,
+                    participant.User.ProfilePicture,
+                    participant.User.Code,
+                    participant.User.City,
+                    participant.User.Country,
+                    participant.User.CountryCode);
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
 {
+    using System;
     using src.Infrastructure.NotificationWorker.Sprint.Models;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs;
@@ -31,9 +32,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint exit
         /// </summary>
-        public void SprintExit(int sprintId, string sprintName, int userId, string name, string profilePicture)
+        public void SprintExit(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string city,
+            string country,
+            string countryCode)
         {
-            var message = new ExitSprint(sprintId, sprintName, userId, name, profilePicture);
+            var message = new ExitSprint(
+                sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType,
+                userId, name, profilePicture, code, city, country, countryCode);
             new NotificationWorker<SprintExit>().Invoke(message);
         }
 

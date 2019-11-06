@@ -33,27 +33,23 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             if (exitSprint != null)
             {
                 this.AblyMessage(exitSprint);
-                this.SendPushNotification();
+                this.SendPushNotification(exitSprint);
             }
         }
 
         private void AblyMessage(ExitSprint exitSprint)
         {
-            var notificaitonMsg = NotificationMessageMapper(exitSprint);
+            var notificaitonMsg = NotificationMessageMapper.AblyNotificationMessageMapper(exitSprint);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + exitSprint.SprintId);
             channel.Publish("Exit", notificaitonMsg);
         }
 
-        private void SendPushNotification() { }
-
-        private static ExitNotification NotificationMessageMapper(ExitSprint exitSprint)
+        private void SendPushNotification(ExitSprint exitSprint)
         {
-            return new ExitNotification(
-                exitSprint.UserId,
-                exitSprint.Name,
-                exitSprint.ProfilePicture,
-                exitSprint.SprintName
-            );
+            if (exitSprint.SprintType == Application.SprintType.PrivateSprint)
+            {
+                // do realy need to send push notification ?
+            }
         }
 
     }
@@ -63,36 +59,43 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <summary>
         /// Initialize ExitNotification class
         /// </summary>
-        /// <param name="userId">user id for who has exited</param>
-        /// <param name="name">name for who has exited</param>
-        /// <param name="profilePicture">profile picture url for user who has exited</param>
-        /// <param name="sprintName">sprint name</param>
-        public ExitNotification(int userId, string name, string profilePicture, string sprintName)
+        public ExitNotification(int userId, string name, string profilePicture, string code, string city, string country, string countryCode, string sprintName)
         {
             this.UserId = userId;
             this.Name = name;
-            this.ProfilePicture = profilePicture;
+            this.ProfilePicture = profilePicture ?? string.Empty;
+            this.Code = code ?? string.Empty;
+            this.City = city ?? string.Empty;
+            this.Country = country ?? string.Empty;
+            this.CountryCode = countryCode ?? string.Empty;
             this.SprintName = sprintName;
         }
 
-        /// <summary>
-        /// Gets users id
-        /// </summary>
         public int UserId { get; private set; }
-
-        /// <summary>
-        /// Gets user's name
-        /// </summary>
         public string Name { get; private set; }
-
-        /// <summary>
-        /// Gets url for profile picture
-        /// </summary>
         public string ProfilePicture { get; private set; }
+        public string Code { get; private set; }
+        public string City { get; private set; }
+        public string Country { get; private set; }
+        public string CountryCode { get; private set; }
 
-        /// <summary>
-        /// Gets sprint name
-        /// </summary>
         public string SprintName { get; private set; }
+    }
+
+    internal static class NotificationMessageMapper
+    {
+        public static ExitNotification AblyNotificationMessageMapper(ExitSprint exitSprint)
+        {
+            return new ExitNotification(
+                exitSprint.UserId,
+                exitSprint.Name,
+                exitSprint.ProfilePicture,
+                exitSprint.Code,
+                exitSprint.City,
+                exitSprint.Country,
+                exitSprint.CountryCode,
+                exitSprint.SprintName
+            );
+        }
     }
 }
