@@ -187,17 +187,21 @@
                 .Where(n => n.ReceiverId == userId);
         }
 
-        public async Task JoinSprint(int userId)
+        public async Task JoinSprint(int userId, int sprintId)
         {
-            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
-            participant.Stage = ParticipantStage.JOINED;
-            this.Context.Update(participant);
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
+            if (participant != null)
+            {
+                participant.Stage = ParticipantStage.JOINED;
+                this.Context.Update(participant);
+            }
+
             return;
         }
 
-        public async Task DeleteParticipant(int userId)
+        public async Task DeleteParticipant(int userId, int sprintId)
         {
-            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+            var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)
             {
                 this.Context.Remove(participant);

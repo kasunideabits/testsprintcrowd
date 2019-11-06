@@ -65,8 +65,8 @@
         Task<Sprint> GetSprint(int sprintId);
         Task<User> GetParticipant(int userId);
         IQueryable<Notification> GetNotification(int userId);
-        Task JoinSprint(int userId);
-        Task DeleteParticipant(int userId);
+        Task JoinSprint(int userId, int sprintId);
+        Task DeleteParticipant(int userId, int sprintId);
         int GetParticipantCount(int sprintId);
         void RemoveParticipant(SprintParticipant participant);
         IEnumerable<Friend> GetFriends(int userId);

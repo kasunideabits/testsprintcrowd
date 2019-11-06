@@ -91,13 +91,13 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
                     }
                     else
                     {
-                        await this.SprintParticipantRepo.DeleteParticipant(userId);
+                        await this.SprintParticipantRepo.DeleteParticipant(userId, sprintId);
                     }
-                    this.SprintParticipantRepo.RemoveNotification(notificationId);
+                    await this.SprintParticipantRepo.RemoveNotification(notificationId);
                 }
             }
             else
