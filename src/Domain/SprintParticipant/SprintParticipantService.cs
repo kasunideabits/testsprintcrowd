@@ -345,6 +345,7 @@
         public async Task RemoveNotification(int notificationId)
         {
             await this.SprintParticipantRepo.RemoveNotification(notificationId);
+            this.SprintParticipantRepo.SaveChanges();
             return;
         }
 
