@@ -282,14 +282,17 @@
         {
             foreach (int inviteeId in inviteeIds)
             {
+                var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+                if (sprint == null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
+                }
                 var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, inviteeId);
                 if (user != null)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, "Already invited to sprint");
                 }
                 await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
-                var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
-                var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
                 this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
             };
