@@ -280,24 +280,31 @@
 
         public async Task SprintInvite(int sprintId, int inviterId, List<int> inviteeIds)
         {
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (sprint == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
+            }
             foreach (int inviteeId in inviteeIds)
             {
-                var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
-                if (sprint == null)
-                {
-                    throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
-                }
                 var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, inviteeId);
                 if (user != null)
                 {
-                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, "Already invited to sprint");
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, $"Already invited to sprint, inviteeId = {inviteeId}");
+                }
+                var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
+                if (invitee == null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, $"Invitee not found, inviteeId = {inviteeId}");
                 }
                 await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
-                this.SprintParticipantRepo.SaveChanges();
-                this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
             };
+            this.SprintParticipantRepo.SaveChanges();
+            foreach (int inviteeId in inviteeIds)
+            {
+                this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
+            }
             return;
-
         }
 
         public async Task<dynamic> GetNotification(int userId)
