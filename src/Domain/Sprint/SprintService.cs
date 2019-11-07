@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -17,12 +18,14 @@
         /// initializes an instance of SprintService
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
-        public SprintService(ISprintRepo sprintRepo)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient)
         {
             this.SprintRepo = sprintRepo;
+            this.NotificationClient = notificationClient;
         }
 
         private ISprintRepo SprintRepo { get; }
+        private INotificationClient NotificationClient { get; }
 
         /// <summary>
         /// Get all events
@@ -235,6 +238,22 @@
                 sprint.Status = (int)SprintStatus.ARCHIVED;
                 await this.SprintRepo.UpdateSprint(sprint);
                 this.SprintRepo.SaveChanges();
+                this.NotificationClient.SprintNotificationJobs.SprintRemove(
+                    sprint.Id,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartDateTime,
+                    sprint.NumberOfParticipants,
+                    (SprintStatus)sprint.Status,
+                    (SprintType)sprint.Type,
+                    sprint.CreatedBy.Id,
+                    sprint.CreatedBy.Name,
+                    sprint.CreatedBy.ProfilePicture,
+                    sprint.CreatedBy.Code,
+                    sprint.CreatedBy.ColorCode,
+                    sprint.CreatedBy.City,
+                    sprint.CreatedBy.Country,
+                    sprint.CreatedBy.CountryCode);
             }
         }
 
