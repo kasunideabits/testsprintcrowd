@@ -33,7 +33,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(RemoveSprint removeSprint)
         {
             var notificationMsgData = RemoveNotificationMessageMapper.SprintRemoveNotificationMessage(removeSprint);
-            var participantIds = this.SprintParticipantIds(removeSprint.SprintId);
+            var participantIds = this.SprintParticipantIds(removeSprint.SprintId, removeSprint.UserId);
             var notificationSprintNotification = RemoveNotificationMessageMapper.SprintRemoveNotificationDbEntry(removeSprint, participantIds);
             this.RemoveOldNotificaiton(removeSprint.SprintId);
             this.AddToDb(notificationSprintNotification);
@@ -58,10 +58,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return message;
         }
 
-        private List<int> SprintParticipantIds(int sprintId)
+        private List<int> SprintParticipantIds(int sprintId, int removerId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.DECLINE)
+                .Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.DECLINE && s.UserId != removerId)
                 .Select(s => s.UserId)
                 .ToList();
         }
