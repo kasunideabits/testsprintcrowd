@@ -57,6 +57,7 @@
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
         /// <param name="userId">user id who going to join</param>
+        /// <param name="notificationId"> notification id</param>
         /// <param name="accept">accept or decline</param>
         public async Task JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
         {
@@ -280,6 +281,13 @@
             }
         }
 
+        /// <summary>
+        /// Invite user to sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="inviterId">id of inviter</param>
+        /// <param name="inviteeIds">ids for invitess</param>
+        /// <returns>invited users info</returns>
         public async Task<List<ParticipantInfoDto>> SprintInvite(int sprintId, int inviterId, List<int> inviteeIds)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
@@ -320,6 +328,11 @@
             return participantInfoDtos;
         }
 
+        /// <summary>
+        /// Get all notificaitons
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>all notificaiton related to given userid</returns>
         public async Task<dynamic> GetNotification(int userId)
         {
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
@@ -339,6 +352,12 @@
             return result;
         }
 
+        /// <summary>
+        /// Remove sprint participant form  sprint
+        /// </summary>
+        /// <param name="requesterId">requester user id</param>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="participantId">participant id for remove</param>
         public async Task RemoveParticipant(int requesterId, int sprintId, int participantId)
         {
             Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId == participantId;
@@ -365,6 +384,12 @@
 
         }
 
+        /// <summary>
+        /// Get friend status in sprint
+        /// </summary>
+        /// <param name="userId">user id </param>
+        /// <param name="sprintId">sprint id</param>
+        /// <returns><see cref="FriendInSprintDto">friend in sprint </see></returns>
         public List<FriendInSprintDto> GetFriendsStatusInSprint(int userId, int sprintId)
         {
             var friendsRelations = this.SprintParticipantRepo.GetFriends(userId);
@@ -385,6 +410,10 @@
             return result;
         }
 
+        /// <summary>
+        /// Remove notification
+        /// </summary>
+        /// <param name="notificationId">notificaiton id to remove</param>
         public async Task RemoveNotification(int notificationId)
         {
             await this.SprintParticipantRepo.RemoveNotification(notificationId);
