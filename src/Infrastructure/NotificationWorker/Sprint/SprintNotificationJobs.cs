@@ -62,5 +62,41 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             var message = new JoinSprint(sprintId, sprintName, sprintType, userId, name, profilePicture, accept);
             new NotificationWorker<SprintJoin>().Invoke(message);
         }
+
+        public void SprintRemove(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string colorCode,
+            string city,
+            string country,
+            string countryCode
+        )
+        {
+            var message = new RemoveSprint(
+                sprintId,
+                sprintName,
+                distance,
+                startTime,
+                numberOfParticipant,
+                sprintStatus,
+                sprintType,
+                userId, name,
+                profilePicture,
+                code,
+                colorCode,
+                city,
+                country,
+                countryCode);
+            new NotificationWorker<SprintRemove>().Invoke(message);
+        }
     }
 }

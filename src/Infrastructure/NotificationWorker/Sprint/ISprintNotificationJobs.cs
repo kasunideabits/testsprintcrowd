@@ -41,5 +41,23 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// Sprint join
         /// </summary>
         void SprintJoin(int sprintId, string sprintName, SprintType sprintType, int userId, string name, string profilePicture, bool accepet);
+
+        void SprintRemove(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string colorCode,
+            string city,
+            string country,
+            string countryCode
+        );
     }
 }
