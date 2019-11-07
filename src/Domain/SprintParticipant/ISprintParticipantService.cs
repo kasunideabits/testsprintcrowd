@@ -42,7 +42,7 @@
         /// <param name="sprintId">sprint id to lookup</param>
         /// <param name="stage">filter with stage</param>
         /// <returns><see cref="ParticipantInfo"> list of participant info</see></returns>
-        Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage);
+        Task<List<ParticipantInfoDto>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>
         /// Get all sprint info with given filters
@@ -57,7 +57,7 @@
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
         List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
-        Task SprintInvite(int sprintId, int inviterId, List<int> invteeIds);
+        Task<List<ParticipantInfoDto>> SprintInvite(int sprintId, int inviterId, List<int> invteeIds);
 
         Task<dynamic> GetNotification(int userId);
 
