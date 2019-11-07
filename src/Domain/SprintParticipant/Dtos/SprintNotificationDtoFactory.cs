@@ -17,19 +17,36 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notificaitonType == SprintNotificaitonType.InvitationAccept ||
                 notificaitonType == SprintNotificaitonType.InvitationDecline:
                     return new SprintInvitationResponseDto(notification);
+                case SprintNotificaitonType notificaitonType when
+                notificaitonType == SprintNotificaitonType.Remove:
+                    return new SprintRemoveResponseDto(notification);
+                default:
+                    break;
             }
             throw new Application.ApplicationException();
         }
     }
 
-    internal class SprintInvitationRequestDto : ISprintNotification
+    internal class SprintNotificationBaseDto
     {
-        public SprintInvitationRequestDto(SprintNotification notification)
+        public SprintNotificationBaseDto(SprintNotification notification)
         {
             this.MainType = "SprintType";
             this.NotificationId = notification.Id;
             this.SubType = notification.SprintNotificationType;
             this.CreateDate = notification.CreatedDate;
+        }
+
+        public string MainType { get; }
+        public int NotificationId { get; }
+        public SprintNotificaitonType SubType { get; }
+        public DateTime CreateDate { get; }
+    }
+
+    internal class SprintInvitationRequestDto : SprintNotificationBaseDto, ISprintNotification
+    {
+        public SprintInvitationRequestDto(SprintNotification notification) : base(notification)
+        {
             this.Data = new SprintNotificationPayload(
                 notification.SprintId,
                 notification.SprintName,
@@ -42,22 +59,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.Receiver
             );
         }
-
-        public string MainType { get; }
-        public int NotificationId { get; }
-        public SprintNotificaitonType SubType { get; }
-        public DateTime CreateDate { get; }
-        public dynamic Data { get; }
+        public SprintNotificationPayload Data { get; }
     }
 
-    internal class SprintInvitationResponseDto : ISprintNotification
+    internal class SprintInvitationResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintInvitationResponseDto(SprintNotification notification)
+        public SprintInvitationResponseDto(SprintNotification notification) : base(notification)
         {
-            this.MainType = "SprintType";
-            this.NotificationId = notification.Id;
-            this.SubType = notification.SprintNotificationType;
-            this.CreateDate = notification.CreatedDate;
             this.Data = new SprintInvitationResponsePayload(
                 notification.SprintId,
                 notification.SprintName,
@@ -69,12 +77,58 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.Sender
             );
         }
+        public SprintInvitationResponsePayload Data { get; }
+    }
 
-        public string MainType { get; }
-        public int NotificationId { get; }
-        public SprintNotificaitonType SubType { get; }
-        public DateTime CreateDate { get; }
-        public dynamic Data { get; }
+    internal class SprintRemoveResponseDto : SprintNotificationBaseDto, ISprintNotification
+    {
+        public SprintRemoveResponseDto(SprintNotification notification) : base(notification)
+        {
+            this.Data = new SprintRemoveResponsePayload(
+                notification.SprintId,
+                notification.SprintName,
+                notification.Distance,
+                notification.StartDateTime,
+                notification.NumberOfParticipants,
+                notification.SprintStatus,
+                notification.SprintType,
+                notification.Sender.Id,
+                notification.Sender.Name,
+                notification.Sender.ProfilePicture,
+                notification.Sender.Code,
+                notification.Sender.ColorCode,
+                notification.Sender.City,
+                notification.Sender.Country,
+                notification.Sender.CountryCode
+            );
+        }
+        public SprintRemoveResponsePayload Data { get; }
+    }
+
+    internal class SprintRemoveResponsePayload
+    {
+        public SprintRemoveResponsePayload(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string colorCode,
+            string city,
+            string country,
+            string countryCode)
+        {
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startTime, numberOfParticipant, sprintType, sprintStatus);
+            this.DeletedBy = new NotificationUserInfo(userId, name, profilePicture, code, colorCode, city, country, countryCode);
+        }
+        public SprintNotificationInfo Sprint { get; }
+        public NotificationUserInfo DeletedBy { get; }
     }
 
     internal class SprintInvitationResponsePayload
@@ -90,10 +144,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             User user)
         {
             this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
-            this.User = new InvitationUser(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
+            this.User = new NotificationUserInfo(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
         }
         public SprintNotificationInfo Sprint { get; }
-        public InvitationUser User { get; }
+        public NotificationUserInfo User { get; }
     }
 
     internal class SprintNotificationPayload
@@ -110,13 +164,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             User invitee)
         {
             this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
-            this.Inviter = new InvitationUser(inviter.Id, inviter.Name, inviter.Email, inviter.ProfilePicture, inviter.Code, inviter.City, inviter.Country, inviter.CountryCode);
-            this.Invitee = new InvitationUser(invitee.Id, invitee.Name, invitee.Email, invitee.ProfilePicture, invitee.Code, invitee.City, invitee.Country, invitee.CountryCode);
+            this.Inviter = new NotificationUserInfo(inviter.Id, inviter.Name, inviter.Email, inviter.ProfilePicture, inviter.Code, inviter.City, inviter.Country, inviter.CountryCode);
+            this.Invitee = new NotificationUserInfo(invitee.Id, invitee.Name, invitee.Email, invitee.ProfilePicture, invitee.Code, invitee.City, invitee.Country, invitee.CountryCode);
 
         }
         public SprintNotificationInfo Sprint { get; }
-        public InvitationUser Inviter { get; }
-        public InvitationUser Invitee { get; }
+        public NotificationUserInfo Inviter { get; }
+        public NotificationUserInfo Invitee { get; }
     }
 
     internal class SprintNotificationInfo
@@ -149,9 +203,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     }
 
-    internal class InvitationUser
+    internal class NotificationUserInfo
     {
-        public InvitationUser(int id, string name, string email, string profile, string code, string city, string country, string countryCode)
+        public NotificationUserInfo(int id, string name, string email, string profile, string code, string city, string country, string countryCode)
         {
             this.Id = id;
             this.Name = name;
@@ -171,5 +225,4 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public string Country { get; }
         public string CountryCode { get; }
     }
-
 }
