@@ -37,8 +37,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificationSprintNotification = RemoveNotificationMessageMapper.SprintRemoveNotificationDbEntry(removeSprint, participantIds);
             this.RemoveOldNotificaiton(removeSprint.SprintId);
             this.AddToDb(notificationSprintNotification);
-            var tokens = GetTokens(participantIds);
-            var notificationMsg = BuildNotificationMessage(tokens, notificationMsgData);
+            var tokens = this.GetTokens(participantIds);
+            var notificationMsg = this.BuildNotificationMessage(tokens, notificationMsgData);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
         }
 
