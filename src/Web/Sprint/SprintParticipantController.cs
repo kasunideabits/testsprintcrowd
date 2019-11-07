@@ -189,11 +189,11 @@
         /// </summary>
         /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
         [HttpPost("invite-request")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(SuccessResponse<List<ParticipantInfoDto>>), 200)]
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
-            await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
-            return this.Ok();
+            var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
+            return this.Ok(new SuccessResponse<List<ParticipantInfoDto>>(result));
         }
 
         [HttpGet("notification")]

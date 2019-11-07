@@ -76,38 +76,6 @@
         }
 
         /// <summary>
-        /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
-        /// </summary>
-        /// <param name="sprintId">exit sprint id</param>
-        /// <param name="userId">user id which leaving the event</param>
-        public async Task<ParticipantInfo> ExitSprint(int sprintId, int userId)
-        {
-            var participant = await this.Context.SprintParticipant
-                .Include(sp => sp.Sprint)
-                .Include(sp => sp.User)
-                .FirstOrDefaultAsync(sp => sp.User.Id == userId && sp.Sprint.Id == sprintId);
-            if (participant != null)
-            {
-
-                participant.Stage = ParticipantStage.QUIT;
-                this.Context.Update(participant);
-                return new ParticipantInfo(
-                    userId,
-                    participant.User.Name,
-                    participant.User.ProfilePicture,
-                    participant.User.Code,
-                    participant.User.ColorCode,
-                    participant.Stage,
-                    sprintId,
-                    participant.Sprint.Name);
-            }
-            else
-            {
-                throw new Application.ApplicationException(ExitFaildReason.UserOrSprintNotMatch);
-            }
-        }
-
-        /// <summary>
         /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>

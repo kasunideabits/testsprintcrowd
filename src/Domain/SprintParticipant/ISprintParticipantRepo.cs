@@ -30,13 +30,6 @@
         Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId);
 
         /// <summary>
-        /// Set participant stage to <see cref="ParticipantStage">QUIT</see>
-        /// </summary>
-        /// <param name="sprintId">exit sprint id</param>
-        /// <param name="userId">user id which leaving the event</param>
-        Task<ParticipantInfo> ExitSprint(int sprintId, int userId);
-
-        /// <summary>
         /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>

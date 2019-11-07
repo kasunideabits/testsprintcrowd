@@ -173,22 +173,24 @@
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
         /// <param name="stage">filter with stage</param>
-        /// <returns><see cref="ParticipantInfo"> list of participant info</see></returns>
-        public async Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage)
+        /// <returns><see cref="ParticipantInfoDto"> list of participant info</see></returns>
+        public async Task<List<ParticipantInfoDto>> GetParticipants(int sprintId, ParticipantStage stage)
         {
             var joinedParticipants = await this.SprintParticipantRepo.GetParticipants(sprintId, stage);
-            List<ParticipantInfo> participantInfos = new List<ParticipantInfo>();
+            List<ParticipantInfoDto> participantInfos = new List<ParticipantInfoDto>();
             joinedParticipants.ForEach(p =>
             {
-                var participant = new ParticipantInfo(
+                var participant = new ParticipantInfoDto(
                     p.User.Id,
                     p.User.Name,
                     p.User.ProfilePicture,
                     p.User.Code,
                     p.User.ColorCode,
+                    p.User.City,
+                    p.User.Country,
+                    p.User.CountryCode,
                     p.Stage,
-                    p.Sprint.Id,
-                    p.Sprint.Name);
+                    p.User.Id == p.Sprint.CreatedBy.Id);
                 participantInfos.Add(participant);
             });
             return participantInfos;
@@ -278,33 +280,44 @@
             }
         }
 
-        public async Task SprintInvite(int sprintId, int inviterId, List<int> inviteeIds)
+        public async Task<List<ParticipantInfoDto>> SprintInvite(int sprintId, int inviterId, List<int> inviteeIds)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             if (sprint == null)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
             }
+            var participantInfoDtos = new List<ParticipantInfoDto>();
             foreach (int inviteeId in inviteeIds)
             {
                 var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, inviteeId);
-                if (user != null)
+                if (user == null)
                 {
-                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyInvited, $"Already invited to sprint, inviteeId = {inviteeId}");
+                    var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
+                    if (invitee == null)
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, $"Invitee not found, inviteeId = {inviteeId}");
+                    }
+                    await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
+                    participantInfoDtos.Add(new ParticipantInfoDto(
+                        invitee.Id,
+                        invitee.Name,
+                        invitee.ProfilePicture,
+                        invitee.Code,
+                        invitee.ColorCode,
+                        invitee.City,
+                        invitee.Country,
+                        invitee.CountryCode,
+                        ParticipantStage.PENDING
+                    ));
                 }
-                var invitee = await this.SprintParticipantRepo.GetParticipant(inviteeId);
-                if (invitee == null)
-                {
-                    throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, $"Invitee not found, inviteeId = {inviteeId}");
-                }
-                await this.SprintParticipantRepo.AddParticipant(sprintId, inviteeId);
             };
             this.SprintParticipantRepo.SaveChanges();
             foreach (int inviteeId in inviteeIds)
             {
                 this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
             }
-            return;
+            return participantInfoDtos;
         }
 
         public async Task<dynamic> GetNotification(int userId)
