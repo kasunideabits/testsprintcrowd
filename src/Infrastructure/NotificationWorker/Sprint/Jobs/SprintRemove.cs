@@ -37,6 +37,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificationSprintNotification = RemoveNotificationMessageMapper.SprintRemoveNotificationDbEntry(removeSprint, participantIds);
             this.RemoveOldNotificaiton(removeSprint.SprintId);
             this.AddToDb(notificationSprintNotification);
+            this.Context.SaveChanges();
             var tokens = this.GetTokens(participantIds);
             var notificationMsg = this.BuildNotificationMessage(tokens, notificationMsgData);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
@@ -80,7 +81,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void RemoveOldNotificaiton(int sprintId)
         {
-            this.Context.SprintNotifications.Where(n => n.SprintId == sprintId && n.SprintNotificationType == SprintNotificaitonType.Remove);
+            var toDeleteNotifications = this.Context.SprintNotifications.Where(n => n.SprintId == sprintId && n.SprintNotificationType != SprintNotificaitonType.Remove);
+            this.Context.RemoveRange(toDeleteNotifications);
         }
 
     }
