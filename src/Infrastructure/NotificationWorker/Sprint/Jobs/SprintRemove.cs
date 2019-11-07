@@ -84,109 +84,108 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         }
 
     }
-}
 
-internal sealed class SprintRemoveNotificationMessage
-{
-    public SprintRemoveNotificationMessage(int userId, string userName, string profilePicture, string code, string colorCode, string city, string country, string countryCode,
-        int sprintId, string sprintName, int distance, DateTime startTime, int numberOfPariticipants, SprintType sprintType, SprintStatus sprintStatus)
+    internal sealed class SprintRemoveNotificationMessage
     {
-        this.Sprint = new SprintInfo(sprintId, sprintName, distance, startTime, numberOfPariticipants, sprintType, sprintStatus);
-        this.DeletedBy = new RemoverInfo(userId, userName, profilePicture, code, colorCode, city, country, countryCode);
-
-    }
-
-    public SprintInfo Sprint { get; }
-    public RemoverInfo DeletedBy { get; }
-}
-
-internal static class RemoveNotificationMessageMapper
-{
-    public static SprintRemoveNotificationMessage SprintRemoveNotificationMessage(RemoveSprint remove)
-    {
-        return new SprintRemoveNotificationMessage(
-            remove.UserId,
-            remove.Name,
-            remove.ProfilePicture,
-            remove.Code,
-            remove.ColorCode,
-            remove.City,
-            remove.Country,
-            remove.CountryCode,
-            remove.SprintId,
-            remove.SprintName,
-            remove.Distance,
-            remove.StartTime,
-            remove.NumberOfParticipant,
-            remove.SprintType,
-            remove.SprintStatus);
-    }
-
-    public static List<SprintNotification> SprintRemoveNotificationDbEntry(RemoveSprint remove, List<int> participantIds)
-    {
-        List<SprintNotification> sprintNotifications = new List<SprintNotification>();
-        participantIds.ForEach(id =>
+        public SprintRemoveNotificationMessage(int userId, string userName, string profilePicture, string code, string colorCode, string city, string country, string countryCode,
+            int sprintId, string sprintName, int distance, DateTime startTime, int numberOfPariticipants, SprintType sprintType, SprintStatus sprintStatus)
         {
-            sprintNotifications.Add(new SprintNotification
+            this.Sprint = new SprintInfo(sprintId, sprintName, distance, startTime, numberOfPariticipants, sprintType, sprintStatus);
+            this.DeletedBy = new RemoverInfo(userId, userName, profilePicture, code, colorCode, city, country, countryCode);
+
+        }
+
+        public SprintInfo Sprint { get; }
+        public RemoverInfo DeletedBy { get; }
+    }
+
+    internal static class RemoveNotificationMessageMapper
+    {
+        public static SprintRemoveNotificationMessage SprintRemoveNotificationMessage(RemoveSprint remove)
+        {
+            return new SprintRemoveNotificationMessage(
+                remove.UserId,
+                remove.Name,
+                remove.ProfilePicture,
+                remove.Code,
+                remove.ColorCode,
+                remove.City,
+                remove.Country,
+                remove.CountryCode,
+                remove.SprintId,
+                remove.SprintName,
+                remove.Distance,
+                remove.StartTime,
+                remove.NumberOfParticipant,
+                remove.SprintType,
+                remove.SprintStatus);
+        }
+
+        public static List<SprintNotification> SprintRemoveNotificationDbEntry(RemoveSprint remove, List<int> participantIds)
+        {
+            List<SprintNotification> sprintNotifications = new List<SprintNotification>();
+            participantIds.ForEach(id =>
             {
-                SenderId = remove.UserId,
-                    ReceiverId = id,
-                    SprintNotificationType = SprintNotificaitonType.Remove,
-                    UpdatorId = remove.UserId,
-                    SprintId = remove.SprintId,
-                    SprintName = remove.SprintName,
-                    Distance = remove.Distance,
-                    StartDateTime = remove.StartTime,
-                    SprintType = remove.SprintType,
-                    SprintStatus = remove.SprintStatus,
-                    NumberOfParticipants = remove.NumberOfParticipant
+                sprintNotifications.Add(new SprintNotification
+                {
+                    SenderId = remove.UserId,
+                        ReceiverId = id,
+                        SprintNotificationType = SprintNotificaitonType.Remove,
+                        UpdatorId = remove.UserId,
+                        SprintId = remove.SprintId,
+                        SprintName = remove.SprintName,
+                        Distance = remove.Distance,
+                        StartDateTime = remove.StartTime,
+                        SprintType = remove.SprintType,
+                        SprintStatus = remove.SprintStatus,
+                        NumberOfParticipants = remove.NumberOfParticipant
+                });
             });
-        });
-        return sprintNotifications;
+            return sprintNotifications;
+        }
     }
-}
 
-internal sealed class RemoverInfo
-{
-    public RemoverInfo(int id, string name, string profilePicture, string code, string colorCode, string city, string country, string countryCode)
+    internal sealed class RemoverInfo
     {
-        this.Id = id;
-        this.Name = name;
-        this.ProfilePicture = profilePicture;
-        this.Code = code;
-        this.ColorCode = colorCode;
-        this.City = city;
-        this.Country = country;
-        this.CountryCode = countryCode;
+        public RemoverInfo(int id, string name, string profilePicture, string code, string colorCode, string city, string country, string countryCode)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.ProfilePicture = profilePicture;
+            this.Code = code;
+            this.ColorCode = colorCode;
+            this.City = city;
+            this.Country = country;
+            this.CountryCode = countryCode;
+        }
+        public int Id { get; }
+        public string Name { get; }
+        public string ProfilePicture { get; }
+        public string Code { get; }
+        public string ColorCode { get; }
+        public string City { get; }
+        public string Country { get; }
+        public string CountryCode { get; }
     }
-    public int Id { get; }
-    public string Name { get; }
-    public string ProfilePicture { get; }
-    public string Code { get; }
-    public string ColorCode { get; }
-    public string City { get; }
-    public string Country { get; }
-    public string CountryCode { get; }
-}
 
-internal sealed class SprintInfo
-{
-    public SprintInfo(int id, string name, int distance, DateTime startTime, int numberOfPariticipants, SprintType sprintType, SprintStatus sprintStatus)
+    internal sealed class SprintInfo
     {
-        this.Id = id;
-        this.Name = name;
-        this.Distance = distance;
-        this.StartTime = startTime;
-        this.NumberOfPariticipants = numberOfPariticipants;
-        this.SprintType = sprintType;
-        this.SprintStatus = sprintStatus;
+        public SprintInfo(int id, string name, int distance, DateTime startTime, int numberOfPariticipants, SprintType sprintType, SprintStatus sprintStatus)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Distance = distance;
+            this.StartTime = startTime;
+            this.NumberOfPariticipants = numberOfPariticipants;
+            this.SprintType = sprintType;
+            this.SprintStatus = sprintStatus;
+        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Distance { get; set; }
+        public DateTime StartTime { get; set; }
+        public int NumberOfPariticipants { get; set; }
+        public SprintType SprintType { get; set; }
+        public SprintStatus SprintStatus { get; set; }
     }
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Distance { get; set; }
-    public DateTime StartTime { get; set; }
-    public int NumberOfPariticipants { get; set; }
-    public SprintType SprintType { get; set; }
-    public SprintStatus SprintStatus { get; set; }
-}
 }

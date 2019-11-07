@@ -50,13 +50,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             int numberOfParticipant,
             SprintStatus sprintStatus,
             SprintType sprintType,
-            int removedById,
-            string removedByName,
-            string removedByProfilePicture,
-            string removedByCode,
-            string removedByCity,
-            string removedByCountry,
-            string removedByCountryCode
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string colorCode,
+            string city,
+            string country,
+            string countryCode
         );
     }
 }
