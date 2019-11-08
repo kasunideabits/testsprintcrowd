@@ -4,8 +4,16 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 {
+    /// <summary>
+    /// Factory which build sprint notificaiton message types dtos
+    /// </summary>
     public static class SprintNotificationDtoFactory
     {
+        /// <summary>
+        /// Build notification message
+        /// </summary>
+        /// <param name="notification">notificaiton instance</param>
+        /// <returns>sprint notificaiton</returns>
         public static ISprintNotification Build(SprintNotification notification)
         {
             switch (notification.SprintNotificationType)
@@ -200,9 +208,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int NumberOfParticipant { get; }
         public SprintStatus SprintStatus { get; }
         public SprintType SprintType { get; }
-
     }
 
+    /// <summary>
+    /// Info class for handle notifiation
+    /// </summary>
     internal class NotificationUserInfo
     {
         public NotificationUserInfo(int id, string name, string email, string profile, string code, string city, string country, string countryCode)

@@ -15,6 +15,12 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="userName">name for participant</param>
         /// <param name="profilePicture">profile picture url for participant</param>
         /// <param name="userCode">user code</param>
+        /// <param name="colorCode">user color code</param>
+        /// <param name="city">user city</param>
+        /// <param name="country">user country</param>
+        /// <param name="countryCode">user country cde</param>
+        /// <param name="stage">participant stage</param>
+        /// <param name="creator">creator or not</param>
         public ParticipantInfoDto(
             int userId,
             string userName,
@@ -42,8 +48,15 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// Gets color code
         /// </summary>
         public string ColorCode { get; }
-        public bool Creator { get; }
-        public ParticipantStage Stage { get; }
 
+        /// <summary>
+        /// Gets creator or not
+        /// </summary>
+        public bool Creator { get; }
+
+        /// <summary>
+        /// participant stage
+        /// </summary>
+        public ParticipantStage Stage { get; }
     }
 }
