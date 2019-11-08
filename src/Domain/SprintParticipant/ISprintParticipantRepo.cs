@@ -37,6 +37,12 @@
         /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
         Task<List<SprintParticipant>> GetParticipants(int sprintId, ParticipantStage stage);
 
+        /// <summary>
+        /// Check user exist in sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for check</param>
+        /// <param name="userId">user id for check</param>
+        /// <returns><see cref="SprintParticipant"> participant info</see></returns>
         Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId);
 
         /// <summary>
@@ -53,18 +59,81 @@
         /// <returns><see cref="SprintParticipant"> entity</see>/<returns>
         Task<SprintParticipant> Get(Expression<Func<SprintParticipant, bool>> query);
 
+        /// <summary>
+        /// Add pariticipant to sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id </param>
+        /// <param name="userId">user id</param>
+        /// <returns>participant entity</returns>
         Task<SprintParticipant> AddParticipant(int sprintId, int userId);
 
+        /// <summary>
+        /// Get sprint details with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to fetch</param>
+        /// <returns>sprint record</returns>
         Task<Sprint> GetSprint(int sprintId);
+
+        /// <summary>
+        /// Get pariticipant with given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>User record</returns>
         Task<User> GetParticipant(int userId);
+
+        /// <summary>
+        /// Get notifications for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>notificaitons</returns>
         IQueryable<Notification> GetNotification(int userId);
+
+        /// <summary>
+        /// Join participant to given sprint
+        /// </summary>
+        /// <param name="userId">user id who want to participate</param>
+        /// <param name="sprintId">sprint id to join</param>
         Task JoinSprint(int userId, int sprintId);
+
+        /// <summary>
+        /// Delete pariticipant form sprint
+        /// </summary>
+        /// <param name="userId">user id for delete</param>
+        /// <param name="sprintId">sprint id for delete</param>
         Task DeleteParticipant(int userId, int sprintId);
+
+        // <summary>
+        /// Get pariticipant count in given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint it to count</param>
+        /// <returns>count for participants</returns>
         int GetParticipantCount(int sprintId);
+
+        /// <summary>
+        /// Remove particiapnt
+        /// </summary>
+        /// <param name="participant">participant record</param>
         void RemoveParticipant(SprintParticipant participant);
+
+        /// <summary>
+        /// Get friends
+        /// </summary>
+        /// <param name="userId">user id to check friends</param>
+        /// <returns>list of friends</returns>
         IEnumerable<Friend> GetFriends(int userId);
+
+        /// <summary>
+        /// Remove notification
+        /// </summary>
+        /// <param name="notificationId">notificaiton id</param>
         Task RemoveNotification(int notificationId);
+
+        /// <summary>
+        /// generic method to find with include
+        /// </summary>
+        /// <typeparam name="T">any database entity</typeparam>
         Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new();
+
         /// <summary>
         /// saves changed to db
         /// </summary>

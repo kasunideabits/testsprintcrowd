@@ -90,6 +90,12 @@
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Check user exist in sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for check</param>
+        /// <param name="userId">user id for check</param>
+        /// <returns><see cref="SprintParticipant"> participant info</see></returns>
         public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
         {
             SprintParticipant result = await this.Context.SprintParticipant
@@ -125,6 +131,12 @@
                 .Where(query);
         }
 
+        /// <summary>
+        /// Add pariticipant to sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id </param>
+        /// <param name="userId">user id</param>
+        /// <returns>participant entity</returns>
         public async Task<SprintParticipant> AddParticipant(int sprintId, int userId)
         {
             SprintParticipant pariticipant = new SprintParticipant()
@@ -137,16 +149,31 @@
             return result.Entity;
         }
 
+        /// <summary>
+        /// Get pariticipant with given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>User record</returns>
         public async Task<User> GetParticipant(int userId)
         {
             return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
+        /// <summary>
+        /// Get sprint details with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to fetch</param>
+        /// <returns>sprint record</returns>
         public async Task<Sprint> GetSprint(int sprintId)
         {
             return await this.Context.Sprint.FirstOrDefaultAsync(u => u.Id == sprintId);
         }
 
+        /// <summary>
+        /// Get notifications for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>notificaitons</returns>
         public IQueryable<Notification> GetNotification(int userId)
         {
             return this.Context.SprintNotifications
@@ -155,6 +182,11 @@
                 .Where(n => n.ReceiverId == userId);
         }
 
+        /// <summary>
+        /// Join participant to given sprint
+        /// </summary>
+        /// <param name="userId">user id who want to participate</param>
+        /// <param name="sprintId">sprint id to join</param>
         public async Task JoinSprint(int userId, int sprintId)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
@@ -165,6 +197,11 @@
             }
         }
 
+        /// <summary>
+        /// Delete pariticipant form sprint
+        /// </summary>
+        /// <param name="userId">user id for delete</param>
+        /// <param name="sprintId">sprint id for delete</param>
         public async Task DeleteParticipant(int userId, int sprintId)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
@@ -175,16 +212,30 @@
             return;
         }
 
+        // <summary>
+        /// Get pariticipant count in given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint it to count</param>
+        /// <returns>count for participants</returns>
         public int GetParticipantCount(int sprintId)
         {
             return this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.PENDING).Count();
         }
 
+        /// <summary>
+        /// Remove particiapnt
+        /// </summary>
+        /// <param name="participant">participant record</param>
         public void RemoveParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Remove(participant);
         }
 
+        /// <summary>
+        /// Get friends
+        /// </summary>
+        /// <param name="userId">user id to check friends</param>
+        /// <returns>list of friends</returns>
         public IEnumerable<Friend> GetFriends(int userId)
         {
             return this.Context.Frineds
@@ -193,6 +244,10 @@
                 .Where(f => f.AcceptedUserId == userId || f.SharedUserId == userId);
         }
 
+        /// <summary>
+        /// Remove notification
+        /// </summary>
+        /// <param name="notificationId">notificaiton id</param>
         public async Task RemoveNotification(int notificationId)
         {
             var notification = await this.Context.Notification.Where(n => n.Id == notificationId).FirstOrDefaultAsync();
@@ -203,6 +258,10 @@
             return;
         }
 
+        /// <summary>
+        /// generic method to find with include
+        /// </summary>
+        /// <typeparam name="T">any database entity</typeparam>
         public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new()
         {
             IQueryable<T> query = this.Context.Set<T>();
