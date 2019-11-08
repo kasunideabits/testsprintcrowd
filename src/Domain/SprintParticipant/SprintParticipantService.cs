@@ -321,9 +321,9 @@
                 }
             };
             this.SprintParticipantRepo.SaveChanges();
-            foreach (int inviteeId in inviteeIds)
+            foreach (ParticipantInfoDto pariticipantInfo in participantInfoDtos)
             {
-                this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, inviteeId);
+                this.NotificationClient.SprintNotificationJobs.SprintInvite(sprintId, inviterId, pariticipantInfo.Id);
             }
             return participantInfoDtos;
         }
