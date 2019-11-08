@@ -1,6 +1,6 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
-    public class UserNotification
+    public class UserNotification : BaseEntity
     {
         public int Id { get; set; }
         public int? SenderId { get; set; }
