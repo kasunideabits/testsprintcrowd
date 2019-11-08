@@ -12,22 +12,24 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         /// <summary>
         /// Build notification message
         /// </summary>
-        /// <param name="notification">notificaiton instance</param>
+        /// <param name="sender">notification sender</param>
+        /// <param name="receiver">notification receiver</param>
+        /// <param name="notification">notification instance</param>
         /// <returns>sprint notificaiton</returns>
-        public static ISprintNotification Build(SprintNotification notification)
+        public static ISprintNotification Build(User sender, User receiver, SprintNotification notification)
         {
             switch (notification.SprintNotificationType)
             {
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.InvitationRequest:
-                    return new SprintInvitationRequestDto(notification);
+                    return new SprintInvitationRequestDto(sender, receiver, notification);
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.InvitationAccept ||
                 notificaitonType == SprintNotificaitonType.InvitationDecline:
-                    return new SprintInvitationResponseDto(notification);
+                    return new SprintInvitationResponseDto(sender, notification);
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Remove:
-                    return new SprintRemoveResponseDto(notification);
+                    return new SprintRemoveResponseDto(sender, notification);
                 default:
                     break;
             }
@@ -53,7 +55,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintInvitationRequestDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintInvitationRequestDto(SprintNotification notification) : base(notification)
+        public SprintInvitationRequestDto(User sender, User receiver, SprintNotification notification) : base(notification)
         {
             this.Data = new SprintNotificationPayload(
                 notification.SprintId,
@@ -63,8 +65,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintType,
                 notification.SprintStatus,
-                notification.Sender,
-                notification.Receiver
+                sender,
+                receiver
             );
         }
         public SprintNotificationPayload Data { get; }
@@ -72,7 +74,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintInvitationResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintInvitationResponseDto(SprintNotification notification) : base(notification)
+        public SprintInvitationResponseDto(User sender, SprintNotification notification) : base(notification)
         {
             this.Data = new SprintInvitationResponsePayload(
                 notification.SprintId,
@@ -82,7 +84,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintType,
                 notification.SprintStatus,
-                notification.Sender
+                sender
             );
         }
         public SprintInvitationResponsePayload Data { get; }
@@ -90,7 +92,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintRemoveResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintRemoveResponseDto(SprintNotification notification) : base(notification)
+        public SprintRemoveResponseDto(User sender, SprintNotification notification) : base(notification)
         {
             this.Data = new SprintRemoveResponsePayload(
                 notification.SprintId,
@@ -100,14 +102,14 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintStatus,
                 notification.SprintType,
-                notification.Sender.Id,
-                notification.Sender.Name,
-                notification.Sender.ProfilePicture,
-                notification.Sender.Code,
-                notification.Sender.ColorCode,
-                notification.Sender.City,
-                notification.Sender.Country,
-                notification.Sender.CountryCode
+                sender.Id,
+                sender.Name,
+                sender.ProfilePicture,
+                sender.Code,
+                sender.ColorCode,
+                sender.City,
+                sender.Country,
+                sender.CountryCode
             );
         }
         public SprintRemoveResponsePayload Data { get; }

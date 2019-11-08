@@ -340,10 +340,10 @@
 
             notifications.ToList().ForEach(s =>
             {
-                switch (s)
+                switch (s.Notification)
                 {
                     case SprintNotification sprintTypeNotification:
-                        result.Add(NotificationDtoFactory.Build(sprintTypeNotification));
+                        result.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
                         break;
                     default:
                         break;

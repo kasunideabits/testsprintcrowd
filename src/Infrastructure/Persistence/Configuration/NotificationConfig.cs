@@ -21,14 +21,7 @@
                 .HasValue<SprintNotification>(NotificationType.SprintNotification)
                 .HasValue<FriendNoticiation>(NotificationType.FriendNotification)
                 .HasValue<AchievementNoticiation>(NotificationType.AchivementNotification);
-            builder
-                .HasOne(n => n.Sender)
-                .WithMany(u => u.SenderNotification)
-                .HasForeignKey(n => n.SenderId);
-            builder
-                .HasOne(n => n.Receiver)
-                .WithMany(u => u.ReceiverNotification)
-                .HasForeignKey(n => n.ReceiverId);
+
         }
     }
 }

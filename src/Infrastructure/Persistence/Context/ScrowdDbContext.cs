@@ -60,6 +60,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
 
         public DbSet<SprintNotification> SprintNotifications { get; set; }
 
+        public DbSet<UserNotification> UserNotification { get; set; }
+
         public DbSet<FriendNoticiation> FriendNoticiations { get; set; }
 
         public DbSet<AchievementNoticiation> AchievementNoticiations { get; set; }
@@ -95,6 +97,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new NotificationConfig());
             builder.ApplyConfiguration(new FriendConfig());
             builder.ApplyConfiguration(new SprintInviteConfig());
+            builder.ApplyConfiguration(new UserNotificationConfig());
         }
 
         private void FixSnakeCaseNames(ModelBuilder modelBuilder)
