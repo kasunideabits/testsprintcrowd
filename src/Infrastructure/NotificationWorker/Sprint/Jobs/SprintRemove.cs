@@ -47,6 +47,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
+            data.Add("NotificationId", "100");
             data.Add("MainType", "SprintType");
             data.Add("SubType", ((int)SprintNotificaitonType.Remove).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());

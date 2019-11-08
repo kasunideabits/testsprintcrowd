@@ -98,7 +98,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 User = participant,
                 Sprint = eventInfo,
             };
-
+            data.Add("NotificationId", "101");
             data.Add("MainType", "SprintType");
             data.Add("SubType", ((int)notificationType).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
