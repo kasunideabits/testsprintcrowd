@@ -99,10 +99,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 Sprint = eventInfo,
             };
 
-            data.Add("mainType", "SprintType");
-            data.Add("subType", ((int)notificationType).ToString());
-            data.Add("createDate", DateTime.UtcNow.ToString());
-            data.Add("data", JsonConvert.SerializeObject(payload));
+            data.Add("MainType", "SprintType");
+            data.Add("SubType", ((int)notificationType).ToString());
+            data.Add("CreateDate", DateTime.UtcNow.ToString());
+            data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotificationMulticastMessageBuilder()
                 .Notification("Sprint Invite Notification", "sprint demo")
                 .Message(data)
