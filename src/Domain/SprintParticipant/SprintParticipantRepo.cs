@@ -174,12 +174,14 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>notificaitons</returns>
-        public IQueryable<Notification> GetNotification(int userId)
+        public IQueryable<NotificationInfo> GetNotification(int userId)
         {
-            return this.Context.SprintNotifications
-                .Include(n => n.Sender)
-                .Include(n => n.Receiver)
-                .Where(n => n.ReceiverId == userId);
+            return this.Context.UserNotification
+                .Where(u => u.ReceiverId == userId)
+                .Join(this.Context.Notification,
+                    u => u.NotificationId,
+                    n => n.Id,
+                    (u, n) => new NotificationInfo { Sender = u.Sender, Receiver = u.Receiver, Notification = n });
         }
 
         /// <summary>

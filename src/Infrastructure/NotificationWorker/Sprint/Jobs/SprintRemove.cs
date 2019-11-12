@@ -34,20 +34,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var notificationMsgData = RemoveNotificationMessageMapper.SprintRemoveNotificationMessage(removeSprint);
             var participantIds = this.SprintParticipantIds(removeSprint.SprintId, removeSprint.UserId);
-            var notificationSprintNotification = RemoveNotificationMessageMapper.SprintRemoveNotificationDbEntry(removeSprint, participantIds);
             this.RemoveOldNotificaiton(removeSprint.SprintId);
-            this.AddToDb(notificationSprintNotification);
-            this.Context.SaveChanges();
-            var tokens = this.GetTokens(participantIds);
-            var notificationMsg = this.BuildNotificationMessage(tokens, notificationMsgData);
-            this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+            if (participantIds.Count > 0)
+            {
+                var notificationId = this.AddToDb(removeSprint, participantIds);
+                this.Context.SaveChanges();
+                var tokens = this.GetTokens(participantIds);
+                var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
+                this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+            }
         }
 
-        private dynamic BuildNotificationMessage(List<string> tokens, SprintRemoveNotificationMessage notificationData)
+        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, SprintRemoveNotificationMessage notificationData)
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
-            data.Add("NotificationId", "100");
+            data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "SprintType");
             data.Add("SubType", ((int)SprintNotificaitonType.Remove).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
@@ -75,15 +77,40 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(f => f.Token).ToList();
         }
 
-        private void AddToDb(List<SprintNotification> notifications)
-        {
-            this.Context.SprintNotifications.AddRange(notifications);
-        }
-
         private void RemoveOldNotificaiton(int sprintId)
         {
             var toDeleteNotifications = this.Context.SprintNotifications.Where(n => n.SprintId == sprintId && n.SprintNotificationType != SprintNotificaitonType.Remove);
             this.Context.RemoveRange(toDeleteNotifications);
+        }
+
+        private int AddToDb(RemoveSprint remove, List<int> participantIds)
+        {
+            List<UserNotification> userNotifications = new List<UserNotification>();
+            var sprintNotification = new SprintNotification()
+            {
+                SprintNotificationType = SprintNotificaitonType.Remove,
+                UpdatorId = remove.UserId,
+                SprintId = remove.SprintId,
+                SprintName = remove.SprintName,
+                Distance = remove.Distance,
+                StartDateTime = remove.StartTime,
+                SprintType = remove.SprintType,
+                SprintStatus = remove.SprintStatus,
+                NumberOfParticipants = remove.NumberOfParticipant
+            };
+            var notification = this.Context.Notification.Add(sprintNotification);
+            participantIds.ForEach(id =>
+            {
+                userNotifications.Add(new UserNotification
+                {
+                    SenderId = remove.UserId,
+                        ReceiverId = id,
+                        NotificationId = notification.Entity.Id,
+                });
+
+            });
+            this.Context.UserNotification.AddRange(userNotifications);
+            return notification.Entity.Id;
         }
 
     }
@@ -122,29 +149,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 remove.NumberOfParticipant,
                 remove.SprintType,
                 remove.SprintStatus);
-        }
-
-        public static List<SprintNotification> SprintRemoveNotificationDbEntry(RemoveSprint remove, List<int> participantIds)
-        {
-            List<SprintNotification> sprintNotifications = new List<SprintNotification>();
-            participantIds.ForEach(id =>
-            {
-                sprintNotifications.Add(new SprintNotification
-                {
-                    SenderId = remove.UserId,
-                        ReceiverId = id,
-                        SprintNotificationType = SprintNotificaitonType.Remove,
-                        UpdatorId = remove.UserId,
-                        SprintId = remove.SprintId,
-                        SprintName = remove.SprintName,
-                        Distance = remove.Distance,
-                        StartDateTime = remove.StartTime,
-                        SprintType = remove.SprintType,
-                        SprintStatus = remove.SprintStatus,
-                        NumberOfParticipants = remove.NumberOfParticipant
-                });
-            });
-            return sprintNotifications;
         }
     }
 

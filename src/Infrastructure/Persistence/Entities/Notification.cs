@@ -1,16 +1,13 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
+    using System.Collections.Generic;
     using System;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration;
 
     public abstract class Notification : BaseEntity
     {
         public int Id { get; set; }
-        public int? SenderId { get; set; }
-        public int ReceiverId { get; set; }
-        public virtual User Sender { get; set; }
-        public virtual User Receiver { get; set; }
+        public virtual ICollection<UserNotification> UserNotification { get; set; }
     }
 
     public class SprintNotification : Notification

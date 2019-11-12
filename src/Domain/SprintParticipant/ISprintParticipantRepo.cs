@@ -86,7 +86,7 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>notificaitons</returns>
-        IQueryable<Notification> GetNotification(int userId);
+        IQueryable<NotificationInfo> GetNotification(int userId);
 
         /// <summary>
         /// Join participant to given sprint

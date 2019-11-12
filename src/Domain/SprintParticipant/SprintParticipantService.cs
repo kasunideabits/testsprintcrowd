@@ -62,9 +62,13 @@
         public async Task JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (sprint == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
+            }
             if (sprint != null && sprint.StartDateTime < DateTime.UtcNow)
             {
-                throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "sprint expired");
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "Sprint Expired");
             }
             else
             {
@@ -340,10 +344,10 @@
 
             notifications.ToList().ForEach(s =>
             {
-                switch (s)
+                switch (s.Notification)
                 {
                     case SprintNotification sprintTypeNotification:
-                        result.Add(NotificationDtoFactory.Build(sprintTypeNotification));
+                        result.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
                         break;
                     default:
                         break;
