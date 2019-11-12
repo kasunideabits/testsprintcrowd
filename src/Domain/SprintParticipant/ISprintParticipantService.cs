@@ -45,6 +45,9 @@
 
         /// <summary>
         /// Get all sprint info with given filters
+        /// Change request 12/11/2019 Mobile application event start now tab require user already created event
+        /// reguradless 24H, for easyness change this API to send creator event embedded with sprints
+        /// @todo remove this change and handle this in mobile side
         /// </summary>
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
