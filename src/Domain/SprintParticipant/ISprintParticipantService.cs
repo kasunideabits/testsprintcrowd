@@ -45,6 +45,9 @@
 
         /// <summary>
         /// Get all sprint info with given filters
+        /// Change request 12/11/2019 Mobile application event start now tab require user already created event
+        /// reguradless 24H, for easyness change this API to send creator event embedded with sprints
+        /// @todo remove this change and handle this in mobile side
         /// </summary>
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
@@ -54,7 +57,7 @@
         /// <param name="startFrom">start from time in minutes</param>
         /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
+        Task<GetSprintDto> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
         /// <summary>
         /// Invite user to sprint

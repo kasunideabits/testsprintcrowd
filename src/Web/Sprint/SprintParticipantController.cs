@@ -95,13 +95,13 @@
         /// </summary>
         /// <param name="query">query params for filter sprints</param>
         /// <param name="userId">user id to look up</param>
-        /// <returns><see cref="SprintInfo"> all sprints </see></returns>
+        /// <returns><see cref="GetSprintDto"> all sprints </see></returns>
         [HttpGet("all/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ResponseObject), 400)]
-        public IActionResult GetSprints([FromQuery] SprintQuery query, int userId)
+        public async Task<IActionResult> GetSprints([FromQuery] SprintQuery query, int userId)
         {
-            var result = this.SprintParticipantService.GetSprints(
+            var result = await this.SprintParticipantService.GetSprints(
                 userId,
                 query.SprintType,
                 query.ParticipantStage,
