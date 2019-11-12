@@ -203,6 +203,9 @@
 
         /// <summary>
         /// Get all sprint info with given filters
+        /// Change request 12/11/2019 Mobile application event start now tab require user already created event
+        /// reguradless 24H, for easyness change this API to send creator event embedded with sprints
+        /// @todo remove this change and handle this in mobile side
         /// </summary>
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
@@ -212,7 +215,7 @@
         /// <param name="startFrom">start from time in minutes</param>
         /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        public List<SprintInfo> GetSprints(
+        public async Task<GetSprintDto> GetSprints(
             int userId,
             SprintType? sprintType,
             ParticipantStage? stage,
@@ -232,9 +235,11 @@
             {
                 time = time.AddHours((int)startFrom);
             }
+            Console.WriteLine((int)SprintStatus.ARCHIVED);
 
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
+                s.Sprint.CreatedBy.Id != userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
                 (s.Stage == stage || stage == null) &&
                 (s.Sprint.Status != (int)SprintStatus.ARCHIVED) &&
@@ -256,7 +261,26 @@
                 );
                 sprintInfo.Add(sprint);
             });
-            return sprintInfo;
+            var getSprintDto = new GetSprintDto() { Other = sprintInfo };
+            Expression<Func<SprintParticipant, bool>> creatorQuery = s =>
+                s.UserId == userId &&
+                s.Sprint.CreatedBy.Id == userId &&
+                s.Sprint.StartDateTime > DateTime.UtcNow &&
+                s.Sprint.Status != (int)SprintStatus.ARCHIVED;
+            var creatorEvent = await this.SprintParticipantRepo.Get(creatorQuery);
+            if (creatorEvent != null)
+            {
+                var creatorDto = new SprintInfo(
+                    creatorEvent.Sprint.Id,
+                    creatorEvent.Sprint.Name,
+                    creatorEvent.Sprint.Distance,
+                    creatorEvent.Sprint.StartDateTime,
+                    creatorEvent.Sprint.Type,
+                    creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
+                );
+                getSprintDto.Creator = creatorDto;
+            }
+            return getSprintDto;
         }
 
         /// <summary>

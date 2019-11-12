@@ -99,9 +99,9 @@
         [HttpGet("all/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ResponseObject), 400)]
-        public IActionResult GetSprints([FromQuery] SprintQuery query, int userId)
+        public async Task<IActionResult> GetSprints([FromQuery] SprintQuery query, int userId)
         {
-            var result = this.SprintParticipantService.GetSprints(
+            var result = await this.SprintParticipantService.GetSprints(
                 userId,
                 query.SprintType,
                 query.ParticipantStage,
