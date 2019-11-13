@@ -7,19 +7,23 @@ using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 using SprintCrowd.BackEnd.Infrastructure.PushNotification;
+using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
 
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
     public class SprintRemove : ISprintRemove
     {
-        public SprintRemove(ScrowdDbContext context, IPushNotificationClient client)
+        public SprintRemove(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory)
         {
             this.Context = context;
             this.PushNotificationClient = client;
+            this.AblyConnectionFactory = ablyFactory;
+
         }
 
         private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
+        private IAblyConnectionFactory AblyConnectionFactory { get; }
 
         public void Run(object message = null)
         {
@@ -42,7 +46,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 var tokens = this.GetTokens(participantIds);
                 var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+                this.SendAblyMessage(notificationMsgData.Sprint);
             }
+        }
+
+        private void SendAblyMessage(SprintInfo message)
+        {
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + message.Id);
+            channel.Publish("Remove", message);
         }
 
         private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, SprintRemoveNotificationMessage notificationData)
@@ -158,12 +169,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             this.Id = id;
             this.Name = name;
-            this.ProfilePicture = profilePicture;
-            this.Code = code;
-            this.ColorCode = colorCode;
-            this.City = city;
-            this.Country = country;
-            this.CountryCode = countryCode;
+            this.ProfilePicture = profilePicture ?? string.Empty;
+            this.Code = code ?? string.Empty;;
+            this.ColorCode = colorCode ?? string.Empty;;
+            this.City = city ?? string.Empty;;
+            this.Country = country ?? string.Empty;;
+            this.CountryCode = countryCode ?? string.Empty;;
         }
         public int Id { get; }
         public string Name { get; }

@@ -78,6 +78,7 @@
         /// Update instance of SprintService
         /// </summary>
         public async Task<UpdateSprintDto> UpdateSprint(
+            int userId,
             int sprintId,
             string name,
             int? distance,
@@ -88,6 +89,14 @@
         {
             Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
             var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+            if (sprintAavail == null)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
+            }
+            else if (sprintAavail.CreatedBy.Id != userId)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
+            }
             if (name != String.Empty)
             {
                 sprintAavail.Name = name;
@@ -119,6 +128,16 @@
             }
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
+            this.NotificationClient.SprintNotificationJobs.SprintUpdate(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartDateTime,
+                sprint.NumberOfParticipants,
+                (SprintStatus)sprint.Status,
+                (SprintType)sprint.Type,
+                sprint.CreatedBy.Id
+            );
             UpdateSprintDto result = new UpdateSprintDto(
                 sprint.Id,
                 sprint.Name,
@@ -183,7 +202,7 @@
         /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
         public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
         {
-            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Type != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
+            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Status != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
             var sprint = await this.SprintRepo.GetSprint(predicate);
             if (sprint == null)
             {
