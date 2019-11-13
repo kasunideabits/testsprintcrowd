@@ -103,5 +103,32 @@
             await this.SprintService.Remove(user.Id, sprintId);
             return this.Ok();
         }
+
+        /// <summary>
+        /// update sprint
+        /// </summary>
+        [HttpPut("update/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.UpdateSprint(
+                user.Id,
+                sprintId,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
+
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
+        }
     }
 }

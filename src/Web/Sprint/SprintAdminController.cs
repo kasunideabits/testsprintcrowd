@@ -145,7 +145,9 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
         {
+            User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.UpdateSprint(
+                user.Id,
                 sprintId,
                 sprint.Name,
                 sprint.Distance,

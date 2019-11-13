@@ -55,7 +55,7 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        Task<UpdateSprintDto> UpdateSprint(int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
+        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
 
         /// <summary>
         /// Remove sprint

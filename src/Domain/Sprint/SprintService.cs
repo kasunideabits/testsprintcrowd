@@ -78,6 +78,7 @@
         /// Update instance of SprintService
         /// </summary>
         public async Task<UpdateSprintDto> UpdateSprint(
+            int userId,
             int sprintId,
             string name,
             int? distance,
@@ -88,6 +89,14 @@
         {
             Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
             var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+            if (sprintAavail == null)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
+            }
+            else if (sprintAavail.CreatedBy.Id != userId)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
+            }
             if (name != String.Empty)
             {
                 sprintAavail.Name = name;
