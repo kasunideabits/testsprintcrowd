@@ -128,6 +128,16 @@
             }
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
+            this.NotificationClient.SprintNotificationJobs.SprintUpdate(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartDateTime,
+                sprint.NumberOfParticipants,
+                (SprintStatus)sprint.Status,
+                (SprintType)sprint.Type,
+                sprint.CreatedBy.Id
+            );
             UpdateSprintDto result = new UpdateSprintDto(
                 sprint.Id,
                 sprint.Name,
