@@ -192,7 +192,7 @@
         /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
         public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
         {
-            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Type != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
+            Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Status != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
             var sprint = await this.SprintRepo.GetSprint(predicate);
             if (sprint == null)
             {
