@@ -59,5 +59,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             string country,
             string countryCode
         );
+
+        void SprintUpdate(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipant, SprintStatus sprintStatus, SprintType sprintType, int creatorId);
     }
 }

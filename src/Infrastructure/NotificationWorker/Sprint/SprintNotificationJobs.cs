@@ -98,5 +98,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
                 countryCode);
             new NotificationWorker<SprintRemove>().Invoke(message);
         }
+
+        public void SprintUpdate(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipant, SprintStatus sprintStatus, SprintType sprintType, int creatorId)
+        {
+            var message = new UpdateSprint(sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId);
+            new NotificationWorker<SprintUpdate>().Invoke(message);
+        }
     }
 }
