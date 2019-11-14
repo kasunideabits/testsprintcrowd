@@ -408,6 +408,7 @@
             }
 
             this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
+            this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
             this.SprintParticipantRepo.SaveChanges();
 
         }
