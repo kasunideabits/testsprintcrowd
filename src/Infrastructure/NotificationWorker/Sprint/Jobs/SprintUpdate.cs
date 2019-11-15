@@ -40,15 +40,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(updateSprint);
             var participantIds = this.SprintParticipantIds(updateSprint.SprintId, updateSprint.CreatorId);
+            this.UpdateSprintNotification(updateSprint);
             if (participantIds.Count > 0)
             {
                 var notificationId = this.AddToDb(updateSprint, participantIds, updateSprint.CreatorId);
-                this.Context.SaveChanges();
                 var tokens = this.GetTokens(participantIds);
                 var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
                 this.SendAblyMessage(notificationMsgData.Sprint);
             }
+            this.Context.SaveChanges();
         }
 
         private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, UpdateSprintNotificaitonMessage notificationData)
@@ -84,6 +85,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
         {
+
             List<UserNotification> userNotifications = new List<UserNotification>();
             var sprintNotification = new SprintNotification()
             {

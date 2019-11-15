@@ -129,6 +129,13 @@
         Task RemoveNotification(int notificationId);
 
         /// <summary>
+        /// Remove sprint notifications
+        /// </summary>
+        /// <param name="sprintId">sprint id to remove</param>
+        /// <param name="userId">user id to remove</param>
+        void RemoveSprintNotification(int sprintId, int userId);
+
+        /// <summary>
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
