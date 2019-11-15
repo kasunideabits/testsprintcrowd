@@ -13,15 +13,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <summary>
         /// Initialize class
         /// </summary>
-        /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintMarkAttendance(ScrowdDbContext context, IAblyConnectionFactory ablyFactory)
+        public SprintMarkAttendance(IAblyConnectionFactory ablyFactory)
         {
-            this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
         }
 
-        private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
 
         /// <summary>

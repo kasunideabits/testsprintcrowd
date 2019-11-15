@@ -45,6 +45,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this.Sprint = this.GetSprint(this._sprintId);
                 this.Inviter = this.GetParticipant(this._inviterId);
                 this.Invitee = this.GetParticipant(this._inviteeId);
+                
                 if (this.Sprint != null && this.Invitee != null && this.Inviter != null)
                 {
                     var notificationId = this.AddToDatabaase();

@@ -1,9 +1,7 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.Linq.Expressions;
     using System;
-    using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -11,17 +9,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
 
-    public class SprintUpdate : ISprintUpdate
+    public class SprintUpdate : SprintNotificationJobBase, ISprintUpdate
     {
-        public SprintUpdate(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory)
+        public SprintUpdate(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory) : base(context)
         {
-            this.Context = context;
             this.PushNotificationClient = client;
             this.AblyConnectionFactory = ablyFactory;
-
         }
 
-        private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
 
@@ -39,198 +34,51 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(UpdateSprint updateSprint)
         {
             var editor = this.GetParticipant(updateSprint.CreatorId);
-            var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(editor, updateSprint);
-            var participantIds = this.SprintParticipantIds(updateSprint.SprintId, updateSprint.CreatorId);
-            this.UpdateSprintNotification(updateSprint);
+            var sprint = this.MapSprint(updateSprint);
+            var updator = this.MapUpdator(editor);
+            var notificationMsgData = new UpdateSprintNotificaitonMessage(updator, sprint);
+            var query = GetParitcipantQuery(updateSprint.SprintId, updateSprint.CreatorId);
+            var participantIds = this.SprintParticipantIds(query);
+            this.UpdateSprintNotification(updateSprint.SprintId, updateSprint.NewSprintName, updateSprint.Distance, updateSprint.StartTime);
             if (participantIds.Count > 0)
             {
-                var notificationId = this.AddToDb(updateSprint, participantIds, updateSprint.CreatorId);
+                var notificationId = this.AddToDatabase(sprint, updateSprint.CreatorId, participantIds, SprintNotificaitonType.Edit);
                 var tokens = this.GetTokens(participantIds);
-                var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
+                var notificationMsg = this.BuildNotificationMessage(notificationId, (int)SprintNotificaitonType.Edit, tokens, notificationMsgData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
-                this.SendAblyMessage(notificationMsgData.Sprint);
+                this.SendAblyMessage(sprint);
             }
-            this.Context.SaveChanges();
+            this.SaveChanges();
         }
 
-        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, UpdateSprintNotificaitonMessage notificationData)
+        private static Expression<Func<SprintParticipant, bool>> GetParitcipantQuery(int sprintId, int creatorId) => s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId;
+
+        private NotificationSprintInfo MapSprint(UpdateSprint info)
         {
-            var data = new Dictionary<string, string>();
-            var payload = notificationData;
-            data.Add("NotificationId", notificationId.ToString());
-            data.Add("MainType", "SprintType");
-            data.Add("SubType", ((int)SprintNotificaitonType.Edit).ToString());
-            data.Add("CreateDate", DateTime.UtcNow.ToString());
-            data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
-                .Notification("Sprint Invite Notification", "sprint demo")
-                .Message(data)
-                .Tokens(tokens)
-                .Build();
-            return message;
+            return this.SetSprintInfo(info.SprintId, info.OldSprintName, info.Distance, info.StartTime, info.NumberOfParticipant, info.SprintType, info.SprintStatus);
         }
 
-        private void SendAblyMessage(UpdatedSprintInfo message)
+        private NotificationUserInfo MapUpdator(User user)
+        {
+            return this.SetSprintPariticipant(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode);
+        }
+
+        private void SendAblyMessage(NotificationSprintInfo message)
         {
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + message.Id);
             channel.Publish("Edit", message);
         }
 
-        private List<int> SprintParticipantIds(int sprintId, int creatorId)
+        internal class UpdateSprintNotificaitonMessage
         {
-            return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId)
-                .Select(s => s.UserId)
-                .ToList();
-        }
-
-        private User GetParticipant(int userId) => this.Context.User.FirstOrDefault(u => u.Id == userId);
-
-        private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
-        {
-
-            List<UserNotification> userNotifications = new List<UserNotification>();
-            var sprintNotification = new SprintNotification()
+            public UpdateSprintNotificaitonMessage(NotificationUserInfo user, NotificationSprintInfo sprint)
             {
-                SprintNotificationType = SprintNotificaitonType.Edit,
-                UpdatorId = creatorId,
-                SprintId = edit.SprintId,
-                SprintName = edit.OldSprintName,
-                Distance = edit.Distance,
-                StartDateTime = edit.StartTime,
-                SprintType = edit.SprintType,
-                SprintStatus = edit.SprintStatus,
-                NumberOfParticipants = edit.NumberOfParticipant
-            };
-            var notification = this.Context.Notification.Add(sprintNotification);
-            participantIds.ForEach(id =>
-            {
-                userNotifications.Add(new UserNotification
-                {
-                    SenderId = creatorId,
-                        ReceiverId = id,
-                        NotificationId = notification.Entity.Id,
-                });
-
-            });
-            this.Context.UserNotification.AddRange(userNotifications);
-            return notification.Entity.Id;
-        }
-
-        private void UpdateSprintNotification(UpdateSprint edit)
-        {
-            List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
-            existingNotification.ForEach(n =>
-            {
-                n.SprintName = edit.NewSprintName;
-                n.Distance = edit.Distance;
-                n.StartDateTime = edit.StartTime;
-            });
-            this.Context.SprintNotifications.UpdateRange(existingNotification);
-        }
-
-        private List<string> GetTokens(List<int> participantIds)
-        {
-            return this.Context.FirebaseToken
-                .Where(f => participantIds.Contains(f.User.Id))
-                .Select(f => f.Token).ToList();
-        }
-
-        internal sealed class UpdateSprintNotificaitonMessage
-        {
-            public UpdateSprintNotificaitonMessage(
-                int sprintId,
-                string sprintName,
-                int distance,
-                DateTime startTime,
-                int numberOfParticipants,
-                SprintType sprintType,
-                SprintStatus sprintStatus,
-                int editorId,
-                string editorName,
-                string editorProfilePicture,
-                string editorEmail,
-                string editorCode,
-                string editorCity,
-                string editorCountry,
-                string editorCountryCode)
-            {
-                this.Sprint = new UpdatedSprintInfo(sprintId, sprintName, distance, startTime, numberOfParticipants, sprintType, sprintStatus);
-                this.EditedBy = new EditorInfo(editorId, editorName, editorProfilePicture, editorEmail, editorCode, editorCity, editorCountry, editorCountryCode);
+                this.Sprint = sprint;
+                this.EditedBy = user;
             }
 
-            public UpdatedSprintInfo Sprint { get; }
-            public EditorInfo EditedBy { get; }
-
-        }
-
-        internal class EditorInfo
-        {
-            public EditorInfo(int id, string name, string profilePicture, string email, string code, string city, string country, string countryCode)
-            {
-                this.Id = id;
-                this.Name = name;
-                this.ProfilePicture = profilePicture ?? string.Empty;
-                this.Email = email;
-                this.Code = code ?? string.Empty;;
-                this.City = city ?? string.Empty;;
-                this.Country = country ?? string.Empty;;
-                this.CountryCode = countryCode ?? string.Empty;;
-            }
-
-            public int Id { get; }
-            public string Name { get; }
-            public string ProfilePicture { get; }
-            public string Email { get; }
-            public string Code { get; }
-            public string ColorCode { get; }
-            public string City { get; }
-            public string Country { get; }
-            public string CountryCode { get; }
-        }
-
-        internal sealed class UpdatedSprintInfo
-        {
-            public UpdatedSprintInfo(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipants, SprintType sprintType, SprintStatus sprintStatus)
-            {
-                this.Id = sprintId;
-                this.Name = sprintName;
-                this.Distance = distance;
-                this.StartTime = startTime;
-                this.NumberOfParticipants = numberOfParticipants;
-                this.SprintStatus = sprintStatus;
-                this.SprintType = sprintType;
-            }
-            public int Id { get; }
-            public string Name { get; }
-            public int Distance { get; }
-            public DateTime StartTime { get; }
-            public int NumberOfParticipants { get; }
-            public SprintStatus SprintStatus { get; }
-            public SprintType SprintType { get; }
-        }
-
-        internal static class UpdateNotificationMessageMapper
-        {
-            public static UpdateSprintNotificaitonMessage UpdateMessage(User editor, UpdateSprint edit)
-            {
-                return new UpdateSprintNotificaitonMessage(
-                    edit.SprintId,
-                    edit.OldSprintName,
-                    edit.Distance,
-                    edit.StartTime,
-                    edit.NumberOfParticipant,
-                    edit.SprintType,
-                    edit.SprintStatus,
-                    editor.Id,
-                    editor.Name,
-                    editor.ProfilePicture,
-                    editor.Email,
-                    editor.Code,
-                    editor.City,
-                    editor.Country,
-                    editor.CountryCode);
-            }
+            public NotificationSprintInfo Sprint { get; }
+            public NotificationUserInfo EditedBy { get; }
         }
     }
 }
