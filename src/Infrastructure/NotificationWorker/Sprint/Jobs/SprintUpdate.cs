@@ -77,41 +77,61 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int creatorId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) && s.UserId != creatorId)
+                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId)
                 .Select(s => s.UserId)
                 .ToList();
         }
 
         private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
-        {
-            List<UserNotification> userNotifications = new List<UserNotification>();
-            var sprintNotification = new SprintNotification()
             {
-                SprintNotificationType = SprintNotificaitonType.Edit,
-                UpdatorId = creatorId,
-                SprintId = edit.SprintId,
-                SprintName = edit.SprintName,
-                Distance = edit.Distance,
-                StartDateTime = edit.StartTime,
-                SprintType = edit.SprintType,
-                SprintStatus = edit.SprintStatus,
-                NumberOfParticipants = edit.NumberOfParticipant
-            };
-            var notification = this.Context.Notification.Add(sprintNotification);
-            participantIds.ForEach(id =>
-            {
-                userNotifications.Add(new UserNotification
+                List<UserNotification> userNotifications = new List<UserNotification>();
+                var sprintNotification = new SprintNotification()
                 {
-                    SenderId = creatorId,
-                        ReceiverId = id,
-                        NotificationId = notification.Entity.Id,
+                    SprintNotificationType = SprintNotificaitonType.Edit,
+                    UpdatorId = creatorId,
+                    SprintId = edit.SprintId,
+                    SprintName = edit.OldSprintName,
+                    Distance = edit.Distance,
+                    StartDateTime = edit.StartTime,
+                    SprintType = edit.SprintType,
+                    SprintStatus = edit.SprintStatus,
+                    NumberOfParticipants = edit.NumberOfParticipant
+                };
+                var notification = this.Context.Notification.Add(sprintNotification);
+                participantIds.ForEach(id =>
+                {
+                    userNotifications.Add(new UserNotification
+                    {
+                        SenderId = creatorId,
+                            ReceiverId = id,
+                            NotificationId = notification.Entity.Id,
+                    });
+
                 });
+                this.Context.UserNotification.AddRange(userNotifications);
+                return notification.Entity.Id;
+            }
 
-            });
-            this.Context.UserNotification.AddRange(userNotifications);
-            return notification.Entity.Id;
-        }
+            <<
+            <<
+            <<< Updated upstream ==
+            ==
+            == =
+            private void UpdateSprintNotification(UpdateSprint edit)
+            {
+                List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
+                existingNotification.ForEach(n =>
+                {
+                    n.SprintName = edit.NewSprintName;
+                    n.Distance = edit.Distance;
+                    n.StartDateTime = edit.StartTime;
+                });
+                this.Context.SprintNotifications.UpdateRange(existingNotification);
+            }
 
+            >>
+            >>
+            >>> Stashed changes
         private List<string> GetTokens(List<int> participantIds)
         {
             return this.Context.FirebaseToken
@@ -157,7 +177,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             {
                 return new UpdateSprintNotificaitonMessage(
                     edit.SprintId,
-                    edit.SprintName,
+                    edit.OldSprintName,
                     edit.Distance,
                     edit.StartTime,
                     edit.NumberOfParticipant,
