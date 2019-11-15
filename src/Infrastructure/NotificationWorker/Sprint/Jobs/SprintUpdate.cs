@@ -78,7 +78,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int creatorId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage == ParticipantStage.DECLINE || s.Stage == ParticipantStage.COMPLETED) && s.UserId != creatorId)
+                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId)
                 .Select(s => s.UserId)
                 .ToList();
         }
@@ -92,7 +92,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 SprintNotificationType = SprintNotificaitonType.Edit,
                 UpdatorId = creatorId,
                 SprintId = edit.SprintId,
-                SprintName = edit.SprintName,
+                SprintName = edit.OldSprintName,
                 Distance = edit.Distance,
                 StartDateTime = edit.StartTime,
                 SprintType = edit.SprintType,
@@ -119,7 +119,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
             existingNotification.ForEach(n =>
             {
-                n.SprintName = edit.SprintName;
+                n.SprintName = edit.NewSprintName;
                 n.Distance = edit.Distance;
                 n.StartDateTime = edit.StartTime;
             });
@@ -171,7 +171,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             {
                 return new UpdateSprintNotificaitonMessage(
                     edit.SprintId,
-                    edit.SprintName,
+                    edit.OldSprintName,
                     edit.Distance,
                     edit.StartTime,
                     edit.NumberOfParticipant,
