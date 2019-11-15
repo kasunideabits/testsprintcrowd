@@ -171,6 +171,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this.Id = id;
                 this.Name = name;
                 this.ProfilePicture = profilePicture ?? string.Empty;
+                this.Email = email;
                 this.Code = code ?? string.Empty;;
                 this.City = city ?? string.Empty;;
                 this.Country = country ?? string.Empty;;
@@ -180,6 +181,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             public int Id { get; }
             public string Name { get; }
             public string ProfilePicture { get; }
+            public string Email { get; }
             public string Code { get; }
             public string ColorCode { get; }
             public string City { get; }
