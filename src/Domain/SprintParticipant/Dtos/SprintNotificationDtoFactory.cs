@@ -30,6 +30,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Remove:
                     return new SprintRemoveResponseDto(sender, notification);
+                case SprintNotificaitonType notificaitonType when
+                notificaitonType == SprintNotificaitonType.Edit:
+                    return new SprintEditResponseDto(sender, notification);
+
                 default:
                     break;
             }
@@ -113,6 +117,43 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             );
         }
         public SprintRemoveResponsePayload Data { get; }
+    }
+
+    internal class SprintEditResponseDto : SprintNotificationBaseDto, ISprintNotification
+    {
+        public SprintEditResponseDto(User editor, SprintNotification notification) : base(notification)
+        {
+            this.Data = new SprintEditResponsePayload(editor, notification);
+        }
+        public SprintEditResponsePayload Data { get; }
+    }
+
+    internal class SprintEditResponsePayload
+    {
+        public SprintEditResponsePayload(User editer, SprintNotification notification)
+        {
+            this.Sprint = new SprintNotificationInfo(
+                notification.SprintId,
+                notification.SprintName,
+                notification.Distance,
+                notification.StartDateTime,
+                notification.NumberOfParticipants,
+                notification.SprintType,
+                notification.SprintStatus
+            );
+            this.EditedBy = new NotificationUserInfo(
+                editer.Id,
+                editer.Name,
+                editer.Email,
+                editer.ProfilePicture,
+                editer.Code,
+                editer.City,
+                editer.Country,
+                editer.CountryCode
+            );
+        }
+        public SprintNotificationInfo Sprint { get; }
+        public NotificationUserInfo EditedBy { get; }
     }
 
     internal class SprintRemoveResponsePayload
