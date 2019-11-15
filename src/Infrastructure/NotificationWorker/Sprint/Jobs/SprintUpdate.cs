@@ -40,15 +40,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(updateSprint);
             var participantIds = this.SprintParticipantIds(updateSprint.SprintId, updateSprint.CreatorId);
+            this.UpdateSprintNotification(updateSprint);
             if (participantIds.Count > 0)
             {
                 var notificationId = this.AddToDb(updateSprint, participantIds, updateSprint.CreatorId);
-                this.Context.SaveChanges();
                 var tokens = this.GetTokens(participantIds);
                 var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
                 this.SendAblyMessage(notificationMsgData.Sprint);
             }
+            this.Context.SaveChanges();
         }
 
         private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, UpdateSprintNotificaitonMessage notificationData)
@@ -77,13 +78,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int creatorId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) && s.UserId != creatorId)
+                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage == ParticipantStage.DECLINE || s.Stage == ParticipantStage.COMPLETED) && s.UserId != creatorId)
                 .Select(s => s.UserId)
                 .ToList();
         }
 
         private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
         {
+
             List<UserNotification> userNotifications = new List<UserNotification>();
             var sprintNotification = new SprintNotification()
             {
@@ -110,6 +112,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             });
             this.Context.UserNotification.AddRange(userNotifications);
             return notification.Entity.Id;
+        }
+
+        private void UpdateSprintNotification(UpdateSprint edit)
+        {
+            List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
+            existingNotification.ForEach(n =>
+            {
+                n.SprintName = edit.SprintName;
+                n.Distance = edit.Distance;
+                n.StartDateTime = edit.StartTime;
+            });
+            this.Context.SprintNotifications.UpdateRange(existingNotification);
         }
 
         private List<string> GetTokens(List<int> participantIds)
