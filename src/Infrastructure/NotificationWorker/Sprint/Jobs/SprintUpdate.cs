@@ -38,7 +38,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification(UpdateSprint updateSprint)
         {
-            var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(updateSprint);
+            var editor = this.GetParticipant(updateSprint.CreatorId);
+            var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(editor, updateSprint);
             var participantIds = this.SprintParticipantIds(updateSprint.SprintId, updateSprint.CreatorId);
             this.UpdateSprintNotification(updateSprint);
             if (participantIds.Count > 0)
@@ -82,6 +83,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(s => s.UserId)
                 .ToList();
         }
+
+        private User GetParticipant(int userId) => this.Context.User.FirstOrDefault(u => u.Id == userId);
 
         private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
         {
@@ -135,13 +138,53 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         internal sealed class UpdateSprintNotificaitonMessage
         {
-            public UpdateSprintNotificaitonMessage(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipants, SprintType sprintType, SprintStatus sprintStatus)
+            public UpdateSprintNotificaitonMessage(
+                int sprintId,
+                string sprintName,
+                int distance,
+                DateTime startTime,
+                int numberOfParticipants,
+                SprintType sprintType,
+                SprintStatus sprintStatus,
+                int editorId,
+                string editorName,
+                string editorProfilePicture,
+                string editorEmail,
+                string editorCode,
+                string editorCity,
+                string editorCountry,
+                string editorCountryCode)
             {
                 this.Sprint = new UpdatedSprintInfo(sprintId, sprintName, distance, startTime, numberOfParticipants, sprintType, sprintStatus);
+                this.EditedBy = new EditorInfo(editorId, editorName, editorProfilePicture, editorEmail, editorCode, editorCity, editorCountry, editorCountryCode);
             }
 
             public UpdatedSprintInfo Sprint { get; }
+            public EditorInfo EditedBy { get; }
 
+        }
+
+        internal class EditorInfo
+        {
+            public EditorInfo(int id, string name, string profilePicture, string email, string code, string city, string country, string countryCode)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.ProfilePicture = profilePicture ?? string.Empty;
+                this.Code = code ?? string.Empty;;
+                this.City = city ?? string.Empty;;
+                this.Country = country ?? string.Empty;;
+                this.CountryCode = countryCode ?? string.Empty;;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public string ProfilePicture { get; }
+            public string Code { get; }
+            public string ColorCode { get; }
+            public string City { get; }
+            public string Country { get; }
+            public string CountryCode { get; }
         }
 
         internal sealed class UpdatedSprintInfo
@@ -167,7 +210,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         internal static class UpdateNotificationMessageMapper
         {
-            public static UpdateSprintNotificaitonMessage UpdateMessage(UpdateSprint edit)
+            public static UpdateSprintNotificaitonMessage UpdateMessage(User editor, UpdateSprint edit)
             {
                 return new UpdateSprintNotificaitonMessage(
                     edit.SprintId,
@@ -176,7 +219,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     edit.StartTime,
                     edit.NumberOfParticipant,
                     edit.SprintType,
-                    edit.SprintStatus);
+                    edit.SprintStatus,
+                    editor.Id,
+                    editor.Name,
+                    editor.ProfilePicture,
+                    editor.Email,
+                    editor.Code,
+                    editor.City,
+                    editor.Country,
+                    editor.CountryCode);
             }
         }
     }
