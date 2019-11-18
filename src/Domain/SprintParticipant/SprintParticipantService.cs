@@ -147,9 +147,8 @@
             try
             {
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId;
-                var participant = await this.SprintParticipantRepo.FindWithInclude<SprintParticipant>(participantQuery, "Sprint", "User");
+                var participant = await this.SprintParticipantRepo.Get(participantQuery);
                 participant.Stage = ParticipantStage.QUIT;
-                this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
@@ -158,6 +157,7 @@
                     participant.Sprint.NumberOfParticipants,
                     (SprintStatus)participant.Sprint.Status,
                     (SprintType)participant.Sprint.Type,
+                    participant.Sprint.CreatedBy.Id,
                     participant.UserId,
                     participant.User.Name,
                     participant.User.ProfilePicture,
@@ -165,6 +165,7 @@
                     participant.User.City,
                     participant.User.Country,
                     participant.User.CountryCode);
+                this.SprintParticipantRepo.SaveChanges();
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)

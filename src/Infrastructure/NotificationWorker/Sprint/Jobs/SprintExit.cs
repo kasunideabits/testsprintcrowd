@@ -1,7 +1,14 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System;
+    using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
 
     /// <summary>
@@ -14,14 +21,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// </summary>
         /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintExit(ScrowdDbContext context, IAblyConnectionFactory ablyFactory)
+        public SprintExit(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, IPushNotificationClient client)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
+            this.PushNotificationClient = client;
         }
 
         private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
+        private IPushNotificationClient PushNotificationClient { get; }
 
         /// <summary>
         /// Run notification logic
@@ -39,7 +48,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void AblyMessage(ExitSprint exitSprint)
         {
-            var notificaitonMsg = NotificationMessageMapper.AblyNotificationMessageMapper(exitSprint);
+            var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(exitSprint);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + exitSprint.SprintId);
             channel.Publish("Exit", notificaitonMsg);
         }
@@ -49,7 +58,62 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             if (exitSprint.SprintType == Application.SprintType.PrivateSprint)
             {
                 // do realy need to send push notification ?
+                int notificationId = this.AddToDb(exitSprint, exitSprint.CreatorId);
+                var notificationData = ExitNotificationMessageMapper.PushNotificationMessgeMapper(exitSprint);
+                var tokens = this.GetTokens(exitSprint.CreatorId);
+                var notificationMessage = this.BuildNotificationMessage(notificationId, tokens, notificationData);
+                this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
+                this.Context.SaveChanges();
             }
+        }
+
+        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, ExitPushNotificationMesssage notificationData)
+        {
+            var data = new Dictionary<string, string>();
+            var payload = notificationData;
+            data.Add("NotificationId", notificationId.ToString());
+            data.Add("MainType", "SprintType");
+            data.Add("SubType", ((int)SprintNotificaitonType.LeaveParticipant).ToString());
+            data.Add("CreateDate", DateTime.UtcNow.ToString());
+            data.Add("Data", JsonConvert.SerializeObject(payload));
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+                .Notification("Sprint Invite Notification", "sprint demo")
+                .Message(data)
+                .Tokens(tokens)
+                .Build();
+            return message;
+        }
+
+        private int AddToDb(ExitSprint exitSprint, int creatorId)
+        {
+            var sprintNotification = new SprintNotification()
+            {
+                SprintNotificationType = SprintNotificaitonType.LeaveParticipant,
+                UpdatorId = exitSprint.UserId,
+                SprintId = exitSprint.SprintId,
+                SprintName = exitSprint.SprintName,
+                Distance = exitSprint.Distance,
+                StartDateTime = exitSprint.StartTime,
+                SprintType = exitSprint.SprintType,
+                SprintStatus = exitSprint.SprintStatus,
+                NumberOfParticipants = exitSprint.NumberOfParticipant,
+            };
+            var notification = this.Context.Notification.Add(sprintNotification);
+            var userNotification = new UserNotification
+            {
+                SenderId = exitSprint.UserId,
+                ReceiverId = creatorId,
+                NotificationId = notification.Entity.Id,
+            };
+            this.Context.UserNotification.Add(userNotification);
+            return notification.Entity.Id;
+        }
+
+        private List<string> GetTokens(int creatorId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == creatorId)
+                .Select(f => f.Token).ToList();
         }
 
     }
@@ -82,7 +146,65 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public string SprintName { get; private set; }
     }
 
-    internal static class NotificationMessageMapper
+    internal class ExitPushNotificationMesssage
+    {
+        public ExitPushNotificationMesssage(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipants, SprintType type, SprintStatus status,
+            int id, string name, string profilePicture, string code, string city, string country, string countryCode)
+        {
+            this.Sprint = new ExitSprintInfo(sprintId, sprintName, distance, startTime, numberOfParticipants, type, status);
+            this.User = new ExitUserInfo(id, name, profilePicture, code, city, country, countryCode);
+        }
+
+        public ExitSprintInfo Sprint { get; }
+        public ExitUserInfo User { get; }
+
+        internal sealed class ExitSprintInfo
+        {
+            public ExitSprintInfo(int id, string name, int distance, DateTime startTime, int numberOfParticipants, SprintType type, SprintStatus status)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.Distance = distance;
+                this.StartTime = startTime;
+                this.NumberOfParticipants = numberOfParticipants;
+                this.SprintStatus = status;
+                this.SprintType = type;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public int Distance { get; }
+            public DateTime StartTime { get; }
+            public int NumberOfParticipants { get; }
+            public SprintStatus SprintStatus { get; }
+            public SprintType SprintType { get; }
+        }
+
+        internal sealed class ExitUserInfo
+        {
+            public ExitUserInfo(int id, string name, string profilePicture, string code, string city, string country, string countryCode)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.ProfilePicture = profilePicture ?? string.Empty;
+                this.Code = code ?? string.Empty;
+                this.City = city ?? string.Empty;
+                this.Country = country ?? string.Empty;
+                this.CountryCode = countryCode ?? string.Empty;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public string ProfilePicture { get; }
+            public string Code { get; }
+            public string ColorCode { get; }
+            public string City { get; }
+            public string Country { get; }
+            public string CountryCode { get; }
+        }
+    }
+
+    internal static class ExitNotificationMessageMapper
     {
         public static ExitNotification AblyNotificationMessageMapper(ExitSprint exitSprint)
         {
@@ -95,6 +217,26 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 exitSprint.Country,
                 exitSprint.CountryCode,
                 exitSprint.SprintName
+            );
+        }
+
+        public static ExitPushNotificationMesssage PushNotificationMessgeMapper(ExitSprint exitSprint)
+        {
+            return new ExitPushNotificationMesssage(
+                exitSprint.SprintId,
+                exitSprint.SprintName,
+                exitSprint.Distance,
+                exitSprint.StartTime,
+                exitSprint.NumberOfParticipant,
+                exitSprint.SprintType,
+                exitSprint.SprintStatus,
+                exitSprint.UserId,
+                exitSprint.Name,
+                exitSprint.ProfilePicture,
+                exitSprint.Code,
+                exitSprint.City,
+                exitSprint.Country,
+                exitSprint.CountryCode
             );
         }
     }
