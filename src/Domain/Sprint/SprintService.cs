@@ -97,6 +97,7 @@
             {
                 throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
             }
+            string oldName = sprintAavail.Name;
             if (name != String.Empty)
             {
                 sprintAavail.Name = name;
@@ -130,6 +131,7 @@
             this.SprintRepo.SaveChanges();
             this.NotificationClient.SprintNotificationJobs.SprintUpdate(
                 sprint.Id,
+                oldName,
                 sprint.Name,
                 sprint.Distance,
                 sprint.StartDateTime,

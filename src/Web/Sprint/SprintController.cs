@@ -107,7 +107,7 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        [HttpPut("update/{sprintId:int}")]
+        [HttpPost("update/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
         {

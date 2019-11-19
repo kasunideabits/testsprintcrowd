@@ -16,6 +16,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
             int numberOfParticipant,
             SprintStatus sprintStatus,
             SprintType sprintType,
+            int creatorId,
             int userId,
             string name,
             string profilePicture,
@@ -31,6 +32,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
             this.NumberOfParticipant = numberOfParticipant;
             this.SprintStatus = sprintStatus;
             this.SprintType = sprintType;
+            this.CreatorId = creatorId;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture;
@@ -47,6 +49,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         public int NumberOfParticipant { get; }
         public SprintStatus SprintStatus { get; }
         public SprintType SprintType { get; }
+        public int CreatorId { get; }
         public int UserId { get; }
         public string Name { get; }
         public string ProfilePicture { get; }

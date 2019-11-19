@@ -153,7 +153,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         SprintType = (SprintType)s.Type,
                         NumberOfPariticipants = s.NumberOfParticipants
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(s => s.Id == this._joinSprint.SprintId);
         }
 
         private List<int> GetParticipantsIds()

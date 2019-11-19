@@ -38,17 +38,19 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification(UpdateSprint updateSprint)
         {
-            var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(updateSprint);
+            var editor = this.GetParticipant(updateSprint.CreatorId);
+            var notificationMsgData = UpdateNotificationMessageMapper.UpdateMessage(editor, updateSprint);
             var participantIds = this.SprintParticipantIds(updateSprint.SprintId, updateSprint.CreatorId);
+            this.UpdateSprintNotification(updateSprint);
             if (participantIds.Count > 0)
             {
                 var notificationId = this.AddToDb(updateSprint, participantIds, updateSprint.CreatorId);
-                this.Context.SaveChanges();
                 var tokens = this.GetTokens(participantIds);
                 var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
                 this.SendAblyMessage(notificationMsgData.Sprint);
             }
+            this.Context.SaveChanges();
         }
 
         private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, UpdateSprintNotificaitonMessage notificationData)
@@ -77,20 +79,23 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int creatorId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) && s.UserId != creatorId)
+                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId)
                 .Select(s => s.UserId)
                 .ToList();
         }
 
+        private User GetParticipant(int userId) => this.Context.User.FirstOrDefault(u => u.Id == userId);
+
         private int AddToDb(UpdateSprint edit, List<int> participantIds, int creatorId)
         {
+
             List<UserNotification> userNotifications = new List<UserNotification>();
             var sprintNotification = new SprintNotification()
             {
                 SprintNotificationType = SprintNotificaitonType.Edit,
                 UpdatorId = creatorId,
                 SprintId = edit.SprintId,
-                SprintName = edit.SprintName,
+                SprintName = edit.OldSprintName,
                 Distance = edit.Distance,
                 StartDateTime = edit.StartTime,
                 SprintType = edit.SprintType,
@@ -112,6 +117,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return notification.Entity.Id;
         }
 
+        private void UpdateSprintNotification(UpdateSprint edit)
+        {
+            List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
+            existingNotification.ForEach(n =>
+            {
+                n.SprintName = edit.NewSprintName;
+                n.Distance = edit.Distance;
+                n.StartDateTime = edit.StartTime;
+            });
+            this.Context.SprintNotifications.UpdateRange(existingNotification);
+        }
+
         private List<string> GetTokens(List<int> participantIds)
         {
             return this.Context.FirebaseToken
@@ -121,13 +138,55 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         internal sealed class UpdateSprintNotificaitonMessage
         {
-            public UpdateSprintNotificaitonMessage(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipants, SprintType sprintType, SprintStatus sprintStatus)
+            public UpdateSprintNotificaitonMessage(
+                int sprintId,
+                string sprintName,
+                int distance,
+                DateTime startTime,
+                int numberOfParticipants,
+                SprintType sprintType,
+                SprintStatus sprintStatus,
+                int editorId,
+                string editorName,
+                string editorProfilePicture,
+                string editorEmail,
+                string editorCode,
+                string editorCity,
+                string editorCountry,
+                string editorCountryCode)
             {
                 this.Sprint = new UpdatedSprintInfo(sprintId, sprintName, distance, startTime, numberOfParticipants, sprintType, sprintStatus);
+                this.EditedBy = new EditorInfo(editorId, editorName, editorProfilePicture, editorEmail, editorCode, editorCity, editorCountry, editorCountryCode);
             }
 
             public UpdatedSprintInfo Sprint { get; }
+            public EditorInfo EditedBy { get; }
 
+        }
+
+        internal class EditorInfo
+        {
+            public EditorInfo(int id, string name, string profilePicture, string email, string code, string city, string country, string countryCode)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.ProfilePicture = profilePicture ?? string.Empty;
+                this.Email = email;
+                this.Code = code ?? string.Empty;
+                this.City = city ?? string.Empty;
+                this.Country = country ?? string.Empty;
+                this.CountryCode = countryCode ?? string.Empty;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public string ProfilePicture { get; }
+            public string Email { get; }
+            public string Code { get; }
+            public string ColorCode { get; }
+            public string City { get; }
+            public string Country { get; }
+            public string CountryCode { get; }
         }
 
         internal sealed class UpdatedSprintInfo
@@ -153,16 +212,24 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         internal static class UpdateNotificationMessageMapper
         {
-            public static UpdateSprintNotificaitonMessage UpdateMessage(UpdateSprint edit)
+            public static UpdateSprintNotificaitonMessage UpdateMessage(User editor, UpdateSprint edit)
             {
                 return new UpdateSprintNotificaitonMessage(
                     edit.SprintId,
-                    edit.SprintName,
+                    edit.OldSprintName,
                     edit.Distance,
                     edit.StartTime,
                     edit.NumberOfParticipant,
                     edit.SprintType,
-                    edit.SprintStatus);
+                    edit.SprintStatus,
+                    editor.Id,
+                    editor.Name,
+                    editor.ProfilePicture,
+                    editor.Email,
+                    editor.Code,
+                    editor.City,
+                    editor.Country,
+                    editor.CountryCode);
             }
         }
     }
