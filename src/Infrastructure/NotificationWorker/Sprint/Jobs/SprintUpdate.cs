@@ -172,10 +172,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this.Name = name;
                 this.ProfilePicture = profilePicture ?? string.Empty;
                 this.Email = email;
-                this.Code = code ?? string.Empty;;
-                this.City = city ?? string.Empty;;
-                this.Country = country ?? string.Empty;;
-                this.CountryCode = countryCode ?? string.Empty;;
+                this.Code = code ?? string.Empty;
+                this.City = city ?? string.Empty;
+                this.Country = country ?? string.Empty;
+                this.CountryCode = countryCode ?? string.Empty;
             }
 
             public int Id { get; }

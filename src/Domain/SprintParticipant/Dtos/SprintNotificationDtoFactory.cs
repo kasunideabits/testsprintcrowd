@@ -25,7 +25,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                     return new SprintInvitationRequestDto(sender, receiver, notification);
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.InvitationAccept ||
-                notificaitonType == SprintNotificaitonType.InvitationDecline:
+                notificaitonType == SprintNotificaitonType.InvitationDecline ||
+                notificaitonType == SprintNotificaitonType.LeaveParticipant:
                     return new SprintInvitationResponseDto(sender, notification);
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Remove:

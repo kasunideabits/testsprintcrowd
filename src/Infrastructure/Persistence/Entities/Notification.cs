@@ -56,6 +56,7 @@
         TimeReminderExpired,
         Edit,
         Remove,
+        LeaveParticipant,
     }
 
     public enum FriendNoticiationType
