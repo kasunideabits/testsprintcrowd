@@ -1,30 +1,38 @@
 namespace SprintCrowd.BackEnd.Domain.Sprint
 {
+    using System.Collections.Generic;
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
 
-    public class CreateSprintDto : SprintBaseDto
+    public class CreateSprintDto
     {
-
         public CreateSprintDto(
-            int id,
-            string name,
+            int sprintId,
+            string sprintName,
             int distance,
             int numberOfParticipants,
             DateTime startTime,
             SprintType type,
-            int draftEvent,
-            bool influencerAvailability,
-            string influencerEmail) : base(id, name, distance, numberOfParticipants, startTime, type)
+            int userId,
+            string userName,
+            string profilePicture,
+            string city,
+            string country,
+            string countryCode,
+            string colorCode,
+            bool creator,
+            ParticipantStage stage
+        )
         {
-            this.DraftEvent = draftEvent;
-            this.InfluencerAvailability = influencerAvailability;
-            this.influencerEmail = influencerEmail;
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type);
+            var participant = new List<ParticipantInfoDto>();
+            participant.Add(new ParticipantInfoDto(userId, userName, profilePicture, city, country, countryCode, colorCode, creator, stage));
+            this.ParticipantInfo = participant;
         }
 
-        public int DraftEvent { get; }
-        public bool InfluencerAvailability { get; }
-        public string influencerEmail { get; }
+        public SprintInfoDto SprintInfo { get; }
+        public List<ParticipantInfoDto> ParticipantInfo { get; }
     }
 }

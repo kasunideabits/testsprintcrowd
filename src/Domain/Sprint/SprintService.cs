@@ -194,7 +194,7 @@
 
             this.SprintRepo.SaveChanges();
 
-            return CreateSprintDtoMapper(sprint);
+            return CreateSprintDtoMapper(sprint, user);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@
             throw new Application.ApplicationException("Invalid sprint type");
         }
 
-        public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint)
+        public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint, User user)
         {
             CreateSprintDto result = new CreateSprintDto(
                 sprint.Id,
@@ -311,9 +311,15 @@
                 sprint.NumberOfParticipants,
                 sprint.StartDateTime,
                 (SprintType)sprint.Type,
-                sprint.DraftEvent,
-                sprint.InfluencerAvailability,
-                sprint.InfluencerEmail);
+                user.Id,
+                user.Name,
+                user.ProfilePicture,
+                user.City,
+                user.Country,
+                user.CountryCode,
+                user.ColorCode,
+                true,
+                ParticipantStage.JOINED);
             return result;
         }
 
