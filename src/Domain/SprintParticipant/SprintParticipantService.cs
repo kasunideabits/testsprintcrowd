@@ -348,6 +348,10 @@
                         ParticipantStage.PENDING
                     ));
                 }
+                else
+                {
+                    user.Stage = ParticipantStage.PENDING;
+                }
             };
             this.SprintParticipantRepo.SaveChanges();
             foreach (ParticipantInfoDto pariticipantInfo in participantInfoDtos)
@@ -426,7 +430,7 @@
         {
             var friendsRelations = this.SprintParticipantRepo.GetFriends(userId);
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUser : f.AcceptedUser);
-            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId != userId;
+            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId != userId && s.Stage != ParticipantStage.QUIT;
             var sprintParticipantsIds = this.SprintParticipantRepo.GetAll(query).Select(s => s.UserId).ToList();
             var result = friends.Select(f => new FriendInSprintDto(
                     f.Id,
