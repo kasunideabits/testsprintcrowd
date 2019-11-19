@@ -99,6 +99,7 @@
         public async Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId)
         {
             SprintParticipant result = await this.Context.SprintParticipant
+                .Include(s => s.User)
                 .FirstOrDefaultAsync(sp => sp.SprintId == sprintId && sp.UserId == userId);
             return result;
         }
