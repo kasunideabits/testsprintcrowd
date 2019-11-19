@@ -18,16 +18,16 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string sprintLocation)
         {
             this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation);
-            this.PariticipantInfo = new List<ParticipantInfoDto>();
+            this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
 
         public SprintInfoDto SprintInfo { get; set; }
 
-        public List<ParticipantInfoDto> PariticipantInfo { get; set; }
+        public List<ParticipantInfoDto> ParticipantInfo { get; set; }
 
         public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage)
         {
-            this.PariticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage));
+            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage));
         }
     }
 
