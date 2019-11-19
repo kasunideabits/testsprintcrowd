@@ -350,7 +350,21 @@
                 }
                 else
                 {
-                    user.Stage = ParticipantStage.PENDING;
+                    if (user.Stage == ParticipantStage.QUIT)
+                    {
+                        user.Stage = ParticipantStage.PENDING;
+                        participantInfoDtos.Add(new ParticipantInfoDto(
+                            user.User.Id,
+                            user.User.Name,
+                            user.User.ProfilePicture,
+                            user.User.Code,
+                            user.User.ColorCode,
+                            user.User.City,
+                            user.User.Country,
+                            user.User.CountryCode,
+                            ParticipantStage.PENDING
+                        ));
+                    }
                 }
             };
             this.SprintParticipantRepo.SaveChanges();
