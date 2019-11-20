@@ -5,6 +5,7 @@
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Domain.Admin.Dashboard;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Domain.Sprint;
   using SprintCrowd.BackEnd.Enums;
@@ -24,15 +25,18 @@
     /// </summary>
     /// <param name="sprintService">sprint service</param>
     /// <param name="userService">user service</param>
-    public SprintAdminController(ISprintService sprintService, IUserService userService)
+    public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService)
     {
       this.SprintService = sprintService;
       this.UserService = userService;
+      this.DashboardService = dashboardService;
     }
 
     private ISprintService SprintService { get; }
 
     private IUserService UserService { get; }
+
+    private IDashboardService DashboardService { get; }
 
     /// <summary>
     /// Get all events
@@ -162,6 +166,23 @@
         Data = result,
       };
 
+      return this.Ok(response);
+    }
+
+    /// <summary>
+    /// Get dashboard data
+    /// </summary>
+    /// <returns>Dashboard related data</returns>
+    [HttpGet("stat/dashboard")]
+    [ProducesResponseType(typeof(ResponseObject), 200)]
+    public IActionResult GetDashboardData()
+    {
+      DashboardDataDto dashboardData = this.DashboardService.GetDashboardData();
+      ResponseObject response = new ResponseObject()
+      {
+        StatusCode = (int)ApplicationResponseCode.Success,
+        Data = dashboardData,
+      };
       return this.Ok(response);
     }
   }

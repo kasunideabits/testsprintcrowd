@@ -21,18 +21,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     public int UserId { get; set; }
 
     /// <summary>
-    /// activity date
-    /// </summary>
-    /// <value>Date and time</value>
-    public DateTime DateTime { get; set; }
-
-    /// <summary>
-    /// number of times per day
-    /// </summary>
-    /// <value>count</value>
-    public int ActivityCount { get; set; }
-
-    /// <summary>
     /// activity user
     /// </summary>
     /// <value>user</value>

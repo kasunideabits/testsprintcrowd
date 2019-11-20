@@ -11,7 +11,7 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    [Migration("20191120031004_UserActivity")]
+    [Migration("20191120075702_UserActivity")]
     partial class UserActivity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -313,12 +313,8 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ActivityCount");
-
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateTime");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd();

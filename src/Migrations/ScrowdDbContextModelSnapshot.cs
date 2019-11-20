@@ -311,12 +311,8 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ActivityCount");
-
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateTime");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd();
