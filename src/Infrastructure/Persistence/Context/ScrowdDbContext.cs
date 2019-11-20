@@ -58,6 +58,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// <value></value>
         public DbSet<SprintInvite> SprintInvite { get; set; }
 
+        /// <summary>
+        /// table for user activity
+        /// </summary>
+        public DbSet<UserActivity> UserActivity { get; set; }
+
         public DbSet<SprintNotification> SprintNotifications { get; set; }
 
         public DbSet<FriendNoticiation> FriendNoticiations { get; set; }
@@ -95,6 +100,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
             builder.ApplyConfiguration(new NotificationConfig());
             builder.ApplyConfiguration(new FriendConfig());
             builder.ApplyConfiguration(new SprintInviteConfig());
+            builder.ApplyConfiguration(new UserActivityConfig());
         }
 
         private void FixSnakeCaseNames(ModelBuilder modelBuilder)
