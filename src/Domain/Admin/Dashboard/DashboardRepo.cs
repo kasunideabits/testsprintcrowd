@@ -40,7 +40,9 @@ namespace SprintCrowd.BackEnd.Domain.Admin.Dashboard
     /// <returns>Number of weekly active users</returns>
     public int GetWeeklyActiveUsers()
     {
-      return this.dbContext.UserActivity.Count();
+      var pastDate = DateTime.Now.AddDays(-7);
+      var data = this.dbContext.UserActivity.Where(s => s.CreatedDate > pastDate).ToList();
+      return data.Count();
     }
   }
 }
