@@ -11,6 +11,7 @@
   using SprintCrowd.BackEnd.Enums;
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Domain.Device;
 
   /// <summary>
   /// event controller
@@ -25,16 +26,19 @@
     /// </summary>
     /// <param name="sprintService">sprint service</param>
     /// <param name="userService">user service</param>
-    public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService)
+    public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService)
     {
       this.SprintService = sprintService;
       this.UserService = userService;
       this.DashboardService = dashboardService;
+      this.DeviceService = deviceService;
     }
 
     private ISprintService SprintService { get; }
 
     private IUserService UserService { get; }
+
+    private IDeviceService DeviceService { get; }
 
     private IDashboardService DashboardService { get; }
 
@@ -177,9 +181,11 @@
     /// <returns>Dashboard related data</returns>
     [HttpGet("stat/dashboard")]
     [ProducesResponseType(typeof(ResponseObject), 200)]
-    public IActionResult GetDashboardData()
+    public async Task<IActionResult> GetDashboardData()
     {
-      DashboardDataDto dashboardData = this.DashboardService.GetDashboardData();
+      LiveSprintCount liveSprintsCount = await this.SprintService.GetLiveSprintCount();
+      DeviceModal appdownloads = await this.DeviceService.GetDeviceInfo();
+      DashboardDataDto dashboardData = this.DashboardService.GetDashboardData(liveSprintsCount, appdownloads);
       ResponseObject response = new ResponseObject()
       {
         StatusCode = (int)ApplicationResponseCode.Success,

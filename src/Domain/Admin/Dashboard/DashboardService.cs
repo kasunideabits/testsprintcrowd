@@ -7,6 +7,8 @@ namespace SprintCrowd.BackEnd.Domain.Admin.Dashboard
   using System;
   using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Domain.Sprint;
+  using SprintCrowd.BackEnd.Domain.Device;
 
   /// <summary>
   ///  Implement <see cref="IDashboardService" > interface </see>
@@ -27,11 +29,13 @@ namespace SprintCrowd.BackEnd.Domain.Admin.Dashboard
     /// <summary>
     /// Get dashboard related data
     /// </summary>
-    public DashboardDataDto GetDashboardData()
+    public DashboardDataDto GetDashboardData(LiveSprintCount liveSprintsCount, DeviceModal appdownloads)
     {
       DashboardDataDto dashboardData = new DashboardDataDto()
       {
-        WeeklyActiveUsers = this.DashboardRepo.GetWeeklyActiveUsers()
+        WeeklyActiveUsers = this.DashboardRepo.GetWeeklyActiveUsers(),
+        AppDownloads = appdownloads,
+        LiveSprintsCount = liveSprintsCount
       };
 
       return dashboardData;
