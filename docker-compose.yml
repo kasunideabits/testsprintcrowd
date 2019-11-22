@@ -3,7 +3,7 @@ version: "3.1"
 
 services:
   db1:
-    image: postgres
+    image: postgres:11
     restart: always
     environment:
       POSTGRES_USER: sprintcrowd

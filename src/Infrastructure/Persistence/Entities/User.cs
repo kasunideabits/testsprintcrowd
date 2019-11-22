@@ -139,5 +139,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual List<Friend> friendsShared { get; set; }
 
+        /// <summary>
+        /// Gets or set userActivity reference
+        /// </summary>
+        public virtual List<UserActivity> UserActivity { get; set; }
+
     }
 }
