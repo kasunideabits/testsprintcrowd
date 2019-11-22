@@ -18,11 +18,9 @@
   using SprintCrowd.BackEnd.Domain.Friend;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Domain.Sprint;
-  using SprintCrowd.BackEnd.Domain.SprintInvitation;
   using SprintCrowd.BackEnd.Domain.SprintParticipant;
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
-  using SprintCrowd.BackEnd.Infrastructure.Notifier;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using SprintCrowd.BackEnd.Infrastructure.PushNotification;
   using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
@@ -73,13 +71,13 @@
       this.AddDatabase(services);
       services.AddMvc(options =>
       {
-              // ignore self referencing loops newtonsoft.
-              options.OutputFormatters.Clear();
+        // ignore self referencing loops newtonsoft.
+        options.OutputFormatters.Clear();
         options.OutputFormatters.Add(new JsonOutputFormatter(
                   new JsonSerializerSettings()
-              {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-              }, ArrayPool<char>.Shared));
+                  {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                  }, ArrayPool<char>.Shared));
       });
       this.AddSwagger(services);
       this.RegisterDependencyInjection(services);
@@ -147,9 +145,9 @@
       {
         c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
               {
-            swaggerDoc.Host = httpReq.Host.Value; ;
-            swaggerDoc.BasePath = httpReq.PathBase;
-          });
+                swaggerDoc.Host = httpReq.Host.Value; ;
+                swaggerDoc.BasePath = httpReq.PathBase;
+              });
       });
       app.UseMiddleware<ErrorHandlingMiddleware>();
       DbSeed.InitializeData(app.ApplicationServices.CreateScope().ServiceProvider);
@@ -172,10 +170,7 @@
       services.AddScoped<ISprintParticipantService, SprintParticipantService>();
       services.AddTransient<IFriendService, FriendService>();
       services.AddTransient<IFriendRepo, FriendRepo>();
-      services.AddTransient<ISprintInvitationService, SprintInvitationService>();
-      services.AddTransient<ISprintInvitationRepo, SprintInvitationRepo>();
       services.AddSingleton<IAblyConnectionFactory, AblyConnectionFactory>();
-      services.AddSingleton<INotifyFactory, NotifyFactory>();
       services.AddTransient<IResetUserCodeService, ResetUserCodeService>();
       services.AddTransient<IResetUserCodeRepo, ResetUserCodeRepo>();
       services.AddScoped<INotificationClient, NotificationClient>();

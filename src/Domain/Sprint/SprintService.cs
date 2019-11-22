@@ -6,6 +6,7 @@
   using System.Threading.Tasks;
   using System;
   using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
   /// <summary>
@@ -17,12 +18,14 @@
     /// initializes an instance of SprintService
     /// </summary>
     /// <param name="sprintRepo">sprint repository</param>
-    public SprintService(ISprintRepo sprintRepo)
+    public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient)
     {
       this.SprintRepo = sprintRepo;
+      this.NotificationClient = notificationClient;
     }
 
     private ISprintRepo SprintRepo { get; }
+    private INotificationClient NotificationClient { get; }
 
     /// <summary>
     /// Get all events
@@ -75,6 +78,7 @@
     /// Update instance of SprintService
     /// </summary>
     public async Task<UpdateSprintDto> UpdateSprint(
+        int userId,
         int sprintId,
         string name,
         int? distance,
@@ -85,6 +89,15 @@
     {
       Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
       var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+      if (sprintAavail == null)
+      {
+        throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
+      }
+      else if (sprintAavail.CreatedBy.Id != userId)
+      {
+        throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
+      }
+      string oldName = sprintAavail.Name;
       if (name != String.Empty)
       {
         sprintAavail.Name = name;
@@ -116,6 +129,17 @@
       }
       Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
       this.SprintRepo.SaveChanges();
+      this.NotificationClient.SprintNotificationJobs.SprintUpdate(
+                sprint.Id,
+                oldName,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartDateTime,
+                sprint.NumberOfParticipants,
+                (SprintStatus)sprint.Status,
+                (SprintType)sprint.Type,
+                sprint.CreatedBy.Id
+            );
       UpdateSprintDto result = new UpdateSprintDto(
           sprint.Id,
           sprint.Name,
@@ -171,7 +195,7 @@
 
       this.SprintRepo.SaveChanges();
 
-      return CreateSprintDtoMapper(sprint);
+      return CreateSprintDtoMapper(sprint, user);
     }
 
     /// <summary>
@@ -181,7 +205,7 @@
     /// <returns><see cref="SprintWithPariticpantsDto"> sprint details with paritipants</see></returns>
     public async Task<SprintWithPariticpantsDto> GetSprintByCreator(int userId)
     {
-      Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Type != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
+      Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == userId && s.Status != (int)SprintStatus.ARCHIVED && s.StartDateTime > DateTime.UtcNow;
       var sprint = await this.SprintRepo.GetSprint(predicate);
       if (sprint == null)
       {
@@ -236,6 +260,22 @@
         sprint.Status = (int)SprintStatus.ARCHIVED;
         await this.SprintRepo.UpdateSprint(sprint);
         this.SprintRepo.SaveChanges();
+        this.NotificationClient.SprintNotificationJobs.SprintRemove(
+                    sprint.Id,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartDateTime,
+                    sprint.NumberOfParticipants,
+                    (SprintStatus)sprint.Status,
+                    (SprintType)sprint.Type,
+                    sprint.CreatedBy.Id,
+                    sprint.CreatedBy.Name,
+                    sprint.CreatedBy.ProfilePicture,
+                    sprint.CreatedBy.Code,
+                    sprint.CreatedBy.ColorCode,
+                    sprint.CreatedBy.City,
+                    sprint.CreatedBy.Country,
+                    sprint.CreatedBy.CountryCode);
       }
     }
 
@@ -263,7 +303,7 @@
       throw new Application.ApplicationException("Invalid sprint type");
     }
 
-    public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint)
+    public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint, User user)
     {
       CreateSprintDto result = new CreateSprintDto(
           sprint.Id,
@@ -272,9 +312,15 @@
           sprint.NumberOfParticipants,
           sprint.StartDateTime,
           (SprintType)sprint.Type,
-          sprint.DraftEvent,
-          sprint.InfluencerAvailability,
-          sprint.InfluencerEmail);
+          user.Id,
+          user.Name,
+          user.ProfilePicture,
+          user.City,
+          user.Country,
+          user.CountryCode,
+          user.ColorCode,
+          true,
+          ParticipantStage.JOINED);
       return result;
     }
 

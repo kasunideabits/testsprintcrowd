@@ -107,12 +107,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Gets or set Notification reference for sender
         /// </summary>
-        public virtual List<Notification> SenderNotification { get; set; }
+        public virtual List<UserNotification> SenderNotification { get; set; }
 
         /// <summary>
         /// Gets or set Notification reference for receiver
         /// </summary>
-        public virtual List<Notification> ReceiverNotification { get; set; }
+        public virtual List<UserNotification> ReceiverNotification { get; set; }
 
         /// <summary>
         /// Gets or set reference for achievements

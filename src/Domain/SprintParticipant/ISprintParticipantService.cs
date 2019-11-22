@@ -4,8 +4,6 @@
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
-    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -25,6 +23,7 @@
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
         /// <param name="userId">user id who going to join</param>
+        /// <param name="notificationId"> notification id</param>
         /// <param name="accept">accept or decline</param>
         Task JoinSprint(int sprintId, int userId, int notificationId, bool accept);
 
@@ -41,11 +40,14 @@
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
         /// <param name="stage">filter with stage</param>
-        /// <returns><see cref="ParticipantInfo"> list of participant info</see></returns>
-        Task<List<ParticipantInfo>> GetParticipants(int sprintId, ParticipantStage stage);
+        /// <returns><see cref="ParticipantInfoDto"> list of participant info</see></returns>
+        Task<List<ParticipantInfoDto>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>
         /// Get all sprint info with given filters
+        /// Change request 12/11/2019 Mobile application event start now tab require user already created event
+        /// reguradless 24H, for easyness change this API to send creator event embedded with sprints
+        /// @todo remove this change and handle this in mobile side
         /// </summary>
         /// <param name="userId">participant id</param>
         /// <param name="sprintType"><see cref="SprintType"> sprint type</see></param>
@@ -55,16 +57,44 @@
         /// <param name="startFrom">start from time in minutes</param>
         /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        List<SprintInfo> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
+        Task<GetSprintDto> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
-        Task SprintInvite(int sprintId, int inviterId, List<int> invteeIds);
+        /// <summary>
+        /// Invite user to sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="inviterId">id of inviter</param>
+        /// <param name="inviteeIds">ids for invitess</param>
+        /// <returns>invited users info</returns>
+        Task<List<ParticipantInfoDto>> SprintInvite(int sprintId, int inviterId, List<int> inviteeIds);
 
+        /// <summary>
+        /// Get all notificaitons
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>all notificaiton related to given userid</returns>
         Task<dynamic> GetNotification(int userId);
 
-        Task RemoveParticipant(int requesterId, int sprintId, int pariticipantId);
+        /// <summary>
+        /// Remove sprint participant form  sprint
+        /// </summary>
+        /// <param name="requesterId">requester user id</param>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="participantId">participant id for remove</param>
+        Task RemoveParticipant(int requesterId, int sprintId, int participantId);
 
+        /// <summary>
+        /// Get friend status in sprint
+        /// </summary>
+        /// <param name="userId">user id </param>
+        /// <param name="sprintId">sprint id</param>
+        /// <returns><see cref="FriendInSprintDto">friend in sprint </see></returns>
         List<FriendInSprintDto> GetFriendsStatusInSprint(int userId, int sprintId);
 
+        /// <summary>
+        /// Remove notification
+        /// </summary>
+        /// <param name="notificationId">notificaiton id to remove</param>
         Task RemoveNotification(int notificationId);
 
         /// <summary>

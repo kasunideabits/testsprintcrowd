@@ -1,55 +1,43 @@
 using SprintCrowd.BackEnd.Application;
+using SprintCrowd.BackEnd.Common;
 
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
     /// <summary>
     /// class for indicate sprint participant basic info
     /// </summary>
-    public class ParticipantInfo
+    public class ParticipantInfoDto : ParticipantBaseDto
     {
         /// <summary>
-        /// Initialize <see cref="ParticipantInfo">ParticipantInfo class </see>
+        /// Initialize <see cref="ParticipantInfoDto">ParticipantInfoDto class </see>
         /// </summary>
         /// <param name="userId">user id for participant</param>
         /// <param name="userName">name for participant</param>
         /// <param name="profilePicture">profile picture url for participant</param>
         /// <param name="userCode">user code</param>
-        /// <param name="sprintId">sprint id which participate</param>
-        /// <param name="sprintName">sprint name which participate</param>
-        public ParticipantInfo(
+        /// <param name="colorCode">user color code</param>
+        /// <param name="city">user city</param>
+        /// <param name="country">user country</param>
+        /// <param name="countryCode">user country cde</param>
+        /// <param name="stage">participant stage</param>
+        /// <param name="creator">creator or not</param>
+        public ParticipantInfoDto(
             int userId,
             string userName,
             string profilePicture,
             string userCode,
             string colorCode,
+            string city,
+            string country,
+            string countryCode,
             ParticipantStage stage,
-            int sprintId,
-            string sprintName)
+            bool creator = false) : base(userId, userName, profilePicture, city, country, countryCode)
         {
-            this.UserId = userId;
-            this.UserName = userName;
-            this.ProfilePicture = profilePicture;
             this.Code = userCode;
             this.ColorCode = colorCode;
+            this.Creator = creator;
             this.Stage = stage;
-            this.SprintId = sprintId;
-            this.SprintName = sprintName;
         }
-
-        /// <summary>
-        /// Gets user id for participant
-        /// </summary>
-        public int UserId { get; }
-
-        /// <summary>
-        /// Gets name for participant
-        /// </summary>
-        public string UserName { get; }
-
-        /// <summary>
-        /// Gets profile picture url for participant
-        /// </summary>
-        public string ProfilePicture { get; }
 
         /// <summary>
         /// User code
@@ -62,15 +50,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         public string ColorCode { get; }
 
         /// <summary>
-        /// Gets sprint id which participate
+        /// Gets creator or not
         /// </summary>
-        public int SprintId { get; }
+        public bool Creator { get; }
 
         /// <summary>
-        /// Gets sprint name which participate
+        /// participant stage
         /// </summary>
-        public string SprintName { get; }
-
         public ParticipantStage Stage { get; }
     }
 }

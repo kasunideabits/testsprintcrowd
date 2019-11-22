@@ -95,13 +95,13 @@
         /// </summary>
         /// <param name="query">query params for filter sprints</param>
         /// <param name="userId">user id to look up</param>
-        /// <returns><see cref="SprintInfo"> all sprints </see></returns>
+        /// <returns><see cref="GetSprintDto"> all sprints </see></returns>
         [HttpGet("all/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ResponseObject), 400)]
-        public IActionResult GetSprints([FromQuery] SprintQuery query, int userId)
+        public async Task<IActionResult> GetSprints([FromQuery] SprintQuery query, int userId)
         {
-            var result = this.SprintParticipantService.GetSprints(
+            var result = await this.SprintParticipantService.GetSprints(
                 userId,
                 query.SprintType,
                 query.ParticipantStage,
@@ -157,7 +157,7 @@
         /// Get all participant who join with given sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to look up</param>
-        /// <returns>list of <see cref="ParticipantInfo">participants</see></returns>
+        /// <returns>list of <see cref="ParticipantInfoDto">participants</see></returns>
         [HttpGet("mark-attendance/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetMarkAttendanceParticipants(int sprintId)
@@ -170,7 +170,11 @@
             };
             return this.Ok(response);
         }
-
+        /// <summary>
+        /// Get marked attendance sprint with given userId
+        /// </summary>
+        /// <param name="userId">user id for fetch sprint</param>
+        /// <returns><see cref="SprintInfo">sprint participant info</returns>
         [HttpGet("marked-attendance-sprint/{userId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetMarkAttendanceSprint(int userId)
@@ -189,13 +193,17 @@
         /// </summary>
         /// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
         [HttpPost("invite-request")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(SuccessResponse<List<ParticipantInfoDto>>), 200)]
         public async Task<IActionResult> Invite([FromBody] SprintInvitationModel invite)
         {
-            await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
-            return this.Ok();
+            var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
+            return this.Ok(new SuccessResponse<List<ParticipantInfoDto>>(result));
         }
 
+        /// <summary>
+        /// Get all notificaiton for user
+        /// </summary>
+        /// <returns>all notifications</returns>
         [HttpGet("notification")]
         [ProducesResponseType(typeof(SuccessResponse<>), 200)]
         public async Task<IActionResult> GetNotification()
@@ -205,6 +213,11 @@
             return this.Ok(new SuccessResponse<List<dynamic>>(result));
         }
 
+        /// <summary>
+        /// Archived sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="participantId">creator id</param>
         [HttpDelete("participant/{sprintId:int}/{participantId:int}/")]
         public async Task<IActionResult> RemoveParticipant(int sprintId, int participantId)
         {
@@ -213,7 +226,12 @@
             return this.Ok();
         }
 
+        /// <summary>
+        /// Get friends in sprint with pariticiapnt status
+        /// </summary>
+        /// <param name="sprintId">sprint to fetch</param>
         [HttpGet("friends/{sprintId:int}")]
+        [ProducesResponseType(typeof(SuccessResponse<List<FriendInSprintDto>>), 200)]
         public async Task<IActionResult> GetFriendsStatusInSprint(int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);

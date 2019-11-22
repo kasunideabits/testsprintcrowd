@@ -47,8 +47,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 this.Invitee = this.GetParticipant(this._inviteeId);
                 if (this.Sprint != null && this.Invitee != null && this.Inviter != null)
                 {
-                    var notifcationId = this.AddToDatabaase();
-                    this.SendPushNotification(notifcationId);
+                    var notificationId = this.AddToDatabaase();
+                    if (notificationId != -1)
+                    {
+                        this.SendPushNotification(notificationId);
+                    }
                 }
             }
         }
@@ -121,10 +124,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             if (this.Sprint != null)
             {
-                SprintNotification sprintNotificaiton = new SprintNotification()
+                var sprintNotificaiton = new SprintNotification
                 {
-                SenderId = this._inviterId,
-                ReceiverId = this._inviteeId,
                 SprintNotificationType = SprintNotificaitonType.InvitationRequest,
                 UpdatorId = this._inviterId,
                 SprintId = this.Sprint.Id,
@@ -136,6 +137,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = this.Sprint.NumberOfParticipants
                 };
                 var result = this.Context.SprintNotifications.Add(sprintNotificaiton);
+                var userNotification = new UserNotification
+                {
+                    SenderId = this._inviterId,
+                    ReceiverId = this._inviteeId,
+                    NotificationId = result.Entity.Id,
+                };
+                this.Context.UserNotification.Add(userNotification);
                 this.Context.SaveChanges();
                 return result.Entity.Id;
             }

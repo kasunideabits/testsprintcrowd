@@ -71,26 +71,31 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var creator = this.GetCreator(this._joinSprint.SprintId);
             var ids = new List<int>() { creator.Id };
             var tokens = this.GetTokens(ids);
+
             var participant = this.GetParticipant();
             var eventInfo = this.GetEvent();
             var notificationType = this._joinSprint.Accept ? SprintNotificaitonType.InvitationAccept : SprintNotificaitonType.InvitationDecline;
-            this.AddToDatabase(eventInfo, participant, ids, notificationType);
-            var message = this.BuildNotificationMessage(tokens, participant, eventInfo, notificationType);
+            var notificationId = this.AddToDatabase(eventInfo, participant, ids, notificationType);
+            var message = this.BuildNotificationMessage(notificationId, tokens, participant, eventInfo, notificationType);
             this.PushNotificationClient.SendMulticaseMessage(message);
         }
 
         private void PublicSprintNotification()
         {
             var ids = this.GetParticipantsIds();
-            var tokens = this.GetTokens(ids);
-            var participant = this.GetParticipant();
-            var eventInfo = this.GetEvent();
-            var message = this.BuildNotificationMessage(tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
-            this.AddToDatabase(eventInfo, participant, ids, SprintNotificaitonType.FriendJoin);
-            this.PushNotificationClient.SendMulticaseMessage(message);
+            if (ids.Count > 0)
+            {
+                var tokens = this.GetTokens(ids);
+                var participant = this.GetParticipant();
+                var eventInfo = this.GetEvent();
+                var notificationId = this.AddToDatabase(eventInfo, participant, ids, SprintNotificaitonType.FriendJoin);
+
+                var message = this.BuildNotificationMessage(notificationId, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
+                this.PushNotificationClient.SendMulticaseMessage(message);
+            }
         }
 
-        private dynamic BuildNotificationMessage(List<string> tokens, Participant participant, EventInfo eventInfo, SprintNotificaitonType notificationType)
+        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, Participant participant, EventInfo eventInfo, SprintNotificaitonType notificationType)
         {
             var data = new Dictionary<string, string>();
             var payload = new
@@ -98,11 +103,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 User = participant,
                 Sprint = eventInfo,
             };
-
-            data.Add("mainType", "SprintType");
-            data.Add("subType", ((int)notificationType).ToString());
-            data.Add("createDate", DateTime.UtcNow.ToString());
-            data.Add("data", JsonConvert.SerializeObject(payload));
+            data.Add("NotificationId", notificationId.ToString());
+            data.Add("MainType", "SprintType");
+            data.Add("SubType", ((int)notificationType).ToString());
+            data.Add("CreateDate", DateTime.UtcNow.ToString());
+            data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotificationMulticastMessageBuilder()
                 .Notification("Sprint Invite Notification", "sprint demo")
                 .Message(data)
@@ -148,7 +153,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         SprintType = (SprintType)s.Type,
                         NumberOfPariticipants = s.NumberOfParticipants
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(s => s.Id == this._joinSprint.SprintId);
         }
 
         private List<int> GetParticipantsIds()
@@ -184,36 +189,41 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return this.Context.FirebaseToken.Where(f => userIds.Contains(f.User.Id)).Select(f => f.Token).ToList();
         }
 
-        private void AddToDatabase(EventInfo eventInfo, Participant user, List<int> receiverIds, SprintNotificaitonType notificationType)
+        private int AddToDatabase(EventInfo eventInfo, Participant user, List<int> receiverIds, SprintNotificaitonType notificationType)
         {
-            List<SprintNotification> notifications = new List<SprintNotification>();
+            List<UserNotification> userNotifications = new List<UserNotification>();
+            var sprintNotification = new SprintNotification
+            {
+                SprintNotificationType = notificationType,
+                UpdatorId = user.Id,
+                SprintId = eventInfo.Id,
+                SprintName = eventInfo.Name,
+                Distance = eventInfo.Distance,
+                StartDateTime = eventInfo.StartTime,
+                SprintType = eventInfo.SprintType,
+                SprintStatus = eventInfo.SprintStatus,
+                NumberOfParticipants = eventInfo.NumberOfPariticipants
+            };
+            var notification = this.Context.Notification.Add(sprintNotification);
             receiverIds.ForEach(receiverId =>
             {
-                notifications.Add(new SprintNotification
+                userNotifications.Add(new UserNotification
                 {
                     SenderId = user.Id,
                         ReceiverId = receiverId,
-                        SprintNotificationType = notificationType,
-                        UpdatorId = user.Id,
-                        SprintId = eventInfo.Id,
-                        SprintName = eventInfo.Name,
-                        Distance = eventInfo.Distance,
-                        StartDateTime = eventInfo.StartTime,
-                        SprintType = eventInfo.SprintType,
-                        SprintStatus = eventInfo.SprintStatus,
-                        NumberOfParticipants = eventInfo.NumberOfPariticipants
+                        NotificationId = notification.Entity.Id,
                 });
             });
-            if (notifications.Count > 0)
+            if (userNotifications.Count > 0)
             {
-                this.Context.Notification.AddRange(notifications);
+                this.Context.UserNotification.AddRange(userNotifications);
                 this.Context.SaveChanges();
             }
+            return notification.Entity.Id;
         }
 
         internal class Participant
         {
-
             public int Id { get; set; }
             public string Name { get; set; }
             public string Email { get; set; }

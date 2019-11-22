@@ -40,6 +40,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             int numberOfParticipant,
             SprintStatus sprintStatus,
             SprintType sprintType,
+            int creatorId,
             int userId,
             string name,
             string profilePicture,
@@ -49,7 +50,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             string countryCode)
         {
             var message = new ExitSprint(
-                sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType,
+                sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId,
                 userId, name, profilePicture, code, city, country, countryCode);
             new NotificationWorker<SprintExit>().Invoke(message);
         }
@@ -61,6 +62,48 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         {
             var message = new JoinSprint(sprintId, sprintName, sprintType, userId, name, profilePicture, accept);
             new NotificationWorker<SprintJoin>().Invoke(message);
+        }
+
+        public void SprintRemove(
+            int sprintId,
+            string sprintName,
+            int distance,
+            DateTime startTime,
+            int numberOfParticipant,
+            SprintStatus sprintStatus,
+            SprintType sprintType,
+            int userId,
+            string name,
+            string profilePicture,
+            string code,
+            string colorCode,
+            string city,
+            string country,
+            string countryCode
+        )
+        {
+            var message = new RemoveSprint(
+                sprintId,
+                sprintName,
+                distance,
+                startTime,
+                numberOfParticipant,
+                sprintStatus,
+                sprintType,
+                userId, name,
+                profilePicture,
+                code,
+                colorCode,
+                city,
+                country,
+                countryCode);
+            new NotificationWorker<SprintRemove>().Invoke(message);
+        }
+
+        public void SprintUpdate(int sprintId, string oldSprintName, string newSprintName, int distance, DateTime startTime, int numberOfParticipant, SprintStatus sprintStatus, SprintType sprintType, int creatorId)
+        {
+            var message = new UpdateSprint(sprintId, oldSprintName, newSprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId);
+            new NotificationWorker<SprintUpdate>().Invoke(message);
         }
     }
 }

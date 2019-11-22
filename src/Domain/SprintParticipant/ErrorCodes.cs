@@ -11,5 +11,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         CanNotRemoveParticipant = 1006,
         NotAllowedOperation = 1007,
         MarkAttendanceEnable = 1008,
+        SprintNotFound = 1009,
     }
 }

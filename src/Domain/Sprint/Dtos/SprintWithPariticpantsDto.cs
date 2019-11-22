@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Common;
+using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
 
 namespace SprintCrowd.BackEnd.Domain.Sprint
 {
@@ -17,58 +18,17 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string sprintLocation)
         {
             this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation);
-            this.PariticipantInfo = new List<ParticipantInfoDto>();
+            this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
 
         public SprintInfoDto SprintInfo { get; set; }
 
-        public List<ParticipantInfoDto> PariticipantInfo { get; set; }
+        public List<ParticipantInfoDto> ParticipantInfo { get; set; }
 
         public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage)
         {
-            this.PariticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage));
+            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage));
         }
-    }
-
-    public class SprintInfoDto : SprintBaseDto
-    {
-        public SprintInfoDto(
-            int id,
-            string name,
-            int distance,
-            int numberOfParticipants,
-            DateTime startTime,
-            SprintType type,
-            string location) : base(id, name, distance, numberOfParticipants, startTime, type)
-        {
-            this.Location = location;
-            this.ExtendedTime = startTime.AddMinutes(15);
-        }
-
-        public string Location { get; }
-        public DateTime ExtendedTime { get; }
-    }
-
-    public class ParticipantInfoDto : ParticipantBaseDto
-    {
-        public ParticipantInfoDto(
-            int id,
-            string name,
-            string profilePicture,
-            string city,
-            string country,
-            string countryCode,
-            string colorCode,
-            bool creator,
-            ParticipantStage stage) : base(id, name, profilePicture, city, country, countryCode)
-        {
-            this.ColorCode = colorCode;
-            this.Creator = creator;
-            this.Stage = stage;
-        }
-        public string ColorCode { get; }
-        public bool Creator { get; }
-        public ParticipantStage Stage { get; }
     }
 
 }

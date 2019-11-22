@@ -13,6 +13,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="id">sprint id</param>
         /// <param name="name">sprint name</param>
         /// <param name="distance">sprint distance</param>
+        /// <param name="sprintType">sprint type</param>
         /// <param name="startTime">start date time</param>
         /// <param name="sprintCreator">sprint creator or not</param>
         public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool sprintCreator = false)
