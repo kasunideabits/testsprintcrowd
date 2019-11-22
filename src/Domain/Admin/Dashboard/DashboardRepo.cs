@@ -8,6 +8,7 @@ namespace SprintCrowd.BackEnd.Domain.Admin.Dashboard
   using SprintCrowd.BackEnd.Application;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Domain.Device;
 
   /// <summary>
   /// Implement <see cref="IDashboardRepo"> repo </see>
