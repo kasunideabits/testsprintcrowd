@@ -144,5 +144,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual List<UserActivity> UserActivity { get; set; }
 
+        /// <summary>
+        /// Gets or set user preference
+        /// </summary>
+        /// <value></value>
+        public virtual UserPreference UserPreference { get; set; }
+
     }
 }

@@ -1,12 +1,16 @@
 namespace SprintCrowd.Web.ScrowdUser
 {
+  using System.Linq;
   using System.Threading.Tasks;
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using SprintCrowd.BackEnd.Application;
+  using SprintCrowd.BackEnd.Common;
+  using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
   using SprintCrowd.BackEnd.Domain.ScrowdUser;
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+  using SprintCrowd.BackEnd.Infrastructure.Persistence;
   using SprintCrowd.BackEnd.Web.ScrowdUser;
 
   /// <summary>
@@ -27,6 +31,7 @@ namespace SprintCrowd.Web.ScrowdUser
     }
 
     private IUserService UserService { get; set; }
+    private ScrowdDbContext Context { get; set; }
 
     /// <summary>
     /// Get authorized user details
@@ -58,6 +63,20 @@ namespace SprintCrowd.Web.ScrowdUser
         Data = activity,
       };
       return this.Ok(response);
+    }
+
+    /// <summary>
+    /// Get user pereference
+    /// </summary>
+    /// <returns>user peference</returns>
+    [HttpGet("preference")]
+    [ProducesResponseType(typeof(SuccessResponse<UserPreferenceDto>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+    public async Task<IActionResult> UserPreference()
+    {
+      var authorizedUser = await this.User.GetUser(this.UserService);
+      var result = await this.UserService.GetUserPreference(authorizedUser.Id);
+      return this.Ok(new SuccessResponse<UserPreferenceDto>(result));
     }
   }
 }

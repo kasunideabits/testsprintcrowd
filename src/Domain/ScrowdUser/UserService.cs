@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
   using System.Threading.Tasks;
+  using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Web.Account;
   using SprintCrowd.BackEnd.Web.PushNotification;
@@ -60,6 +61,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     public async Task<User> RegisterUser(RegisterModel registerData)
     {
       User user = await this.userRepo.RegisterUser(registerData);
+      await this.userRepo.AddUserPreference(user.Id);
       this.userRepo.SaveChanges();
       return user;
     }
@@ -87,5 +89,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       this.userRepo.SaveChanges();
       return userActivity;
     }
+
+    /// <summary>
+    /// Get user preference
+    /// </summary>
+    /// <param name="userId">user id to fetch</param>
+    /// <returns>user preference</returns>
+    public async Task<UserPreferenceDto> GetUserPreference(int userId)
+    {
+      var userPreference = await this.userRepo.GetUserPreference(userId);
+      if (userPreference == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User Not found");
+      }
+
+      return new UserPreferenceDto(userPreference);
+    }
+
   }
 }
