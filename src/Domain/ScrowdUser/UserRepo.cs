@@ -78,8 +78,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       {
         // Oh ohh, error occured during registeration in identity server
         throw new ApplicationException(
-            registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
-            registerResponse.ErrorDescription ?? "Failed to register user in identity server");
+          registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+          registerResponse.ErrorDescription ?? "Failed to register user in identity server");
       }
 
       var exist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Equals(registerData.Email));
@@ -138,8 +138,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         // no token yet saved, insert
         FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
         {
-          User = await this.GetUserById(userId),
-          Token = fcmToken,
+        User = await this.GetUserById(userId),
+        Token = fcmToken,
         };
         await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
       }
@@ -164,6 +164,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       };
       var activity = await this.dbContext.UserActivity.AddAsync(userActivity);
       return activity.Entity;
+    }
+
+    public async Task<UserPreference> GetUserPreference(int userId)
+    {
+      return await this.dbContext.UserPreferences.FirstOrDefaultAsync(u => u.UserId == userId);
     }
   }
 }

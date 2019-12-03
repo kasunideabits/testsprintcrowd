@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
   using System.Threading.Tasks;
+  using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Web.Account;
   using SprintCrowd.BackEnd.Web.PushNotification;
@@ -43,5 +44,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <param name="userId">id of the user</param>
     /// <returns>async task</returns>
     Task<UserActivity> UpdateUserActivity(int userId);
+
+    /// <summary>
+    ///  Get user preference
+    /// </summary>
+    /// <param name="userId">user id to fetch preference</param>
+    /// <returns>user preference</returns>
+    Task<UserPreferenceDto> GetUserPreference(int userId);
   }
 }
