@@ -170,5 +170,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     {
       return await this.dbContext.UserPreferences.FirstOrDefaultAsync(u => u.UserId == userId);
     }
+
+    public async Task AddUserPreference(int userId)
+    {
+      await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
+      return;
+    }
   }
 }

@@ -61,6 +61,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     public async Task<User> RegisterUser(RegisterModel registerData)
     {
       User user = await this.userRepo.RegisterUser(registerData);
+      await this.userRepo.AddUserPreference(user.Id);
       this.userRepo.SaveChanges();
       return user;
     }
