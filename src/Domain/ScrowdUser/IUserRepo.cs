@@ -65,5 +65,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <param name="userId">user id to add</param>
     Task AddUserPreference(int userId);
 
+    /// <summary>
+    /// Update user preference
+    /// </summary>
+    /// <param name="userPreference">update user preference</param>
+
+    void UpdateUserPreference(UserPreference userPreference);
+
   }
 }

@@ -176,5 +176,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
       return;
     }
+
+    /// <summary>
+    /// Update user preference
+    /// </summary>
+    /// <param name="userPreference">update user preference</param>
+    public void UpdateUserPreference(UserPreference userPreference)
+    {
+      this.dbContext.Update(userPreference);
+    }
   }
 }
