@@ -87,7 +87,7 @@ namespace SprintCrowd.Web.ScrowdUser
     [HttpPost("preference")]
     [ProducesResponseType(typeof(SuccessResponse<UserPreferenceDto>), 200)]
     [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
-    public async Task<IActionResult> UpdateUserPreference(UserPreferenceModel userPreferenceModel)
+    public async Task<IActionResult> UpdateUserPreference([FromBody] UserPreferenceModel userPreferenceModel)
     {
       var authorizedUser = await this.User.GetUser(this.UserService);
       var result = await this.UserService.UpdateUserPreference(authorizedUser.Id, userPreferenceModel);
@@ -115,7 +115,7 @@ namespace SprintCrowd.Web.ScrowdUser
     [HttpPost("settings")]
     [ProducesResponseType(typeof(SuccessResponse<UserSettingsDto>), 200)]
     [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
-    public async Task<IActionResult> UpdateUserSettings(UserSettingsModel userSettingsModel)
+    public async Task<IActionResult> UpdateUserSettings([FromBody] UserSettingsModel userSettingsModel)
     {
       var authorizedUser = await this.User.GetUser(this.UserService);
       var result = await this.UserService.UpdateUserSettings(authorizedUser.Id, userSettingsModel);
