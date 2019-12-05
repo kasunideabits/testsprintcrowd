@@ -204,5 +204,21 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     {
       await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
     }
+
+    /// <summary>
+    /// Update user
+    /// </summary>
+    public void UpdateUser(User user)
+    {
+      this.dbContext.User.Update(user);
+    }
+
+    /// <summary>
+    /// Update user settings for notification reminder
+    /// </summary>
+    public void UpdateUserSettings(UserNotificationReminder notificationReminder)
+    {
+      this.dbContext.UserNotificationReminders.Update(notificationReminder);
+    }
   }
 }

@@ -67,5 +67,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <param name="userId">user id to fetch settings</param>
     /// <returns>user settings</returns>
     Task<UserSettingsDto> GetUserSettings(int userId);
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userSettingsModel">user settings</param>
+    /// <returns>updated user settings</returns>
+    Task<UserSettingsDto> UpdateUserSettings(int userId, UserSettingsModel userSettingsModel);
   }
 }

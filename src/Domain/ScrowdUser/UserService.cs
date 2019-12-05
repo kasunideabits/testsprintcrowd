@@ -154,5 +154,34 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       }
       return new UserSettingsDto(userSettings.User.LanguagePreference, userSettings);
     }
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userSettingsModel">user settings</param>
+    /// <returns>updated user settings</returns>
+    public async Task<UserSettingsDto> UpdateUserSettings(int userId, UserSettingsModel userSettingsModel)
+    {
+      var userSettings = await this.userRepo.GetUserSettings(userId);
+      if (userSettings == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User settings not found");
+      }
+      userSettings.TwentyFourH = userSettingsModel.Reminder.TwentyForH;
+      userSettings.OneH = userSettingsModel.Reminder.OneH;
+      userSettings.FiftyM = userSettingsModel.Reminder.FiftyM;
+      userSettings.EventStart = userSettingsModel.Reminder.EventStart;
+      userSettings.FinalCall = userSettingsModel.Reminder.FinalCall;
+      this.userRepo.UpdateUserSettings(userSettings);
+      var user = await this.userRepo.GetUser(userId);
+      if (user.LanguagePreference != userSettingsModel.Language)
+      {
+        user.LanguagePreference = userSettingsModel.Language;
+        this.userRepo.UpdateUser(user);
+      }
+      this.userRepo.SaveChanges();
+      return new UserSettingsDto(user.LanguagePreference, userSettings);
+    }
   }
 }

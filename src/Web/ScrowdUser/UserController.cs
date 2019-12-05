@@ -98,13 +98,27 @@ namespace SprintCrowd.Web.ScrowdUser
     /// Get user settings
     /// </summary>
     /// <returns>user setting</returns>
-    [HttpGet("preference")]
+    [HttpGet("settings")]
     [ProducesResponseType(typeof(SuccessResponse<UserSettingsDto>), 200)]
     [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
     public async Task<IActionResult> GetUserSettings()
     {
       var authorizedUser = await this.User.GetUser(this.UserService);
       var result = await this.UserService.GetUserSettings(authorizedUser.Id);
+      return this.Ok(new SuccessResponse<UserSettingsDto>(result));
+    }
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <returns>user settings</returns>
+    [HttpPost("settings")]
+    [ProducesResponseType(typeof(SuccessResponse<UserSettingsDto>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+    public async Task<IActionResult> UpdateUserSettings(UserSettingsModel userSettingsModel)
+    {
+      var authorizedUser = await this.User.GetUser(this.UserService);
+      var result = await this.UserService.UpdateUserSettings(authorizedUser.Id, userSettingsModel);
       return this.Ok(new SuccessResponse<UserSettingsDto>(result));
     }
   }
