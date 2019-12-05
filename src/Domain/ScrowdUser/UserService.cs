@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Web.Account;
   using SprintCrowd.BackEnd.Web.PushNotification;
+  using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
 
   /// <summary>
   /// user service used for managing users.
@@ -62,6 +63,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     {
       User user = await this.userRepo.RegisterUser(registerData);
       await this.userRepo.AddUserPreference(user.Id);
+      await this.userRepo.AddDefaultUserSettings(user.Id);
       this.userRepo.SaveChanges();
       return user;
     }
@@ -100,11 +102,86 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       var userPreference = await this.userRepo.GetUserPreference(userId);
       if (userPreference == null)
       {
-        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User Not found");
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User Preference not found");
       }
 
       return new UserPreferenceDto(userPreference);
     }
 
+    /// <summary>
+    /// Update user preferences
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userPreferenceModel">user preference</param>
+    /// <returns>updated user preference</returns>
+    public async Task<UserPreferenceDto> UpdateUserPreference(int userId, UserPreferenceModel userPreferenceModel)
+    {
+      var userPreference = await this.userRepo.GetUserPreference(userId);
+      if (userPreference == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User Preference not found");
+      }
+      userPreference.Mon = userPreferenceModel.Day.Mon;
+      userPreference.Tue = userPreferenceModel.Day.Tue;
+      userPreference.Wed = userPreferenceModel.Day.Wed;
+      userPreference.Thur = userPreferenceModel.Day.Thur;
+      userPreference.Fri = userPreferenceModel.Day.Fri;
+      userPreference.Sat = userPreferenceModel.Day.Sat;
+      userPreference.Sun = userPreferenceModel.Day.Sun;
+      userPreference.Morning = userPreferenceModel.Time.Morning;
+      userPreference.AfterNoon = userPreferenceModel.Time.AfterNoon;
+      userPreference.Evening = userPreferenceModel.Time.Evening;
+      userPreference.Night = userPreferenceModel.Time.Night;
+      userPreference.TwoToTen = userPreferenceModel.Distance.TwoToTen;
+      userPreference.EleToTwenty = userPreferenceModel.Distance.EleToTwenty;
+      userPreference.TOneToThirty = userPreferenceModel.Distance.TOneToThirty;
+      this.userRepo.UpdateUserPreference(userPreference);
+      this.userRepo.SaveChanges();
+      return new UserPreferenceDto(userPreference);
+    }
+
+    /// <summary>
+    /// Get user settings with given user id
+    /// </summary>
+    /// <param name="userId">user id to fetch settings</param>
+    /// <returns>user settings</returns>
+    public async Task<UserSettingsDto> GetUserSettings(int userId)
+    {
+      var userSettings = await this.userRepo.GetUserSettings(userId);
+      if (userSettings == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User settings not found");
+      }
+      return new UserSettingsDto(userSettings.User.LanguagePreference, userSettings);
+    }
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userSettingsModel">user settings</param>
+    /// <returns>updated user settings</returns>
+    public async Task<UserSettingsDto> UpdateUserSettings(int userId, UserSettingsModel userSettingsModel)
+    {
+      var userSettings = await this.userRepo.GetUserSettings(userId);
+      if (userSettings == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User settings not found");
+      }
+      userSettings.TwentyFourH = userSettingsModel.Reminder.TwentyForH;
+      userSettings.OneH = userSettingsModel.Reminder.OneH;
+      userSettings.FiftyM = userSettingsModel.Reminder.FiftyM;
+      userSettings.EventStart = userSettingsModel.Reminder.EventStart;
+      userSettings.FinalCall = userSettingsModel.Reminder.FinalCall;
+      this.userRepo.UpdateUserSettings(userSettings);
+      var user = await this.userRepo.GetUser(userId);
+      if (user.LanguagePreference != userSettingsModel.Language)
+      {
+        user.LanguagePreference = userSettingsModel.Language;
+        this.userRepo.UpdateUser(user);
+      }
+      this.userRepo.SaveChanges();
+      return new UserSettingsDto(user.LanguagePreference, userSettings);
+    }
   }
 }

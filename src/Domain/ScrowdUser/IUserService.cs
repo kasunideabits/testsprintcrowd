@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Web.Account;
   using SprintCrowd.BackEnd.Web.PushNotification;
+  using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
 
   /// <summary>
   /// interface for UserService.
@@ -51,5 +52,28 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <param name="userId">user id to fetch preference</param>
     /// <returns>user preference</returns>
     Task<UserPreferenceDto> GetUserPreference(int userId);
+
+    /// <summary>
+    /// Update user preferences
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userPreferenceModel">user preference</param>
+    /// <returns>updated user preference</returns>
+    Task<UserPreferenceDto> UpdateUserPreference(int userId, UserPreferenceModel userPreferenceModel);
+
+    /// <summary>
+    /// Get user settings with given user id
+    /// </summary>
+    /// <param name="userId">user id to fetch settings</param>
+    /// <returns>user settings</returns>
+    Task<UserSettingsDto> GetUserSettings(int userId);
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <param name="userId"> user id to for update user </param>
+    /// <param name="userSettingsModel">user settings</param>
+    /// <returns>updated user settings</returns>
+    Task<UserSettingsDto> UpdateUserSettings(int userId, UserSettingsModel userSettingsModel);
   }
 }

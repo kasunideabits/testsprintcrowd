@@ -11,6 +11,7 @@ namespace SprintCrowd.Web.ScrowdUser
   using SprintCrowd.BackEnd.Extensions;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Infrastructure.Persistence;
+  using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
   using SprintCrowd.BackEnd.Web.ScrowdUser;
 
   /// <summary>
@@ -77,6 +78,48 @@ namespace SprintCrowd.Web.ScrowdUser
       var authorizedUser = await this.User.GetUser(this.UserService);
       var result = await this.UserService.GetUserPreference(authorizedUser.Id);
       return this.Ok(new SuccessResponse<UserPreferenceDto>(result));
+    }
+
+    /// <summary>
+    /// Update user pereference
+    /// </summary>
+    /// <returns>user peference</returns>
+    [HttpPost("preference")]
+    [ProducesResponseType(typeof(SuccessResponse<UserPreferenceDto>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+    public async Task<IActionResult> UpdateUserPreference([FromBody] UserPreferenceModel userPreferenceModel)
+    {
+      var authorizedUser = await this.User.GetUser(this.UserService);
+      var result = await this.UserService.UpdateUserPreference(authorizedUser.Id, userPreferenceModel);
+      return this.Ok(new SuccessResponse<UserPreferenceDto>(result));
+    }
+
+    /// <summary>
+    /// Get user settings
+    /// </summary>
+    /// <returns>user setting</returns>
+    [HttpGet("settings")]
+    [ProducesResponseType(typeof(SuccessResponse<UserSettingsDto>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+    public async Task<IActionResult> GetUserSettings()
+    {
+      var authorizedUser = await this.User.GetUser(this.UserService);
+      var result = await this.UserService.GetUserSettings(authorizedUser.Id);
+      return this.Ok(new SuccessResponse<UserSettingsDto>(result));
+    }
+
+    /// <summary>
+    /// Update user settings
+    /// </summary>
+    /// <returns>user settings</returns>
+    [HttpPost("settings")]
+    [ProducesResponseType(typeof(SuccessResponse<UserSettingsDto>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+    public async Task<IActionResult> UpdateUserSettings([FromBody] UserSettingsModel userSettingsModel)
+    {
+      var authorizedUser = await this.User.GetUser(this.UserService);
+      var result = await this.UserService.UpdateUserSettings(authorizedUser.Id, userSettingsModel);
+      return this.Ok(new SuccessResponse<UserSettingsDto>(result));
     }
   }
 }

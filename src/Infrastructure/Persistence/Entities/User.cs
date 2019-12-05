@@ -147,8 +147,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Gets or set user preference
         /// </summary>
-        /// <value></value>
         public virtual UserPreference UserPreference { get; set; }
+
+        /// <summary>
+        /// Gets set user notification reminder reference
+        /// </summary>
+        public virtual UserNotificationReminder UserNotificationReminder { get; set; }
 
     }
 }
