@@ -73,6 +73,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
 
     public DbSet<UserPreference> UserPreferences { get; set; }
 
+    public DbSet<UserNotificationReminder> UserNotificationReminders { get; set; }
+
     /// <summary>
     /// override save changes to insert last updated value.
     /// </summary>
@@ -107,6 +109,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
       builder.ApplyConfiguration(new UserActivityConfig());
       builder.ApplyConfiguration(new UserNotificationConfig());
       builder.ApplyConfiguration(new UserPreferenceConfig());
+      builder.ApplyConfiguration(new UserNotificationReminderConfig());
 
       this.FixSnakeCaseNames(builder);
     }
