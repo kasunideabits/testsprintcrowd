@@ -63,6 +63,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     {
       User user = await this.userRepo.RegisterUser(registerData);
       await this.userRepo.AddUserPreference(user.Id);
+      await this.userRepo.AddDefaultUserSettings(user.Id);
       this.userRepo.SaveChanges();
       return user;
     }

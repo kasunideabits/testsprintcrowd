@@ -78,5 +78,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// <returns>user notification reminders</returns>
     Task<UserNotificationReminder> GetUserSettings(int userId);
 
+    /// <summary>
+    /// Add default user settings for given user id
+    /// </summary>
+    /// <param name="userId">user id to add</param>
+    Task AddDefaultUserSettings(int userId);
   }
 }
