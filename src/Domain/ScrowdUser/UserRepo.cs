@@ -185,5 +185,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     {
       this.dbContext.Update(userPreference);
     }
+
+    /// <summary>
+    /// Get user settings
+    /// </summary>
+    /// <param name="userId">user id to fetch</param>
+    /// <returns>user notification reminders</returns>
+    public async Task<UserNotificationReminder> GetUserSettings(int userId)
+    {
+      return await this.dbContext.UserNotificationReminders.Include(u => u.User).FirstOrDefaultAsync(u => u.UserId == userId);
+    }
   }
 }

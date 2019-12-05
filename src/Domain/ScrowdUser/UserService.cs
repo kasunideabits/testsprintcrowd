@@ -138,5 +138,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
       this.userRepo.SaveChanges();
       return new UserPreferenceDto(userPreference);
     }
+
+    /// <summary>
+    /// Get user settings with given user id
+    /// </summary>
+    /// <param name="userId">user id to fetch settings</param>
+    /// <returns>user settings</returns>
+    public async Task<UserSettingsDto> GetUserSettings(int userId)
+    {
+      var userSettings = await this.userRepo.GetUserSettings(userId);
+      if (userSettings == null)
+      {
+        throw new Application.SCApplicationException((int)UserErrorCode.UserNotFound, "User settings not found");
+      }
+      return new UserSettingsDto(userSettings.User.LanguagePreference, userSettings);
+    }
   }
 }

@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public bool TwentyForH { get; set; } = false;
+        public bool TwentyFourH { get; set; } = false;
         public bool OneH { get; set; } = false;
         public bool FiftyM { get; set; } = false;
         public bool EventStart { get; set; } = false;
