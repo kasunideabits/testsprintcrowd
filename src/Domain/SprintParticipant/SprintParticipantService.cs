@@ -236,7 +236,6 @@
             {
                 time = time.AddHours((int)startFrom);
             }
-            Console.WriteLine((int)SprintStatus.ARCHIVED);
 
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
@@ -266,7 +265,6 @@
             Expression<Func<SprintParticipant, bool>> creatorQuery = s =>
                 s.UserId == userId &&
                 s.Sprint.CreatedBy.Id == userId &&
-                s.Sprint.StartDateTime > DateTime.UtcNow &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                 ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
                 (s.Sprint.StartDateTime > now);
