@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191122074714_FixUserActivity")]
+    partial class FixUserActivity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,113 +430,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.ToTable("user_notification");
                 });
 
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("EventStart")
-                        .HasColumnName("event_start");
-
-                    b.Property<bool>("FiftyM")
-                        .HasColumnName("fifty_m");
-
-                    b.Property<bool>("FinalCall")
-                        .HasColumnName("final_call");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("last_updated");
-
-                    b.Property<bool>("OneH")
-                        .HasColumnName("one_h");
-
-                    b.Property<bool>("TwentyFourH")
-                        .HasColumnName("twenty_four_h");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("user_notification_reminders");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserPreference", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<bool>("AfterNoon")
-                        .HasColumnName("after_noon");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("EleToTwenty")
-                        .HasColumnName("ele_to_twenty");
-
-                    b.Property<bool>("Evening")
-                        .HasColumnName("evening");
-
-                    b.Property<bool>("Fri")
-                        .HasColumnName("fri");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("last_updated");
-
-                    b.Property<bool>("Mon")
-                        .HasColumnName("mon");
-
-                    b.Property<bool>("Morning")
-                        .HasColumnName("morning");
-
-                    b.Property<bool>("Night")
-                        .HasColumnName("night");
-
-                    b.Property<bool>("Sat")
-                        .HasColumnName("sat");
-
-                    b.Property<bool>("Sun")
-                        .HasColumnName("sun");
-
-                    b.Property<bool>("TOneToThirty")
-                        .HasColumnName("t_one_to_thirty");
-
-                    b.Property<bool>("Thur")
-                        .HasColumnName("thur");
-
-                    b.Property<bool>("Tue")
-                        .HasColumnName("tue");
-
-                    b.Property<bool>("TwoToTen")
-                        .HasColumnName("two_to_ten");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("user_id");
-
-                    b.Property<bool>("Wed")
-                        .HasColumnName("wed");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("user_preferences");
-                });
-
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.AchievementNoticiation", b =>
                 {
                     b.HasBaseType("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notification");
@@ -708,22 +603,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Sender")
                         .WithMany("SenderNotification")
                         .HasForeignKey("SenderId");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithOne("UserNotificationReminder")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserPreference", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithOne("UserPreference")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserPreference", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

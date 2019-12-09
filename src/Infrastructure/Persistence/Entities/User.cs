@@ -139,5 +139,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual List<Friend> friendsShared { get; set; }
 
+        /// <summary>
+        /// Gets or set userActivity reference
+        /// </summary>
+        public virtual List<UserActivity> UserActivity { get; set; }
+
+        /// <summary>
+        /// Gets or set user preference
+        /// </summary>
+        public virtual UserPreference UserPreference { get; set; }
+
+        /// <summary>
+        /// Gets set user notification reminder reference
+        /// </summary>
+        public virtual UserNotificationReminder UserNotificationReminder { get; set; }
+
     }
 }

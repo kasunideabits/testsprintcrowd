@@ -50,7 +50,8 @@
                 sprint.SprintType,
                 sprint.NumberOfParticipants,
                 sprint.InfluencerEmail,
-                sprint.DraftEvent);
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -130,5 +131,6 @@
 
             return this.Ok(response);
         }
+
     }
 }

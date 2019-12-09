@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191203034419_AddUserPreference")]
+    partial class AddUserPreference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,46 +430,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.ToTable("user_notification");
                 });
 
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("EventStart")
-                        .HasColumnName("event_start");
-
-                    b.Property<bool>("FiftyM")
-                        .HasColumnName("fifty_m");
-
-                    b.Property<bool>("FinalCall")
-                        .HasColumnName("final_call");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("last_updated");
-
-                    b.Property<bool>("OneH")
-                        .HasColumnName("one_h");
-
-                    b.Property<bool>("TwentyFourH")
-                        .HasColumnName("twenty_four_h");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("user_notification_reminders");
-                });
-
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserPreference", b =>
                 {
                     b.Property<int>("Id")
@@ -708,14 +670,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "Sender")
                         .WithMany("SenderNotification")
                         .HasForeignKey("SenderId");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", b =>
-                {
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithOne("UserNotificationReminder")
-                        .HasForeignKey("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotificationReminder", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserPreference", b =>
