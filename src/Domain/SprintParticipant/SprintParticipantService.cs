@@ -471,5 +471,28 @@
             return;
         }
 
+        /// <summary>
+        /// Get statistics for given user id
+        /// </summary>
+        /// <param name="userId"> user id to fetch</param>
+        /// <returns>get all statistics for public and private sprints </returns>
+        public SprintStatisticDto GetStatistic(int userId)
+        {
+            Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.Stage == ParticipantStage.COMPLETED;
+            var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
+            var statistics = new SprintStatisticDto();
+            allCompletedEvents.ForEach(s =>
+            {
+                if (s.Sprint.Type == (int)SprintType.PublicSprint)
+                {
+                    statistics.SetPublicEvent(s);
+                }
+                else
+                {
+                    statistics.SetPrivateEvent(s);
+                }
+            });
+            return statistics;
+        }
     }
 }
