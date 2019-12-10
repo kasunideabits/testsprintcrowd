@@ -63,7 +63,7 @@
         /// <summary>
         /// Get sprint details with users who join to sprint
         /// </summary>
-        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         [HttpGet("{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetSprintWithPaticipants(int sprintId)

@@ -238,5 +238,17 @@
             var result = this.SprintParticipantService.GetFriendsStatusInSprint(user.Id, sprintId);
             return this.Ok(new SuccessResponse<List<FriendInSprintDto>>(result));
         }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpGet("sprint/statistic")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> GetSprintStatistic()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetStatistic(user.Id);
+            return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+        }
     }
 }

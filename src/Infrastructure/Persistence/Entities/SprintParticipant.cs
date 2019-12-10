@@ -1,7 +1,8 @@
-using SprintCrowd.BackEnd.Application;
-
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
+    using System;
+    using SprintCrowd.BackEnd.Application;
+
     /// <summary>
     /// Sprint participant model.
     /// </summary>
@@ -28,6 +29,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>participant joined or not.</value>
         public ParticipantStage Stage { get; set; }
+
+        /// <summary>
+        /// Mark attendance time which user participate to the sprint
+        /// </summary>
+        public DateTime StartedTime { get; set; }
+
+        /// <summary>
+        /// Finish or left time
+        /// </summary>
+        public DateTime FinishTime { get; set; }
+
+        /// <summary>
+        /// Distance ran till leave or finish the sprint
+        /// </summary>
+        public int DistanceRan { get; set; }
 
         /// <summary>
         /// gets or sets value.

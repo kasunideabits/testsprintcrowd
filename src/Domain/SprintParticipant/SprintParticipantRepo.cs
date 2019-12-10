@@ -44,6 +44,7 @@
             if (paritipant.Stage == ParticipantStage.JOINED)
             {
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
+                paritipant.StartedTime = DateTime.UtcNow;
                 this.Context.SprintParticipant.Update(paritipant);
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
