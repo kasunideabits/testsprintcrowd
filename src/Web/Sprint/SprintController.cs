@@ -81,13 +81,14 @@
         /// Get created sprint with userId
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="extendedTime">query param for extended time</param>
         /// <returns><see cref="">sprint pariticipants details with sprint</see></returns>
         [HttpGet("sprint-by-creator/{userId:int}")]
         [ProducesResponseType(typeof(SuccessResponse<SprintWithPariticpantsDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId)
+        public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId, int? extendedTime)
         {
-            var result = await this.SprintService.GetSprintByCreator(userId);
+            var result = await this.SprintService.GetSprintByCreator(userId, extendedTime);
             return this.Ok(new SuccessResponse<SprintWithPariticpantsDto>(result));
         }
 
