@@ -352,5 +352,38 @@
                 });
             return result;
         }
+
+        public async Task<dynamic> GetPublicSprints(int userId, int timeOffset)
+        {
+            var userPreference = await this.SprintRepo.GetUserPreference(userId);
+            var query = new PublicSprintQueryBuilder(userPreference).Build(timeOffset);
+            var sprintParticipants = this.SprintRepo.GetParticipants(query)
+                .GroupBy(s => s.SprintId)
+                .GetEnumerator();
+            var sprintDto = new List<SprintWithPariticpantsDto>();
+            while (sprintParticipants.MoveNext())
+            {
+                var participants = sprintParticipants.Current.ToArray();
+                var sprint = participants [0]?.Sprint;
+                var resultDto = new SprintWithPariticpantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location);
+                foreach (var participant in participants)
+                {
+                    resultDto.AddParticipant(
+                        participant.User.Id,
+                        participant.User.Name,
+                        participant.User.ProfilePicture,
+                        participant.User.City,
+                        participant.User.Country,
+                        participant.User.CountryCode,
+                        participant.User.ColorCode,
+                        false,
+                        participant.Stage);
+
+                }
+                sprintDto.Add(resultDto);
+
+            }
+            return sprintDto;
+        }
     }
 }

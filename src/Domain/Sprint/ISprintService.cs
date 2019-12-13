@@ -75,5 +75,8 @@
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
 
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
+
+        Task<dynamic> GetPublicSprints(int userId, int timeOffset);
+
     }
 }
