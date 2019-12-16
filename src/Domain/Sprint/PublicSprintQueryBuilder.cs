@@ -24,35 +24,41 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<SprintParticipant, bool>> Build(int offset)
         {
-            Expression<Func<SprintParticipant, bool>> query1 = s => this.DayQyery(s.Sprint.StartDateTime, offset);
-            //  Expression<Func<SprintParticipant, bool>> query2 = s => this.TimeQuery(s.Sprint.StartDateTime, offset);
-            // return query1.AndAlso(query2);
-            return query1;
+            Expression<Func<SprintParticipant, bool>> query1 = this.ExtendtedTimeQuery(offset);
+            Expression<Func<SprintParticipant, bool>> query2 = this.DayQyery(offset);
+            Expression<Func<SprintParticipant, bool>> query3 = this.TimeQuery(offset);
+            Expression<Func<SprintParticipant, bool>> query4 = query1.AndAlso(query2);
+            return query4.AndAlso(query3);
         }
 
-        public bool DayQyery(DateTime startTime, int offset)
+        public Expression<Func<SprintParticipant, bool>> ExtendtedTimeQuery(int offset)
         {
-            var utcDay = startTime.AddMinutes(offset).DayOfWeek;
-            return (
-                (this._userPreference.Mon && utcDay == DayOfWeek.Monday) ||
-                (this._userPreference.Tue && utcDay == DayOfWeek.Tuesday) ||
-                (this._userPreference.Wed && utcDay == DayOfWeek.Wednesday) ||
-                (this._userPreference.Thur && utcDay == DayOfWeek.Thursday) ||
-                (this._userPreference.Fri && utcDay == DayOfWeek.Friday) ||
-                (this._userPreference.Sat && utcDay == DayOfWeek.Saturday) ||
-                (this._userPreference.Sun && utcDay == DayOfWeek.Sunday)
-            );
+            var now = DateTime.UtcNow.AddMinutes(-(offset) + (-15));
+            Expression<Func<SprintParticipant, bool>> query = s => s.Sprint.StartDateTime > now;
+            return query;
         }
 
-        public bool TimeQuery(DateTime startTime, int offset)
+        public Expression<Func<SprintParticipant, bool>> DayQyery(int offset)
         {
-            var clientDay = DateTime.UtcNow.AddMinutes(offset).DayOfWeek;
-            var utcHour = startTime.AddMinutes(offset).Hour;
-            return (
-                (this._userPreference.Morning && utcHour >= _minMorning && utcHour < _maxMorning) ||
-                (this._userPreference.AfterNoon && utcHour >= _minAfternoon && utcHour < _maxAfternoon) ||
-                (this._userPreference.Evening && utcHour >= _minEvening && utcHour < _maxEvening) ||
-                (this._userPreference.Morning && utcHour >= _minNight && utcHour < _maxNight));
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                (this._userPreference.Mon && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Monday) ||
+                (this._userPreference.Tue && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Tuesday) ||
+                (this._userPreference.Wed && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Wednesday) ||
+                (this._userPreference.Thur && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Thursday) ||
+                (this._userPreference.Fri && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Friday) ||
+                (this._userPreference.Sat && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Saturday) ||
+                (this._userPreference.Sun && s.Sprint.StartDateTime.AddMinutes(offset).DayOfWeek == DayOfWeek.Sunday);
+            return query;
+        }
+
+        public Expression<Func<SprintParticipant, bool>> TimeQuery(int offset)
+        {
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                (this._userPreference.Morning && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minMorning && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxMorning) ||
+                (this._userPreference.AfterNoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minAfternoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxAfternoon) ||
+                (this._userPreference.Evening && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minEvening && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxEvening) ||
+                (this._userPreference.Night && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minNight && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxNight);
+            return query;
         }
     }
 }

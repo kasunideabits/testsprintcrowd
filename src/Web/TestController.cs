@@ -36,7 +36,7 @@ namespace SprintCrowd.BackEnd.Web
         public async Task<dynamic> Index(TimeSpan timeOffset)
         {
             Console.WriteLine(timeOffset.Days);
-            var a = await this.sprintService.GetPublicSprints(3, -330);
+            var a = await this.sprintService.GetPublicSprints(3, -530);
             return a;
             //   return await this.User.GetUser(this.userService);
         }
