@@ -76,7 +76,13 @@
 
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
-        Task<dynamic> GetPublicSprints(int userId, int timeOffset);
+        /// <summary>
+        /// Get public sprint with user preference
+        /// </summary>
+        /// <param name="userId">user id</param>
+        /// <param name="timeOffset">time offset to utc</param>
+        /// <returns>sprint with participant info</returns>
+        Task<List<SprintWithPariticpantsDto>> GetPublicSprints(int userId, int timeOffset);
 
     }
 }
