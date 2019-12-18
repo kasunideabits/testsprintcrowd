@@ -1,6 +1,8 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Event
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -131,6 +133,21 @@
             };
 
             return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Query public sprint with  utc offset
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("public/start-now")]
+        [ProducesResponseType(typeof(SuccessResponse<List<SprintWithPariticpantsDto>>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetPublicSprintsWithPreference(TimeSpan timeOffset)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetPublicSprints(user.Id, timeOffset.Minutes);
+            return this.Ok(new SuccessResponse<List<SprintWithPariticpantsDto>>(result));
         }
 
     }
