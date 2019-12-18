@@ -12,14 +12,14 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             this._userPreference = userPreference;
         }
 
-        private const int _minMorning = 0;
+        private const int _minMorning = 5;
         private const int _maxMorning = 11;
         private const int _minAfternoon = 12;
         private const int _maxAfternoon = 16;
         private const int _minEvening = 17;
-        private const int _maxEvening = 19;
-        private const int _minNight = 20;
-        private const int _maxNight = 23;
+        private const int _maxEvening = 20;
+        private const int _minNight = 21;
+        private const int _maxNight = 3;
         private UserPreference _userPreference { get; }
 
         public Expression<Func<SprintParticipant, bool>> Build(int offset)
