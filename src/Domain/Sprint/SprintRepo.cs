@@ -116,8 +116,7 @@
                 .Include(s => s.Sprint)
                 .ThenInclude(s => s.CreatedBy)
                 .Include(s => s.User)
-                .Where(predicate)
-                .AsEnumerable();
+                .Where(predicate);
         }
 
         /// <summary>
@@ -144,6 +143,11 @@
         public void RemoveSprint(Sprint sprint)
         {
             this.dbContext.Set<Sprint>().Remove(sprint);
+        }
+
+        public async Task<UserPreference> GetUserPreference(int userId)
+        {
+            return await this.dbContext.UserPreferences.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         /// <summary>

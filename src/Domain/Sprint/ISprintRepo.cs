@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -92,5 +93,7 @@
         /// saves changed to db
         /// </summary>
         void SaveChanges();
+
+        Task<UserPreference> GetUserPreference(int userId);
     }
 }
