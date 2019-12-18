@@ -12,7 +12,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             this._userPreference = userPreference;
         }
 
-        private const int _minMorning = 4;
+        private const int _minMorning = 0;
         private const int _maxMorning = 11;
         private const int _minAfternoon = 12;
         private const int _maxAfternoon = 16;
@@ -33,7 +33,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<SprintParticipant, bool>> ExtendtedTimeQuery(int offset)
         {
-            var now = DateTime.UtcNow.AddMinutes(-(offset) + (-15));
+            var now = DateTime.UtcNow.AddMinutes(offset + (-15));
             Expression<Func<SprintParticipant, bool>> query = s => s.Sprint.StartDateTime > now;
             return query;
         }
@@ -54,9 +54,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public Expression<Func<SprintParticipant, bool>> TimeQuery(int offset)
         {
             Expression<Func<SprintParticipant, bool>> query = s =>
-                (this._userPreference.Morning && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minMorning && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxMorning) ||
-                (this._userPreference.AfterNoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minAfternoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxAfternoon) ||
-                (this._userPreference.Evening && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minEvening && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxEvening) ||
+                (this._userPreference.Morning && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minMorning && s.Sprint.StartDateTime.AddMinutes(offset).Hour <= _maxMorning) ||
+                (this._userPreference.AfterNoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minAfternoon && s.Sprint.StartDateTime.AddMinutes(offset).Hour <= _maxAfternoon) ||
+                (this._userPreference.Evening && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minEvening && s.Sprint.StartDateTime.AddMinutes(offset).Hour <= _maxEvening) ||
                 (this._userPreference.Night && s.Sprint.StartDateTime.AddMinutes(offset).Hour >= _minNight && s.Sprint.StartDateTime.AddMinutes(offset).Hour < _maxNight);
             return query;
         }
