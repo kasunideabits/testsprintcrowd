@@ -58,6 +58,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public string Code { get; set; }
 
         /// <summary>
+        /// User state
+        /// </summary>
+        public UserState UserState { get; set; }
+
+        /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>list of sptints the user has participated and participating on.</value>
