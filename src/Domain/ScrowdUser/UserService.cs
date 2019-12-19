@@ -193,6 +193,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             var user = await this.userRepo.GetUser(userId);
             user.UserState = Application.UserState.Deactivate;
             this.userRepo.UpdateUser(user);
+            this.userRepo.SaveChanges();
         }
 
         /// <summary>
@@ -204,6 +205,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             var user = await this.userRepo.GetUser(userId);
             user.UserState = Application.UserState.Deactivate;
             this.userRepo.UpdateUser(user);
+            this.userRepo.SaveChanges();
         }
 
     }

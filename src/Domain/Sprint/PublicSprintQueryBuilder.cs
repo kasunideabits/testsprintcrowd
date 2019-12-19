@@ -36,7 +36,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<SprintParticipant, bool>> PublicSprintQuery()
         {
-            Expression<Func<SprintParticipant, bool>> query = s => s.Sprint.Type == (int)SprintType.PublicSprint;
+            Expression<Func<SprintParticipant, bool>> query = s => s.Sprint.Type == (int)SprintType.PublicSprint && s.User.UserState == UserState.Active;
             return query;
         }
 

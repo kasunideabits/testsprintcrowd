@@ -79,7 +79,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int creatorId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE || s.Stage != ParticipantStage.COMPLETED) && s.UserId != creatorId)
+                .Where(s =>
+                    s.SprintId == sprintId &&
+                    s.User.UserState == UserState.Active &&
+                    (
+                        s.Stage != ParticipantStage.QUIT ||
+                        s.Stage != ParticipantStage.DECLINE ||
+                        s.Stage != ParticipantStage.COMPLETED
+                    ) &&
+                    s.UserId != creatorId)
                 .Select(s => s.UserId)
                 .ToList();
         }
