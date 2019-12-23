@@ -126,6 +126,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private Participant GetParticipant()
         {
             return this.Context.User
+                .Where(u => u.UserState == UserState.Active)
                 .Select(u => new Participant
                 {
                     Id = u.Id,
@@ -160,7 +161,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             List<int> ids = new List<int>();
             var ids1 = this.Context.SprintParticipant
-                .Where(s => s.SprintId == this._joinSprint.SprintId)
+                .Where(s => s.SprintId == this._joinSprint.SprintId && s.User.UserState == UserState.Active)
                 .Join(this.Context.Frineds,
                     p => p.UserId,
                     f => f.SharedUserId,
@@ -170,7 +171,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(s => s.FriendId)
                 .ToList();
             var ids2 = this.Context.SprintParticipant
-                .Where(s => s.SprintId == this._joinSprint.SprintId)
+                .Where(s => s.SprintId == this._joinSprint.SprintId && s.User.UserState == UserState.Active)
                 .Join(this.Context.Frineds,
                     p => p.UserId,
                     f => f.AcceptedUserId,
