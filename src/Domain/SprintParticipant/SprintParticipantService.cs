@@ -79,7 +79,7 @@
                 }
             }
 
-            Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
+            Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId && s.User.UserState == UserState.Active;
             var inviteUser = await this.SprintParticipantRepo.Get(query);
 
             if (sprint.Type == (int)SprintType.PrivateSprint)
@@ -146,7 +146,7 @@
         {
             try
             {
-                Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId;
+                Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
                 participant.Stage = ParticipantStage.QUIT;
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
@@ -239,6 +239,7 @@
 
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
+                s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id != userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
                 (s.Stage == stage || stage == null) &&
@@ -264,6 +265,7 @@
             var getSprintDto = new GetSprintDto() { Other = sprintInfo };
             Expression<Func<SprintParticipant, bool>> creatorQuery = s =>
                 s.UserId == userId &&
+                s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id == userId &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                 ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
@@ -293,6 +295,7 @@
         {
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
+                s.User.UserState == UserState.Active &&
                 s.Stage == ParticipantStage.MARKED_ATTENDENCE;
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
@@ -409,7 +412,7 @@
         /// <param name="participantId">participant id for remove</param>
         public async Task RemoveParticipant(int requesterId, int sprintId, int participantId)
         {
-            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId == participantId;
+            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId == participantId && s.User.UserState == UserState.Active;
             var sprintParticipant = await this.SprintParticipantRepo.Get(query);
             if (sprintParticipant == null)
             {
@@ -444,7 +447,11 @@
         {
             var friendsRelations = this.SprintParticipantRepo.GetFriends(userId);
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUser : f.AcceptedUser);
-            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId && s.UserId != userId && s.Stage != ParticipantStage.QUIT;
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.SprintId == sprintId &&
+                s.UserId != userId &&
+                s.Stage != ParticipantStage.QUIT &&
+                s.User.UserState == UserState.Active;
             var sprintParticipantsIds = this.SprintParticipantRepo.GetAll(query).Select(s => s.UserId).ToList();
             var result = friends.Select(f => new FriendInSprintDto(
                     f.Id,
@@ -478,7 +485,10 @@
         /// <returns>get all statistics for public and private sprints </returns>
         public SprintStatisticDto GetStatistic(int userId)
         {
-            Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.Stage == ParticipantStage.COMPLETED;
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                s.Stage == ParticipantStage.COMPLETED &&
+                s.User.UserState == UserState.Active;
             var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
             var statistics = new SprintStatisticDto();
             allCompletedEvents.ForEach(s =>

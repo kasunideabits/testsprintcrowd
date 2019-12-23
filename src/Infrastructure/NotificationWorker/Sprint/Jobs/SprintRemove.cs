@@ -18,7 +18,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.Context = context;
             this.PushNotificationClient = client;
             this.AblyConnectionFactory = ablyFactory;
-
         }
 
         private ScrowdDbContext Context { get; }
@@ -76,7 +75,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<int> SprintParticipantIds(int sprintId, int removerId)
         {
             return this.Context.SprintParticipant
-                .Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.DECLINE && s.UserId != removerId)
+                .Where(s =>
+                    s.SprintId == sprintId &&
+                    s.Stage != ParticipantStage.DECLINE &&
+                    s.UserId != removerId &&
+                    s.User.UserState == UserState.Active)
                 .Select(s => s.UserId)
                 .ToList();
         }

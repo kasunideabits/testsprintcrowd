@@ -53,11 +53,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 markAttendance.SprintId,
                 markAttendance.UserId,
                 markAttendance.Name,
-                markAttendance.ProfilePicture == null ? string.Empty : markAttendance.ProfilePicture,
-                markAttendance.Country == null ? string.Empty : markAttendance.Country,
-                markAttendance.CountryCode == null ? string.Empty : markAttendance.CountryCode,
-                markAttendance.City == null ? string.Empty : markAttendance.City,
-                markAttendance.ColorCode == null ? new UserColorCode().PickColor() : markAttendance.ColorCode);
+                markAttendance.ProfilePicture ?? string.Empty,
+                markAttendance.Country ?? string.Empty,
+                markAttendance.CountryCode ?? string.Empty,
+                markAttendance.City ?? string.Empty,
+                markAttendance.ColorCode ?? new UserColorCode().PickColor());
         }
     }
 

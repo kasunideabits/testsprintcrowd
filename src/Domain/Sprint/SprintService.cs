@@ -18,6 +18,7 @@
         /// initializes an instance of SprintService
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
+        /// <param name="notificationClient">notification client</param>
         public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient)
         {
             this.SprintRepo = sprintRepo;
@@ -215,7 +216,7 @@
             }
             else
             {
-                Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprint.Id;
+                Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprint.Id && s.User.UserState == UserState.Active;
                 var participants = this.SprintRepo.GetParticipants(participantPredicate);
                 return SprintWithPariticpantsMapper(sprint, participants.ToList());
             }
@@ -231,7 +232,7 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
-            Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId;
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId && s.User.UserState == UserState.Active;
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
