@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -82,7 +83,7 @@
         /// <param name="userId">user id</param>
         /// <param name="timeOffset">time offset to utc</param>
         /// <returns>sprint with participant info</returns>
-        Task<List<SprintWithPariticpantsDto>> GetPublicSprints(int userId, int timeOffset);
+        Task<List<PublicSprintWithParticipantsDto>> GetPublicSprints(int userId, int timeOffset);
 
     }
 }

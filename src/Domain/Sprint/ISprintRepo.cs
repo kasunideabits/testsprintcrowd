@@ -90,6 +90,13 @@
         void RemoveSprint(Sprint sprint);
 
         /// <summary>
+        /// Get friend list for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>Friends</returns>
+        IEnumerable<Friend> GetFriends(int userId);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

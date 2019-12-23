@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -359,19 +360,21 @@
         /// <param name="userId">user id</param>
         /// <param name="timeOffset">time offset to utc</param>
         /// <returns>sprint with participant info</returns>
-        public async Task<List<SprintWithPariticpantsDto>> GetPublicSprints(int userId, int timeOffset)
+        public async Task<List<PublicSprintWithParticipantsDto>> GetPublicSprints(int userId, int timeOffset)
         {
             var userPreference = await this.SprintRepo.GetUserPreference(userId);
             var query = new PublicSprintQueryBuilder(userPreference).Build(timeOffset);
             var sprintParticipants = this.SprintRepo.GetParticipants(query)
                 .GroupBy(s => s.SprintId)
                 .GetEnumerator();
-            var sprintDto = new List<SprintWithPariticpantsDto>();
+            var sprintDto = new List<PublicSprintWithParticipantsDto>();
+            var friendsRelations = this.SprintRepo.GetFriends(userId);
+            var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
             while (sprintParticipants.MoveNext())
             {
                 var participants = sprintParticipants.Current.ToArray();
                 var sprint = participants [0]?.Sprint;
-                var resultDto = new SprintWithPariticpantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location);
+                var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location);
                 foreach (var participant in participants)
                 {
                     resultDto.AddParticipant(
@@ -383,7 +386,8 @@
                         participant.User.CountryCode,
                         participant.User.ColorCode,
                         false,
-                        participant.Stage);
+                        participant.Stage,
+                        friends.Contains(participant.UserId));
 
                 }
                 sprintDto.Add(resultDto);

@@ -8,6 +8,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -141,13 +142,13 @@
         /// <param name="timeOffset">time offset</param>
         /// <returns></returns>
         [HttpGet("public/start-now")]
-        [ProducesResponseType(typeof(SuccessResponse<List<SprintWithPariticpantsDto>>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<dynamic> GetPublicSprintsWithPreference(TimeSpan timeOffset)
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.GetPublicSprints(user.Id, timeOffset.Minutes);
-            return this.Ok(new SuccessResponse<List<SprintWithPariticpantsDto>>(result));
+            return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
     }

@@ -151,6 +151,16 @@
         }
 
         /// <summary>
+        /// Get friend list for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>Friends</returns>
+        public IEnumerable<Friend> GetFriends(int userId)
+        {
+            return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
