@@ -203,7 +203,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AccountLogout(int userId)
         {
             var user = await this.userRepo.GetUser(userId);
-            user.UserState = Application.UserState.Deactivate;
+            user.UserState = Application.UserState.Logout;
             this.userRepo.UpdateUser(user);
             this.userRepo.SaveChanges();
         }
