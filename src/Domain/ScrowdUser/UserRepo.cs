@@ -111,8 +111,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 var FbUser = await this.dbContext.User.AddAsync(user);
                 return FbUser.Entity;
             }
+            else
+            {
+                exist.UserState = UserState.Active;
+                this.dbContext.Update(exist);
+            }
             return exist;
-
         }
 
         /// <summary>
