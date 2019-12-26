@@ -2,7 +2,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 {
     using System.Collections.Generic;
     using System;
+    using FirebaseAdmin.Messaging;
     using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
@@ -16,7 +18,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 
         private PushNotificationMulticastMessageBuilder MessageBuilder { get; set; }
 
-        private dynamic BuildNotificationMessage(
+        public MulticastMessage BuildNotificationMessage(
             string userLang,
             string sprintName,
             int notificationId,
@@ -26,8 +28,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
         {
             this.BuildNotification(userLang, notificationType, sprintName);
             this.BuildData(notificationId, notificationType, payload);
-            this.MessageBuilder.Tokens(tokens).Build();
-            return this.MessageBuilder;
+            return this.MessageBuilder.Tokens(tokens).Build();
         }
 
         private void BuildNotification(string userLang, SprintNotificaitonType notificationType, string sprintName)
@@ -72,9 +73,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
         {
             switch (userLang)
             {
-                case "en":
+                case LanugagePreference.EnglishUS:
                     return new NotificationMessageEn(sprintName);
-                case "se":
+                case LanugagePreference.Swedish:
                     return new NotificationMessageSE(sprintName);
                 default:
                     return new NotificationMessageEn(sprintName);

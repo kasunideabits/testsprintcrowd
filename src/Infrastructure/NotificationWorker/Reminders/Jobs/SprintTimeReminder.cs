@@ -1,10 +1,52 @@
-namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs
+﻿namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs
 {
-    internal class SprintTimeReminder : ISprintTimeReminder
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Dtos;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Infrastructure.PushNotification;
+    using SprintCrowd.Infrastructure.NotificationWorker.Reminders.Models;
+
+    internal class SprintTimeReminder : TimeReminderBase, ISprintTimeReminder
     {
+
+        public SprintTimeReminder(ScrowdDbContext context, IPushNotificationClient client)
+        {
+            this.SprintReminderRepo = new SprintReminderRepo(context);
+            this.Client = client;
+        }
+
+        private ISprintReminderRepo SprintReminderRepo { get; }
+        private IPushNotificationClient Client { get; }
+
         public void Run(object message = null)
         {
-            throw new System.NotImplementedException();
+            SprintReminderMessage sprintReminder = message as SprintReminderMessage;
+            if (sprintReminder != null)
+            {
+                var payload = SprintReminderDtoMapper.Map(sprintReminder);
+                var sprint = this.SprintReminderRepo.GetSprint(sprintReminder.SprintId);
+                var systemUser = this.SprintReminderRepo.GetSystemUser();
+                var participants = this.SprintReminderRepo.GetParticipantIdsByLangugage(sprintReminder.SprintId);
+                foreach (var lang in participants)
+                {
+                    var notificationId = this.SprintReminderRepo.AddNotification(sprint.Id, sprint.Name, sprint.Distance,
+                        (SprintType)sprint.Type, (SprintStatus)sprint.Status, sprint.NumberOfParticipants, sprint.StartDateTime, systemUser.Id);
+                    this.SprintReminderRepo.AddUserNotification(lang.Value, 1, notificationId);
+                    var tokens = this.SprintReminderRepo.GetTokens(lang.Value);
+                    var notificaiton = this.BuildNotificationMessage(lang.Key, sprintReminder.SprintName, systemUser.Id, sprintReminder.NotificationType, tokens, payload);
+                    this.Client.SendMulticaseMessage(notificaiton);
+                }
+                this.SprintReminderRepo.SaveChanges();
+            }
+        }
+
+        public static class SprintReminderDtoMapper
+        {
+            public static SprintReminderMessageDto Map(SprintReminderMessage message)
+            {
+                return new SprintReminderMessageDto(message.SprintId, message.SprintName, message.NotificationType);
+            }
         }
     }
 }
