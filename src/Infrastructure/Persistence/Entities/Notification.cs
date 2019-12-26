@@ -51,12 +51,16 @@
         InvitationAccept,
         InvitationDecline,
         FriendJoin,
-        TimeReminderBeforeStart,
-        TimeReminderStarted,
-        TimeReminderExpired,
+        TimeReminderBeforeStart, // 24 hours
+        TimeReminderStarted, // onlive
+        TimeReminderExpired, // expired
         Edit,
         Remove,
         LeaveParticipant,
+        TimeReminderBeforFiftyM,
+        TimeReminderFinalCall, // final call,
+        TimeReminderOneHourBefore, // 1 hour before call
+
     }
 
     public enum FriendNoticiationType

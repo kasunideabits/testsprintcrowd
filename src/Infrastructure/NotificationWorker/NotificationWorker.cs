@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
+    using System;
     using Hangfire;
 
     /// <summary>
@@ -21,6 +22,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         public virtual void Invoke(object message)
         {
             BackgroundJob.Enqueue<T>(x => x.Run(message));
+        }
+
+        /// <summary>
+        /// Schedule notification job in backgorund. to run the job implement <see cref="INotificationJob"> job class </see>
+        /// </summary>
+        /// <param name="message"> message for execture job</param>
+        /// <param name="delay"> schedule job delay time</param>
+        public void Schedule(object message, TimeSpan delay)
+        {
+            BackgroundJob.Schedule<T>(x => x.Run(message), delay);
         }
     }
 }
