@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -89,8 +90,17 @@
         void RemoveSprint(Sprint sprint);
 
         /// <summary>
+        /// Get friend list for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>Friends</returns>
+        IEnumerable<Friend> GetFriends(int userId);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();
+
+        Task<UserPreference> GetUserPreference(int userId);
     }
 }

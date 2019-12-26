@@ -116,8 +116,7 @@
                 .Include(s => s.Sprint)
                 .ThenInclude(s => s.CreatedBy)
                 .Include(s => s.User)
-                .Where(predicate)
-                .AsEnumerable();
+                .Where(predicate);
         }
 
         /// <summary>
@@ -144,6 +143,21 @@
         public void RemoveSprint(Sprint sprint)
         {
             this.dbContext.Set<Sprint>().Remove(sprint);
+        }
+
+        public async Task<UserPreference> GetUserPreference(int userId)
+        {
+            return await this.dbContext.UserPreferences.FirstOrDefaultAsync(u => u.UserId == userId);
+        }
+
+        /// <summary>
+        /// Get friend list for given user id
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>Friends</returns>
+        public IEnumerable<Friend> GetFriends(int userId)
+        {
+            return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
         }
 
         /// <summary>

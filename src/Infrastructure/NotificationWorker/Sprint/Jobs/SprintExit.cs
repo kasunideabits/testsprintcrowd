@@ -112,7 +112,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private List<string> GetTokens(int creatorId)
         {
             return this.Context.FirebaseToken
-                .Where(f => f.User.Id == creatorId)
+                .Where(f => f.User.Id == creatorId && f.User.UserState == UserState.Active)
                 .Select(f => f.Token).ToList();
         }
 

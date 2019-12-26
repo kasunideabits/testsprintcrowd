@@ -103,5 +103,12 @@
         /// <param name="userId">user id to get record</param>
         /// <returns><see cref="SprintInfo">class </see></returns>
         Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
+
+        /// <summary>
+        /// Get statistics for given user id
+        /// </summary>
+        /// <param name="userId"> user id to fetch</param>
+        /// <returns>get all statistics for public and private sprints </returns>
+        SprintStatisticDto GetStatistic(int userId);
     }
 }

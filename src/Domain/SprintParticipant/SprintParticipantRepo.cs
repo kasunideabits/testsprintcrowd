@@ -44,6 +44,7 @@
             if (paritipant.Stage == ParticipantStage.JOINED)
             {
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
+                paritipant.StartedTime = DateTime.UtcNow;
                 this.Context.SprintParticipant.Update(paritipant);
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
@@ -86,7 +87,7 @@
             return await this.Context.SprintParticipant
                 .Include(p => p.User)
                 .Include(p => p.Sprint)
-                .Where(p => p.SprintId == sprintId && p.Stage == stage)
+                .Where(p => p.SprintId == sprintId && p.Stage == stage && p.User.UserState == UserState.Active)
                 .ToListAsync();
         }
 
@@ -178,7 +179,7 @@
         public IQueryable<NotificationInfo> GetNotification(int userId)
         {
             return this.Context.UserNotification
-                .Where(u => u.ReceiverId == userId)
+                .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active)
                 .Join(this.Context.Notification,
                     u => u.NotificationId,
                     n => n.Id,
@@ -244,7 +245,9 @@
             return this.Context.Frineds
                 .Include(f => f.AcceptedUser)
                 .Include(f => f.SharedUser)
-                .Where(f => f.AcceptedUserId == userId || f.SharedUserId == userId);
+                .Where(f =>
+                    (f.AcceptedUserId == userId || f.SharedUserId == userId) &&
+                    (f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>

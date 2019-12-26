@@ -1,11 +1,14 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Event
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -63,7 +66,7 @@
         /// <summary>
         /// Get sprint details with users who join to sprint
         /// </summary>
-        /// <returns><see cref="SprintWithPariticpants">sprint details</see></returns>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         [HttpGet("{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetSprintWithPaticipants(int sprintId)
@@ -81,13 +84,14 @@
         /// Get created sprint with userId
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="extendedTime">query param for extended time</param>
         /// <returns><see cref="">sprint pariticipants details with sprint</see></returns>
         [HttpGet("sprint-by-creator/{userId:int}")]
         [ProducesResponseType(typeof(SuccessResponse<SprintWithPariticpantsDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId)
+        public async Task<IActionResult> GetSprintWithPaticipantsByCreator(int userId, int? extendedTime)
         {
-            var result = await this.SprintService.GetSprintByCreator(userId);
+            var result = await this.SprintService.GetSprintByCreator(userId, extendedTime);
             return this.Ok(new SuccessResponse<SprintWithPariticpantsDto>(result));
         }
 
@@ -130,6 +134,21 @@
             };
 
             return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Query public sprint with  utc offset
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("public/start-now")]
+        [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetPublicSprintsWithPreference(TimeSpan timeOffset)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetPublicSprints(user.Id, timeOffset.Minutes);
+            return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
     }
