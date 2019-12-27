@@ -21,14 +21,31 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         ///
         /// </summary>
         /// <param name="sprintId"></param>
+        /// <param name="notificationType"></param>
         /// <returns></returns>
-        public Dictionary<string, List<int>> GetParticipantIdsByLangugage(int sprintId)
+        public Dictionary<string, List<int>> GetParticipantIdsByLangugage(int sprintId, SprintNotificaitonType notificationType)
         {
             var result = this.Context.SprintParticipant
-                .Include(s => s.User)
-                .Where(s => s.SprintId == sprintId && s.User.UserState == Application.UserState.Active && s.Stage == ParticipantStage.JOINED)
-                .Select(s => new { Language = s.User.LanguagePreference, UserId = s.UserId })
-                .GroupBy(s => s.Language, s => s.UserId, (key, g) => new { Language = key, UserId = g.ToList() })
+                .Join(this.Context.UserNotificationReminders,
+                    s => s.UserId,
+                    u => u.UserId,
+                    (s, u) => new { User = s, Reminders = u })
+                .Where(s =>
+                    s.User.SprintId == sprintId &&
+                    s.User.User.UserState == Application.UserState.Active &&
+                    (s.User.Stage == ParticipantStage.JOINED || s.User.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
+                    (
+                        (s.Reminders.TwentyFourH && SprintNotificaitonType.TimeReminderBeforeStart == notificationType) ||
+                        (s.Reminders.OneH && SprintNotificaitonType.TimeReminderOneHourBefore == notificationType) ||
+                        (s.Reminders.FiftyM && SprintNotificaitonType.TimeReminderBeforFiftyM == notificationType) ||
+                        (s.Reminders.EventStart && SprintNotificaitonType.TimeReminderStarted == notificationType) ||
+                        (s.Reminders.FinalCall && SprintNotificaitonType.TimeReminderFinalCall == notificationType) ||
+                        (SprintNotificaitonType.TimeReminderExpired == notificationType)
+                    ))
+                .Select(s => new { Language = s.User.User.LanguagePreference, UserId = s.User.UserId })
+                .GroupBy(s => s.Language,
+                    s => s.UserId,
+                    (key, g) => new { Language = key, UserId = g.ToList() })
                 .ToDictionary(s => s.Language, s => s.UserId);
             return result;
         }

@@ -18,8 +18,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         ///
         /// </summary>
         /// <param name="sprintId"></param>
+        /// <param name="notificationType"></param>
         /// <returns></returns>
-        Dictionary<string, List<int>> GetParticipantIdsByLangugage(int sprintId);
+        Dictionary<string, List<int>> GetParticipantIdsByLangugage(int sprintId, SprintNotificaitonType notificationType);
 
         /// <summary>
         ///
@@ -29,7 +30,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         List<string> GetTokens(List<int> userIds);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         User GetSystemUser();

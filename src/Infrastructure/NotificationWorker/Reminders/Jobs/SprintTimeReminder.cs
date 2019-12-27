@@ -27,7 +27,7 @@
                 var payload = SprintReminderDtoMapper.Map(sprintReminder);
                 var sprint = this.SprintReminderRepo.GetSprint(sprintReminder.SprintId);
                 var systemUser = this.SprintReminderRepo.GetSystemUser();
-                var participants = this.SprintReminderRepo.GetParticipantIdsByLangugage(sprintReminder.SprintId);
+                var participants = this.SprintReminderRepo.GetParticipantIdsByLangugage(sprintReminder.SprintId, sprintReminder.NotificationType);
                 foreach (var lang in participants)
                 {
                     var notificationId = this.SprintReminderRepo.AddNotification(sprint.Id, sprint.Name, sprint.Distance,
