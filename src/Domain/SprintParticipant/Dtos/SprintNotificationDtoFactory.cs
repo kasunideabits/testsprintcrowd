@@ -34,7 +34,14 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Edit:
                     return new SprintEditResponseDto(sender, notification);
-
+                case SprintNotificaitonType notificaitonType when
+                notificaitonType == SprintNotificaitonType.TimeReminderBeforeStart ||
+                notificaitonType == SprintNotificaitonType.TimeReminderOneHourBefore ||
+                notificaitonType == SprintNotificaitonType.TimeReminderBeforFiftyM ||
+                notificaitonType == SprintNotificaitonType.TimeReminderStarted ||
+                notificaitonType == SprintNotificaitonType.TimeReminderFinalCall ||
+                notificaitonType == SprintNotificaitonType.TimeReminderExpired:
+                    return new SprintTimeReminderDto(notification);
                 default:
                     break;
             }
@@ -127,6 +134,44 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             this.Data = new SprintEditResponsePayload(editor, notification);
         }
         public SprintEditResponsePayload Data { get; }
+    }
+
+    internal class SprintTimeReminderDto : SprintNotificationBaseDto, ISprintNotification
+    {
+        public SprintTimeReminderDto(SprintNotification notification) : base(notification)
+        {
+            this.Data = new SprintTimeReminderResponsePayload(
+                notification.SprintId,
+                notification.SprintName,
+                notification.SprintNotificationType
+            );
+        }
+        public SprintTimeReminderResponsePayload Data { get; }
+    }
+
+    internal class SprintTimeReminderResponsePayload
+    {
+        public SprintTimeReminderResponsePayload(int sprintId, string sprintName, SprintNotificaitonType notificationType)
+        {
+            this.SprintId = sprintId;
+            this.SprintName = sprintName;
+            this.NotificationType = notificationType;
+        }
+
+        /// <summary>
+        /// sprint id for scheule task
+        /// </summary>
+        public int SprintId { get; }
+
+        /// <summary>
+        /// sprint name
+        /// </summary>
+        public string SprintName { get; }
+
+        /// <summary>
+        /// notification reminder time indication
+        /// </summary>
+        public SprintNotificaitonType NotificationType { get; }
     }
 
     internal class SprintEditResponsePayload
