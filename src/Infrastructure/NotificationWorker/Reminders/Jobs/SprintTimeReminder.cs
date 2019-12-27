@@ -32,7 +32,7 @@
                 {
                     var notificationId = this.SprintReminderRepo.AddNotification(sprint.Id, sprint.Name, sprint.Distance,
                         (SprintType)sprint.Type, (SprintStatus)sprint.Status, sprint.NumberOfParticipants, sprint.StartDateTime, systemUser.Id);
-                    this.SprintReminderRepo.AddUserNotification(lang.Value, 1, notificationId);
+                    this.SprintReminderRepo.AddUserNotification(lang.Value, systemUser.Id, notificationId);
                     var tokens = this.SprintReminderRepo.GetTokens(lang.Value);
                     var notificaiton = this.BuildNotificationMessage(lang.Key, sprintReminder.SprintName, systemUser.Id, sprintReminder.NotificationType, tokens, payload);
                     this.Client.SendMulticaseMessage(notificaiton);
