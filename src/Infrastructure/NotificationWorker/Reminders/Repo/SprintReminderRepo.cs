@@ -85,6 +85,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         /// <summary>
         ///
         /// </summary>
+        /// <param name="notificationType"></param>
         /// <param name="sprintId"></param>
         /// <param name="sprintName"></param>
         /// <param name="distance"></param>
@@ -94,13 +95,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         /// <param name="startTime"></param>
         /// <param name="creatorId"></param>
         /// <returns></returns>
-        public int AddNotification(int sprintId, string sprintName, int distance, SprintType sprintType,
-            SprintStatus status, int numberOfParticipants, DateTime startTime, int creatorId)
+        public int AddNotification(SprintNotificaitonType notificationType, int sprintId,
+            string sprintName, int distance, SprintType sprintType, SprintStatus status,
+            int numberOfParticipants, DateTime startTime, int creatorId)
         {
 
             var sprintNotification = new SprintNotification()
             {
-                SprintNotificationType = SprintNotificaitonType.Edit,
+                SprintNotificationType = notificationType,
                 UpdatorId = creatorId,
                 SprintId = sprintId,
                 SprintName = sprintName,

@@ -30,7 +30,7 @@
                 var participants = this.SprintReminderRepo.GetParticipantIdsByLangugage(sprintReminder.SprintId, sprintReminder.NotificationType);
                 foreach (var lang in participants)
                 {
-                    var notificationId = this.SprintReminderRepo.AddNotification(sprint.Id, sprint.Name, sprint.Distance,
+                    var notificationId = this.SprintReminderRepo.AddNotification(sprintReminder.NotificationType, sprint.Id, sprint.Name, sprint.Distance,
                         (SprintType)sprint.Type, (SprintStatus)sprint.Status, sprint.NumberOfParticipants, sprint.StartDateTime, systemUser.Id);
                     this.SprintReminderRepo.AddUserNotification(lang.Value, systemUser.Id, notificationId);
                     var tokens = this.SprintReminderRepo.GetTokens(lang.Value);
