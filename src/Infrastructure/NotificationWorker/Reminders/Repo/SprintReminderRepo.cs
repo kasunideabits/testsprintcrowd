@@ -72,6 +72,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
             return result;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public User GetSystemUser()
         {
             var result = this.Context.User.FirstOrDefault(u => u.UserType == (int)UserType.SystemUser);
