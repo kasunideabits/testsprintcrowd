@@ -33,7 +33,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs
 
         public void Expired()
         {
-            this.Title = $"Tou failed to mark attendace for {sprintName}";
+            this.Title = $"Tou failed to mark attendace for {this.sprintName}";
         }
 
         public string GetTitle() => this.Title;
