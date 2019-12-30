@@ -140,33 +140,28 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
     {
         public SprintTimeReminderDto(SprintNotification notification) : base(notification)
         {
-            this.Data = new SprintTimeReminderResponsePayload(
-                notification.SprintId,
-                notification.SprintName,
-                notification.SprintNotificationType
-            );
+            this.Data = new SprintTimeReminderResponsePayload(notification, notification.SprintNotificationType);
         }
         public SprintTimeReminderResponsePayload Data { get; }
     }
 
     internal class SprintTimeReminderResponsePayload
     {
-        public SprintTimeReminderResponsePayload(int sprintId, string sprintName, SprintNotificaitonType notificationType)
+        public SprintTimeReminderResponsePayload(SprintNotification notification, SprintNotificaitonType notificationType)
         {
-            this.SprintId = sprintId;
-            this.SprintName = sprintName;
+            this.Sprint = new SprintNotificationInfo(
+                notification.SprintId,
+                notification.SprintName,
+                notification.Distance,
+                notification.StartDateTime,
+                notification.NumberOfParticipants,
+                notification.SprintType,
+                notification.SprintStatus
+            );
             this.NotificationType = notificationType;
         }
 
-        /// <summary>
-        /// sprint id for scheule task
-        /// </summary>
-        public int SprintId { get; }
-
-        /// <summary>
-        /// sprint name
-        /// </summary>
-        public string SprintName { get; }
+        public SprintNotificationInfo Sprint { get; }
 
         /// <summary>
         /// notification reminder time indication
