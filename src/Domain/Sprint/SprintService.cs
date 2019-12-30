@@ -365,17 +365,16 @@
         {
             var userPreference = await this.SprintRepo.GetUserPreference(userId);
             var query = new PublicSprintQueryBuilder(userPreference).Build(timeOffset);
-            var sprintParticipants = this.SprintRepo.GetParticipants(query)
-                .GroupBy(s => s.SprintId)
-                .GetEnumerator();
+            IEnumerable<Sprint> sprints = await this.SprintRepo.GetSprints(query);
             var sprintDto = new List<PublicSprintWithParticipantsDto>();
             var friendsRelations = this.SprintRepo.GetFriends(userId);
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
-            while (sprintParticipants.MoveNext())
+            foreach (var sprint in sprints)
             {
-                var participants = sprintParticipants.Current.ToArray();
-                var sprint = participants [0]?.Sprint;
+
                 var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location);
+                var participants = sprint.Participants.Where(s => s.User.UserState == UserState.Active &&
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE));
                 foreach (var participant in participants)
                 {
                     resultDto.AddParticipant(
@@ -392,7 +391,6 @@
 
                 }
                 sprintDto.Add(resultDto);
-
             }
             return sprintDto;
         }
