@@ -21,6 +21,13 @@
         Task<Sprint> GetSprint(Expression<Func<Sprint, bool>> predicate);
 
         /// <summary>
+        /// Get all sprints with given predicate
+        /// </summary>
+        /// <param name="predicate">query </param>
+        /// <returns>all sprints match to predicate</returns>
+        Task<IQueryable<Sprint>> GetSprints(Expression<Func<Sprint, bool>> predicate);
+
+        /// <summary>
         /// Get all sprints
         /// </summary>
         /// <returns>all sprints</returns>
