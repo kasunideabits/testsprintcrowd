@@ -373,7 +373,8 @@
             {
 
                 var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location);
-                var participants = sprint.Participants.Where(s => s.User.UserState == UserState.Active);
+                var participants = sprint.Participants.Where(s => s.User.UserState == UserState.Active &&
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE));
                 foreach (var participant in participants)
                 {
                     resultDto.AddParticipant(
