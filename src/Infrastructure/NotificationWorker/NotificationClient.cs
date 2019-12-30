@@ -1,7 +1,8 @@
-using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint;
-
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint;
+
     /// <summary>
     /// class for exectue background notification tasks
     /// </summary>
@@ -10,12 +11,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// <summary>
         /// Sprint notification
         /// </summary>
-        /// <value></value>
         public ISprintNotificationJobs SprintNotificationJobs
         {
             get
             {
                 return new SprintNotificationJobs();
+            }
+        }
+
+        /// <summary>
+        ///  Sprint notification reminder
+        /// </summary>
+        public ISprintNotificationReminderJobs NotificationReminderJobs
+        {
+            get
+            {
+                return new SprintNotificationReminderJobs();
             }
         }
     }

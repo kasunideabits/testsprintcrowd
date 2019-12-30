@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
     /// <summary>
