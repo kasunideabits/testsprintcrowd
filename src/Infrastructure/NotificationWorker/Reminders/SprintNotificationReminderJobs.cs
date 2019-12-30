@@ -58,6 +58,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 
         private TimeSpan FinalCall(DateTime startTime) => startTime.AddMinutes(8) - this.Now;
 
-        private TimeSpan Expired(DateTime startTime) => startTime.AddHours(20) - this.Now;
+        private TimeSpan Expired(DateTime startTime) => startTime.AddHours(15) - this.Now;
     }
 }
