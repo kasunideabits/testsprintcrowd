@@ -308,8 +308,9 @@
                 .Include(s => s.Sprint)
                 .Where(s =>
                     s.UserId == userId &&
-                    s.Sprint.StartDateTime > DateTime.UtcNow.Date &&
-                    s.Sprint.StartDateTime < fetchDate.AddDays(1).Date && s.Stage == ParticipantStage.JOINED)
+                    s.Sprint.StartDateTime > fetchDate.Date &&
+                    s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date &&
+                    s.Stage == ParticipantStage.JOINED)
                 .Select(s => s.Sprint);
             return result;
         }
