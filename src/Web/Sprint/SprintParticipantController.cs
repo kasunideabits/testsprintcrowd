@@ -77,18 +77,18 @@
         }
 
         [HttpPost("public/join")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(SuccessResponse<ParticipantInfoDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> JoinEventPublic([FromBody] JoinSprintModel joinUser)
         {
             User user = await this.User.GetUser(this.UserService);
-            await this.SprintParticipantService.JoinSprint(
+            var result = await this.SprintParticipantService.JoinSprint(
                 joinUser.SprintId,
                 user.Id,
                 joinUser.NotificationId,
                 joinUser.Status
             );
-            return this.Ok();
+            return this.Ok(new SuccessResponse<ParticipantInfoDto>(result));
         }
 
         /// <summary>
