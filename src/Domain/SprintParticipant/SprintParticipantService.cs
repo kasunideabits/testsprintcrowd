@@ -504,5 +504,23 @@
             });
             return statistics;
         }
+
+        /// <summary>
+        /// Get all joined sprints for given date
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <param name="fetchDate">fetch date</param>
+        /// <returns>joined sprints</returns>
+        public List<JoinedSprintDto> GetJoinedEvents(int userId, DateTime fetchDate)
+        {
+            var sprints = this.SprintParticipantRepo.GetJoinedSprints(userId, fetchDate);
+            var joinSprintDto = new List<JoinedSprintDto>();
+            foreach (var sprint in sprints)
+            {
+                var totalCount = this.SprintParticipantRepo.GetParticipantCount(sprint.Id);
+                joinSprintDto.Add(new JoinedSprintDto(sprint, totalCount));
+            }
+            return joinSprintDto;
+        }
     }
 }

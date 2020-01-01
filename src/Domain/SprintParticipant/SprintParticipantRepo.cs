@@ -223,7 +223,10 @@
         /// <returns>count for participants</returns>
         public int GetParticipantCount(int sprintId)
         {
-            return this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage != ParticipantStage.PENDING).Count();
+            var result = this.Context.SprintParticipant.Where(s => s.SprintId == sprintId &&
+                    (s.Stage != ParticipantStage.PENDING || s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE))
+                .Count();
+            return result;
         }
 
         /// <summary>
@@ -291,6 +294,25 @@
                 query = query.Include(includePropertie);
             }
             return await query.Where(predicate).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Get joined sprints
+        /// </summary>
+        /// <param name="userId">user id to fethc</param>
+        /// <param name="fetchDate">fetch date</param>
+        /// <returns>sprint details</returns>
+        public IEnumerable<Sprint> GetJoinedSprints(int userId, DateTime fetchDate)
+        {
+            var result = this.Context.SprintParticipant
+                .Include(s => s.Sprint)
+                .Where(s =>
+                    s.UserId == userId &&
+                    s.Sprint.StartDateTime > fetchDate.Date &&
+                    s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date &&
+                    s.Stage == ParticipantStage.JOINED)
+                .Select(s => s.Sprint);
+            return result;
         }
 
         /// <summary>
