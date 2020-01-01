@@ -7,6 +7,7 @@
     using System;
     using Microsoft.EntityFrameworkCore;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
@@ -169,6 +170,28 @@
         public IEnumerable<Friend> GetFriends(int userId)
         {
             return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
+        }
+
+        /// <summary>
+        /// Get open events
+        /// </summary>
+        /// <param name="sprintPredicate">sprint filter with user preference</param>
+        /// <returns></returns>
+        public IEnumerable<OpenEventDlo> GetOpenEvents(Expression<Func<Sprint, bool>> sprintPredicate)
+        {
+            var afterSevenDays = DateTime.UtcNow.AddDays(7);
+            var result = this.dbContext.Sprint
+                .Where(sprintPredicate)
+                .Join(this.dbContext.SprintParticipant,
+                    s => s.Id,
+                    sp => sp.SprintId,
+                    (s, sp) => new { Id = s.Id, SprintInfo = s, ParticipantInfo = sp.User, ParticipantStage = sp.Stage })
+                .Where(s =>
+                    (s.ParticipantStage != ParticipantStage.DECLINE || s.ParticipantStage != ParticipantStage.QUIT) &&
+                    s.SprintInfo.StartDateTime > DateTime.UtcNow && s.SprintInfo.StartDateTime < afterSevenDays)
+                .GroupBy(s => s.SprintInfo.Id, (key, group) => new OpenEventDlo(group.Select(x => x.SprintInfo).ElementAt(0), group.Select(x => x.ParticipantInfo)))
+                .OrderBy(s => s.Sprint.StartDateTime);
+            return result;
         }
 
         /// <summary>

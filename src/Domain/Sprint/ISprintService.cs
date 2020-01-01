@@ -85,5 +85,7 @@
         /// <returns>sprint with participant info</returns>
         Task<List<PublicSprintWithParticipantsDto>> GetPublicSprints(int userId, int timeOffset);
 
+        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset);
+
     }
 }

@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -102,6 +103,12 @@
         /// <param name="userId">user id to fetch</param>
         /// <returns>Friends</returns>
         IEnumerable<Friend> GetFriends(int userId);
+
+        /// <summary>
+        /// Get open events
+        /// </summary>
+        /// <param name="sprintPredicate">sprint filter with user preference</param>
+        IEnumerable<OpenEventDlo> GetOpenEvents(Expression<Func<Sprint, bool>> sprintPredicate);
 
         /// <summary>
         /// saves changed to db
