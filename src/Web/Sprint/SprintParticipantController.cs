@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -249,6 +250,18 @@
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetStatistic(user.Id);
             return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+        }
+
+        /// <summary>
+        /// Get joined sprints for given date
+        /// </summary>
+        [HttpGet("sprint/joined/{currentDate}")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> GetJoinParticipants(DateTime currentDate)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetJoinedEvents(user.Id, currentDate);
+            return this.Ok(new SuccessResponse<List<JoinedSprintDto>>(result));
         }
     }
 }

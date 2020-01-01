@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
 
@@ -110,5 +111,13 @@
         /// <param name="userId"> user id to fetch</param>
         /// <returns>get all statistics for public and private sprints </returns>
         SprintStatisticDto GetStatistic(int userId);
+
+        /// <summary>
+        /// Get all joined sprints for given date
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <param name="fetchDate">fetch date</param>
+        /// <returns>joined sprints</returns>
+        List<JoinedSprintDto> GetJoinedEvents(int userId, DateTime fetchDate);
     }
 }
