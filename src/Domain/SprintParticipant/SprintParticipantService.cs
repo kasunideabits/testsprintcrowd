@@ -116,7 +116,7 @@
             }
             else
             {
-                if (inviteUser != null)
+                if (inviteUser != null && inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
                 }
