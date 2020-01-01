@@ -26,7 +26,7 @@
         /// <param name="userId">user id who going to join</param>
         /// <param name="notificationId"> notification id</param>
         /// <param name="accept">accept or decline</param>
-        Task JoinSprint(int sprintId, int userId, int notificationId, bool accept);
+        Task<ParticipantInfoDto> JoinSprint(int sprintId, int userId, int notificationId, bool accept);
 
         /// <summary>
         /// Exit sprint which join for event

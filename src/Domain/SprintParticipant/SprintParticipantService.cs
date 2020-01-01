@@ -59,7 +59,7 @@
         /// <param name="userId">user id who going to join</param>
         /// <param name="notificationId"> notification id</param>
         /// <param name="accept">accept or decline</param>
-        public async Task JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
+        public async Task<ParticipantInfoDto> JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             if (sprint == null)
@@ -116,23 +116,44 @@
             }
             else
             {
-                if (inviteUser != null)
+                if (inviteUser != null && inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
                 }
-                var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                else if (inviteUser != null)
+                {
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                        sprint.Id,
+                        sprint.Name,
+                        (SprintType)sprint.Type,
+                        inviteUser.User.Id,
+                        inviteUser.User.Name,
+                        inviteUser.User.ProfilePicture,
+                        accept);
 
-                this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                    sprint.Id,
-                    sprint.Name,
-                    (SprintType)sprint.Type,
-                    joinedUser.User.Id,
-                    joinedUser.User.Name,
-                    joinedUser.User.ProfilePicture,
-                    accept);
+                }
+                else
+                {
+                    var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                        sprint.Id,
+                        sprint.Name,
+                        (SprintType)sprint.Type,
+                        joinedUser.User.Id,
+                        joinedUser.User.Name,
+                        joinedUser.User.ProfilePicture,
+                        accept);
+
+                }
+
             }
 
+            var user = await this.SprintParticipantRepo.GetParticipant(userId);
+            var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED);
             this.SprintParticipantRepo.SaveChanges();
+            return userDto;
+
         }
 
         /// <summary>
