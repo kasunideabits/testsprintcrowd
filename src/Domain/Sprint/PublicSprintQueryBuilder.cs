@@ -34,6 +34,13 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             return query6.AndAlso(query4);
         }
 
+        public Expression<Func<Sprint, bool>> BuildOpenEvents(int offset)
+        {
+            Expression<Func<Sprint, bool>> query1 = this.DayQyery(offset);
+            Expression<Func<Sprint, bool>> query2 = this.TimeQuery(offset);
+            return query1.AndAlso(query2);
+        }
+
         public Expression<Func<Sprint, bool>> PublicSprintQuery()
         {
             Expression<Func<Sprint, bool>> query = s => s.Type == (int)SprintType.PublicSprint;

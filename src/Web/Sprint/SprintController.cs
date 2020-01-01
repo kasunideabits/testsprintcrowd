@@ -151,5 +151,20 @@
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
+        /// <summary>
+        /// Query public sprint with  utc offset
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("public/open-events")]
+        [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetOpenEvents(TimeSpan timeOffset)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset.Minutes);
+            return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
+        }
+
     }
 }
