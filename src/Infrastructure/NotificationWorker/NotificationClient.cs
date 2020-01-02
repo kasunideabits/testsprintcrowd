@@ -2,12 +2,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence;
 
     /// <summary>
     /// class for exectue background notification tasks
     /// </summary>
     public class NotificationClient : INotificationClient
     {
+        public NotificationClient(ScrowdDbContext context)
+        {
+            this.Context = context;
+        }
+
+        private ScrowdDbContext Context { get; }
+
         /// <summary>
         /// Sprint notification
         /// </summary>
@@ -26,7 +34,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         {
             get
             {
-                return new SprintNotificationReminderJobs();
+                return new SprintNotificationReminderJobs(this.Context);
             }
         }
     }

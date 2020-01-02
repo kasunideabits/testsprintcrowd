@@ -7,6 +7,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
     {
         void TimeReminder(int id, string name, int distance, DateTime startTime,
             int numberOfPariticipants, SprintType sprintType, SprintStatus sprintStatus);
+
+        void RemoveTimeReminder(int sprintId);
     }
 
 }
