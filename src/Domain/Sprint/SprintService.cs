@@ -143,6 +143,16 @@
                 (SprintType)sprint.Type,
                 sprint.CreatedBy.Id
             );
+            this.NotificationClient.NotificationReminderJobs.RemoveTimeReminder(sprintId);
+            this.NotificationClient.NotificationReminderJobs.TimeReminder(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartDateTime,
+                sprint.NumberOfParticipants,
+                (SprintType)sprint.Type,
+                (SprintStatus)sprint.Status
+            );
             UpdateSprintDto result = new UpdateSprintDto(
                 sprint.Id,
                 sprint.Name,
@@ -272,6 +282,7 @@
                 sprint.Status = (int)SprintStatus.ARCHIVED;
                 await this.SprintRepo.UpdateSprint(sprint);
                 this.SprintRepo.SaveChanges();
+                this.NotificationClient.NotificationReminderJobs.RemoveTimeReminder(sprintId);
                 this.NotificationClient.SprintNotificationJobs.SprintRemove(
                     sprint.Id,
                     sprint.Name,
