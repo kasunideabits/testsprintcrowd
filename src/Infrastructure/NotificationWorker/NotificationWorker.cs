@@ -29,9 +29,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// </summary>
         /// <param name="message"> message for execture job</param>
         /// <param name="delay"> schedule job delay time</param>
-        public void Schedule(object message, TimeSpan delay)
+        public string Schedule(object message, TimeSpan delay)
         {
-            BackgroundJob.Schedule<T>(x => x.Run(message), delay);
+            return BackgroundJob.Schedule<T>(x => x.Run(message), delay);
+        }
+
+        /// <summary>
+        /// Delete schduled job
+        /// </summary>
+        /// <param name="jobId">job id</param>
+        public void DeleteSchedule(string jobId)
+        {
+            BackgroundJob.Delete(jobId);
         }
     }
 }
