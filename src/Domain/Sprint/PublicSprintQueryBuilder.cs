@@ -37,7 +37,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public Expression<Func<Sprint, bool>> BuildOpenEvents(int offset)
         {
             var afterSevenDays = DateTime.UtcNow.AddDays(7);
-            Expression<Func<Sprint, bool>> query1 = s => s.StartDateTime > DateTime.UtcNow && s.StartDateTime < afterSevenDays;
+            Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
+                s.StartDateTime > DateTime.UtcNow && s.StartDateTime < afterSevenDays;
             Expression<Func<Sprint, bool>> query2 = this.DayQyery(offset);
             Expression<Func<Sprint, bool>> query3 = this.TimeQuery(offset);
             Expression<Func<Sprint, bool>> query4 = query1.AndAlso(query2);
