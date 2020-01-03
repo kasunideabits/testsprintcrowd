@@ -53,8 +53,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<Sprint, bool>> ExtendtedTimeQuery(int offset)
         {
-            var now = DateTime.UtcNow.AddMinutes(offset + (-15));
-            Expression<Func<Sprint, bool>> query = s => s.StartDateTime > now;
+            var now = DateTime.UtcNow.AddMinutes(offset);
+            Expression<Func<Sprint, bool>> query = s => s.StartDateTime <= now && now.AddMinutes(-15) > s.StartDateTime;
             return query;
         }
 

@@ -289,7 +289,6 @@
                 s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id == userId &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
-                ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
                 (s.Sprint.StartDateTime > now);
             var creatorEvent = await this.SprintParticipantRepo.Get(creatorQuery);
             if (creatorEvent != null)
