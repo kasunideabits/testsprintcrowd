@@ -142,6 +142,14 @@
         Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new();
 
         /// <summary>
+        /// Get joined sprints
+        /// </summary>
+        /// <param name="userId">user id to fethc</param>
+        /// <param name="fetchDate">fetch date</param>
+        /// <returns>sprint details</returns>
+        IEnumerable<Sprint> GetJoinedSprints(int userId, DateTime fetchDate);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

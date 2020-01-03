@@ -1,3 +1,5 @@
+using System;
+
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
     /// <summary>
@@ -15,5 +17,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// </summary>
         /// <param name="message"> optional message object for execute job</param>
         void Invoke(object message);
+
+        /// <summary>
+        /// Schedule notification job in backgorund. to run the job implement <see cref="INotificationJob"> job class </see>
+        /// </summary>
+        /// <param name="message"> message for execture job</param>
+        /// <param name="delay"> schedule job delay time</param>
+        void Schedule(object message, TimeSpan delay);
     }
 }

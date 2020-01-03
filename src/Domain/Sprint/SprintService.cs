@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -196,7 +197,14 @@
             }
 
             this.SprintRepo.SaveChanges();
-
+            this.NotificationClient.NotificationReminderJobs.TimeReminder(
+                addedSprint.Id,
+                addedSprint.Name,
+                addedSprint.Distance,
+                addedSprint.StartDateTime,
+                addedSprint.NumberOfParticipants,
+                (SprintType)addedSprint.Type,
+                (SprintStatus)addedSprint.Status);
             return CreateSprintDtoMapper(sprint, user);
         }
 
@@ -233,7 +241,10 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
-            Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId && s.User.UserState == UserState.Active;
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+                s.SprintId == sprintId &&
+                s.User.UserState == UserState.Active &&
+                (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
@@ -397,6 +408,47 @@
                 }
             }
             return sprintDto;
+        }
+
+        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset)
+        {
+            var userPreference = await this.SprintRepo.GetUserPreference(userId);
+            var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
+            IEnumerable<OpenEventDlo> openEvents = this.SprintRepo.GetOpenEvents(query);
+            var sprintDto = new List<PublicSprintWithParticipantsDto>();
+            var friendsRelations = this.SprintRepo.GetFriends(userId);
+            var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
+            foreach (var sprint in openEvents)
+            {
+
+                var participants = sprint.Participants.Where(s => s.UserState == UserState.Active);
+
+                if (!participants.Any(p => p.Id == userId))
+                {
+                    var resultDto = new PublicSprintWithParticipantsDto(
+                        sprint.Sprint.Id, sprint.Sprint.Name, sprint.Sprint.Distance,
+                        sprint.Sprint.NumberOfParticipants, sprint.Sprint.StartDateTime,
+                        (SprintType)sprint.Sprint.Type, sprint.Sprint.Location);
+                    foreach (var participant in participants)
+                    {
+                        resultDto.AddParticipant(
+                            participant.Id,
+                            participant.Name,
+                            participant.ProfilePicture,
+                            participant.City,
+                            participant.Country,
+                            participant.CountryCode,
+                            participant.ColorCode,
+                            false,
+                            ParticipantStage.JOINED,
+                            friends.Contains(participant.Id));
+
+                    }
+                    sprintDto.Add(resultDto);
+                }
+            }
+            return sprintDto;
+
         }
     }
 }

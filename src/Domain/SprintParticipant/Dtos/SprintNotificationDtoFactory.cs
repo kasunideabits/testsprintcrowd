@@ -34,7 +34,14 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Edit:
                     return new SprintEditResponseDto(sender, notification);
-
+                case SprintNotificaitonType notificaitonType when
+                notificaitonType == SprintNotificaitonType.TimeReminderBeforeStart ||
+                notificaitonType == SprintNotificaitonType.TimeReminderOneHourBefore ||
+                notificaitonType == SprintNotificaitonType.TimeReminderBeforFiftyM ||
+                notificaitonType == SprintNotificaitonType.TimeReminderStarted ||
+                notificaitonType == SprintNotificaitonType.TimeReminderFinalCall ||
+                notificaitonType == SprintNotificaitonType.TimeReminderExpired:
+                    return new SprintTimeReminderDto(notification);
                 default:
                     break;
             }
@@ -127,6 +134,39 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             this.Data = new SprintEditResponsePayload(editor, notification);
         }
         public SprintEditResponsePayload Data { get; }
+    }
+
+    internal class SprintTimeReminderDto : SprintNotificationBaseDto, ISprintNotification
+    {
+        public SprintTimeReminderDto(SprintNotification notification) : base(notification)
+        {
+            this.Data = new SprintTimeReminderResponsePayload(notification, notification.SprintNotificationType);
+        }
+        public SprintTimeReminderResponsePayload Data { get; }
+    }
+
+    internal class SprintTimeReminderResponsePayload
+    {
+        public SprintTimeReminderResponsePayload(SprintNotification notification, SprintNotificaitonType notificationType)
+        {
+            this.Sprint = new SprintNotificationInfo(
+                notification.SprintId,
+                notification.SprintName,
+                notification.Distance,
+                notification.StartDateTime,
+                notification.NumberOfParticipants,
+                notification.SprintType,
+                notification.SprintStatus
+            );
+            this.NotificationType = notificationType;
+        }
+
+        public SprintNotificationInfo Sprint { get; }
+
+        /// <summary>
+        /// notification reminder time indication
+        /// </summary>
+        public SprintNotificaitonType NotificationType { get; }
     }
 
     internal class SprintEditResponsePayload

@@ -50,7 +50,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId">Facebook user id.</param>
         public async Task<User> GetFacebookUser(string userId)
         {
-            return await this.userRepo.GetFacebookUser(userId);
+            var result = await this.userRepo.GetFacebookUser(userId);
+            if (result.UserState != Application.UserState.Active)
+            {
+                result.UserState = Application.UserState.Active;
+                this.userRepo.UpdateUser(result);
+                this.userRepo.SaveChanges();
+            }
+            return result;
         }
 
         /// <summary>
