@@ -244,7 +244,7 @@
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
-                (s.Stage == ParticipantStage.QUIT || s.Stage == ParticipantStage.DECLINE);
+                (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
