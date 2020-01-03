@@ -187,7 +187,7 @@
                     sp => sp.SprintId,
                     (s, sp) => new { Id = s.Id, SprintInfo = s, ParticipantInfo = sp.User, ParticipantStage = sp.Stage })
                 .Where(s =>
-                    (s.ParticipantStage != ParticipantStage.DECLINE || s.ParticipantStage != ParticipantStage.QUIT) &&
+                    s.ParticipantStage != ParticipantStage.DECLINE && s.ParticipantStage != ParticipantStage.QUIT &&
                     s.SprintInfo.StartDateTime > DateTime.UtcNow && s.SprintInfo.StartDateTime < afterSevenDays)
                 .GroupBy(s => s.SprintInfo.Id, (key, group) => new OpenEventDlo(group.Select(x => x.SprintInfo).ElementAt(0), group.Select(x => x.ParticipantInfo)))
                 .OrderBy(s => s.Sprint.StartDateTime);
