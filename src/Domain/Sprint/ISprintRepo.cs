@@ -105,12 +105,6 @@
         IEnumerable<Friend> GetFriends(int userId);
 
         /// <summary>
-        /// Get open events
-        /// </summary>
-        /// <param name="sprintPredicate">sprint filter with user preference</param>
-        IEnumerable<OpenEventDlo> GetOpenEvents(Expression<Func<Sprint, bool>> sprintPredicate);
-
-        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

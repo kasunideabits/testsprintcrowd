@@ -254,7 +254,7 @@
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
-                (s.Stage == ParticipantStage.QUIT || s.Stage == ParticipantStage.DECLINE);
+                (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
@@ -425,31 +425,32 @@
         {
             var userPreference = await this.SprintRepo.GetUserPreference(userId);
             var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
-            IEnumerable<OpenEventDlo> openEvents = this.SprintRepo.GetOpenEvents(query);
+            IEnumerable<Sprint> openEvents = await this.SprintRepo.GetSprints(query);
             var sprintDto = new List<PublicSprintWithParticipantsDto>();
             var friendsRelations = this.SprintRepo.GetFriends(userId);
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
             foreach (var sprint in openEvents)
             {
 
-                var participants = sprint.Participants.Where(s => s.UserState == UserState.Active);
-
+                var participants = sprint.Participants.Where(s =>
+                    s.User.UserState == UserState.Active &&
+                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
                 if (!participants.Any(p => p.Id == userId))
                 {
                     var resultDto = new PublicSprintWithParticipantsDto(
-                        sprint.Sprint.Id, sprint.Sprint.Name, sprint.Sprint.Distance,
-                        sprint.Sprint.NumberOfParticipants, sprint.Sprint.StartDateTime,
-                        (SprintType)sprint.Sprint.Type, sprint.Sprint.Location);
+                        sprint.Id, sprint.Name, sprint.Distance,
+                        sprint.NumberOfParticipants, sprint.StartDateTime,
+                        (SprintType)sprint.Type, sprint.Location);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
-                            participant.Id,
-                            participant.Name,
-                            participant.ProfilePicture,
-                            participant.City,
-                            participant.Country,
-                            participant.CountryCode,
-                            participant.ColorCode,
+                            participant.User.Id,
+                            participant.User.Name,
+                            participant.User.ProfilePicture,
+                            participant.User.City,
+                            participant.User.Country,
+                            participant.User.CountryCode,
+                            participant.User.ColorCode,
                             false,
                             ParticipantStage.JOINED,
                             friends.Contains(participant.Id));
