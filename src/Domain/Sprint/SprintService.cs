@@ -251,7 +251,10 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
-            Expression<Func<SprintParticipant, bool>> participantPredicate = s => s.SprintId == sprintId && s.User.UserState == UserState.Active;
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+                s.SprintId == sprintId &&
+                s.User.UserState == UserState.Active &&
+                (s.Stage == ParticipantStage.QUIT || s.Stage == ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
         }
