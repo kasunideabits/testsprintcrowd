@@ -453,7 +453,7 @@
                             participant.User.ColorCode,
                             false,
                             ParticipantStage.JOINED,
-                            friends.Contains(participant.Id));
+                            friends.Contains(participant.User.Id));
 
                     }
                     sprintDto.Add(resultDto);
