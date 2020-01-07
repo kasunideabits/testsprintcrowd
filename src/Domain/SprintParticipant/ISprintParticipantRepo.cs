@@ -150,6 +150,12 @@
         IEnumerable<Sprint> GetJoinedSprints(int userId, DateTime fetchDate);
 
         /// <summary>
+        /// Update sprint participant
+        /// </summary>
+        /// <param name="participant"></param>
+        void UpdateParticipant(SprintParticipant participant);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

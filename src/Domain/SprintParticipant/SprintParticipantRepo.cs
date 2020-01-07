@@ -316,6 +316,15 @@
         }
 
         /// <summary>
+        /// Update sprint participant
+        /// </summary>
+        /// <param name="participant"></param>
+        public void UpdateParticipant(SprintParticipant participant)
+        {
+            this.Context.SprintParticipant.Update(participant);
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
