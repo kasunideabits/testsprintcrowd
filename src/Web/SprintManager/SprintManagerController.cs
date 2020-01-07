@@ -49,6 +49,7 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         [HttpGet("sprint/1")]
         public async Task<IActionResult> SprintExpired(int sprintId)
         {
+            System.Console.WriteLine(sprintId);
             // this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.ComplteTime, ParticipantStage.QUIT);
             return this.Ok();
         }
