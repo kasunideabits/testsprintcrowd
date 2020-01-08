@@ -9,6 +9,7 @@
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Web.SprintManager;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -170,6 +171,7 @@
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
                 participant.Stage = ParticipantStage.QUIT;
+                participant.FinishTime = DateTime.UtcNow;
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
@@ -559,7 +561,30 @@
             participant.DistanceRan = distanceRun;
             participant.FinishTime = time;
             this.SprintParticipantRepo.UpdateParticipant(participant);
+            this.SprintParticipantRepo.SaveChanges();
             return;
         }
+
+        public async Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners)
+        {
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            sprint.Status = (int)SprintStatus.ENDED;
+            Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId;
+            var participants = this.SprintParticipantRepo.GetAll(query).GetEnumerator();
+            while (participants.MoveNext())
+            {
+                var participant = participants.Current;
+                var runner = notCompletedRunners.FirstOrDefault(n => n.UserId == participant.UserId);
+                participant.Stage = ParticipantStage.QUIT;
+                if (runner != null)
+                {
+                    participant.DistanceRan = (int)runner.DistanceRun;
+                }
+                participant.FinishTime = sprint.StartDateTime.AddHours(20);
+                this.SprintParticipantRepo.UpdateParticipant(participant);
+            }
+            this.SprintParticipantRepo.SaveChanges();
+        }
+
     }
 }

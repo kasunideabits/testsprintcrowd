@@ -5,6 +5,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
+    using SprintCrowd.BackEnd.Web.SprintManager;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -129,5 +130,7 @@
         /// <param name="time"></param>
         /// <param name="stage"></param>
         Task UpdateParticipantStatus(int userId, int sprintId, int distanceRun, DateTime time, ParticipantStage stage);
+
+        Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
     }
 }

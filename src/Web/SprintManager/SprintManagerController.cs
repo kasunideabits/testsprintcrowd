@@ -1,13 +1,17 @@
 namespace SprintCrowd.BackEnd.SprintManager.Web
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Web.SprintManager;
 
     /// <summary>
     /// Endpoint for handle sprint manager request for update participants and achivements
     /// </summary>
+    [Route("[controller]")]
+    [ApiController]
     public class SprintManagerController : ControllerBase
     {
         /// <summary>
@@ -24,8 +28,8 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         /// Update participant completed the sprint
         /// </summary>
         /// <param name="race">event details</param>
-        [HttpGet("sprint/completed")]
-        public async Task<IActionResult> RaceCompleted(EventStatusModel race)
+        [HttpPost("sprint/completed")]
+        public async Task<IActionResult> RaceCompleted([FromBody] EventStatusModel race)
         {
             await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Distance, race.Time, ParticipantStage.COMPLETED);
             return this.Ok();
@@ -35,8 +39,8 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         /// Update participant exit the sprint
         /// </summary>
         /// <param name="race">event details</param>
-        [HttpGet("sprint/exit")]
-        public async Task<IActionResult> RaceExited(EventStatusModel race)
+        [HttpPost("sprint/exit")]
+        public async Task<IActionResult> RaceExited([FromBody] EventStatusModel race)
         {
             await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Distance, race.Time, ParticipantStage.QUIT);
             return this.Ok();
@@ -45,12 +49,10 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         /// <summary>
         /// Sprint expired handler
         /// </summary>
-        /// <param name="sprintId"></param>
-        [HttpGet("sprint/1")]
-        public async Task<IActionResult> SprintExpired(int sprintId)
+        [HttpPost("sprint/expired")]
+        public async Task<IActionResult> SprintExpired([FromBody] NotCompletedRunnerModel notCompletedRunner)
         {
-            System.Console.WriteLine(sprintId);
-            // this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.ComplteTime, ParticipantStage.QUIT);
+            await this.SprintParticipantService.SprintExpired(notCompletedRunner.SprintId, notCompletedRunner.Runners);
             return this.Ok();
         }
     }
