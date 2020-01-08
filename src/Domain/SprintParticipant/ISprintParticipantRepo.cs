@@ -52,6 +52,8 @@
         /// <returns>all pariticpant details</returns>
         IEnumerable<SprintParticipant> GetAll(Expression<Func<SprintParticipant, bool>> query);
 
+        Task<SprintParticipant> GetByUserId(int userId);
+
         /// <summary>
         /// Filter sprint pariticipant detials with sprint and user details with given query
         /// </summary>
@@ -148,6 +150,12 @@
         /// <param name="fetchDate">fetch date</param>
         /// <returns>sprint details</returns>
         IEnumerable<Sprint> GetJoinedSprints(int userId, DateTime fetchDate);
+
+        /// <summary>
+        /// Update sprint participant
+        /// </summary>
+        /// <param name="participant"></param>
+        void UpdateParticipant(SprintParticipant participant);
 
         /// <summary>
         /// saves changed to db

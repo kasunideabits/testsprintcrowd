@@ -105,6 +105,11 @@
             return result;
         }
 
+        public async Task<SprintParticipant> GetByUserId(int userId)
+        {
+            return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+        }
+
         /// <summary>
         /// Filter sprint pariticipant detials with sprint and user details with given query
         /// </summary>
@@ -313,6 +318,15 @@
                     s.Stage == ParticipantStage.JOINED)
                 .Select(s => s.Sprint);
             return result;
+        }
+
+        /// <summary>
+        /// Update sprint participant
+        /// </summary>
+        /// <param name="participant"></param>
+        public void UpdateParticipant(SprintParticipant participant)
+        {
+            this.Context.SprintParticipant.Update(participant);
         }
 
         /// <summary>
