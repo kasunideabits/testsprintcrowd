@@ -248,7 +248,12 @@
                 s.Sprint.StartDateTime > expireDate &&
                 (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
-            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
+            User influencer = null;
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+            {
+                influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
+            }
+            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer);
         }
 
         /// <summary>
@@ -341,7 +346,7 @@
             return result;
         }
 
-        public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants)
+        public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null)
         {
             SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
                 sprint.Id,
@@ -354,6 +359,11 @@
             participants
                 .ForEach(p =>
                 {
+                    var isInfulencer = false;
+                    if (influencer != null)
+                    {
+                        isInfulencer = influencer.Id == p.UserId;
+                    }
                     result.AddParticipant(
                         p.User.Id,
                         p.User.Name,
@@ -363,7 +373,9 @@
                         p.User.CountryCode,
                         p.User.ColorCode,
                         p.User.Id == sprint.CreatedBy.Id,
-                        p.Stage);
+                        p.Stage,
+                        isInfulencer
+                    );
                 });
             return result;
         }

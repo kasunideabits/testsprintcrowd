@@ -104,6 +104,8 @@
         /// <returns>Friends</returns>
         IEnumerable<Friend> GetFriends(int userId);
 
+        Task<User> FindInfluencer(string influencerEmail);
+
         /// <summary>
         /// saves changed to db
         /// </summary>
