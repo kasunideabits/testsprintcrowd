@@ -315,9 +315,11 @@
         /// <returns><see cref="SprintInfo">class </see></returns>
         public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
         {
+            var expiredDate = DateTime.UtcNow.AddHours(-20);
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 s.User.UserState == UserState.Active &&
+                s.Sprint.StartDateTime > expiredDate &&
                 s.Stage == ParticipantStage.MARKED_ATTENDENCE;
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)

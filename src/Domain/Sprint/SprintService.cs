@@ -241,9 +241,11 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
+            var expireDate = DateTime.UtcNow.AddHours(-20);
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
+                s.Sprint.StartDateTime > expireDate &&
                 (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList());
