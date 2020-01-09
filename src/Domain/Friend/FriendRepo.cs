@@ -78,7 +78,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             return await this.dbContext.Frineds
                 .Include(s => s.AcceptedUser)
                 .Include(s => s.SharedUser)
-                .Where(s => s.AcceptedUserId == userId || s.SharedUserId == userId)
+                .Where(s => (s.AcceptedUserId == userId || s.SharedUserId == userId) &&
+                    s.AcceptedUser.UserState == UserState.Active && s.SharedUser.UserState == UserState.Active)
                 .ToListAsync();
         }
 
