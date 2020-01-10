@@ -172,6 +172,12 @@
             return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
         }
 
+        public async Task<User> FindInfluencer(string influencerEmail)
+        {
+            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);
+            return result;
+        }
+
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

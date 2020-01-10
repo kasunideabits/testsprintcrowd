@@ -25,9 +25,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public List<ParticipantInfoDto> ParticipantInfo { get; set; }
 
-        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage)
+        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage, bool isInfluencer = false)
         {
-            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage));
+            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage, isInfluencer));
         }
     }
 

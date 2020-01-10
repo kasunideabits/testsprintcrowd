@@ -14,14 +14,17 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             string countryCode,
             string colorCode,
             bool creator,
-            ParticipantStage stage) : base(id, name, profilePicture, city, country, countryCode)
+            ParticipantStage stage,
+            bool isInflencer = false) : base(id, name, profilePicture, city, country, countryCode)
         {
             this.ColorCode = colorCode;
             this.Creator = creator;
             this.Stage = stage;
+            this.IsInfluencer = isInflencer;
         }
         public string ColorCode { get; }
         public bool Creator { get; }
         public ParticipantStage Stage { get; }
+        public bool IsInfluencer { get; set; }
     }
 }
