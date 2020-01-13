@@ -405,7 +405,7 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>all notificaiton related to given userid</returns>
-        public async Task<dynamic> GetNotification(int userId)
+        public List<dynamic> GetNotification(int userId)
         {
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             var result = new List<object>();

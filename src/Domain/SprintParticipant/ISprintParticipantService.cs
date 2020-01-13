@@ -75,7 +75,7 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>all notificaiton related to given userid</returns>
-        Task<dynamic> GetNotification(int userId);
+        List<dynamic> GetNotification(int userId);
 
         /// <summary>
         /// Remove sprint participant form  sprint
