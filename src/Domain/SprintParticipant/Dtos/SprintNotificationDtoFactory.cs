@@ -43,10 +43,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notificaitonType == SprintNotificaitonType.TimeReminderFinalCall ||
                 notificaitonType == SprintNotificaitonType.TimeReminderExpired:
                     return new SprintTimeReminderDto(notification);
+                case SprintNotificaitonType notificaitonType when notificaitonType == SprintNotificaitonType.FriendJoin:
+                    return new SprintInvitationResponseDto(sender, notification);
                 default:
                     break;
             }
-            Console.WriteLine(JsonConvert.SerializeObject(notification));
             throw new Application.ApplicationException();
         }
     }
