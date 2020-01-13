@@ -210,7 +210,7 @@
         public async Task<IActionResult> GetNotification()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintParticipantService.GetNotification(user.Id);
+            var result = this.SprintParticipantService.GetNotification(user.Id);
             return this.Ok(new SuccessResponse<List<dynamic>>(result));
         }
 

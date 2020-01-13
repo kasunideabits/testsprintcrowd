@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -42,6 +43,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notificaitonType == SprintNotificaitonType.TimeReminderFinalCall ||
                 notificaitonType == SprintNotificaitonType.TimeReminderExpired:
                     return new SprintTimeReminderDto(notification);
+                case SprintNotificaitonType notificaitonType when notificaitonType == SprintNotificaitonType.FriendJoin:
+                    return new SprintInvitationResponseDto(sender, notification);
                 default:
                     break;
             }

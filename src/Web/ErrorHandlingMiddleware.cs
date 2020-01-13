@@ -1,84 +1,84 @@
 namespace SprintCrowd.BackEnd.Web
 {
-  using System.Threading.Tasks;
-  using System;
-  using Microsoft.AspNetCore.Http;
-  using Newtonsoft.Json;
-  using SprintCrowd.BackEnd.Application;
-
-  /// <summary>
-  /// OWIN middleware used for global error handling.
-  /// </summary>
-  public class ErrorHandlingMiddleware
-  {
-    private readonly RequestDelegate next;
+    using System.Threading.Tasks;
+    using System;
+    using Microsoft.AspNetCore.Http;
+    using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Application;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ErrorHandlingMiddleware" />.
+    /// OWIN middleware used for global error handling.
     /// </summary>
-    /// <param name="next">The next middleware in the pipeline.</param>
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public class ErrorHandlingMiddleware
     {
-      this.next = next;
-    }
+        private readonly RequestDelegate next;
 
-    /// <summary>
-    /// Invokes the next middleware in pipe and
-    /// handles any exceptions.
-    /// </summary>
-    /// <param name="context">The http context.</param>
-    /// <returns>A task representing the async invocation.</returns>
-    public async Task Invoke(HttpContext context)
-    {
-      try
-      {
-        await this.next.Invoke(context);
-      }
-      catch (Exception ex)
-      {
-        await this.HandleException(context, ex);
-      }
+        /// <summary>
+        /// Initializes a new instance of <see cref="ErrorHandlingMiddleware" />.
+        /// </summary>
+        /// <param name="next">The next middleware in the pipeline.</param>
+        public ErrorHandlingMiddleware(RequestDelegate next)
+        {
+            this.next = next;
+        }
 
-    }
+        /// <summary>
+        /// Invokes the next middleware in pipe and
+        /// handles any exceptions.
+        /// </summary>
+        /// <param name="context">The http context.</param>
+        /// <returns>A task representing the async invocation.</returns>
+        public async Task Invoke(HttpContext context)
+        {
+            try
+            {
+                await this.next.Invoke(context);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleException(context, ex);
+            }
 
-    private async Task HandleException(HttpContext context, Exception exception)
-    {
-      HttpResponse response = context.Response;
-      Application.ApplicationException applicationException = exception as Application.ApplicationException;
-      Application.SCApplicationException scapplicationException = exception as Application.SCApplicationException;
-      if (exception is Application.ApplicationException)
-      {
-        ResponseObject ApplicationresponseObject = new ResponseObject
+        }
+
+        private async Task HandleException(HttpContext context, Exception exception)
         {
-          StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
-          ErrorDescription = exception.Message.ToString(),
-        };
-        response.ContentType = "application/json";
-        response.StatusCode = (int)ApplicationErrorCode.BadRequest;
-        await response.WriteAsync(JsonConvert.SerializeObject(ApplicationresponseObject));
-      }
-      else if (exception is Application.SCApplicationException)
-      {
-        ErrorResponseObject ApplicationresponseObject = new ErrorResponseObject
-        {
-          ErrorCode = scapplicationException.ErrorCode,
-          ErrorMessage = exception.Message.ToString(),
-        };
-        response.ContentType = "application/json";
-        response.StatusCode = (int)ApplicationErrorCode.BadRequest;
-        await response.WriteAsync(JsonConvert.SerializeObject(ApplicationresponseObject));
-      }
-      else
-      {
-        ResponseObject SystemresponseObject = new ResponseObject
-        {
-          StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
-          ErrorDescription = exception.Message.ToString(),
-        };
-        response.ContentType = "application/json";
-        response.StatusCode = (int)ApplicationErrorCode.InternalError;
-        await response.WriteAsync(JsonConvert.SerializeObject(SystemresponseObject));
-      }
+            HttpResponse response = context.Response;
+            Application.ApplicationException applicationException = exception as Application.ApplicationException;
+            Application.SCApplicationException scapplicationException = exception as Application.SCApplicationException;
+            if (exception is Application.ApplicationException)
+            {
+                ResponseObject ApplicationresponseObject = new ResponseObject
+                {
+                    StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
+                    ErrorDescription = exception.Message.ToString(),
+                };
+                response.ContentType = "application/json";
+                response.StatusCode = (int)ApplicationErrorCode.BadRequest;
+                await response.WriteAsync(JsonConvert.SerializeObject(ApplicationresponseObject));
+            }
+            else if (exception is Application.SCApplicationException)
+            {
+                ErrorResponseObject ApplicationresponseObject = new ErrorResponseObject
+                {
+                    ErrorCode = scapplicationException.ErrorCode,
+                    ErrorMessage = exception.Message.ToString(),
+                };
+                response.ContentType = "application/json";
+                response.StatusCode = (int)ApplicationErrorCode.BadRequest;
+                await response.WriteAsync(JsonConvert.SerializeObject(ApplicationresponseObject));
+            }
+            else
+            {
+                ResponseObject SystemresponseObject = new ResponseObject
+                {
+                    StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
+                    ErrorDescription = exception.Message.ToString(),
+                };
+                response.ContentType = "application/json";
+                response.StatusCode = (int)ApplicationErrorCode.InternalError;
+                await response.WriteAsync(JsonConvert.SerializeObject(SystemresponseObject));
+            }
+        }
     }
-  }
 }
