@@ -47,10 +47,7 @@ namespace SprintCrowd.BackEnd.Application
         /// <param name="message">exception message</param>
         /// <param name="inner">exception message</param>
         /// </summary>
-        public ApplicationException(string message, System.Exception inner) : base(message, inner)
-        {
-            Console.WriteLine(inner);
-        }
+        public ApplicationException(string message, System.Exception inner) : base(message, inner) { }
 
         /// <summary>
         /// constrcutor with message.
@@ -59,10 +56,6 @@ namespace SprintCrowd.BackEnd.Application
         /// </summary>
         protected ApplicationException(
             System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context)
-        {
-            Console.WriteLine(context);
-
-        }
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }
