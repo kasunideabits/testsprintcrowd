@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -45,6 +46,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 default:
                     break;
             }
+            Console.WriteLine(JsonConvert.SerializeObject(notification));
             throw new Application.ApplicationException();
         }
     }
