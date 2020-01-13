@@ -246,7 +246,7 @@
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
                 s.Sprint.StartDateTime > expireDate &&
-                (s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE);
+                (s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             User influencer = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
