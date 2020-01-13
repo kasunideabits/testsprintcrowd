@@ -73,7 +73,7 @@ namespace SprintCrowd.BackEnd.Web
                 ResponseObject SystemresponseObject = new ResponseObject
                 {
                     StatusCode = applicationException == null ? (int)ApplicationErrorCode.InternalError : applicationException.ErrorCode,
-                    ErrorDescription = exception.Message.ToString(),
+                    ErrorDescription = exception,
                 };
                 response.ContentType = "application/json";
                 response.StatusCode = (int)ApplicationErrorCode.InternalError;
