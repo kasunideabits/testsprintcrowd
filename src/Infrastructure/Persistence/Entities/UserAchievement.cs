@@ -14,7 +14,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 
         public int UserId { get; set; }
 
-        public virtual User User { get; }
+        public virtual User User { get; set; }
     }
 
     public enum AchievementType
