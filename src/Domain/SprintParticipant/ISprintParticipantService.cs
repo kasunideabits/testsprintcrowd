@@ -131,6 +131,8 @@
         /// <param name="stage"></param>
         Task UpdateParticipantStatus(int userId, int sprintId, int distanceRun, DateTime time, ParticipantStage stage);
 
+        Task<SprintInfo> GetSprint(int sprintId);
+
         Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
     }
 }

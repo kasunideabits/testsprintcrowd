@@ -4,6 +4,8 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Common;
+    using SprintCrowd.BackEnd.Domain.Achievement;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Web.SprintManager;
 
@@ -18,11 +20,14 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         /// Initialize SprintManagerController class
         /// </summary>
         /// <param name="participantService">sprint paritcipant service</param>
-        public SprintManagerController(ISprintParticipantService participantService)
+        /// <param name="achievementService">sprint paritcipant service</param>
+        public SprintManagerController(ISprintParticipantService participantService, IAchievementService achievementService)
         {
             this.SprintParticipantService = participantService;
+            this.AchievementService = achievementService;
         }
         private ISprintParticipantService SprintParticipantService { get; }
+        private IAchievementService AchievementService { get; }
 
         /// <summary>
         /// Update participant completed the sprint
@@ -32,7 +37,9 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         public async Task<IActionResult> RaceCompleted([FromBody] EventStatusModel race)
         {
             await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Distance, race.Time, ParticipantStage.COMPLETED);
-            return this.Ok();
+            var sprint = await this.SprintParticipantService.GetSprint(race.SprintId);
+            var achievements = await this.AchievementService.RaceCompleted(race.UserId, (SprintType)sprint.SprintType);
+            return this.Ok(new SuccessResponse<List<SprintCrowd.Domain.Achievement.AchievementDto>>(achievements));
         }
 
         /// <summary>
