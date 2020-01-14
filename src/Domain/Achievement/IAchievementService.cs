@@ -9,5 +9,6 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
     {
         Task SignUp(int userId);
         Task<List<AchievementDto>> RaceCompleted(int userId, SprintType sprintType);
+        List<AchievementDto> Get(int userId);
     }
 }

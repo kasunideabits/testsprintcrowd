@@ -28,6 +28,12 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
             return result.Entity;
         }
 
+        public IEnumerable<UserAchievement> GetAll(int userId)
+        {
+            var result = this.Context.UserAchivements.Where(a => a.UserId == userId);
+            return result;
+        }
+
         public void SaveChanges()
         {
             this.Context.SaveChanges();

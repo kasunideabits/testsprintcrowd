@@ -12,6 +12,7 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
         Task<UserAchievement> Add(UserAchievement achievement);
         int GetEventCount(int userId, SprintType sprintType);
         int GetTotalDistance(int userId, SprintType sprintType);
+        IEnumerable<UserAchievement> GetAll(int userId);
         void SaveChanges();
     }
 }

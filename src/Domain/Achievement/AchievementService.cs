@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.Achievement
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
@@ -66,6 +67,13 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
             }
             this.AchievementRepo.SaveChanges();
             return achivements;
+        }
+
+        public List<AchievementDto> Get(int userId)
+        {
+            var achivements = this.AchievementRepo.GetAll(userId);
+            var achievementsDto = achivements.Select(a => new AchievementDto(a)).ToList();
+            return achievementsDto;
         }
 
         private async Task<AchievementDto> FirstEventHandler(int userId, SprintType sprintType, Dictionary<Infrastructure.Persistence.Entities.AchievementType, UserAchievement> allAchievements)
