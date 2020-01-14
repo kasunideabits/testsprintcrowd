@@ -9,7 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
     {
         Task<UserAchievement> GetByUserId(int userId);
         Dictionary<Infrastructure.Persistence.Entities.AchievementType, UserAchievement> GetAllUserAchivements(int userId);
-        Task<int> Add(UserAchievement achievement);
+        Task<UserAchievement> Add(UserAchievement achievement);
         int GetEventCount(int userId, SprintType sprintType);
         int GetTotalDistance(int userId, SprintType sprintType);
         void SaveChanges();

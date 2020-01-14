@@ -22,10 +22,10 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
             return await this.Context.UserAchivements.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
-        public async Task<int> Add(UserAchievement achievement)
+        public async Task<UserAchievement> Add(UserAchievement achievement)
         {
             var result = await this.Context.UserAchivements.AddAsync(achievement);
-            return result.Entity.Id;
+            return result.Entity;
         }
 
         public void SaveChanges()
