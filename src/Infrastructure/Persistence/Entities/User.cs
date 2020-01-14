@@ -121,8 +121,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 
         /// <summary>
         /// Gets or set reference for achievements
+        /// @note remove this deprecated
         /// </summary>
         public virtual List<Achievement> Achievements { get; set; }
+
+        /// <summary>
+        /// Gets or set reference for user achievements
+        /// </summary>
+        public virtual List<UserAchievement> UserAchievements { get; set; }
 
         /// <summary>
         /// Gets or set inviter rederence
