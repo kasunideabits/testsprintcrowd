@@ -20,7 +20,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         private const int _minEvening = 17;
         private const int _maxEvening = 20;
         private const int _minNight = 21;
-        private const int _maxNight = 3;
+        private const int _midNightMin = 23;
+        private const int _midNightMax = 0;
+        private const int _maxNight = 4;
         private UserPreference _userPreference { get; }
 
         public Expression<Func<Sprint, bool>> Build(int offset)
@@ -77,7 +79,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
                 (this._userPreference.Morning && s.StartDateTime.AddMinutes(offset).Hour >= _minMorning && s.StartDateTime.AddMinutes(offset).Hour <= _maxMorning) ||
                 (this._userPreference.AfterNoon && s.StartDateTime.AddMinutes(offset).Hour >= _minAfternoon && s.StartDateTime.AddMinutes(offset).Hour <= _maxAfternoon) ||
                 (this._userPreference.Evening && s.StartDateTime.AddMinutes(offset).Hour >= _minEvening && s.StartDateTime.AddMinutes(offset).Hour <= _maxEvening) ||
-                (this._userPreference.Night && s.StartDateTime.AddMinutes(offset).Hour >= _minNight && s.StartDateTime.AddMinutes(offset).Hour < _maxNight);
+                (
+                    this._userPreference.Night &&
+                    (
+                        (s.StartDateTime.AddMinutes(offset).Hour >= _minNight && s.StartDateTime.AddMinutes(offset).Hour <= _midNightMin) ||
+                        (s.StartDateTime.AddMinutes(offset).Hour >= _midNightMax && s.StartDateTime.AddMinutes(offset).Hour <= _maxNight)));
             return query;
         }
     }
