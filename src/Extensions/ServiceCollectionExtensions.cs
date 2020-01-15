@@ -37,7 +37,7 @@ namespace SprintCrowd.BackEnd.Extensions
                     {
                     // Clock skew compensates for server time drift.
                     // We recommend 5 minutes or less:
-                    ClockSkew = TimeSpan.FromHours(8),
+                    ClockSkew = TimeSpan.FromDays(14),
                     IssuerSigningKeys = discoveryDocument.SigningKeys,
                     RequireSignedTokens = true,
                     ValidateAudience = true,
