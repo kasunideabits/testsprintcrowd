@@ -588,5 +588,10 @@
             this.SprintParticipantRepo.SaveChanges();
         }
 
+        public async Task<SprintInfo> GetSprint(int sprintId)
+        {
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            return new SprintInfo(sprint);
+        }
     }
 }

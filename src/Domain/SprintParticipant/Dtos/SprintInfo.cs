@@ -26,6 +26,15 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.SprintCreator = sprintCreator;
         }
 
+        public SprintInfo(Infrastructure.Persistence.Entities.Sprint sprint)
+        {
+            this.Id = sprint.Id;
+            this.Name = sprint.Name;
+            this.Distance = sprint.Distance;
+            this.StartTime = sprint.StartDateTime;
+            this.SprintType = sprint.Type;
+        }
+
         /// <summary>
         /// Gets sprint id
         /// </summary>
