@@ -4,11 +4,11 @@
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public bool TwentyFourH { get; set; } = false;
+        public bool TwentyFourH { get; set; } = true;
         public bool OneH { get; set; } = false;
-        public bool FiftyM { get; set; } = false;
-        public bool EventStart { get; set; } = false;
-        public bool FinalCall { get; set; } = false;
+        public bool FiftyM { get; set; } = true;
+        public bool EventStart { get; set; } = true;
+        public bool FinalCall { get; set; } = true;
         public virtual User User { get; set; }
     }
 }
