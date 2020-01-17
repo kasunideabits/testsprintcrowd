@@ -398,7 +398,7 @@
             {
 
                 var participants = sprint.Participants.Where(s => s.User.UserState == UserState.Active &&
-                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE));
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE || s.Stage == ParticipantStage.COMPLETED));
 
                 if (!participants.Any(p => p.UserId == userId))
                 {
