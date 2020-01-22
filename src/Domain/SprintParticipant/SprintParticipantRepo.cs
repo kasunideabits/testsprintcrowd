@@ -229,7 +229,7 @@
         public int GetParticipantCount(int sprintId)
         {
             var result = this.Context.SprintParticipant.Where(s => s.SprintId == sprintId &&
-                    (s.Stage != ParticipantStage.PENDING || s.Stage != ParticipantStage.QUIT || s.Stage != ParticipantStage.DECLINE))
+                    (s.Stage != ParticipantStage.PENDING && s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE))
                 .Count();
             return result;
         }
