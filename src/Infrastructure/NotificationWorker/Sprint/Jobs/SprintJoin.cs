@@ -218,8 +218,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             if (userNotifications.Count > 0)
             {
                 this.Context.UserNotification.AddRange(userNotifications);
-                this.Context.SaveChanges();
             }
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
