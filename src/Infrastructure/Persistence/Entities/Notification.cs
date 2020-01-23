@@ -36,6 +36,7 @@
     public class AchievementNoticiation : Notification
     {
         public AchievementType AchievementType { get; set; }
+        public DateTime AchievedOn { get; set; }
     }
 
     public enum NotificationType
