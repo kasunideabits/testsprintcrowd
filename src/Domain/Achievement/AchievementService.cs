@@ -5,17 +5,20 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.Domain.Achievement;
 
     public class AchievementService : IAchievementService
     {
-        public AchievementService(IAchievementRepo repo)
+        public AchievementService(IAchievementRepo repo, INotificationClient notificationClient)
         {
             this.AchievementRepo = repo;
+            this.NotificationClient = notificationClient;
         }
 
         private IAchievementRepo AchievementRepo { get; }
+        private INotificationClient NotificationClient { get; }
         private const int tenKM = 10000;
         private const int twentyKM = 20000;
         private const int thirtyKM = 30000;
@@ -39,8 +42,9 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
                 UserId = userId,
                 Percentage = 100,
                 };
-                await this.AchievementRepo.Add(firstSignUp);
+                var achievement = await this.AchievementRepo.Add(firstSignUp);
                 this.AchievementRepo.SaveChanges();
+                this.NotificationClient.AchievemenNotificationJobs.Achieved(userId, achievement.Type, achievement.AchivedOn);
             }
         }
 
@@ -66,6 +70,11 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
                 achivements.AddRange(publicEventCompleted);
             }
             this.AchievementRepo.SaveChanges();
+            // send notification
+            achivements.ForEach(a =>
+            {
+                this.NotificationClient.AchievemenNotificationJobs.Achieved(userId, a.Type, a.AchievedOn);
+            });
             return achivements;
         }
 
