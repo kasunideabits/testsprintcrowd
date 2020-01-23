@@ -35,7 +35,7 @@
 
     public class AchievementNoticiation : Notification
     {
-        public int AchievementId { get; set; }
+        public AchievementType AchievementType { get; set; }
     }
 
     public enum NotificationType
