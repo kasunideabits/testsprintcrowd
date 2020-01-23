@@ -15,11 +15,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             public AchievementBaseDto(AchievementNoticiation notification)
             {
                 this.MainType = "AchievementType";
+                this.SubType = (int)notification.AchievementType;
                 this.NotificationId = notification.Id;
                 this.CreateDate = notification.CreatedDate;
             }
 
             public string MainType { get; }
+            public int SubType { get; }
             public int NotificationId { get; }
             public DateTime CreateDate { get; }
         }

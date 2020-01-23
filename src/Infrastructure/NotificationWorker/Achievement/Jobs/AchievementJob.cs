@@ -41,6 +41,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             var payload = notificationData;
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "AchievementType");
+            data.Add("SubType", ((int)notificationData.Type).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotification.PushNotificationMulticastMessageBuilder()
