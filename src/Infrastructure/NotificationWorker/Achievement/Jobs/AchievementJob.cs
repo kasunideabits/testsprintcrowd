@@ -24,12 +24,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             AchievementMessage achievement = message as AchievementMessage;
             if (achievement != null)
             {
-                var notificationId = this.AchievementJobRepo.AddNotification(achievement.AchievementType, achievement.AchievedOn);
+                var notificationId = this.AchievementJobRepo.AddNotification((AchievementType)achievement.Type, achievement.AchievedOn);
                 var systemUser = this.AchievementJobRepo.GetSystemUser();
                 this.AchievementJobRepo.AddUserNotification(systemUser.Id, achievement.UserId, notificationId);
                 var tokens = this.AchievementJobRepo.GetTokens(achievement.UserId);
                 this.AchievementJobRepo.SaveChanges();
-                var notificationMessagePayload = new AchievmentMessageDto(achievement.AchievementType, achievement.AchievedOn);
+                var notificationMessagePayload = new AchievmentMessageDto((AchievementType)achievement.Type, achievement.AchievedOn);
                 var notificationMessage = this.BuildNotification(notificationId, notificationMessagePayload, tokens);
                 this.Client.SendMulticaseMessage(notificationMessage);
             }

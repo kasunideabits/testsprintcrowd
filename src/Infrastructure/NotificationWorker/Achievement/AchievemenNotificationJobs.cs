@@ -9,7 +9,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
     {
         public void Achieved(int userId, AchievementType type, DateTime achievedOn)
         {
-            var message = new AchievementMessage(userId, type, achievedOn);
+            var message = new AchievementMessage(userId, (int)type, achievedOn);
             new NotificationWorker<AchievementJob>().Invoke(message);
         }
     }

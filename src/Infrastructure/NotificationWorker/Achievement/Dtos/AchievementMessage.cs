@@ -5,14 +5,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Dtos
 
     public class AchievementMessage
     {
-        public AchievementMessage(int userId, AchievementType type, DateTime achievedOn)
+        public AchievementMessage(int userId, int type, DateTime achievedOn)
         {
             this.UserId = userId;
-            this.AchievementType = type;
+            this.Type = type;
             this.AchievedOn = achievedOn;
         }
         public int UserId { get; }
-        public AchievementType AchievementType { get; }
+        public int Type { get; }
         public DateTime AchievedOn { get; }
     }
 }
