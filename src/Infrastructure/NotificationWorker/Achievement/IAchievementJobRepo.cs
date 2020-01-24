@@ -10,6 +10,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
         int AddNotification(Persistence.Entities.AchievementType type, DateTime achivedOn);
         void AddUserNotification(int creatorId, int receiverId, int notificationId);
         User GetSystemUser();
+        User GetUser(int userId);
         void SaveChanges();
     }
 }

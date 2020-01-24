@@ -1,0 +1,76 @@
+﻿{
+  "achievement": {
+    "crowdFunded": {
+      "title": "Achievement SE",
+      "body": "You have unlock crowdFunded"
+    },
+    "fiftyComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fiftyComplete"
+    },
+    "fiftyPrivateEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fiftyPrivateEventsComplete"
+    },
+    "fiftyPublicEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fiftyPublicEventsComplete"
+    },
+    "fortyComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fortyComplete"
+    },
+    "fotyPrivateEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fotyPrivateEventsComplete"
+    },
+    "fotyPublicEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock fotyPublicEventsComplete"
+    },
+    "joinedTheCrowd": {
+      "title": "Achievement SE",
+      "body": "You have unlock joinedTheCrowd"
+    },
+    "tenComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock tenComplete"
+    },
+    "tenPrivateEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock tenPrivateEventsComplete"
+    },
+    "tenPublicEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock tenPublicEventsComplete"
+    },
+    "thirtyComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock thirtyComplete"
+    },
+    "thirtyPrivateEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock thirtyPrivateEventsComplete"
+    },
+    "thirtyPublicEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock thirtyPublicEventsComplete"
+    },
+    "threeIsCrowd": {
+      "title": "Achievement SE",
+      "body": "You have unlock threeIsCrowd"
+    },
+    "twentyComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock twentyComplete"
+    },
+    "twentyPrivateEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock twentyPrivateEventsComplete"
+    },
+    "twentyPublicEventsComplete": {
+      "title": "Achievement SE",
+      "body": "You have unlock twentyPublicEventsComplete"
+    }
+  }
+}

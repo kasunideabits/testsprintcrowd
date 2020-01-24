@@ -26,16 +26,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             {
                 var notificationId = this.AchievementJobRepo.AddNotification((AchievementType)achievement.Type, achievement.AchievedOn);
                 var systemUser = this.AchievementJobRepo.GetSystemUser();
+                var participant = this.AchievementJobRepo.GetUser(achievement.UserId);
                 this.AchievementJobRepo.AddUserNotification(systemUser.Id, achievement.UserId, notificationId);
+                var notification = new AchievementTranslation(participant.LanguagePreference).Get((AchievementType)achievement.Type);
                 var tokens = this.AchievementJobRepo.GetTokens(achievement.UserId);
                 this.AchievementJobRepo.SaveChanges();
                 var notificationMessagePayload = new AchievmentMessageDto((AchievementType)achievement.Type, achievement.AchievedOn);
-                var notificationMessage = this.BuildNotification(notificationId, notificationMessagePayload, tokens);
+                var notificationMessage = this.BuildNotification(notificationId, notificationMessagePayload, notification, tokens);
                 this.Client.SendMulticaseMessage(notificationMessage);
             }
         }
 
-        private dynamic BuildNotification(int notificationId, AchievmentMessageDto notificationData, List<string> tokens)
+        private dynamic BuildNotification(
+            int notificationId,
+            AchievmentMessageDto notificationData,
+            SCFireBaseNotificationMessage notification,
+            List<string> tokens)
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
@@ -45,6 +51,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+                .Notification(notification.Title, notification.Body)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();

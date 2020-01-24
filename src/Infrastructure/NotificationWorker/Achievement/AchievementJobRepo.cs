@@ -44,6 +44,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
             return result;
         }
 
+        public User GetUser(int userId)
+        {
+            var result = this.Context.User.FirstOrDefault(u => u.Id == userId);
+            return result;
+        }
+
         public List<string> GetTokens(int userId)
         {
             return this.Context.FirebaseToken.Where(f => f.User.Id == userId).Select(f => f.Token).ToList();
