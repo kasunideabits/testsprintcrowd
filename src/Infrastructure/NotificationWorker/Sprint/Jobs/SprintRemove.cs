@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -38,14 +40,19 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificationMsgData = RemoveNotificationMessageMapper.SprintRemoveNotificationMessage(removeSprint);
             var participantIds = this.SprintParticipantIds(removeSprint.SprintId, removeSprint.UserId);
             this.RemoveOldNotificaiton(removeSprint.SprintId);
-            if (participantIds.Count > 0)
+            foreach (var item in participantIds)
             {
-                var notificationId = this.AddToDb(removeSprint, participantIds);
-                this.Context.SaveChanges();
-                var tokens = this.GetTokens(participantIds);
-                var notificationMsg = this.BuildNotificationMessage(notificationId, tokens, notificationMsgData);
-                this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
-                this.SendAblyMessage(notificationMsgData.Sprint);
+                if (item.Value.Count > 0)
+                {
+                    var notificationId = this.AddToDb(removeSprint, item.Value);
+                    this.Context.SaveChanges();
+                    var tokens = this.GetTokens(item.Value);
+                    var notification = this.GetNotification(item.Key);
+                    var notificationBody = String.Format(notification.Body, removeSprint.SprintName, removeSprint.Name);
+                    var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationMsgData);
+                    this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+                    this.SendAblyMessage(notificationMsgData.Sprint);
+                }
             }
         }
 
@@ -55,7 +62,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             channel.Publish("Remove", message);
         }
 
-        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, SprintRemoveNotificationMessage notificationData)
+        private dynamic BuildNotificationMessage(int notificationId, string title, string body, List<string> tokens, SprintRemoveNotificationMessage notificationData)
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
@@ -65,14 +72,33 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotification.PushNotificationMulticastMessageBuilder()
-                .Notification("Sprint Invite Notification", "sprint demo")
+                .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();
             return message;
         }
 
-        private List<int> SprintParticipantIds(int sprintId, int removerId)
+        private SCFireBaseNotificationMessage GetNotification(string userLang)
+        {
+            JToken translation;
+            switch (userLang)
+            {
+                case LanugagePreference.EnglishUS:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+                case LanugagePreference.Swedish:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
+                    break;
+                default:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+            }
+            var section = translation ["sprintRemove"];
+            return new SCFireBaseNotificationMessage(section);
+        }
+
+        private Dictionary<string, List<int>> SprintParticipantIds(int sprintId, int removerId)
         {
             return this.Context.SprintParticipant
                 .Where(s =>
@@ -80,8 +106,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     s.Stage != ParticipantStage.DECLINE &&
                     s.UserId != removerId &&
                     s.User.UserState == UserState.Active)
-                .Select(s => s.UserId)
-                .ToList();
+                .Select(s => new { UserId = s.UserId, Language = s.User.LanguagePreference })
+                .GroupBy(s => s.Language,
+                    s => s.UserId,
+                    (key, g) => new { Language = key, UserId = g.ToList() })
+                .ToDictionary(s => s.Language, s => s.UserId);
         }
 
         private List<string> GetTokens(List<int> participantIds)
