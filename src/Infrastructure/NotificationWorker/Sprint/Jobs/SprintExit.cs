@@ -1,8 +1,10 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System;
+    using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
@@ -60,14 +62,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 // do realy need to send push notification ?
                 int notificationId = this.AddToDb(exitSprint, exitSprint.CreatorId);
                 var notificationData = ExitNotificationMessageMapper.PushNotificationMessgeMapper(exitSprint);
+                var user = this.GetUser(exitSprint.CreatorId);
                 var tokens = this.GetTokens(exitSprint.CreatorId);
-                var notificationMessage = this.BuildNotificationMessage(notificationId, tokens, notificationData);
+                var notification = this.GetNotification(user.LanguagePreference);
+                var notificationBody = String.Format(notification.Body, exitSprint.Name, exitSprint.Name);
+                var notificationMessage = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
                 this.Context.SaveChanges();
             }
         }
 
-        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, ExitPushNotificationMesssage notificationData)
+        private dynamic BuildNotificationMessage(int notificationId, string notificationTitle, string notificationBody, List<string> tokens, ExitPushNotificationMesssage notificationData)
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
@@ -77,7 +82,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotification.PushNotificationMulticastMessageBuilder()
-                .Notification("Sprint Invite Notification", "sprint demo")
+                .Notification(notificationTitle, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();
@@ -114,6 +119,30 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return this.Context.FirebaseToken
                 .Where(f => f.User.Id == creatorId && f.User.UserState == UserState.Active)
                 .Select(f => f.Token).ToList();
+        }
+
+        private User GetUser(int userId)
+        {
+            return this.Context.User.FirstOrDefault(u => u.Id == userId && u.UserState == UserState.Active);
+        }
+
+        private SCFireBaseNotificationMessage GetNotification(string userLang)
+        {
+            JToken translation;
+            switch (userLang)
+            {
+                case LanugagePreference.EnglishUS:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+                case LanugagePreference.Swedish:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
+                    break;
+                default:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+            }
+            var section = translation ["sprintLeave"];
+            return new SCFireBaseNotificationMessage(section);
         }
 
     }
