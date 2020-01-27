@@ -1,18 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SprintCrowd.BackEnd.Application;
-using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
-using SprintCrowd.BackEnd.Infrastructure.Persistence;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-using SprintCrowd.BackEnd.Infrastructure.PushNotification;
-using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
-
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
+
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json;
+    using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowd.BackEnd.Infrastructure.PushNotification;
+    using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+
     public class SprintRemove : ISprintRemove
     {
         public SprintRemove(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory)
