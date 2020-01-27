@@ -72,5 +72,32 @@
       "title": "Achievement",
       "body": "You have unlock twentyPublicEventsComplete"
     }
+  },
+  "reminders": {
+    "_comment": "0 mean sprint name",
+    "finalCall": {
+      "title": "Time Reminder",
+      "body": "Final call for {0}"
+    },
+    "oneDayBefore": {
+      "title": "Time Reminder",
+      "body": "24 hour before {0} goes Live"
+    },
+    "oneHourBeforeLive": {
+      "title": "Time Reminder",
+      "body": "1 hour before {0} goes Live"
+    },
+    "fifteenMBefore": {
+      "title": "Time Reminder",
+      "body": "15 minutes before {0} goes Live"
+    },
+    "onLive": {
+      "title": "Time Reminder",
+      "body": "{0} is now Live"
+    },
+    "expired": {
+      "title": "Time Reminder",
+      "body": "You failed to mark attendace for {0}"
+    }
   }
 }

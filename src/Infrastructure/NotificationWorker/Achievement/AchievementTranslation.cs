@@ -1,19 +1,19 @@
-using System.IO;
-using Newtonsoft.Json.Linq;
-using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
 {
+    using System.IO;
+    using Newtonsoft.Json.Linq;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+
     internal class AchievementTranslation
     {
         public AchievementTranslation(string lang)
         {
             switch (lang)
             {
-                case "en":
+                case Application.LanugagePreference.EnglishUS:
                     this.translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
-                case "se":
+                case Application.LanugagePreference.Swedish:
                     this.translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
                     break;
                 default:

@@ -1,11 +1,12 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 {
     using System.Collections.Generic;
+    using System.IO;
     using System;
     using FirebaseAdmin.Messaging;
+    using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
 
@@ -33,29 +34,31 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 
         private void BuildNotification(string userLang, SprintNotificaitonType notificationType, string sprintName)
         {
-            var notification = this.GetNotificationMessage(userLang, sprintName);
+            var translation = this.GetTransaltion(userLang);
+            JToken section = null;
             switch (notificationType)
             {
                 case SprintNotificaitonType.TimeReminderBeforeStart:
-                    notification.OndDayBefore();
+                    section = translation ["reminders"] ["oneDayBefore"];
                     break;
                 case SprintNotificaitonType.TimeReminderOneHourBefore:
-                    notification.OneHourBeforeLive();
+                    section = translation ["reminders"] ["oneHourBeforeLive"];
                     break;
                 case SprintNotificaitonType.TimeReminderBeforFiftyM:
-                    notification.OneHourBeforeLive();
+                    section = translation ["reminders"] ["fifteenMBefore"];
                     break;
                 case SprintNotificaitonType.TimeReminderStarted:
-                    notification.OnLive();
+                    section = translation ["reminders"] ["onLive"];
                     break;
                 case SprintNotificaitonType.TimeReminderFinalCall:
-                    notification.FinalCall();
+                    section = translation ["reminders"] ["finalCall"];
                     break;
                 case SprintNotificaitonType.TimeReminderExpired:
-                    notification.FinalCall();
+                    section = translation ["reminders"] ["expired"];
                     break;
             }
-            this.MessageBuilder.Notification(notification.GetTitle(), String.Empty);
+            SCFireBaseNotificationMessage message = new SCFireBaseNotificationMessage(section);
+            this.MessageBuilder.Notification(message.Title, String.Format(message.Body, 0, sprintName));
         }
 
         private void BuildData(int notificationId, SprintNotificaitonType notificationType, dynamic payload)
@@ -69,17 +72,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             this.MessageBuilder.Message(data);
         }
 
-        private INotificationMessage GetNotificationMessage(string userLang, string sprintName)
+        private JToken GetTransaltion(string userLang)
         {
+            JToken translation;
             switch (userLang)
             {
                 case LanugagePreference.EnglishUS:
-                    return new NotificationMessageEn(sprintName);
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
                 case LanugagePreference.Swedish:
-                    return new NotificationMessageSE(sprintName);
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
+                    break;
                 default:
-                    return new NotificationMessageEn(sprintName);
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
             }
+            return translation;
         }
     }
 }
