@@ -36,7 +36,10 @@ namespace SprintCrowd.BackEnd.Web.PushNotification
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> SaveFcmToken([FromBody] FcmModel fcmModel)
         {
+            System.Console.WriteLine("=================================================== Save Push Notification");
             User user = await this.User.GetUser(this.userService);
+            System.Console.WriteLine($"=================================================== Save Push Notification { user} , {user.Name}");
+
             await this.userService.SaveFcmToken(user.Id, fcmModel.Token);
             ResponseObject response = new ResponseObject()
             {
