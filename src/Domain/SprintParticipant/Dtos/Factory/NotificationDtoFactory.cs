@@ -18,5 +18,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         {
             return SprintNotificationDtoFactory.Build(sender, receiver, notification);
         }
+
+        public static IAchievementNotification AchievementBuild(AchievementNoticiation notification)
+        {
+            return AchievementNotificationDtoFactory.Build(notification);
+        }
+
     }
 }

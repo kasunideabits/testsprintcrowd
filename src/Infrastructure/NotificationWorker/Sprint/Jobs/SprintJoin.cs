@@ -1,9 +1,11 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System;
     using Microsoft.EntityFrameworkCore;
+    using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
@@ -71,31 +73,38 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var creator = this.GetCreator(this._joinSprint.SprintId);
             var ids = new List<int>() { creator.Id };
             var tokens = this.GetTokens(ids);
-
+            var translation = this.GetNotification(creator.LanguagePreference);
+            var notification = this._joinSprint.Accept ? this.GetInvitationAccept(translation) : this.GetInvitationDecline(translation);
+            var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
             var participant = this.GetParticipant();
             var eventInfo = this.GetEvent();
             var notificationType = this._joinSprint.Accept ? SprintNotificaitonType.InvitationAccept : SprintNotificaitonType.InvitationDecline;
             var notificationId = this.AddToDatabase(eventInfo, participant, ids, notificationType);
-            var message = this.BuildNotificationMessage(notificationId, tokens, participant, eventInfo, notificationType);
+            var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, notificationType);
             this.PushNotificationClient.SendMulticaseMessage(message);
         }
 
         private void PublicSprintNotification()
         {
             var ids = this.GetParticipantsIds();
-            if (ids.Count > 0)
+            foreach (var group in ids)
             {
-                var tokens = this.GetTokens(ids);
-                var participant = this.GetParticipant();
-                var eventInfo = this.GetEvent();
-                var notificationId = this.AddToDatabase(eventInfo, participant, ids, SprintNotificaitonType.FriendJoin);
-
-                var message = this.BuildNotificationMessage(notificationId, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
-                this.PushNotificationClient.SendMulticaseMessage(message);
+                if (group.Value.Count > 0)
+                {
+                    var tokens = this.GetTokens(group.Value);
+                    var participant = this.GetParticipant();
+                    var eventInfo = this.GetEvent();
+                    var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
+                    var translation = this.GetNotification(group.Key);
+                    var notification = this.GetFriendJoin(translation);
+                    var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
+                    var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
+                    this.PushNotificationClient.SendMulticaseMessage(message);
+                }
             }
         }
 
-        private dynamic BuildNotificationMessage(int notificationId, List<string> tokens, Participant participant, EventInfo eventInfo, SprintNotificaitonType notificationType)
+        private dynamic BuildNotificationMessage(int notificationId, string title, string body, List<string> tokens, Participant participant, EventInfo eventInfo, SprintNotificaitonType notificationType)
         {
             var data = new Dictionary<string, string>();
             var payload = new
@@ -109,7 +118,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
             var message = new PushNotificationMulticastMessageBuilder()
-                .Notification("Sprint Invite Notification", "sprint demo")
+                .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();
@@ -157,31 +166,47 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .FirstOrDefault(s => s.Id == this._joinSprint.SprintId);
         }
 
-        private List<int> GetParticipantsIds()
+        private Dictionary<string, List<int>> GetParticipantsIds()
         {
-            List<int> ids = new List<int>();
+            Dictionary<string, List<int>> ids = new Dictionary<string, List<int>>();
             var ids1 = this.Context.SprintParticipant
                 .Where(s => s.SprintId == this._joinSprint.SprintId && s.User.UserState == UserState.Active)
                 .Join(this.Context.Frineds,
                     p => p.UserId,
                     f => f.SharedUserId,
                     ((p, f) =>
-                        new { UserId = p.UserId, FriendId = f.AcceptedUserId }))
+                        new { UserId = p.UserId, FriendId = f.AcceptedUserId, Language = f.AcceptedUser.LanguagePreference }))
                 .Where(s => s.UserId == this._joinSprint.UserId)
-                .Select(s => s.FriendId)
-                .ToList();
+                .GroupBy(s => s.Language,
+                    s => s.FriendId,
+                    (key, g) => new { Language = key, UserId = g.ToList() })
+                .ToDictionary(s => s.Language, s => s.UserId);
             var ids2 = this.Context.SprintParticipant
                 .Where(s => s.SprintId == this._joinSprint.SprintId && s.User.UserState == UserState.Active)
                 .Join(this.Context.Frineds,
                     p => p.UserId,
                     f => f.AcceptedUserId,
                     ((p, f) =>
-                        new { UserId = p.UserId, FriendId = f.SharedUserId }))
+                        new { UserId = p.UserId, FriendId = f.SharedUserId, Language = f.SharedUser.LanguagePreference }))
                 .Where(s => s.UserId == this._joinSprint.UserId)
-                .Select(s => s.FriendId)
-                .ToList();
-            ids.AddRange(ids1);
-            ids.AddRange(ids2);
+                .GroupBy(s => s.Language,
+                    s => s.FriendId,
+                    (key, g) => new { Language = key, UserId = g.ToList() })
+                .ToDictionary(s => s.Language, s => s.UserId);
+            ids = ids1;
+            foreach (var item in ids2)
+            {
+                if (ids.ContainsKey(item.Key))
+                {
+                    var temp = ids [item.Key];
+                    temp.AddRange(item.Value);
+                    ids [item.Key] = temp;
+                }
+                else
+                {
+                    ids.Add(item.Key, item.Value);
+                }
+            }
             return ids;
         }
 
@@ -223,30 +248,52 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return notification.Entity.Id;
         }
 
-        internal class Participant
+        private JToken GetNotification(string userLang)
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public string Email { get; set; }
-            public string ProfilePicture { get; set; }
-            public string Code { get; set; }
-            public string ColorCode { get; set; }
-            public string City { get; set; }
-            public string Country { get; set; }
-            public string CountryCode { get; set; }
-
+            JToken translation;
+            switch (userLang)
+            {
+                case LanugagePreference.EnglishUS:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+                case LanugagePreference.Swedish:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
+                    break;
+                default:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+            }
+            return translation;
         }
 
-        internal class EventInfo
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public int Distance { get; set; }
-            public DateTime StartTime { get; set; }
-            public int NumberOfPariticipants { get; set; }
-            public SprintType SprintType { get; set; }
-            public SprintStatus SprintStatus { get; set; }
-        }
+        private SCFireBaseNotificationMessage GetInvitationAccept(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinAccept"]);
+        private SCFireBaseNotificationMessage GetInvitationDecline(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinDecline"]);
+        private SCFireBaseNotificationMessage GetFriendJoin(JToken translation) => new SCFireBaseNotificationMessage(translation ["friendJoin"]);
 
+    }
+
+    internal class Participant
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string ProfilePicture { get; set; }
+        public string Code { get; set; }
+        public string ColorCode { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string CountryCode { get; set; }
+
+    }
+
+    internal class EventInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Distance { get; set; }
+        public DateTime StartTime { get; set; }
+        public int NumberOfPariticipants { get; set; }
+        public SprintType SprintType { get; set; }
+        public SprintStatus SprintStatus { get; set; }
     }
 }

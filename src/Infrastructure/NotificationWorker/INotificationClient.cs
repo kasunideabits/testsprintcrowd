@@ -1,3 +1,4 @@
+using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint;
 
@@ -17,5 +18,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         ///  Sprint notification reminder
         /// </summary>
         ISprintNotificationReminderJobs NotificationReminderJobs { get; }
+
+        /// <summary>
+        ///  Achievement notfication jobs
+        /// </summary>
+        IAchievemenNotificationJobs AchievemenNotificationJobs { get; }
     }
 }

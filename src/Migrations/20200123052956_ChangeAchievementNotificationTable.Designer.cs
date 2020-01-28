@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200123052956_ChangeAchievementNotificationTable")]
+    partial class ChangeAchievementNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -583,9 +585,6 @@ namespace SprintCrowdBackEnd.Migrations
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.AchievementNoticiation", b =>
                 {
                     b.HasBaseType("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Notification");
-
-                    b.Property<DateTime>("AchievedOn")
-                        .HasColumnName("achieved_on");
 
                     b.Property<int>("AchievementType")
                         .HasColumnName("achievement_type");

@@ -1,0 +1,143 @@
+﻿{
+  "achievement": {
+    "crowdFunded": {
+      "title": "Achievement",
+      "body": "You have unlock crowdFunded"
+    },
+    "fiftyComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fiftyComplete"
+    },
+    "fiftyPrivateEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fiftyPrivateEventsComplete"
+    },
+    "fiftyPublicEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fiftyPublicEventsComplete"
+    },
+    "fortyComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fortyComplete"
+    },
+    "fotyPrivateEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fotyPrivateEventsComplete"
+    },
+    "fotyPublicEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock fotyPublicEventsComplete"
+    },
+    "joinedTheCrowd": {
+      "title": "Achievement",
+      "body": "You have unlock joinedTheCrowd"
+    },
+    "tenComplete": {
+      "title": "Achievement",
+      "body": "You have unlock tenComplete"
+    },
+    "tenPrivateEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock tenPrivateEventsComplete"
+    },
+    "tenPublicEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock tenPublicEventsComplete"
+    },
+    "thirtyComplete": {
+      "title": "Achievement",
+      "body": "You have unlock thirtyComplete"
+    },
+    "thirtyPrivateEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock thirtyPrivateEventsComplete"
+    },
+    "thirtyPublicEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock thirtyPublicEventsComplete"
+    },
+    "threeIsCrowd": {
+      "title": "Achievement",
+      "body": "You have unlock threeIsCrowd"
+    },
+    "twentyComplete": {
+      "title": "Achievement",
+      "body": "You have unlock twentyComplete"
+    },
+    "twentyPrivateEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock twentyPrivateEventsComplete"
+    },
+    "twentyPublicEventsComplete": {
+      "title": "Achievement",
+      "body": "You have unlock twentyPublicEventsComplete"
+    }
+  },
+  "reminders": {
+    "_comment": "0 mean sprint name",
+    "finalCall": {
+      "title": "Time Reminder",
+      "body": "Final call for {0}"
+    },
+    "oneDayBefore": {
+      "_comment": "0 mean sprint name",
+      "title": "Time Reminder",
+      "body": "24 hour before {0} goes Live"
+    },
+    "oneHourBeforeLive": {
+      "_comment": "0 mean sprint name",
+      "title": "Time Reminder",
+      "body": "1 hour before {0} goes Live"
+    },
+    "fifteenMBefore": {
+      "_comment": "0 mean sprint name",
+      "title": "Time Reminder",
+      "body": "15 minutes before {0} goes Live"
+    },
+    "onLive": {
+      "_comment": "0 mean sprint name",
+      "title": "Time Reminder",
+      "body": "{0} is now Live"
+    },
+    "expired": {
+      "_comment": "0 mean sprint name",
+      "title": "Time Reminder",
+      "body": "You failed to mark attendace for {0}"
+    }
+  },
+  "sprintInvite": {
+    "_comment": "Sprint invitation request, 0 = invitee name, 1 = sprint name",
+    "title": "Sprint Invite Request",
+    "body": "{0} has invited you to join the {1}"
+  },
+  "sprintJoinAccept": {
+    "_comment": "0 = accepter name",
+    "title": "Invitation Accepted",
+    "body": "Invitation Accepted by {0}"
+  },
+  "sprintJoinDecline": {
+    "_comment": "0 = decline by name",
+    "title": "Invitation Declined",
+    "body": "Invitation Declined by {0}"
+  },
+  "friendJoin": {
+    "_comment": "0 = joined user name, 1 = sprint name",
+    "title": "Friend joined to an event",
+    "body": "{0} has joined {1}"
+  },
+  "sprintEdit": {
+    "_comment": "0 = sprint name, 1 = updater name",
+    "title": "Sprint Updated",
+    "body": "{0} has been updated by {1}"
+  },
+  "sprintLeave": {
+    "_comment": "0 = left user name, 1 = sprint name",
+    "title": "Left the sprint",
+    "body": "{0} has left from {1}"
+  },
+  "sprintRemove": {
+    "_comment": "0 = sprint name, 1 = deleted name",
+    "title": "Left the sprint",
+    "body": "{0} has been deleted by {1}"
+  }
+}

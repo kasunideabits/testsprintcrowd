@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -111,13 +113,40 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.InvitationRequest).ToString());
             data.Add("CreateDate", string.Format("{0:yyyy-MM-ddTHH:mm:ss.FFFZ}", DateTime.UtcNow));
             data.Add("Data", JsonConvert.SerializeObject(payload));
+            var user = this.GetUser(this._inviteeId);
+            var notification = this.GetNotification(user.LanguagePreference);
+            var notificationBody = String.Format(notification.Body, inviter.Name, sprint.Name);
             var tokens = this.GetTokens();
             var message = new PushNotificationMulticastMessageBuilder()
-                .Notification("Sprint Invite Notification", "sprint demo")
+                .Notification(notification.Title, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();
             return message;
+        }
+
+        private User GetUser(int userId)
+        {
+            return this.Context.User.FirstOrDefault(u => u.Id == userId && u.UserState == UserState.Active);
+        }
+
+        private SCFireBaseNotificationMessage GetNotification(string userLang)
+        {
+            JToken translation;
+            switch (userLang)
+            {
+                case LanugagePreference.EnglishUS:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+                case LanugagePreference.Swedish:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/se.json"));
+                    break;
+                default:
+                    translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
+                    break;
+            }
+            var section = translation ["sprintInvite"];
+            return new SCFireBaseNotificationMessage(section);
         }
 
         private int AddToDatabaase()

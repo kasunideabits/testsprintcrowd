@@ -421,6 +421,9 @@
                         case SprintNotification sprintTypeNotification:
                             result.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
                             break;
+                        case AchievementNoticiation achievementTypeNotification:
+                            result.Add(NotificationDtoFactory.AchievementBuild(achievementTypeNotification));
+                            break;
                         default:
                             break;
                     }

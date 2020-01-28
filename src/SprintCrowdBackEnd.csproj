@@ -38,4 +38,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest"/>
+  </ItemGroup>
+
 </Project>
