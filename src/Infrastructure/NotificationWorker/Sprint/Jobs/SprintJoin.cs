@@ -98,7 +98,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var translation = this.GetNotification(group.Key);
                     var notification = this.GetFriendJoin(translation);
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
-                    var message = this.BuildNotificationMessage(notificationId, notification.Title, notification.Body, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
+                    var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
                     this.PushNotificationClient.SendMulticaseMessage(message);
                 }
             }

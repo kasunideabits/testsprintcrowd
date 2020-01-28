@@ -118,7 +118,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificationBody = String.Format(notification.Body, inviter.Name, sprint.Name);
             var tokens = this.GetTokens();
             var message = new PushNotificationMulticastMessageBuilder()
-                .Notification(notification.Title, notification.Body)
+                .Notification(notification.Title, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
                 .Build();
