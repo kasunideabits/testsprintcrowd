@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     /// <summary>
@@ -14,6 +16,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>actual token.</value>
+        [MaxLength(2000)]
         public string Token { get; set; }
     }
 }

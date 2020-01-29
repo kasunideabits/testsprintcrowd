@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.ComponentModel.DataAnnotations;
     using System;
 
     /// <summary>
@@ -19,6 +20,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>event name.</value>
+        [MaxLength(100)]
         public string Name { get; set; }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// gets or sets location.
         /// </summary>
+        [MaxLength(100)]
         public string Location { get; set; }
 
         /// <summary>
@@ -90,6 +93,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>Influencer Email.</value>
+        [MaxLength(50)]
         public string InfluencerEmail { get; set; }
 
         /// <summary>

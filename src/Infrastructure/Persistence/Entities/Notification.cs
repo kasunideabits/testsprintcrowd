@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System;
     using SprintCrowd.BackEnd.Application;
 
@@ -15,6 +16,8 @@
         public SprintNotificaitonType SprintNotificationType { get; set; }
         public int? UpdatorId { get; set; }
         public int SprintId { get; set; }
+
+        [MaxLength(100)]
         public string SprintName { get; set; }
         public int Distance { get; set; }
         public DateTime StartDateTime { get; set; }
@@ -26,6 +29,8 @@
     public class FriendNoticiation : Notification
     {
         public FriendNoticiationType Type { get; set; }
+
+        [MaxLength(10)]
         public string Status { get; set; }
         public int? RequesterId { get; set; }
         public int? AccepterId { get; set; }

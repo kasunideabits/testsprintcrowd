@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     /// <summary>
@@ -15,11 +17,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// uuid of the device
         /// </summary>
         /// <value>device id</value>
+        [MaxLength(50)]
         public string DeviceId { get; set; }
         /// <summary>
         /// device os type
         /// </summary>
         /// <value>platfrom ios or android</value>
+        [MaxLength(10)]
         public string DevicePlatform { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using SprintCrowd.BackEnd.Application;
 
     /// <summary>
@@ -32,29 +33,34 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or set value.
         /// </summary>
         /// <value>facebook user id.</value>
+        [MaxLength(50)]
         public string FacebookUserId { get; set; }
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>email of the user.</value>
+        [MaxLength(50)]
         public string Email { get; set; }
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>name of the user.</value>
+        [MaxLength(50)]
         public string Name { get; set; }
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>profile picture url of the user.</value>
+        [MaxLength(200)]
         public string ProfilePicture { get; set; }
 
         /// <summary>
         /// Unique code for user
         /// </summary>
+        [MaxLength(20)]
         public string Code { get; set; }
 
         /// <summary>
@@ -78,30 +84,35 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Language Preference for user <see cref="LanguageCode"> Lanugage code </see>
         /// </summary>
         /// <value> Lanugage code </value>
+        [MaxLength(10)]
         public string LanguagePreference { get; set; } = LanguageCode.English;
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>country name of the user</value>
+        [MaxLength(50)]
         public string Country { get; set; }
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>country code of the user</value>
+        [MaxLength(50)]
         public string CountryCode { get; set; }
 
         /// <summary>
         /// gets or set value.
         /// </summary>
         /// <value>city name of the user</value>
+        [MaxLength(50)]
         public string City { get; set; }
 
         /// <summary>
         /// Color code for user <see cref="UserColorCode"> color codes </see>
         /// </summary>
         /// <value></value>
+        [MaxLength(10)]
         public string ColorCode { get; set; }
 
         /// <summary>
