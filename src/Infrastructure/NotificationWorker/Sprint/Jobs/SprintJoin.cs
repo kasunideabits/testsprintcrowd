@@ -46,29 +46,44 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             if (joinSprint != null)
             {
                 this._joinSprint = joinSprint;
-                this.AblyMessage();
-                this.SendPushNotification();
+                var participant = this.GetParticipant();
+                this.AblyMessage(participant);
+                this.SendPushNotification(participant);
             }
         }
 
-        private void AblyMessage()
+        private void AblyMessage(Participant participant)
         {
-            System.Console.WriteLine(this._joinSprint.Name);
+            // var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(this._joinSprint.SprintId);
+            var message = new Participant()
+            {
+                Id = participant.Id,
+                Name = participant.Name ?? String.Empty,
+                Email = participant.Email ?? String.Empty,
+                ProfilePicture = participant.ProfilePicture ?? String.Empty,
+                Code = participant.Code ?? String.Empty,
+                ColorCode = participant.ColorCode ?? String.Empty,
+                City = participant.City ?? String.Empty,
+                Country = participant.Country ?? String.Empty,
+                CountryCode = participant.CountryCode ?? String.Empty,
+            };
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + this._joinSprint.SprintId);
+            channel.Publish("Join", message);
         }
 
-        private void SendPushNotification()
+        private void SendPushNotification(Participant participant)
         {
             if (this._joinSprint.SprintType == Application.SprintType.PrivateSprint)
             {
-                this.PrivateSprintNotification();
+                this.PrivateSprintNotification(participant);
             }
             else
             {
-                this.PublicSprintNotification();
+                this.PublicSprintNotification(participant);
             }
         }
 
-        private void PrivateSprintNotification()
+        private void PrivateSprintNotification(Participant participant)
         {
             var creator = this.GetCreator(this._joinSprint.SprintId);
             var ids = new List<int>() { creator.Id };
@@ -76,7 +91,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var translation = this.GetNotification(creator.LanguagePreference);
             var notification = this._joinSprint.Accept ? this.GetInvitationAccept(translation) : this.GetInvitationDecline(translation);
             var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
-            var participant = this.GetParticipant();
             var eventInfo = this.GetEvent();
             var notificationType = this._joinSprint.Accept ? SprintNotificaitonType.InvitationAccept : SprintNotificaitonType.InvitationDecline;
             var notificationId = this.AddToDatabase(eventInfo, participant, ids, notificationType);
@@ -84,7 +98,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.PushNotificationClient.SendMulticaseMessage(message);
         }
 
-        private void PublicSprintNotification()
+        private void PublicSprintNotification(Participant participant)
         {
             var ids = this.GetParticipantsIds();
             foreach (var group in ids)
@@ -92,7 +106,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 if (group.Value.Count > 0)
                 {
                     var tokens = this.GetTokens(group.Value);
-                    var participant = this.GetParticipant();
                     var eventInfo = this.GetEvent();
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
                     var translation = this.GetNotification(group.Key);
