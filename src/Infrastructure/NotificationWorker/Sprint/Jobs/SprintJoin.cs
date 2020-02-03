@@ -114,7 +114,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     Console.WriteLine($"after transation, {group.Key}");
                     var notification = this.GetFriendJoin(translation);
                     Console.WriteLine($"after transation 1, {JsonConvert.SerializeObject(notification)}, {notification.Body}, {notification.Title}");
-                    var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
+                    var notificationBody = String.Format(notification.Body, this._joinSprint.Name, this._joinSprint.Name);
                     Console.WriteLine($"after transation 2, {notificationBody}");
                     var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
                     this.PushNotificationClient.SendMulticaseMessage(message);
