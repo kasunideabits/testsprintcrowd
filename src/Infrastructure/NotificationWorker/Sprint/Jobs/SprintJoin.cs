@@ -111,7 +111,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
                     Console.WriteLine(group.Key);
                     var translation = this.GetNotification(group.Key);
-                    Console.WriteLine($"after transation, {$group.Key}");
+                    Console.WriteLine($"after transation, {group.Key}");
                     var notification = this.GetFriendJoin(translation);
                     Console.WriteLine($"after transation 1, {notification}");
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
