@@ -101,16 +101,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void PublicSprintNotification(Participant participant)
         {
             var ids = this.GetParticipantsIds();
+            var eventInfo = this.GetEvent();
             foreach (var group in ids)
             {
                 if (group.Value.Count > 0)
                 {
                     var tokens = this.GetTokens(group.Value);
-                    var eventInfo = this.GetEvent();
+                    Console.WriteLine(JsonConvert.SerializeObject(tokens));
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
+                    Console.WriteLine(group.Key);
                     var translation = this.GetNotification(group.Key);
+                    Console.WriteLine($"after transation, {$group.Key}");
                     var notification = this.GetFriendJoin(translation);
+                    Console.WriteLine($"after transation 1, {notification}");
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name);
+                    Console.WriteLine($"after transation 2, {notificationBody}");
                     var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
                     this.PushNotificationClient.SendMulticaseMessage(message);
                 }
