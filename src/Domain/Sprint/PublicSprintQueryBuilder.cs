@@ -31,9 +31,12 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             Expression<Func<Sprint, bool>> query2 = this.ExtendtedTimeQuery(offset);
             Expression<Func<Sprint, bool>> query3 = this.DayQyery(offset);
             Expression<Func<Sprint, bool>> query4 = this.TimeQuery(offset);
-            Expression<Func<Sprint, bool>> query5 = query1.AndAlso(query2);
-            Expression<Func<Sprint, bool>> query6 = query5.AndAlso(query3);
-            return query6.AndAlso(query4);
+            Expression<Func<Sprint, bool>> query5 = this.DistanceQuery();
+
+            Expression<Func<Sprint, bool>> query6 = query1.AndAlso(query2);
+            Expression<Func<Sprint, bool>> query7 = query6.AndAlso(query3);
+            Expression<Func<Sprint, bool>> query8 = query7.AndAlso(query4);
+            return query8.AndAlso(query5);
         }
 
         public Expression<Func<Sprint, bool>> BuildOpenEvents(int offset)
@@ -44,8 +47,12 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
                 s.Status != (int)SprintStatus.ARCHIVED;
             Expression<Func<Sprint, bool>> query2 = this.DayQyery(offset);
             Expression<Func<Sprint, bool>> query3 = this.TimeQuery(offset);
-            Expression<Func<Sprint, bool>> query4 = query1.AndAlso(query2);
-            return query4.AndAlso(query3);
+            Expression<Func<Sprint, bool>> query4 = this.DistanceQuery();
+
+            Expression<Func<Sprint, bool>> query5 = query1.AndAlso(query2);
+            Expression<Func<Sprint, bool>> query6 = query5.AndAlso(query3);
+
+            return query6.AndAlso(query4);
         }
 
         public Expression<Func<Sprint, bool>> PublicSprintQuery()
@@ -85,6 +92,15 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
                     (
                         (s.StartDateTime.AddMinutes(offset).Hour >= _minNight && s.StartDateTime.AddMinutes(offset).Hour <= _midNightMin) ||
                         (s.StartDateTime.AddMinutes(offset).Hour >= _midNightMax && s.StartDateTime.AddMinutes(offset).Hour <= _maxNight)));
+            return query;
+        }
+
+        private Expression<Func<Sprint, bool>> DistanceQuery()
+        {
+            Expression<Func<Sprint, bool>> query = s =>
+                (this._userPreference.TwoToTen && s.Distance >= 2000 && s.Distance <= 10000) ||
+                (this._userPreference.EleToTwenty && s.Distance > 10000 && s.Distance <= 20000) ||
+                (this._userPreference.TOneToThirty && s.Distance > 20000 && s.Distance <= 30000);
             return query;
         }
     }

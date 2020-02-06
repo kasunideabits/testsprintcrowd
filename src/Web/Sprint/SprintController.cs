@@ -144,10 +144,10 @@
         [HttpGet("public/start-now")]
         [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<dynamic> GetPublicSprintsWithPreference(TimeSpan timeOffset)
+        public async Task<dynamic> GetPublicSprintsWithPreference(int timeOffset)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetPublicSprints(user.Id, timeOffset.Minutes);
+            var result = await this.SprintService.GetPublicSprints(user.Id, timeOffset);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
@@ -159,10 +159,10 @@
         [HttpGet("public/open-events")]
         [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<dynamic> GetOpenEvents(TimeSpan timeOffset)
+        public async Task<dynamic> GetOpenEvents(int timeOffset)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset.Minutes);
+            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
