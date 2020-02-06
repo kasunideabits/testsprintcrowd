@@ -1,4 +1,5 @@
-﻿using SprintCrowd.BackEnd.Application;
+﻿using System;
+using SprintCrowd.BackEnd.Application;
 
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant
 {
@@ -13,12 +14,14 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.NumberOfParticipants = sprint.NumberOfParticipants;
             this.TotalNumberOfParticiapnts = totalNumberOfParticipants;
             this.Distance = sprint.Distance;
+            this.StartTime = sprint.StartDateTime;
         }
         public int Id { get; }
         public string Name { get; }
         public SprintStatus Status { get; }
         public SprintType Type { get; }
         public int NumberOfParticipants { get; }
+        public DateTime StartTime { get; }
         public int TotalNumberOfParticiapnts { get; }
         public int Distance { get; }
     }
