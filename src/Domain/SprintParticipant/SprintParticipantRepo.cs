@@ -330,6 +330,21 @@
         }
 
         /// <summary>
+        ///  Get dates for user participating for next 7 days
+        /// </summary>
+        /// <param name="userId">user id </param>
+        /// <param name="fetchDate">fetch to start from</param>
+        /// <returns>events available dates</returns>
+        public List<DateTime> GetNextSevenDaysSprintsDates(int userId, DateTime fetchDate)
+        {
+            var endDate = fetchDate.AddDays(7);
+            var result = this.Context.SprintParticipant
+                .Where(s => s.UserId == userId && s.Sprint.StartDateTime >= fetchDate.Date && s.Sprint.StartDateTime <= endDate.Date)
+                .Select(s => s.Sprint.StartDateTime);
+            return result.ToList();
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

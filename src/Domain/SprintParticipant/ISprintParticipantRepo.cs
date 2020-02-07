@@ -158,6 +158,14 @@
         void UpdateParticipant(SprintParticipant participant);
 
         /// <summary>
+        ///  Get dates for user participating for next 7 days
+        /// </summary>
+        /// <param name="userId">user id </param>
+        /// <param name="fetchDate">fetch to start from</param>
+        /// <returns>events available dates</returns>
+        List<DateTime> GetNextSevenDaysSprintsDates(int userId, DateTime fetchDate);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

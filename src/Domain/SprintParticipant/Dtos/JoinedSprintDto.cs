@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SprintCrowd.BackEnd.Application;
 
 namespace SprintCrowd.BackEnd.Domain.SprintParticipant

@@ -256,12 +256,12 @@
         /// Get joined sprints for given date
         /// </summary>
         [HttpGet("sprint/joined/{currentDate}")]
-        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<JoinedSprintsDto>), 200)]
         public async Task<IActionResult> GetJoinParticipants(DateTime currentDate)
         {
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetJoinedEvents(user.Id, currentDate);
-            return this.Ok(new SuccessResponse<List<JoinedSprintDto>>(result));
+            return this.Ok(new SuccessResponse<JoinedSprintsDto>(result));
         }
     }
 }

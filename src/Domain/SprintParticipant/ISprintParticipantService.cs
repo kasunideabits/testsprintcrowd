@@ -119,7 +119,7 @@
         /// <param name="userId">user id to fetch</param>
         /// <param name="fetchDate">fetch date</param>
         /// <returns>joined sprints</returns>
-        List<JoinedSprintDto> GetJoinedEvents(int userId, DateTime fetchDate);
+        JoinedSprintsDto GetJoinedEvents(int userId, DateTime fetchDate);
 
         /// <summary>
         /// Update sprint completed or not and time

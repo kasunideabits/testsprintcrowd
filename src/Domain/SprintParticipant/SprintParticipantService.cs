@@ -538,7 +538,7 @@
         /// <param name="userId">user id to fetch</param>
         /// <param name="fetchDate">fetch date</param>
         /// <returns>joined sprints</returns>
-        public List<JoinedSprintDto> GetJoinedEvents(int userId, DateTime fetchDate)
+        public JoinedSprintsDto GetJoinedEvents(int userId, DateTime fetchDate)
         {
             var sprints = this.SprintParticipantRepo.GetJoinedSprints(userId, fetchDate);
             var joinSprintDto = new List<JoinedSprintDto>();
@@ -547,7 +547,9 @@
                 var totalCount = this.SprintParticipantRepo.GetParticipantCount(sprint.Id);
                 joinSprintDto.Add(new JoinedSprintDto(sprint, totalCount));
             }
-            return joinSprintDto;
+            var dates = this.SprintParticipantRepo.GetNextSevenDaysSprintsDates(userId, fetchDate);
+
+            return new JoinedSprintsDto(joinSprintDto, dates);
         }
 
         /// <summary>
