@@ -333,13 +333,13 @@
         ///  Get dates for user participating for next 7 days
         /// </summary>
         /// <param name="userId">user id </param>
-        /// <param name="fetchDate">fetch to start from</param>
         /// <returns>events available dates</returns>
-        public List<DateTime> GetNextSevenDaysSprintsDates(int userId, DateTime fetchDate)
+        public List<DateTime> GetNextSevenDaysSprintsDates(int userId)
         {
-            var endDate = fetchDate.AddDays(7);
+            var today = DateTime.UtcNow;
+            var endDate = today.AddDays(7);
             var result = this.Context.SprintParticipant
-                .Where(s => s.UserId == userId && s.Sprint.StartDateTime >= fetchDate.Date && s.Sprint.StartDateTime <= endDate.Date)
+                .Where(s => s.UserId == userId && s.Sprint.StartDateTime >= today.Date && s.Sprint.StartDateTime <= endDate.Date)
                 .Select(s => s.Sprint.StartDateTime);
             return result.ToList();
         }

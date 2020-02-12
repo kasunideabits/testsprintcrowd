@@ -547,7 +547,7 @@
                 var totalCount = this.SprintParticipantRepo.GetParticipantCount(sprint.Id);
                 joinSprintDto.Add(new JoinedSprintDto(sprint, totalCount));
             }
-            var dates = this.SprintParticipantRepo.GetNextSevenDaysSprintsDates(userId, fetchDate);
+            var dates = this.SprintParticipantRepo.GetNextSevenDaysSprintsDates(userId);
 
             return new JoinedSprintsDto(joinSprintDto, dates);
         }
