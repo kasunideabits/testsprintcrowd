@@ -339,7 +339,11 @@
             var today = DateTime.UtcNow;
             var endDate = today.AddDays(7);
             var result = this.Context.SprintParticipant
-                .Where(s => s.UserId == userId && s.Sprint.StartDateTime >= today.Date && s.Sprint.StartDateTime <= endDate.Date)
+                .Where(
+                    s => s.UserId == userId &&
+                    s.Sprint.StartDateTime >= today.Date &&
+                    s.Sprint.StartDateTime <= endDate.Date &&
+                    (s.Sprint.Status == (int)SprintStatus.NOTSTARTEDYET || s.Sprint.Status == (int)SprintStatus.INPROGRESS))
                 .Select(s => s.Sprint.StartDateTime);
             return result.ToList();
         }
