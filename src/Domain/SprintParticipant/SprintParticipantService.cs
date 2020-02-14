@@ -150,7 +150,7 @@
             }
 
             var user = await this.SprintParticipantRepo.GetParticipant(userId);
-            var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED);
+            var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED, creator.Id == userId);
             this.SprintParticipantRepo.SaveChanges();
             return userDto;
 
