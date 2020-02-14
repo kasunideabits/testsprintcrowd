@@ -59,19 +59,19 @@ pipeline {
         }
       }
     }
-    stage("deploy-live") {
-      agent { label 'scrowd-prod' }
-      when {
-            branch 'master'
-      }
-      steps {
-        script {
-            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-              sh 'cd ~/devops; git pull'
-              sh 'cd ~/devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
-            }
-        }
-      }
-    }
+    // stage("deploy-live") {
+    //   agent { label 'scrowd-prod' }
+    //   when {
+    //         branch 'master'
+    //   }
+    //   steps {
+    //     script {
+    //         docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+    //           sh 'cd ~/devops; git pull'
+    //           sh 'cd ~/devops/sprintcrowd-backend/prod; chmod 744 ./deploy.sh; ./deploy.sh'
+    //         }
+    //     }
+    //   }
+    // }
   }
 }
