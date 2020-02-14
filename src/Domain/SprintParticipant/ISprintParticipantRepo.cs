@@ -165,6 +165,12 @@
         List<DateTime> GetNextSevenDaysSprintsDates(int userId);
 
         /// <summary>
+        /// Get sprint creator
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        User GetCreator(int sprintId);
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

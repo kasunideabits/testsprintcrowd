@@ -85,11 +85,12 @@
 
             if (sprint.Type == (int)SprintType.PrivateSprint)
             {
+                var creator = this.SprintParticipantRepo.GetCreator(sprintId);
                 if (inviteUser == null)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.NotFounInvitation, "Not found invitation");
                 }
-                else if (inviteUser.Stage != ParticipantStage.PENDING)
+                else if (inviteUser.Id != creator.Id && inviteUser.Stage != ParticipantStage.PENDING)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
                 }

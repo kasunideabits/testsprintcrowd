@@ -350,6 +350,15 @@
         }
 
         /// <summary>
+        /// Get sprint creator
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        public User GetCreator(int sprintId)
+        {
+            return this.Context.Sprint.Include(s => s.CreatedBy).Where(s => s.Id == sprintId).Select(s => s.CreatedBy).FirstOrDefault();
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
