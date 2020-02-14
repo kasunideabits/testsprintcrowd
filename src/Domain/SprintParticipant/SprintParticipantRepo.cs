@@ -315,7 +315,7 @@
                     s.UserId == userId &&
                     s.Sprint.StartDateTime > fetchDate.Date &&
                     s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date &&
-                    s.Stage == ParticipantStage.JOINED)
+                    s.Sprint.Status != (int)SprintStatus.ARCHIVED && s.Sprint.Status != (int)SprintStatus.ENDED && s.Stage == ParticipantStage.JOINED)
                 .Select(s => s.Sprint);
             return result;
         }
@@ -343,7 +343,8 @@
                     s => s.UserId == userId &&
                     s.Sprint.StartDateTime >= today.Date &&
                     s.Sprint.StartDateTime <= endDate.Date &&
-                    (s.Sprint.Status == (int)SprintStatus.NOTSTARTEDYET || s.Sprint.Status == (int)SprintStatus.INPROGRESS))
+                    (s.Sprint.Status == (int)SprintStatus.NOTSTARTEDYET || s.Sprint.Status == (int)SprintStatus.INPROGRESS) &&
+                    s.Stage == (int)ParticipantStage.JOINED)
                 .Select(s => s.Sprint.StartDateTime);
             return result.ToList();
         }
