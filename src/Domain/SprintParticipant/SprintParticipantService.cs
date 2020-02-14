@@ -82,10 +82,10 @@
 
                     Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId && s.User.UserState == UserState.Active;
                     var inviteUser = await this.SprintParticipantRepo.Get(query);
+                    var creator = this.SprintParticipantRepo.GetCreator(sprintId);
 
                     if (sprint.Type == (int)SprintType.PrivateSprint)
                     {
-                        var creator = this.SprintParticipantRepo.GetCreator(sprintId);
                         if (inviteUser == null)
                         {
                             throw new Application.SCApplicationException((int)ErrorCodes.NotFounInvitation, "Not found invitation");
@@ -96,7 +96,6 @@
                         }
                         else
                         {
-                            Console.WriteLine($"{accept}, {creator.Id}, ");
                             if (accept)
                             {
                                 await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
@@ -153,7 +152,7 @@
                     }
 
                     var user = await this.SprintParticipantRepo.GetParticipant(userId);
-                    var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED);
+                    var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED, creator.Id == userId);
                     this.SprintParticipantRepo.SaveChanges();
                     return userDto;
 
