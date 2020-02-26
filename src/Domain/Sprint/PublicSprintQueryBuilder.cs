@@ -28,7 +28,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         public Expression<Func<Sprint, bool>> Build(int offset)
         {
             Expression<Func<Sprint, bool>> query1 = this.PublicSprintQuery();
-            Expression<Func<Sprint, bool>> query2 = this.ExtendtedTimeQuery(offset);
+            Expression<Func<Sprint, bool>> query2 = this.ExtendtedTimeQuery();
             Expression<Func<Sprint, bool>> query3 = this.DayQyery(offset);
             Expression<Func<Sprint, bool>> query4 = this.TimeQuery(offset);
             Expression<Func<Sprint, bool>> query5 = this.DistanceQuery();
@@ -61,9 +61,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             return query;
         }
 
-        public Expression<Func<Sprint, bool>> ExtendtedTimeQuery(int offset)
+        public Expression<Func<Sprint, bool>> ExtendtedTimeQuery()
         {
-            var now = DateTime.UtcNow.AddMinutes(offset);
+            var now = DateTime.UtcNow;
             Expression<Func<Sprint, bool>> query = s => s.StartDateTime <= now && now.AddMinutes(-15) < s.StartDateTime;
             return query;
         }
