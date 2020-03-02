@@ -16,6 +16,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.TotalNumberOfParticiapnts = totalNumberOfParticipants;
             this.Distance = sprint.Distance;
             this.StartTime = sprint.StartDateTime;
+            this.CreatedBy = (sprint.CreatedBy != null) ? sprint.CreatedBy.Id : 0;
         }
         public int Id { get; }
         public string Name { get; }
@@ -25,5 +26,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         public DateTime StartTime { get; }
         public int TotalNumberOfParticiapnts { get; }
         public int Distance { get; }
+        public int CreatedBy { get; }
+
     }
 }
