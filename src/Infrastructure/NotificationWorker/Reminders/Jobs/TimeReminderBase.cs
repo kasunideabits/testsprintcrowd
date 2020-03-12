@@ -39,26 +39,26 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             switch (notificationType)
             {
                 case SprintNotificaitonType.TimeReminderBeforeStart:
-                    section = translation ["reminders"] ["oneDayBefore"];
+                    section = translation["reminders"]["oneDayBefore"];
                     break;
                 case SprintNotificaitonType.TimeReminderOneHourBefore:
-                    section = translation ["reminders"] ["oneHourBeforeLive"];
+                    section = translation["reminders"]["oneHourBeforeLive"];
                     break;
                 case SprintNotificaitonType.TimeReminderBeforFiftyM:
-                    section = translation ["reminders"] ["fifteenMBefore"];
+                    section = translation["reminders"]["fifteenMBefore"];
                     break;
                 case SprintNotificaitonType.TimeReminderStarted:
-                    section = translation ["reminders"] ["onLive"];
+                    section = translation["reminders"]["onLive"];
                     break;
                 case SprintNotificaitonType.TimeReminderFinalCall:
-                    section = translation ["reminders"] ["finalCall"];
+                    section = translation["reminders"]["finalCall"];
                     break;
                 case SprintNotificaitonType.TimeReminderExpired:
-                    section = translation ["reminders"] ["expired"];
+                    section = translation["reminders"]["expired"];
                     break;
             }
             SCFireBaseNotificationMessage message = new SCFireBaseNotificationMessage(section);
-            this.MessageBuilder.Notification(message.Title, String.Format(message.Body, 0, sprintName));
+            this.MessageBuilder.Notification(message.Title, String.Format(message.Body, sprintName));
         }
 
         private void BuildData(int notificationId, SprintNotificaitonType notificationType, dynamic payload)
