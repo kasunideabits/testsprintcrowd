@@ -264,7 +264,7 @@
                 s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id != userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
-                (s.Stage == stage || stage == null) &&
+                (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
                 (s.Sprint.Status != (int)SprintStatus.ARCHIVED) &&
                 (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                 (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
@@ -288,6 +288,7 @@
             Expression<Func<SprintParticipant, bool>> creatorQuery = s =>
                 s.UserId == userId &&
                 s.User.UserState == UserState.Active &&
+                (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
                 s.Sprint.CreatedBy.Id == userId &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                 (s.Sprint.StartDateTime > now);
