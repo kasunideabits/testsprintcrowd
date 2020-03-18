@@ -264,7 +264,7 @@
                 s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id != userId &&
                 (s.Sprint.Type == (int)sprintType || sprintType == null) &&
-                (s.Stage == stage || stage == null) &&
+                (s.Stage != ParticipantStage.QUIT) &&
                 (s.Sprint.Status != (int)SprintStatus.ARCHIVED) &&
                 (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                 (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
@@ -289,6 +289,7 @@
                 s.UserId == userId &&
                 s.User.UserState == UserState.Active &&
                 s.Sprint.CreatedBy.Id == userId &&
+                (s.Stage != ParticipantStage.QUIT) &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                 (s.Sprint.StartDateTime > now);
             var creatorEvent = await this.SprintParticipantRepo.Get(creatorQuery);
