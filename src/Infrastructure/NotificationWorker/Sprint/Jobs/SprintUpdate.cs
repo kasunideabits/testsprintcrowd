@@ -93,7 +93,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
             }
-            var section = translation ["sprintEdit"];
+            var section = translation["sprintEdit"];
             return new SCFireBaseNotificationMessage(section);
         }
 
@@ -109,11 +109,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Where(s =>
                     s.SprintId == sprintId &&
                     s.User.UserState == UserState.Active &&
-                    (
-                        s.Stage != ParticipantStage.QUIT ||
-                        s.Stage != ParticipantStage.DECLINE ||
-                        s.Stage != ParticipantStage.COMPLETED
-                    ) &&
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
                     s.UserId != creatorId)
                 .Select(s => new { UserId = s.UserId, Lanugage = s.User.LanguagePreference })
                 .GroupBy(s => s.Lanugage,
@@ -146,8 +142,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 userNotifications.Add(new UserNotification
                 {
                     SenderId = creatorId,
-                        ReceiverId = id,
-                        NotificationId = notification.Entity.Id,
+                    ReceiverId = id,
+                    NotificationId = notification.Entity.Id,
                 });
 
             });
