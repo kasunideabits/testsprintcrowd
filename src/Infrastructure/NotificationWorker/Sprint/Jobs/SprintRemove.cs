@@ -95,7 +95,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
             }
-            var section = translation ["sprintRemove"];
+            var section = translation["sprintRemove"];
             return new SCFireBaseNotificationMessage(section);
         }
 
@@ -104,7 +104,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return this.Context.SprintParticipant
                 .Where(s =>
                     s.SprintId == sprintId &&
-                    s.Stage != ParticipantStage.DECLINE &&
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
                     s.UserId != removerId &&
                     s.User.UserState == UserState.Active)
                 .Select(s => new { UserId = s.UserId, Language = s.User.LanguagePreference })
@@ -148,8 +148,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 userNotifications.Add(new UserNotification
                 {
                     SenderId = remove.UserId,
-                        ReceiverId = id,
-                        NotificationId = notification.Entity.Id,
+                    ReceiverId = id,
+                    NotificationId = notification.Entity.Id,
                 });
 
             });
@@ -203,11 +203,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.Id = id;
             this.Name = name;
             this.ProfilePicture = profilePicture ?? string.Empty;
-            this.Code = code ?? string.Empty;;
-            this.ColorCode = colorCode ?? string.Empty;;
-            this.City = city ?? string.Empty;;
-            this.Country = country ?? string.Empty;;
-            this.CountryCode = countryCode ?? string.Empty;;
+            this.Code = code ?? string.Empty; ;
+            this.ColorCode = colorCode ?? string.Empty; ;
+            this.City = city ?? string.Empty; ;
+            this.Country = country ?? string.Empty; ;
+            this.CountryCode = countryCode ?? string.Empty; ;
         }
         public int Id { get; }
         public string Name { get; }
