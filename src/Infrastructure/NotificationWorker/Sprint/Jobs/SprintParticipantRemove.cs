@@ -85,7 +85,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var sprintNotification = new SprintNotification()
             {
                 SprintNotificationType = SprintNotificaitonType.RemoveParticipsnt,
-                UpdatorId = removeParticipant.UserId,
+                UpdatorId = removeParticipant.CreatorId,
                 SprintId = removeParticipant.SprintId,
                 SprintName = removeParticipant.SprintName,
                 Distance = removeParticipant.Distance,

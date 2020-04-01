@@ -30,7 +30,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notificaitonType == SprintNotificaitonType.LeaveParticipant:
                     return new SprintInvitationResponseDto(sender, notification);
                 case SprintNotificaitonType notificaitonType when
-                notificaitonType == SprintNotificaitonType.Remove:
+                notificaitonType == SprintNotificaitonType.Remove ||
+                notificaitonType == SprintNotificaitonType.RemoveParticipsnt:
                     return new SprintRemoveResponseDto(sender, notification);
                 case SprintNotificaitonType notificaitonType when
                 notificaitonType == SprintNotificaitonType.Edit:
