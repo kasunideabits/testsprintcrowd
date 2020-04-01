@@ -461,6 +461,17 @@
             this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
             this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
             this.SprintParticipantRepo.SaveChanges();
+            this.NotificationClient.SprintNotificationJobs.SprintParticipantRemove(
+                sprintParticipant.SprintId,
+                (SprintType)sprintParticipant.Sprint.Type,
+                (SprintStatus)sprintParticipant.Sprint.Status,
+                sprintParticipant.Sprint.CreatedBy.Id,
+                sprintParticipant.User.Id,
+                sprintParticipant.Sprint.CreatedBy.Name,
+                sprintParticipant.Sprint.Name,
+                sprintParticipant.Sprint.StartDateTime,
+                sprintParticipant.Sprint.NumberOfParticipants,
+                sprintParticipant.Sprint.Distance);
 
         }
 
@@ -514,7 +525,7 @@
         {
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
-                s.Stage == ParticipantStage.COMPLETED &&
+                (s.Stage == ParticipantStage.COMPLETED || s.Stage == ParticipantStage.QUIT) &&
                 s.User.UserState == UserState.Active;
             var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
             var statistics = new SprintStatisticDto();
