@@ -105,5 +105,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             var message = new UpdateSprint(sprintId, oldSprintName, newSprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId);
             new NotificationWorker<SprintUpdate>().Invoke(message);
         }
+
+        public void SprintParticipantRemove(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId, string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance)
+        {
+            var message = new RemoveParticipant(sprintId, sprintType, sprintStatus, creatorId, userId, creatorName, sprintName, startTime, numOfparticipant, distance);
+            new NotificationWorker<SprintParticipantRemove>().Invoke(message);
+        }
     }
 }
