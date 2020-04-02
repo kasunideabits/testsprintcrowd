@@ -31,6 +31,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             SprintType sprintType,
             int creatorId,
             int userId,
+            int userStage,
             string name,
             string profilePicture,
             string code,

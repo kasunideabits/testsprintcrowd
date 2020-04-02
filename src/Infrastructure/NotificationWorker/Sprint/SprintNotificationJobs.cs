@@ -42,6 +42,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             SprintType sprintType,
             int creatorId,
             int userId,
+            int userStage,
             string name,
             string profilePicture,
             string code,
@@ -51,7 +52,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         {
             var message = new ExitSprint(
                 sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId,
-                userId, name, profilePicture, code, city, country, countryCode);
+                userId, userStage, name, profilePicture, code, city, country, countryCode);
             new NotificationWorker<SprintExit>().Invoke(message);
         }
 

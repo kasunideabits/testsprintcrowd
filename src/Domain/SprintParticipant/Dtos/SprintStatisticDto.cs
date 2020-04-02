@@ -15,14 +15,20 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
         public void SetPublicEvent(Infrastructure.Persistence.Entities.SprintParticipant participate)
         {
-            this.PublicEvent.TotalDistance += participate.DistanceRan;
-            this.PublicEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
+            if (participate.DistanceRan > 0)
+            {
+                this.PublicEvent.TotalDistance += participate.DistanceRan;
+                this.PublicEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
+            }
         }
 
         public void SetPrivateEvent(Infrastructure.Persistence.Entities.SprintParticipant participate)
         {
-            this.PrivateEvent.TotalDistance += participate.DistanceRan;
-            this.PrivateEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
+            if (participate.DistanceRan > 0)
+            {
+                this.PrivateEvent.TotalDistance += participate.DistanceRan;
+                this.PrivateEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
+            }
         }
 
         private static int CalcTime(DateTime startTime, DateTime finishTime)

@@ -169,8 +169,12 @@
             {
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
-                participant.Stage = ParticipantStage.QUIT;
-                participant.FinishTime = DateTime.UtcNow;
+                if (participant.Stage != ParticipantStage.COMPLETED)
+                {
+                    participant.Stage = ParticipantStage.QUIT;
+                    participant.FinishTime = DateTime.UtcNow;
+                }
+
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
@@ -181,6 +185,7 @@
                     (SprintType)participant.Sprint.Type,
                     participant.Sprint.CreatedBy.Id,
                     participant.UserId,
+                    (int)participant.Stage,
                     participant.User.Name,
                     participant.User.ProfilePicture,
                     participant.User.Code,
@@ -525,7 +530,7 @@
         {
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
-                (s.Stage == ParticipantStage.COMPLETED || s.Stage == ParticipantStage.QUIT) &&
+                (s.Stage == ParticipantStage.COMPLETED) &&
                 s.User.UserState == UserState.Active;
             var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
             var statistics = new SprintStatisticDto();
@@ -591,14 +596,18 @@
             while (participants.MoveNext())
             {
                 var participant = participants.Current;
-                var runner = notCompletedRunners.FirstOrDefault(n => n.UserId == participant.UserId);
-                participant.Stage = ParticipantStage.QUIT;
-                if (runner != null)
+                if (participant.Stage != ParticipantStage.COMPLETED)
                 {
-                    participant.DistanceRan = (int)runner.DistanceRun;
+                    var runner = notCompletedRunners.FirstOrDefault(n => n.UserId == participant.UserId);
+                    participant.Stage = ParticipantStage.QUIT;
+                    if (runner != null)
+                    {
+                        participant.DistanceRan = (int)runner.DistanceRun;
+                    }
+                    participant.FinishTime = sprint.StartDateTime.AddHours(20);
+                    this.SprintParticipantRepo.UpdateParticipant(participant);
                 }
-                participant.FinishTime = sprint.StartDateTime.AddHours(20);
-                this.SprintParticipantRepo.UpdateParticipant(participant);
+
             }
             this.SprintParticipantRepo.SaveChanges();
         }
