@@ -57,7 +57,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification(ExitSprint exitSprint)
         {
-            if (exitSprint.SprintType == Application.SprintType.PrivateSprint)
+            if (exitSprint.SprintType == Application.SprintType.PrivateSprint && exitSprint.UserStage != (int)Application.ParticipantStage.COMPLETED)
             {
                 // do realy need to send push notification ?
                 int notificationId = this.AddToDb(exitSprint, exitSprint.CreatorId);

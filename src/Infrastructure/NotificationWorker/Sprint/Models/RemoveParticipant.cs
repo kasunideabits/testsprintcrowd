@@ -5,7 +5,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
 
     public class RemoveParticipant
     {
-        public RemoveParticipant(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId, string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance)
+        public RemoveParticipant(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId,
+                                string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
+                                string name, string profilePicture, string code, string country, string countryCode, string city)
         {
             this.SprintId = sprintId;
             this.SprintName = sprintName;
@@ -17,6 +19,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
             this.StartTime = startTime;
             this.NumberOfParticipant = numOfparticipant;
             this.Distance = distance;
+            this.Name = name;
+            this.ProfilePicture = profilePicture;
+            this.Code = code;
+            this.Country = country;
+            this.City = city;
+            this.CountryCode = countryCode;
 
         }
 
@@ -31,7 +39,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         public DateTime StartTime { get; }
         public int NumberOfParticipant { get; }
         public int Distance { get; }
-
+        public string Name { get; }
+        public string ProfilePicture { get; }
+        public string Code { get; }
+        public string Country { get; }
+        public string CountryCode { get; }
+        public string City { get; }
 
     }
 
