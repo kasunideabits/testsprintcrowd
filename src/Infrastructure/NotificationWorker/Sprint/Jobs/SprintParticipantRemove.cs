@@ -41,7 +41,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void AblyMessage(RemoveParticipant removeParticipant)
         {
-            var notificaitonMsg = removeParticipant;
+            var notificaitonMsg = RemoveParticipantNotificationMessageMapper.AblyNotificationMessageMapper(removeParticipant);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + removeParticipant.SprintId);
             channel.Publish("ParticipantRemove", notificaitonMsg);
         }
@@ -52,7 +52,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             {
                 // do realy need to send push notification ?
                 int notificationId = this.AddToDb(removeParticipant, removeParticipant.CreatorId);
-                var notificationData = removeParticipant;
+                var notificationData = RemoveParticipantNotificationMessageMapper.PushNotificationMessgeMapper(removeParticipant);
                 var user = this.GetUser(removeParticipant.UserId);
                 var tokens = this.GetTokens(removeParticipant.UserId);
                 var notification = this.GetNotification(user.LanguagePreference);
@@ -63,7 +63,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             }
         }
 
-        private dynamic BuildNotificationMessage(int notificationId, string notificationTitle, string notificationBody, List<string> tokens, RemoveParticipant notificationData)
+        private dynamic BuildNotificationMessage(int notificationId, string notificationTitle, string notificationBody, List<string> tokens, ParticipantRemovePushNotificationMesssage notificationData)
         {
             var data = new Dictionary<string, string>();
             var payload = notificationData;
@@ -136,5 +136,128 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return new SCFireBaseNotificationMessage(section);
         }
 
+    }
+
+    internal class ParticipantRemoveNotification
+    {
+        /// <summary>
+        /// Initialize ExitNotification class
+        /// </summary>
+        public ParticipantRemoveNotification(int userId, string name, string profilePicture, string code, string city, string country, string countryCode, string sprintName)
+        {
+            this.UserId = userId;
+            this.Name = name;
+            this.ProfilePicture = profilePicture ?? string.Empty;
+            this.Code = code ?? string.Empty;
+            this.City = city ?? string.Empty;
+            this.Country = country ?? string.Empty;
+            this.CountryCode = countryCode ?? string.Empty;
+            this.SprintName = sprintName;
+        }
+
+        public int UserId { get; private set; }
+        public string Name { get; private set; }
+        public string ProfilePicture { get; private set; }
+        public string Code { get; private set; }
+        public string City { get; private set; }
+        public string Country { get; private set; }
+        public string CountryCode { get; private set; }
+
+        public string SprintName { get; private set; }
+    }
+
+    internal class ParticipantRemovePushNotificationMesssage
+    {
+        public ParticipantRemovePushNotificationMesssage(int sprintId, string sprintName, int distance, DateTime startTime, int numberOfParticipants, SprintType type, SprintStatus status,
+            int id, string name, string profilePicture, string code, string city, string country, string countryCode)
+        {
+            this.Sprint = new SprintInfo(sprintId, sprintName, distance, startTime, numberOfParticipants, type, status);
+            this.DeletedBy = new UserInfo(id, name, profilePicture, code, city, country, countryCode);
+        }
+
+        public SprintInfo Sprint { get; }
+        public UserInfo DeletedBy { get; }
+
+        internal sealed class SprintInfo
+        {
+            public SprintInfo(int id, string name, int distance, DateTime startTime, int numberOfParticipants, SprintType type, SprintStatus status)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.Distance = distance;
+                this.StartTime = startTime;
+                this.NumberOfParticipants = numberOfParticipants;
+                this.SprintStatus = status;
+                this.SprintType = type;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public int Distance { get; }
+            public DateTime StartTime { get; }
+            public int NumberOfParticipants { get; }
+            public SprintStatus SprintStatus { get; }
+            public SprintType SprintType { get; }
+        }
+
+        internal sealed class UserInfo
+        {
+            public UserInfo(int id, string name, string profilePicture, string code, string city, string country, string countryCode)
+            {
+                this.Id = id;
+                this.Name = name;
+                this.ProfilePicture = profilePicture ?? string.Empty;
+                this.Code = code ?? string.Empty;
+                this.City = city ?? string.Empty;
+                this.Country = country ?? string.Empty;
+                this.CountryCode = countryCode ?? string.Empty;
+            }
+
+            public int Id { get; }
+            public string Name { get; }
+            public string ProfilePicture { get; }
+            public string Code { get; }
+            public string ColorCode { get; }
+            public string City { get; }
+            public string Country { get; }
+            public string CountryCode { get; }
+        }
+    }
+
+    internal static class RemoveParticipantNotificationMessageMapper
+    {
+        public static ParticipantRemoveNotification AblyNotificationMessageMapper(RemoveParticipant exitSprint)
+        {
+            return new ParticipantRemoveNotification(
+                exitSprint.UserId,
+                exitSprint.Name,
+                exitSprint.ProfilePicture,
+                exitSprint.Code,
+                exitSprint.City,
+                exitSprint.Country,
+                exitSprint.CountryCode,
+                exitSprint.SprintName
+            );
+        }
+
+        public static ParticipantRemovePushNotificationMesssage PushNotificationMessgeMapper(RemoveParticipant exitSprint)
+        {
+            return new ParticipantRemovePushNotificationMesssage(
+                exitSprint.SprintId,
+                exitSprint.SprintName,
+                exitSprint.Distance,
+                exitSprint.StartTime,
+                exitSprint.NumberOfParticipant,
+                exitSprint.SprintType,
+                exitSprint.SprintStatus,
+                exitSprint.UserId,
+                exitSprint.Name,
+                exitSprint.ProfilePicture,
+                exitSprint.Code,
+                exitSprint.City,
+                exitSprint.Country,
+                exitSprint.CountryCode
+            );
+        }
     }
 }
