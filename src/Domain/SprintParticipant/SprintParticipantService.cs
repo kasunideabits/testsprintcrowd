@@ -476,7 +476,13 @@
                 sprintParticipant.Sprint.Name,
                 sprintParticipant.Sprint.StartDateTime,
                 sprintParticipant.Sprint.NumberOfParticipants,
-                sprintParticipant.Sprint.Distance);
+                sprintParticipant.Sprint.Distance,
+                sprintParticipant.Sprint.Name,
+                sprintParticipant.User.ProfilePicture,
+                sprintParticipant.User.Code,
+                sprintParticipant.User.Country,
+                sprintParticipant.User.CountryCode,
+                sprintParticipant.User.City);
 
         }
 
