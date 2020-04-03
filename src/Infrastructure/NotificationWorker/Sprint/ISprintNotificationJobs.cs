@@ -31,6 +31,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             SprintType sprintType,
             int creatorId,
             int userId,
+            int userStage,
             string name,
             string profilePicture,
             string code,
@@ -62,5 +63,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         );
 
         void SprintUpdate(int sprintId, string oldSprintName, string newSprintName, int distance, DateTime startTime, int numberOfParticipant, SprintStatus sprintStatus, SprintType sprintType, int creatorId);
+        void SprintParticipantRemove(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId,
+                                string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
+                                string name, string profilePicture, string code, string country, string countryCode, string city);
+
+
+
     }
 }

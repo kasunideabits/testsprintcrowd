@@ -42,6 +42,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             SprintType sprintType,
             int creatorId,
             int userId,
+            int userStage,
             string name,
             string profilePicture,
             string code,
@@ -51,7 +52,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         {
             var message = new ExitSprint(
                 sprintId, sprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId,
-                userId, name, profilePicture, code, city, country, countryCode);
+                userId, userStage, name, profilePicture, code, city, country, countryCode);
             new NotificationWorker<SprintExit>().Invoke(message);
         }
 
@@ -104,6 +105,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         {
             var message = new UpdateSprint(sprintId, oldSprintName, newSprintName, distance, startTime, numberOfParticipant, sprintStatus, sprintType, creatorId);
             new NotificationWorker<SprintUpdate>().Invoke(message);
+        }
+
+        public void SprintParticipantRemove(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId,
+                                string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
+                                string name, string profilePicture, string code, string country, string countryCode, string city)
+        {
+            var message = new RemoveParticipant(sprintId, sprintType, sprintStatus, creatorId, userId, creatorName, sprintName, startTime, numOfparticipant, distance, name, profilePicture, code, country, countryCode, city);
+            new NotificationWorker<SprintParticipantRemove>().Invoke(message);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification(ExitSprint exitSprint)
         {
-            if (exitSprint.SprintType == Application.SprintType.PrivateSprint)
+            if (exitSprint.SprintType == Application.SprintType.PrivateSprint && exitSprint.UserStage != (int)Application.ParticipantStage.COMPLETED)
             {
                 // do realy need to send push notification ?
                 int notificationId = this.AddToDb(exitSprint, exitSprint.CreatorId);
@@ -65,7 +65,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 var user = this.GetUser(exitSprint.CreatorId);
                 var tokens = this.GetTokens(exitSprint.CreatorId);
                 var notification = this.GetNotification(user.LanguagePreference);
-                var notificationBody = String.Format(notification.Body, exitSprint.Name, exitSprint.Name);
+                var notificationBody = String.Format(notification.Body, exitSprint.Name, exitSprint.SprintName);
                 var notificationMessage = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationData);
                 this.PushNotificationClient.SendMulticaseMessage(notificationMessage);
                 this.Context.SaveChanges();
@@ -141,7 +141,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
             }
-            var section = translation ["sprintLeave"];
+            var section = translation["sprintLeave"];
             return new SCFireBaseNotificationMessage(section);
         }
 

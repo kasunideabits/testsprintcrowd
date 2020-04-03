@@ -76,32 +76,32 @@
   "reminders": {
     "_comment": "0 mean sprint name",
     "finalCall": {
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "Final call for {0}"
     },
     "oneDayBefore": {
       "_comment": "0 mean sprint name",
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "24 hour before {0} goes Live"
     },
     "oneHourBeforeLive": {
       "_comment": "0 mean sprint name",
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "1 hour before {0} goes Live"
     },
     "fifteenMBefore": {
       "_comment": "0 mean sprint name",
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "15 minutes before {0} goes Live"
     },
     "onLive": {
       "_comment": "0 mean sprint name",
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "{0} is now Live"
     },
     "expired": {
       "_comment": "0 mean sprint name",
-      "title": "Time Reminder",
+      "title": "Event Reminder",
       "body": "You failed to mark attendace for {0}"
     }
   },
@@ -139,5 +139,10 @@
     "_comment": "0 = sprint name, 1 = deleted name",
     "title": "Left the sprint",
     "body": "{0} has been deleted by {1}"
+  },
+  "sprintParticipantRemove": {
+    "_comment": "0 = creator name, 1 = sprint name",
+    "title": "You are removed",
+    "body": "{0} has removed you from the {1}"
   }
 }
