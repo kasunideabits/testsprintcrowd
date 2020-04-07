@@ -143,8 +143,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <summary>
         /// Initialize ExitNotification class
         /// </summary>
-        public ParticipantRemoveNotification(int userId, string name, string profilePicture, string code, string city, string country, string countryCode, string sprintName)
+        public ParticipantRemoveNotification(int sprintId, int userId, string name, string profilePicture, string code, string city, string country, string countryCode, string sprintName)
         {
+            this.SprintId = sprintId;
             this.UserId = userId;
             this.Name = name;
             this.ProfilePicture = profilePicture ?? string.Empty;
@@ -155,6 +156,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.SprintName = sprintName;
         }
 
+        public int SprintId { get; private set; }
         public int UserId { get; private set; }
         public string Name { get; private set; }
         public string ProfilePicture { get; private set; }
@@ -229,6 +231,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public static ParticipantRemoveNotification AblyNotificationMessageMapper(RemoveParticipant exitSprint)
         {
             return new ParticipantRemoveNotification(
+                exitSprint.SprintId,
                 exitSprint.UserId,
                 exitSprint.Name,
                 exitSprint.ProfilePicture,
