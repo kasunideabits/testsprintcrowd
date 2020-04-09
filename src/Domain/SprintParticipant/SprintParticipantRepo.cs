@@ -291,7 +291,7 @@
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
-        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new()
+        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string[] includeProperties) where T : class, new()
         {
             IQueryable<T> query = this.Context.Set<T>();
             foreach (var includePropertie in includeProperties)
@@ -309,19 +309,20 @@
         /// <returns>sprint details</returns>
         public IEnumerable<Sprint> GetJoinedSprints(int userId, DateTime fetchDate)
         {
+            var now = DateTime.UtcNow;
             var result = this.Context.SprintParticipant
                 .Include(s => s.Sprint)
                 .Where(s =>
                     s.UserId == userId &&
-                    s.Sprint.StartDateTime > fetchDate.Date &&
-                    s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date &&
-                    s.Sprint.Status != (int)SprintStatus.ARCHIVED && s.Sprint.Status != (int)SprintStatus.ENDED && s.Stage == ParticipantStage.JOINED)
+                    (s.Sprint.StartDateTime > fetchDate.Date && s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date && s.Sprint.StartDateTime > now.AddMinutes(-15)) &&
+                    (s.Sprint.Status == (int)SprintStatus.NOTSTARTEDYET || s.Sprint.Status == (int)SprintStatus.INPROGRESS) &&
+                    s.Stage == ParticipantStage.JOINED)
                 .Select(s => s.Sprint);
             return result;
         }
 
         /// <summary>
-        /// Update sprint participant
+        /// /// Update sprint participant
         /// </summary>
         /// <param name="participant"></param>
         public void UpdateParticipant(SprintParticipant participant)
