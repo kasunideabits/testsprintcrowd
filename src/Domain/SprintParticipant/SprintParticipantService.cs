@@ -458,10 +458,10 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Can only remove participant from private event ");
             }
-            else if (sprintParticipant.Sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
-            {
-                throw new Application.SCApplicationException((int)ErrorCodes.MarkAttendanceEnable, "Mark Attendance enable.can 't remove pariticiapnt");
-            }
+            // else if (sprintParticipant.Sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
+            // {
+            //     throw new Application.SCApplicationException((int)ErrorCodes.MarkAttendanceEnable, "Mark Attendance enable.can 't remove pariticiapnt");
+            // }
 
             this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
             this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
