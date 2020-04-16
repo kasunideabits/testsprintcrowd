@@ -273,10 +273,10 @@
             {
                 throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
             }
-            // else if (sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
-            // {
-            //     throw new SCApplicationException((int)SprintErrorCode.MarkAttendanceEnable, "Mark attendance enable");
-            // }
+            else if (sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.MarkAttendanceEnable, "Mark attendance enable");
+            }
             else
             {
                 sprint.Status = (int)SprintStatus.ARCHIVED;
