@@ -174,7 +174,7 @@
                     participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
                 }
-
+                this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
@@ -192,7 +192,7 @@
                     participant.User.City,
                     participant.User.Country,
                     participant.User.CountryCode);
-                this.SprintParticipantRepo.SaveChanges();
+
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
             catch (Exception ex)
