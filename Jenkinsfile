@@ -6,6 +6,8 @@ pipeline {
   {
     ECRURL = '989299900151.dkr.ecr.ap-southeast-1.amazonaws.com'
     ECRCRED = 'ecr:ap-southeast-1:aws-client-creds'
+    ECRPRODURL= '502141109913.dkr.ecr.eu-north-1.amazonaws.com'
+    ECRPRODCREDS = 'ecr:eu-north-1:sprintcrowd_production_creds'
     REPOSITORY = 'sprintcrowd/backend'
   }
   stages {
@@ -27,6 +29,12 @@ pipeline {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
                 }
+		if (env.BRANCH_NAME == 'qa'){
+                    docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
+                        image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                        image.push("${env.BRANCH_NAME}.latest")
+                    }
+		}
                 sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
             }
         }
