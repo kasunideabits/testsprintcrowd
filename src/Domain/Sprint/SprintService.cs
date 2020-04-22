@@ -72,7 +72,7 @@
             List<Sprint> allSprints = await this.SprintRepo.GetLiveSprints();
             int all = allSprints.Count();
             int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
-            int tenToTwenty = this.FilterWithDistance(allSprints, 10, 20).Count();
+            int tenToTwenty = this.FilterWithDistance(allSprints, 11, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
             return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
         }
