@@ -72,7 +72,7 @@
             List<Sprint> allSprints = await this.SprintRepo.GetLiveSprints();
             int all = allSprints.Count();
             int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
-            int tenToTwenty = this.FilterWithDistance(allSprints, 10, 20).Count();
+            int tenToTwenty = this.FilterWithDistance(allSprints, 11, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
             return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
         }
@@ -178,18 +178,37 @@
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
                 }
             }
+
             Sprint sprint = new Sprint();
-            sprint.Name = name;
-            sprint.Distance = distance;
-            sprint.StartDateTime = startTime;
-            sprint.CreatedBy = user;
-            sprint.Type = type;
-            sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
-            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
-            sprint.InfluencerAvailability = influencerAvailability;
-            sprint.InfluencerEmail = infulenceEmail;
-            sprint.DraftEvent = draft;
+            if (draft == 0)
+            {
+                sprint.Name = name;
+                sprint.Distance = distance;
+                sprint.StartDateTime = startTime;
+                sprint.CreatedBy = user;
+                sprint.Type = type;
+                sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                sprint.InfluencerAvailability = influencerAvailability;
+                sprint.InfluencerEmail = infulenceEmail;
+                sprint.DraftEvent = draft;
+            }
+            else
+            {
+                sprint.Name = name;
+                sprint.Distance = distance;
+                sprint.StartDateTime = startTime;
+                sprint.CreatedBy = user;
+                sprint.Type = type;
+                sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                sprint.InfluencerAvailability = influencerAvailability;
+                sprint.InfluencerEmail = infulenceEmail;
+                sprint.DraftEvent = draft;
+            }
+
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+
 
             if (type == (int)SprintType.PrivateSprint)
             {
