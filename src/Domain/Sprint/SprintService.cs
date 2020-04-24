@@ -129,9 +129,19 @@
             if (draftEvent != null)
             {
                 sprintAavail.DraftEvent = (int)draftEvent;
+
+                if (draftEvent == 0)
+                {
+                    sprintAavail.Status = (int)SprintStatus.NOTSTARTEDYET;
+                }
+                else
+                {
+                    sprintAavail.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                }
             }
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
+
             this.NotificationClient.SprintNotificationJobs.SprintUpdate(
                 sprint.Id,
                 oldName,
