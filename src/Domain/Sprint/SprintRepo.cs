@@ -74,6 +74,19 @@
         }
 
         /// <summary>
+        /// Get all sprint names which matches paramter
+        /// </summary>
+        /// <param name="sprintName">sprint name to filter</param>
+        /// <returns>Return all sprint names which matches given parameter</returns>
+        public async Task<List<String>> GetSprintNames(string sprintName)
+        {
+            return await this.dbContext.Sprint
+                .Where(x => x.Name.StartsWith(sprintName) && x.Name.Contains("(") && x.Name != sprintName && x.Name.EndsWith(")") && x.Name.Length <= sprintName.Length + 3)
+                .Select(n => n.Name)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Get all ongoing sprint sprints
         /// </summary>
         /// <returns>All ongoing sprints which not completed 24H</returns>
