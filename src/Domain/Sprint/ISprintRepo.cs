@@ -112,5 +112,12 @@
         void SaveChanges();
 
         Task<UserPreference> GetUserPreference(int userId);
+
+        /// <summary>
+        /// Get all sprints by sprint name
+        /// </summary>
+        /// <param name="sprintName">name of the sprint</param>
+        /// <returns>Friends</returns>
+        Task<List<String>> GetSprintNames(string sprintName);
     }
 }

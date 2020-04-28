@@ -122,6 +122,33 @@
         }
 
         /// <summary>
+        /// duplicate an event
+        /// </summary>
+        /// <param name="sprint">info about the sprint</param>
+        [HttpPost("duplicate")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> DuplicateEvent([FromBody] CreateSprintModel sprint)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.DuplicateSprint(
+              user,
+              sprint.Name,
+              sprint.Distance,
+              sprint.StartTime,
+              sprint.SprintType,
+              sprint.NumberOfParticipants,
+              sprint.InfluencerEmail,
+              sprint.DraftEvent,
+              sprint.InfluencerAvailability);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// drafts an event
         /// </summary>
         /// <param name="sprint">info about the sprint</param>
