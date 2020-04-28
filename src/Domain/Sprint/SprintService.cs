@@ -238,6 +238,75 @@
         }
 
         /// <summary>
+        /// Duplicate a sprint
+        /// </summary>
+        public async Task<CreateSprintDto> DuplicateSprint(
+            User user,
+            string name,
+            int distance, DateTime startTime,
+            int type,
+            int? numberOfParticipants,
+            string infulenceEmail,
+            int draft,
+            bool influencerAvailability)
+        {
+            Sprint duplicatedSprint = new Sprint();
+            List<string> existingSprintNames = await this.SprintRepo.GetSprintNames(name);
+
+            if (existingSprintNames.Any())
+            {
+                //string[] splitSprintnames = existingSprintNames.Last().Split("_");  //sprintName.Split("_");
+                //var lastElement = splitSprintnames[splitSprintnames.Length - 1];
+
+                //recursive duplicate related code goes here
+                string lastElement = existingSprintNames.Last().Split(new char[] { '(', ')' })[1];
+
+                if (int.TryParse(lastElement, out int incementalNumber))
+                {
+                    incementalNumber++;
+                    string newSprintName = name + "(" + incementalNumber.ToString() + ")";
+
+                    duplicatedSprint.Name = newSprintName;
+                    duplicatedSprint.Distance = distance;
+                    duplicatedSprint.StartDateTime = startTime;
+                    duplicatedSprint.CreatedBy = user;
+                    duplicatedSprint.Type = type;
+                    duplicatedSprint.Status =
+                        draft == 0 ? (int)SprintStatus.NOTSTARTEDYET : (int)SprintStatus.NOTPUBLISHEDYET;
+                    duplicatedSprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                    duplicatedSprint.InfluencerAvailability = influencerAvailability;
+                    duplicatedSprint.InfluencerEmail = infulenceEmail;
+                    duplicatedSprint.DraftEvent = draft;
+
+                    Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
+                }
+            }
+            else
+            {
+                //first time duplicate code goes here
+                string incementalNumber = "1";
+                string newSprintName = name + "(" + incementalNumber + ")";
+
+                duplicatedSprint.Name = newSprintName;
+                duplicatedSprint.Distance = distance;
+                duplicatedSprint.StartDateTime = startTime;
+                duplicatedSprint.CreatedBy = user;
+                duplicatedSprint.Type = type;
+                duplicatedSprint.Status =
+                    draft == 0 ? (int)SprintStatus.NOTSTARTEDYET : (int)SprintStatus.NOTPUBLISHEDYET;
+                duplicatedSprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                duplicatedSprint.InfluencerAvailability = influencerAvailability;
+                duplicatedSprint.InfluencerEmail = infulenceEmail;
+                duplicatedSprint.DraftEvent = draft;
+
+                Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
+
+            }
+            this.SprintRepo.SaveChanges();
+            return CreateSprintDtoMapper(duplicatedSprint, user);
+        }
+
+        /// <summary>
         /// Get sprint with pariticipants by creator id
         /// </summary>
         /// <param name="userId"> creator id </param>
