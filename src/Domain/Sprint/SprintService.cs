@@ -72,7 +72,7 @@
             List<Sprint> allSprints = await this.SprintRepo.GetLiveSprints();
             int all = allSprints.Count();
             int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
-            int tenToTwenty = this.FilterWithDistance(allSprints, 10, 20).Count();
+            int tenToTwenty = this.FilterWithDistance(allSprints, 11, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
             return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
         }
@@ -129,9 +129,19 @@
             if (draftEvent != null)
             {
                 sprintAavail.DraftEvent = (int)draftEvent;
+
+                if (draftEvent == 0)
+                {
+                    sprintAavail.Status = (int)SprintStatus.NOTSTARTEDYET;
+                }
+                else
+                {
+                    sprintAavail.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                }
             }
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
+
             this.NotificationClient.SprintNotificationJobs.SprintUpdate(
                 sprint.Id,
                 oldName,
@@ -178,18 +188,37 @@
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
                 }
             }
+
             Sprint sprint = new Sprint();
-            sprint.Name = name;
-            sprint.Distance = distance;
-            sprint.StartDateTime = startTime;
-            sprint.CreatedBy = user;
-            sprint.Type = type;
-            sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
-            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
-            sprint.InfluencerAvailability = influencerAvailability;
-            sprint.InfluencerEmail = infulenceEmail;
-            sprint.DraftEvent = draft;
+            if (draft == 0)
+            {
+                sprint.Name = name;
+                sprint.Distance = distance;
+                sprint.StartDateTime = startTime;
+                sprint.CreatedBy = user;
+                sprint.Type = type;
+                sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                sprint.InfluencerAvailability = influencerAvailability;
+                sprint.InfluencerEmail = infulenceEmail;
+                sprint.DraftEvent = draft;
+            }
+            else
+            {
+                sprint.Name = name;
+                sprint.Distance = distance;
+                sprint.StartDateTime = startTime;
+                sprint.CreatedBy = user;
+                sprint.Type = type;
+                sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                sprint.InfluencerAvailability = influencerAvailability;
+                sprint.InfluencerEmail = infulenceEmail;
+                sprint.DraftEvent = draft;
+            }
+
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+
 
             if (type == (int)SprintType.PrivateSprint)
             {
@@ -206,6 +235,75 @@
                 (SprintType)addedSprint.Type,
                 (SprintStatus)addedSprint.Status);
             return CreateSprintDtoMapper(sprint, user);
+        }
+
+        /// <summary>
+        /// Duplicate a sprint
+        /// </summary>
+        public async Task<CreateSprintDto> DuplicateSprint(
+            User user,
+            string name,
+            int distance, DateTime startTime,
+            int type,
+            int? numberOfParticipants,
+            string infulenceEmail,
+            int draft,
+            bool influencerAvailability)
+        {
+            Sprint duplicatedSprint = new Sprint();
+            List<string> existingSprintNames = await this.SprintRepo.GetSprintNames(name);
+
+            if (existingSprintNames.Any())
+            {
+                //string[] splitSprintnames = existingSprintNames.Last().Split("_");  //sprintName.Split("_");
+                //var lastElement = splitSprintnames[splitSprintnames.Length - 1];
+
+                //recursive duplicate related code goes here
+                string lastElement = existingSprintNames.Last().Split(new char[] { '(', ')' })[1];
+
+                if (int.TryParse(lastElement, out int incementalNumber))
+                {
+                    incementalNumber++;
+                    string newSprintName = name + "(" + incementalNumber.ToString() + ")";
+
+                    duplicatedSprint.Name = newSprintName;
+                    duplicatedSprint.Distance = distance;
+                    duplicatedSprint.StartDateTime = startTime;
+                    duplicatedSprint.CreatedBy = user;
+                    duplicatedSprint.Type = type;
+                    duplicatedSprint.Status =
+                        draft == 0 ? (int)SprintStatus.NOTSTARTEDYET : (int)SprintStatus.NOTPUBLISHEDYET;
+                    duplicatedSprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                    duplicatedSprint.InfluencerAvailability = influencerAvailability;
+                    duplicatedSprint.InfluencerEmail = infulenceEmail;
+                    duplicatedSprint.DraftEvent = draft;
+
+                    Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
+                }
+            }
+            else
+            {
+                //first time duplicate code goes here
+                string incementalNumber = "1";
+                string newSprintName = name + "(" + incementalNumber + ")";
+
+                duplicatedSprint.Name = newSprintName;
+                duplicatedSprint.Distance = distance;
+                duplicatedSprint.StartDateTime = startTime;
+                duplicatedSprint.CreatedBy = user;
+                duplicatedSprint.Type = type;
+                duplicatedSprint.Status =
+                    draft == 0 ? (int)SprintStatus.NOTSTARTEDYET : (int)SprintStatus.NOTPUBLISHEDYET;
+                duplicatedSprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                duplicatedSprint.InfluencerAvailability = influencerAvailability;
+                duplicatedSprint.InfluencerEmail = infulenceEmail;
+                duplicatedSprint.DraftEvent = draft;
+
+                Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
+
+            }
+            this.SprintRepo.SaveChanges();
+            return CreateSprintDtoMapper(duplicatedSprint, user);
         }
 
         /// <summary>
@@ -276,6 +374,47 @@
             else if (sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
             {
                 throw new SCApplicationException((int)SprintErrorCode.MarkAttendanceEnable, "Mark attendance enable");
+            }
+            else
+            {
+                sprint.Status = (int)SprintStatus.ARCHIVED;
+                await this.SprintRepo.UpdateSprint(sprint);
+                this.SprintRepo.SaveChanges();
+                this.NotificationClient.SprintNotificationJobs.SprintRemove(
+                    sprint.Id,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartDateTime,
+                    sprint.NumberOfParticipants,
+                    (SprintStatus)sprint.Status,
+                    (SprintType)sprint.Type,
+                    sprint.CreatedBy.Id,
+                    sprint.CreatedBy.Name,
+                    sprint.CreatedBy.ProfilePicture,
+                    sprint.CreatedBy.Code,
+                    sprint.CreatedBy.ColorCode,
+                    sprint.CreatedBy.City,
+                    sprint.CreatedBy.Country,
+                    sprint.CreatedBy.CountryCode);
+            }
+        }
+
+        /// <summary>
+        /// Remove sprint from Admin Panel
+        /// </summary>
+        /// <param name="userId">creator id </param>
+        /// <param name="sprintId">sprint id to remove</param>
+        public async Task RemoveSprint(int userId, int sprintId)
+        {
+            Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
+            var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
+            if (sprint == null)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found with given id");
+            }
+            else if (sprint.CreatedBy.Id != userId)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
             }
             else
             {

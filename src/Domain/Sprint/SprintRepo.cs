@@ -57,7 +57,8 @@
         /// <returns>Available events</returns>
         public async Task<List<Sprint>> GetAllEvents(int eventType)
         {
-            return await this.dbContext.Sprint.Where(s => s.Type == eventType).ToListAsync();
+            // return await this.dbContext.Sprint.Where(s => s.Type == eventType).ToListAsync();
+            return await this.dbContext.Sprint.Where(s => s.Type == eventType && s.Status != 3).ToListAsync();
         }
 
         /// <summary>
@@ -70,6 +71,19 @@
         {
             return await this.dbContext.Sprint
                 .Where(s => s.CreatedDate >= from && s.CreatedDate <= to)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get all sprint names which matches paramter
+        /// </summary>
+        /// <param name="sprintName">sprint name to filter</param>
+        /// <returns>Return all sprint names which matches given parameter</returns>
+        public async Task<List<String>> GetSprintNames(string sprintName)
+        {
+            return await this.dbContext.Sprint
+                .Where(x => x.Name.StartsWith(sprintName) && x.Name.Contains("(") && x.Name != sprintName && x.Name.EndsWith(")") && x.Name.Length <= sprintName.Length + 3)
+                .Select(n => n.Name)
                 .ToListAsync();
         }
 

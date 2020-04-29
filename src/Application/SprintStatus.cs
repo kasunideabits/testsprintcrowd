@@ -20,6 +20,14 @@ namespace SprintCrowd.BackEnd.Application
         /// </summary>
         ENDED = 2,
 
+        /// <summary>
+        /// sprint has archived
+        /// </summary>
         ARCHIVED = 3,
+
+        /// <summary>
+        /// sprint is in draft mode. Not published yet
+        /// </summary>
+        NOTPUBLISHEDYET = 4,
     }
 }
