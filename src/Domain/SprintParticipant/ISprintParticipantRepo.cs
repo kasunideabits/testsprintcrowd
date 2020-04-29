@@ -141,7 +141,7 @@
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
-        Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new();
+        Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string[] includeProperties) where T : class, new();
 
         /// <summary>
         /// Get joined sprints
@@ -174,5 +174,7 @@
         /// saves changed to db
         /// </summary>
         void SaveChanges();
+
+        IEnumerable<SprintParticipant> GetAllById(int sprintId, Expression<Func<SprintParticipant, bool>> query);
     }
 }
