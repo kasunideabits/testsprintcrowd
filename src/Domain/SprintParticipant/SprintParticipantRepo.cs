@@ -368,6 +368,15 @@
         {
             this.Context.SaveChanges();
         }
+        public IEnumerable<SprintParticipant> GetAllById(int sprintId, Expression<Func<SprintParticipant, bool>> query)
+        {
+            return this.Context.SprintParticipant
+                .Include(s => s.User)
+                .Include(s => s.Sprint)
+                .ThenInclude(s => s.CreatedBy)
+                .Where(s => s.SprintId == sprintId)
+                .Where(query);
+        }
 
     }
 }
