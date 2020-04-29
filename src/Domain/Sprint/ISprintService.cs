@@ -68,6 +68,13 @@
         Task Remove(int userId, int sprintId);
 
         /// <summary>
+        /// Remove sprint from Admin Panel
+        /// </summary>
+        /// <param name="userId">creator id </param>
+        /// <param name="sprintId">sprint id to remove</param>
+        Task RemoveSprint(int userId, int sprintId);
+
+        /// <summary>
         /// Get the sprint details and sprint participant details with given
         /// sprint id
         /// </summary>

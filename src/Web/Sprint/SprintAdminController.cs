@@ -220,5 +220,24 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Remove sprint with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to remove</param>
+        [HttpPost("remove/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveSprint(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintService.RemoveSprint(user.Id, sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
     }
 }
