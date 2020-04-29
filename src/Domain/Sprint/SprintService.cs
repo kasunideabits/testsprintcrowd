@@ -399,6 +399,47 @@
             }
         }
 
+        /// <summary>
+        /// Remove sprint from Admin Panel
+        /// </summary>
+        /// <param name="userId">creator id </param>
+        /// <param name="sprintId">sprint id to remove</param>
+        public async Task RemoveSprint(int userId, int sprintId)
+        {
+            Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
+            var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
+            if (sprint == null)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found with given id");
+            }
+            else if (sprint.CreatedBy.Id != userId)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
+            }
+            else
+            {
+                sprint.Status = (int)SprintStatus.ARCHIVED;
+                await this.SprintRepo.UpdateSprint(sprint);
+                this.SprintRepo.SaveChanges();
+                this.NotificationClient.SprintNotificationJobs.SprintRemove(
+                    sprint.Id,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartDateTime,
+                    sprint.NumberOfParticipants,
+                    (SprintStatus)sprint.Status,
+                    (SprintType)sprint.Type,
+                    sprint.CreatedBy.Id,
+                    sprint.CreatedBy.Name,
+                    sprint.CreatedBy.ProfilePicture,
+                    sprint.CreatedBy.Code,
+                    sprint.CreatedBy.ColorCode,
+                    sprint.CreatedBy.City,
+                    sprint.CreatedBy.Country,
+                    sprint.CreatedBy.CountryCode);
+            }
+        }
+
         public async Task InviteRequest(int inviterId, int inviteeId, int sprintId)
         {
             await this.SprintRepo.AddParticipant(inviteeId, sprintId);
