@@ -282,7 +282,7 @@
 
             Expression<Func<SprintParticipant, bool>> pquery = s =>
                     s.User.Id != userId &&
-                    (s.Stage == ParticipantStage.JOINED || s.Stage != ParticipantStage.MARKED_ATTENDENCE) &&
+                    (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
                     s.User.UserState == UserState.Active;
 
 
@@ -295,7 +295,8 @@
                     Distance = s.Sprint.Distance,
                     StartTime = s.Sprint.StartDateTime,
                     ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
-                    Type = s.Sprint.Type
+                    Type = s.Sprint.Type,
+                    NumberOfParticipants = s.Sprint.NumberOfParticipants
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pquery).Select(
                   sp => new ParticipantInfoDTO()
