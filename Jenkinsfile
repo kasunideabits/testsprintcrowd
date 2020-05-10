@@ -12,9 +12,15 @@ pipeline {
   }
   stages {
     stage("build") {
+        environment{
+            APP_SETTINGS = crendentials('sc-backend-prod-env')
+        }
         agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
+            if ( env.BRANCH_NAME == 'master' ){
+                sh 'cp -f $APP_SETTINGS src/'
+            }
             script {
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
             }
