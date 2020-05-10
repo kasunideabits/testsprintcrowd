@@ -18,10 +18,10 @@ pipeline {
         agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
-            if ( env.BRANCH_NAME == 'master' ){
-                sh 'cp -f $APP_SETTINGS src/'
-            }
             script {
+                if ( env.BRANCH_NAME == 'master' ){
+                    sh 'cp -f $APP_SETTINGS src/'
+                }
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
             }
         }
