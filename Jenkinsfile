@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage("build") {
         environment{
-            APP_SETTINGS = crendentials('sc-backend-prod-env')
+            APP_SETTINGS = credentials('sc-backend-prod-env')
         }
         agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
