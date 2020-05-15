@@ -15,8 +15,12 @@
         /// <summary>
         /// Get all events
         /// </summary>
+        /// <param name="eventType">Event type</param>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort to filter</param>
+        /// <param name="filterBy">Term to filter</param>
         /// <returns>Available events</returns>
-        Task<List<Sprint>> GetAll(int eventType);
+        Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
 
         /// <summary>
         /// Get created sprint count for given date range
