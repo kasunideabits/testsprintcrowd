@@ -459,7 +459,7 @@
         {
             if (sprintType == (int)SprintType.PrivateSprint)
             {
-                return 3;
+                return 10;
             }
             if (sprintType == (int)SprintType.PublicSprint)
             {
