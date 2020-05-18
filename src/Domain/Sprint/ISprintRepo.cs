@@ -38,8 +38,11 @@
         /// get all sprint public or private
         /// </summary>
         /// <param name="eventType">public or private</param>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort by option</param>
+        /// <param name="filterBy">Filter by option</param>
         /// <returns>all events with given type</returns>
-        Task<List<Sprint>> GetAllEvents(int eventType);
+        Task<List<Sprint>> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy);
 
         /// <summary>
         /// Get all events with given date range

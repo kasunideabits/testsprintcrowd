@@ -45,15 +45,18 @@
         /// <summary>
         /// Get all events
         /// </summary>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort by to filter</param>
+        /// <param name="filterBy">Term to filter</param>
         /// <returns>All public events available in database</returns>
-        [HttpGet("get-public")]
+        [HttpGet("get-public/{searchTerm}/{sortBy}/{filterBy}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<ResponseObject> GetAllPublicEvents()
+        public async Task<ResponseObject> GetAllPublicEvents(string searchTerm, string sortBy, string filterBy)
         {
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint),
+                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint, searchTerm, sortBy, filterBy),
             };
             return response;
         }
