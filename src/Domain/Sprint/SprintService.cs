@@ -242,6 +242,152 @@
         }
 
         /// <summary>
+        /// Create multiple sprints
+        /// </summary>
+        public async Task CreateMultipleSprints(
+            User user,
+            string name,
+            int distance,
+            DateTime startTime,
+            int type,
+            int? numberOfParticipants,
+            string infulenceEmail,
+            int draft,
+            bool influencerAvailability,
+            string repeatType)
+        {
+            List<Sprint> recurrentSprints = new List<Sprint>();
+            DateTime endDate = startTime.AddMonths(3);
+            int incementalSprintNumber = 0;
+
+            if (repeatType == "DAILY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddDays(1);
+                }
+            }
+            else if (repeatType == "WEEKLY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddDays(7);
+                }
+            }
+            else if (repeatType == "MONTHLY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddMonths(1);
+                }
+            }
+            await this.SprintRepo.AddMultipleSprints(recurrentSprints);
+            this.SprintRepo.SaveChanges();
+        }
+
+        /// <summary>
         /// Duplicate a sprint
         /// </summary>
         public async Task<CreateSprintDto> DuplicateSprint(
