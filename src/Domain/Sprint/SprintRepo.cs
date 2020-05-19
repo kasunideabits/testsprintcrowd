@@ -187,6 +187,15 @@
         }
 
         /// <summary>
+        /// create events
+        /// </summary>
+        /// <param name="eventsToCreate">list of sprints to be created</param>
+        public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
+        {
+            await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
+        }
+
+        /// <summary>
         /// creates event
         /// </summary>
         /// <param name="sprintToAdd">event model</param>

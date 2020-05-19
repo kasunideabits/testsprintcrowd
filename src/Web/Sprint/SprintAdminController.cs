@@ -101,27 +101,52 @@
         /// creates an event
         /// </summary>
         /// <param name="sprint">info about the sprint</param>
-        [HttpPost("create")]
+        /// <param name="repeatType">repeat type for the sprint</param>
+        [HttpPost("create/{repeatType}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint)
+        public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.CreateNewSprint(
-              user,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.SprintType,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent,
-              sprint.InfluencerAvailability);
-            ResponseObject response = new ResponseObject()
+            if (repeatType == "NONE")
             {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-            };
-            return this.Ok(response);
+                var result = await this.SprintService.CreateNewSprint(
+                    user,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartTime,
+                    sprint.SprintType,
+                    sprint.NumberOfParticipants,
+                    sprint.InfluencerEmail,
+                    sprint.DraftEvent,
+                    sprint.InfluencerAvailability);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = result,
+                };
+                return this.Ok(response);
+            }
+            else
+            {
+                await this.SprintService.CreateMultipleSprints(
+                    user,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartTime,
+                    sprint.SprintType,
+                    sprint.NumberOfParticipants,
+                    sprint.InfluencerEmail,
+                    sprint.DraftEvent,
+                    sprint.InfluencerAvailability,
+                    repeatType
+                    );
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = null,
+                };
+                return this.Ok(response);
+            }
         }
 
         /// <summary>
@@ -155,27 +180,69 @@
         /// drafts an event
         /// </summary>
         /// <param name="sprint">info about the sprint</param>
-        [HttpPost("draft")]
+        [HttpPost("draft/{repeatType}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint)
+        public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.CreateNewSprint(
-              user,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.SprintType,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent,
-              sprint.InfluencerAvailability);
-            ResponseObject response = new ResponseObject()
+            if (repeatType == "NONE")
             {
-                StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-            };
-            return this.Ok(response);
+                var result = await this.SprintService.CreateNewSprint(
+                    user,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartTime,
+                    sprint.SprintType,
+                    sprint.NumberOfParticipants,
+                    sprint.InfluencerEmail,
+                    sprint.DraftEvent,
+                    sprint.InfluencerAvailability);
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = result,
+                };
+                return this.Ok(response);
+            }
+            else
+            {
+                await this.SprintService.CreateMultipleSprints(
+                    user,
+                    sprint.Name,
+                    sprint.Distance,
+                    sprint.StartTime,
+                    sprint.SprintType,
+                    sprint.NumberOfParticipants,
+                    sprint.InfluencerEmail,
+                    sprint.DraftEvent,
+                    sprint.InfluencerAvailability,
+                    repeatType
+                    );
+                ResponseObject response = new ResponseObject()
+                {
+                    StatusCode = (int)ApplicationResponseCode.Success,
+                    Data = null,
+                };
+                return this.Ok(response);
+            }
+
+            // User user = await this.User.GetUser(this.UserService);
+            // var result = await this.SprintService.CreateNewSprint(
+            //   user,
+            //   sprint.Name,
+            //   sprint.Distance,
+            //   sprint.StartTime,
+            //   sprint.SprintType,
+            //   sprint.NumberOfParticipants,
+            //   sprint.InfluencerEmail,
+            //   sprint.DraftEvent,
+            //   sprint.InfluencerAvailability);
+            // ResponseObject response = new ResponseObject()
+            // {
+            //     StatusCode = (int)ApplicationResponseCode.Success,
+            //     Data = result,
+            // };
+            // return this.Ok(response);
         }
 
         /// <summary>

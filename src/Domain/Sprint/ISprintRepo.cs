@@ -66,6 +66,13 @@
         Task<Sprint> AddSprint(Sprint eventToCreate);
 
         /// <summary>
+        /// adds new events to database
+        /// </summary>
+        /// <param name="eventsToCreate">List of events to be created</param>
+        /// <returns>Created sprint details</returns>
+        Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate);
+
+        /// <summary>
         /// adds new event to database
         /// </summary>
         /// <param name="eventToDraft">event model</param>
