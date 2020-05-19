@@ -610,7 +610,7 @@
             }
             if (sprintType == (int)SprintType.PublicSprint)
             {
-                return 30;
+                return 100;
             }
             throw new Application.ApplicationException("Invalid sprint type");
         }
