@@ -78,7 +78,8 @@
             int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
             int tenToTwenty = this.FilterWithDistance(allSprints, 11, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
-            return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
+            int thirtyOneToFortyOne = this.FilterWithDistance(allSprints, 31, 41).Count();
+            return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty, thirtyOneToFortyOne);
         }
 
         /// <summary>
