@@ -15,8 +15,12 @@
         /// <summary>
         /// Get all events
         /// </summary>
+        /// <param name="eventType">Event type</param>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort to filter</param>
+        /// <param name="filterBy">Term to filter</param>
         /// <returns>Available events</returns>
-        Task<List<Sprint>> GetAll(int eventType);
+        Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
 
         /// <summary>
         /// Get created sprint count for given date range
@@ -46,6 +50,22 @@
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability);
+
+        /// <summary>
+        /// Create multiple sprints based on repeat option, TODO : remove user object passing
+        /// </summary>
+        /// <param name="user">user who creating the sprint</param>
+        /// <param name="name"> name for sprint</param>
+        /// <param name="distance"> distance in meters for sprint</param>
+        /// <param name="startTime"> start time for sprint</param>
+        /// <param name="type"><see cref="SprintType">sprint type, public or private</see></param>
+        /// <param name="numberOfParticipants">number of pariticipant for sprint</param>
+        /// <param name="infulenceEmail">infulence email</param>
+        /// <param name="draft">sprint draft or publish</param>
+        /// <param name="influencerAvailability">influencer available or not</param>
+        /// <param name="repeatType">repeat options</param>
+        /// <returns>created sprints</returns>
+        Task CreateMultipleSprints(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string repeatType);
 
         /// <summary>
         /// Get sprint with pariticipants by creator id
