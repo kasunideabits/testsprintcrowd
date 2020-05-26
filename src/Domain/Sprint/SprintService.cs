@@ -33,10 +33,14 @@
         /// <summary>
         /// Get all events
         /// </summary>
+        /// <param name="eventType">Event type</param>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort to filter</param>
+        /// <param name="filterBy">Term to filter</param>
         /// <returns>Available all events</returns>
-        public async Task<List<Sprint>> GetAll(int eventType)
+        public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
-            return await this.SprintRepo.GetAllEvents(eventType);
+            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
         }
 
         /// <summary>
@@ -74,7 +78,8 @@
             int twoToTen = this.FilterWithDistance(allSprints, 2, 10).Count();
             int tenToTwenty = this.FilterWithDistance(allSprints, 11, 20).Count();
             int twentyOneToThirty = this.FilterWithDistance(allSprints, 21, 30).Count();
-            return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty);
+            int thirtyOneToFortyOne = this.FilterWithDistance(allSprints, 31, 41).Count();
+            return new LiveSprintCount(all, twoToTen, tenToTwenty, twentyOneToThirty, thirtyOneToFortyOne);
         }
 
         /// <summary>
@@ -235,6 +240,152 @@
                 (SprintType)addedSprint.Type,
                 (SprintStatus)addedSprint.Status);
             return CreateSprintDtoMapper(sprint, user);
+        }
+
+        /// <summary>
+        /// Create multiple sprints
+        /// </summary>
+        public async Task CreateMultipleSprints(
+            User user,
+            string name,
+            int distance,
+            DateTime startTime,
+            int type,
+            int? numberOfParticipants,
+            string infulenceEmail,
+            int draft,
+            bool influencerAvailability,
+            string repeatType)
+        {
+            List<Sprint> recurrentSprints = new List<Sprint>();
+            DateTime endDate = startTime.AddMonths(3);
+            int incementalSprintNumber = 0;
+
+            if (repeatType == "DAILY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddDays(1);
+                }
+            }
+            else if (repeatType == "WEEKLY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddDays(7);
+                }
+            }
+            else if (repeatType == "MONTHLY")
+            {
+                while (startTime <= endDate)
+                {
+                    Sprint sprint = new Sprint();
+                    if (draft == 0)
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    else
+                    {
+                        sprint.Name = name;
+                        sprint.Distance = distance;
+                        sprint.StartDateTime = startTime;
+                        sprint.CreatedBy = user;
+                        sprint.Type = type;
+                        sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+                        sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+                        sprint.InfluencerAvailability = influencerAvailability;
+                        sprint.InfluencerEmail = infulenceEmail;
+                        sprint.DraftEvent = draft;
+                    }
+                    recurrentSprints.Add(sprint);
+                    incementalSprintNumber++;
+                    if (incementalSprintNumber != 1)
+                    {
+                        name = name.Split(new char[] { '(', ')' })[0];
+                    }
+                    name = name + "(" + incementalSprintNumber + ")";
+                    startTime = startTime.AddMonths(1);
+                }
+            }
+            await this.SprintRepo.AddMultipleSprints(recurrentSprints);
+            this.SprintRepo.SaveChanges();
         }
 
         /// <summary>
@@ -455,11 +606,11 @@
         {
             if (sprintType == (int)SprintType.PrivateSprint)
             {
-                return 3;
+                return 10;
             }
             if (sprintType == (int)SprintType.PublicSprint)
             {
-                return 30;
+                return 100;
             }
             throw new Application.ApplicationException("Invalid sprint type");
         }

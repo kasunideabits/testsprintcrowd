@@ -10,6 +10,8 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using System.Text.RegularExpressions;
+    using System.Globalization;
 
     /// <summary>
     /// Event repositiory
@@ -52,14 +54,88 @@
         }
 
         /// <summary>
-        /// Get all events
+        /// get all sprint public or private
         /// </summary>
-        /// <returns>Available events</returns>
-        public async Task<List<Sprint>> GetAllEvents(int eventType)
+        /// <param name="eventType">public or private</param>
+        /// <param name="searchTerm">Search term to filter</param>
+        /// <param name="sortBy">Sort by option</param>
+        /// <param name="filterBy">Filter by option</param>
+        /// <returns>all events with given type</returns>
+        public async Task<List<Sprint>> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy)
         {
-            // return await this.dbContext.Sprint.Where(s => s.Type == eventType).ToListAsync();
-            // return await this.dbContext.Sprint.Where(s => s.Type == eventType && s.Status != 3).ToListAsync();
-            return await this.dbContext.Sprint.Where(s => s.Type == eventType && s.Status != 3).OrderByDescending(x => x.CreatedDate).ToListAsync();
+            if (Regex.IsMatch(searchTerm, @"^(?:19|20)\d{2}$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$"))
+            {
+                var allEvents = await (from sprint in this.dbContext.Sprint
+                                       where ((sprint.Type == eventType) && (sprint.Status != 3) &&
+                                            (searchTerm.Equals("null") ||
+                                                    (
+                                                    sprint.StartDateTime.ToString().StartsWith(searchTerm.Trim())
+                                                    )
+                                            )
+                                       )
+                                       select sprint
+                     ).OrderByDescending(x => x.CreatedDate).ToListAsync();
+
+                return allEvents;
+            }
+            else if (Regex.IsMatch(searchTerm, @"^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"))
+            {
+                TimeSpan localTime = TimeSpan.Parse(searchTerm);
+                TimeSpan twentyHrTime = localTime.Add(new TimeSpan(12, 0, 0));
+
+                //Remove following line when time zone is UTC
+                TimeSpan subtractedtwentyHrTime = twentyHrTime.Subtract(new TimeSpan(5, 30, 0));
+                TimeSpan subtractedtwentyHrTimePM = subtractedtwentyHrTime.Add(new TimeSpan(12, 0, 0));
+                //Remove following line when time zone is UTC
+                TimeSpan subtractedTime = localTime.Subtract(new TimeSpan(5, 30, 0));
+
+                var allEventsAM = await (from sprint in this.dbContext.Sprint
+                                         where ((sprint.Type == eventType) && (sprint.Status != 3) &&
+                                                      (
+                                                          sprint.StartDateTime.ToString().Contains(subtractedTime.ToString().Trim())
+                                                      )
+                                         )
+                                         select sprint
+                     ).OrderByDescending(x => x.CreatedDate).ToListAsync();
+
+                var allEventsPM = await (from sprint in this.dbContext.Sprint
+                                         where ((sprint.Type == eventType) && (sprint.Status != 3) &&
+                                                      (
+                                                          sprint.StartDateTime.ToString().Contains(subtractedtwentyHrTime.ToString().Trim())
+                                                      )
+                                         )
+                                         select sprint
+                     ).OrderByDescending(x => x.CreatedDate).ToListAsync();
+
+                var allEventsAMPM = await (from sprint in this.dbContext.Sprint
+                                           where ((sprint.Type == eventType) && (sprint.Status != 3) &&
+                                                        (
+                                                            sprint.StartDateTime.ToString().Contains(subtractedtwentyHrTimePM.ToString().Trim())
+                                                        )
+                                           )
+                                           select sprint
+                     ).OrderByDescending(x => x.CreatedDate).ToListAsync();
+
+                var allEvents = allEventsAM.Union(allEventsPM).Union(allEventsAMPM).ToList();
+
+                return allEvents;
+            }
+            else
+            {//if entered keyword is not a time format, following executes
+                var allEvents = await (from sprint in this.dbContext.Sprint
+                                       where ((sprint.Type == eventType) && (sprint.Status != 3) &&
+                                            (searchTerm.Equals("null") ||
+                                                    (
+                                                    sprint.Name.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                                    sprint.InfluencerEmail.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase)
+                                                    )
+                                            )
+                                       )
+                                       select sprint
+                    ).OrderByDescending(x => x.CreatedDate).ToListAsync();
+
+                return allEvents;
+            }
         }
 
         /// <summary>
@@ -108,6 +184,15 @@
         {
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             return result.Entity;
+        }
+
+        /// <summary>
+        /// create events
+        /// </summary>
+        /// <param name="eventsToCreate">list of sprints to be created</param>
+        public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
+        {
+            await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
         }
 
         /// <summary>
