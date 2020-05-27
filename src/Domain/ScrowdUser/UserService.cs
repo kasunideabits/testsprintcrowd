@@ -139,9 +139,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             userPreference.AfterNoon = userPreferenceModel.Time.AfterNoon;
             userPreference.Evening = userPreferenceModel.Time.Evening;
             userPreference.Night = userPreferenceModel.Time.Night;
-            userPreference.TwoToTen = userPreferenceModel.Distance.TwoToTen;
-            userPreference.EleToTwenty = userPreferenceModel.Distance.EleToTwenty;
+            userPreference.TwoToFive = userPreferenceModel.Distance.TwoToFive;
+            userPreference.SixToTen = userPreferenceModel.Distance.SixToTen;
+            userPreference.ElevenToFifteen = userPreferenceModel.Distance.ElevenToFifteen;
+            userPreference.SixteenToTwenty = userPreferenceModel.Distance.SixteenToTwenty;
             userPreference.TOneToThirty = userPreferenceModel.Distance.TOneToThirty;
+            userPreference.ThirtyOneToFortyOne = userPreferenceModel.Distance.ThirtyOneToFortyOne;
             this.userRepo.UpdateUserPreference(userPreference);
             this.userRepo.SaveChanges();
             return new UserPreferenceDto(userPreference);
