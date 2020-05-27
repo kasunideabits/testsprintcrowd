@@ -19,17 +19,20 @@ namespace SprintCrowdBackEnd.Migrations
             migrationBuilder.AddColumn<bool>(
                 name: "eleven_to_fifteen",
                 table: "user_preferences",
-                nullable: false);
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "six_to_ten",
                 table: "user_preferences",
-                nullable: false);
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "sixteen_to_twenty",
                 table: "user_preferences",
-                nullable: false);
+                nullable: false,
+                defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
