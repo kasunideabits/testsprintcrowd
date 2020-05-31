@@ -1,9 +1,11 @@
 #FROM chamindu/dotnet-core-sdk-sonarqube:2.2 AS build-env
 FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
+RUN mkdir -p app/fcm_keystore
 
 # Copy csproj and restore as distinct layers
 COPY src/*.csproj ./
+COPY config/firebase-token.json app/fcm_keystore
 RUN dotnet restore
 
 # Copy everything else and build
