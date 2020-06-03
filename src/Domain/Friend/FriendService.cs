@@ -7,6 +7,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -17,13 +18,14 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Initialize <see cref="FriendService"> class </see>
         /// </summary>
         /// <param name="friendRepo">friend repository</param>
-        public FriendService(IFriendRepo friendRepo)
+        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient)
         {
             this.FriendRepo = friendRepo;
+            this.NotificationClient = notificationClient;
         }
 
         private IFriendRepo FriendRepo { get; }
-
+        private INotificationClient NotificationClient { get; }
         /// <summary>
         /// Add given user with matching friend code
         /// </summary>
@@ -56,6 +58,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         await this.FriendRepo.PlusFriend(friend);
                         this.FriendRepo.SaveChanges();
 
+                        this.NotificationClient.SprintNotificationJobs.AcceptRequest(
+                            user.Id,
+                            user.Name,
+                            user.ProfilePicture,
+                            user.Code,
+                            user.Email,
+                            user.City,
+                            user.Country,
+                            user.CountryCode,
+                            user.ColorCode,
+                            friend.CreatedDate, 
+                            userId);
+
                         return new FriendDto(
                             user.Id,
                             user.Name,
@@ -67,6 +82,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             user.CountryCode,
                             user.ColorCode,
                             friend.CreatedDate);
+
+                       
                     }
                     else
                     {
