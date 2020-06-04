@@ -107,6 +107,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             new NotificationWorker<SprintUpdate>().Invoke(message);
         }
 
+        public void AcceptRequest(int id, string name, string profilePicture, string code, string email, string city, string country, string countryCode, string colorCode, DateTime createdDate ,int requestSenderId)
+        {
+            var message = new AcceptRequest(id, name, profilePicture, code, email, city, country, countryCode, colorCode,  createdDate , requestSenderId);
+            new NotificationWorker<UserAcceptRequest>().Invoke(message);
+        }
+
         public void SprintParticipantRemove(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId,
                                 string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
                                 string name, string profilePicture, string code, string country, string countryCode, string city)
