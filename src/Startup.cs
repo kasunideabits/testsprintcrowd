@@ -86,7 +86,7 @@
         }
 
         /// <summary>
-        /// Adds jwt token authentication
+        /// Adds jwt token authentication with idenety server
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSettings"></param>
