@@ -12,6 +12,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using System.Text.RegularExpressions;
     using System.Globalization;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Event repositiory
@@ -277,6 +278,49 @@
             var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);
             return result;
         }
+
+        /// <summary>
+        /// Get SprintReportDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>SprintReportDto</returns>
+        public async Task<List<SprintReportDto>> GetReport(string timespan)
+        {
+            var participantCount = (from sprint in this.dbContext.Sprint
+                                    join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                    where ((DateTime.Now.AddMonths(-1) < sprint.CreatedDate) && (sprintParticipant.Stage == 0))
+                                    select sprintParticipant.Stage
+                                   ).Count();
+
+            var sprintDetails = await (from sprint in this.dbContext.Sprint
+                                       join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                       where (DateTime.Now.AddMonths(-1) < sprint.CreatedDate)
+                                       select new SprintReportDto()
+                                       {
+                                           SprintName = sprint.Name,
+                                           Distance = sprint.Distance,
+                                           ParticipantsCount = participantCount //write a seperate dbcontext call to get each sprint's participant count. Pass sprint name to filter get each count.
+                                       }
+                                ).Distinct().ToListAsync();
+
+            return sprintDetails;
+        }
+
+        /// <summary>
+        /// Get participant count for given sprint
+        /// </summary>
+        /// <param name="sprintName">sprint name</param>
+        /// <returns>sprint participant count</returns>
+        // public async Task<int> GetParticipantCount(string sprintName)
+        // {
+        //     var participantCount = (from sprint in this.dbContext.Sprint
+        //                             join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+        //                             where ((DateTime.Now.AddMonths(-1) < sprint.CreatedDate) && (sprintParticipant.Stage == 0) && (sprint.Name == sprintName))
+        //                             select sprintParticipant.Stage
+        //                            ).Count();
+
+        //     return participantCount;
+        // }
 
         /// <summary>
         /// commit and save changes to the db

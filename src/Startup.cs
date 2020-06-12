@@ -134,7 +134,8 @@
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials());
+                .AllowCredentials()
+                .WithExposedHeaders("Content-Disposition")); //added for reports
             app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
@@ -146,7 +147,7 @@
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Host = httpReq.Host.Value;;
+                    swaggerDoc.Host = httpReq.Host.Value; ;
                     swaggerDoc.BasePath = httpReq.PathBase;
                 });
             });

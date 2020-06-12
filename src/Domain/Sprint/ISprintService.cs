@@ -129,5 +129,12 @@
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> DuplicateSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability);
 
+        /// <summary>
+        /// Get SprintReportDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>SprintReportDto</returns>
+        Task<List<SprintReportDto>> GetReport(string timespan);
+
     }
 }

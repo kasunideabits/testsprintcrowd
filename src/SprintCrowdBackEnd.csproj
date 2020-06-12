@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="ably.io" Version="0.8.11" />
+    <PackageReference Include="EPPlus" Version="4.5.2.1" />
     <PackageReference Include="FirebaseAdmin" Version="1.9.1" />
     <PackageReference Include="IdentityServer4" Version="2.3.2" />
 
@@ -39,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

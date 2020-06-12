@@ -753,7 +753,13 @@
                 }
             }
             return sprintDto;
-
         }
+
+        public async Task<List<SprintReportDto>> GetReport(string timespan)
+        {
+            var reportData = await this.SprintRepo.GetReport(timespan);
+            return reportData;
+        }
+
     }
 }
