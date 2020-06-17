@@ -7,6 +7,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -129,5 +130,13 @@
         /// <param name="sprintName">name of the sprint</param>
         /// <returns>Friends</returns>
         Task<List<String>> GetSprintNames(string sprintName);
+
+        /// <summary>
+        /// Get ReportItemDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>ReportItemDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
+
     }
 }

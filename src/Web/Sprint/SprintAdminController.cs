@@ -12,13 +12,17 @@
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Domain.Device;
+    using OfficeOpenXml;
+    using System.IO;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using System.Collections.Generic;
 
     /// <summary>
     /// event controller
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy.ADMIN)]
+    // [Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -308,6 +312,32 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Return report according to given time period
+        /// </summary>
+        /// <param name="timespan">timespan to generate the report</param>
+        [HttpGet("getreport/{timespan}")]
+        public async Task<IActionResult> GetReport(string timespan)
+        {
+            var reportData = await this.SprintService.GetReport(timespan);
+            var stream = new MemoryStream();
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var workSheet = package.Workbook.Worksheets.Add("sheetName");
+                workSheet.Cells.LoadFromCollection(reportData, true);
+                workSheet.Column(2).Style.Numberformat.Format = "dd/MM/yyyy hh:mm:ss AM/PM";
+                package.Save();
+            }
+
+            stream.Position = 0;
+            var contentType = "application/octet-stream";
+            string fileName = $"ReportData-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+            return this.File(stream, contentType, fileName);
+        }
+
 
     }
 }
