@@ -18,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy.ADMIN)]
+    //[Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -305,6 +305,23 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get dashboard data
+        /// </summary>
+        /// <returns>Dashboard related data</returns>
+        [HttpGet("getallsprints")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetAllSprints()
+        {
+            var sprintsList = await this.SprintService.GetAllSprints();
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = sprintsList,
             };
             return this.Ok(response);
         }

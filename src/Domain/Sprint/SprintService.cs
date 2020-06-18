@@ -755,5 +755,15 @@
             return sprintDto;
 
         }
+
+        /// <summary>
+        /// Retuns list of all sprints
+        /// </summary>
+        /// <returns>Retuns list of all sprints</returns>
+        public async Task<List<Sprint>> GetAllSprints()
+        {
+            var sprintsList = await this.SprintRepo.GetAllSprints();
+            return sprintsList;
+        }
     }
 }

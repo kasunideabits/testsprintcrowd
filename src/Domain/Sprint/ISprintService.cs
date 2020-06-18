@@ -129,5 +129,11 @@
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> DuplicateSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability);
 
+        /// <summary>
+        /// Retuns list of all sprints
+        /// </summary>
+        /// <returns>Retuns list of all sprints</returns>
+        Task<List<Sprint>> GetAllSprints();
+
     }
 }

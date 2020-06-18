@@ -279,6 +279,18 @@
         }
 
         /// <summary>
+        /// Get all sprints
+        /// </summary>
+        /// <returns>Sprints</returns>
+        public async Task<List<Sprint>> GetAllSprints()
+        {
+            var sprintsList = await this.dbContext.Sprint
+                                    .Where(s => s.Status == 0 || s.Status == 1)
+                                    .OrderByDescending(x => x.CreatedDate).ToListAsync();
+            return sprintsList;
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

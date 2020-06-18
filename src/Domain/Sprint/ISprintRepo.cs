@@ -129,5 +129,11 @@
         /// <param name="sprintName">name of the sprint</param>
         /// <returns>Friends</returns>
         Task<List<String>> GetSprintNames(string sprintName);
+
+        /// <summary>
+        /// Get all sprints
+        /// </summary>
+        /// <returns>Sprints</returns>
+        Task<List<Sprint>> GetAllSprints();
     }
 }
