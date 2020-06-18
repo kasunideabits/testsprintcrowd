@@ -8,7 +8,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos
         {
             this.Day = new DaysDto(userPreference.Mon, userPreference.Tue, userPreference.Wed, userPreference.Thur, userPreference.Fri, userPreference.Sat, userPreference.Sun);
             this.Time = new TimeDto(userPreference.Morning, userPreference.AfterNoon, userPreference.Evening, userPreference.Night);
-            this.Distance = new DistanceDto(userPreference.TwoToTen, userPreference.EleToTwenty, userPreference.TOneToThirty);
+            this.Distance = new DistanceDto(userPreference.TwoToFive, userPreference.SixToTen, userPreference.ElevenToFifteen, userPreference.SixteenToTwenty, userPreference.TOneToThirty, userPreference.ThirtyOneToFortyOne);
         }
         public DaysDto Day { get; set; }
         public TimeDto Time { get; set; }
@@ -53,15 +53,21 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos
 
     public class DistanceDto
     {
-        public DistanceDto(bool twoToTen, bool eleToTwenty, bool tOneToThirty)
+        public DistanceDto(bool twoToFive, bool sixToTen, bool elevenToFifteen, bool sixteenToTwenty, bool tOneToThirty, bool thirtyOneToFortyOne)
         {
-            this.TwoToTen = twoToTen;
-            this.EleToTwenty = eleToTwenty;
+            this.TwoToFive = twoToFive;
+            this.SixToTen = sixToTen;
+            this.ElevenToFifteen = elevenToFifteen;
+            this.SixteenToTwenty = sixteenToTwenty;
             this.TOneToThirty = tOneToThirty;
+            this.ThirtyOneToFortyOne = thirtyOneToFortyOne;
         }
-        public bool TwoToTen { get; }
-        public bool EleToTwenty { get; }
+        public bool TwoToFive { get; }
+        public bool SixToTen { get; }
+        public bool ElevenToFifteen { get; }
+        public bool SixteenToTwenty { get; }
         public bool TOneToThirty { get; }
+        public bool ThirtyOneToFortyOne { get; }
     }
 
 }

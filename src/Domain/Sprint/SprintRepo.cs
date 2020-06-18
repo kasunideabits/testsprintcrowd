@@ -1,4 +1,4 @@
-﻿namespace SprintCrowd.BackEnd.Domain.Sprint
+namespace SprintCrowd.BackEnd.Domain.Sprint
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;
@@ -12,6 +12,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using System.Text.RegularExpressions;
     using System.Globalization;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Event repositiory
@@ -288,6 +289,69 @@
                                     .Where(s => s.Status == 0 || s.Status == 1)
                                     .OrderByDescending(x => x.CreatedDate).ToListAsync();
             return sprintsList;
+        }
+        /// Get SprintReportDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>SprintReportDto</returns>
+        public async Task<List<ReportItemDto>> GetReport(string timespan)
+        {
+            var timePeriod = DateTime.Now.AddMonths(-1);
+            switch (timespan)
+            {
+                case "week=1":
+                    timePeriod = DateTime.Now.AddDays(-7);
+                    break;
+                case "week=2":
+                    timePeriod = DateTime.Now.AddDays(-14);
+                    break;
+                case "month=1":
+                    timePeriod = DateTime.Now.AddMonths(-1);
+                    break;
+                case "month/last=3":
+                    timePeriod = DateTime.Now.AddMonths(-3);
+                    break;
+                case "month/last=6":
+                    timePeriod = DateTime.Now.AddMonths(-6);
+                    break;
+                case "year=1":
+                    timePeriod = DateTime.Now.AddYears(-1);
+                    break;
+            }
+
+            {
+
+                var participantsMarkedAttendance = (from sprint in this.dbContext.Sprint
+                                                    join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                                    where ((timePeriod < sprint.CreatedDate) && (sprintParticipant.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                                                    select sprintParticipant.Stage).Count();
+
+                var participantsFinishedSprint = (from sprint in this.dbContext.Sprint
+                                                  join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                                  where ((timePeriod < sprint.CreatedDate) && (sprintParticipant.Stage == ParticipantStage.COMPLETED))
+                                                  select sprintParticipant.Stage).Count();
+
+                var participantCount = (from sprint in this.dbContext.Sprint
+                                        join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                        where ((timePeriod < sprint.CreatedDate) && (sprintParticipant.Stage == ParticipantStage.JOINED))
+                                        select sprintParticipant.Stage).Count();
+
+                var sprintDetails = await (from sprint in this.dbContext.Sprint
+                                           join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
+                                           where (timePeriod < sprint.CreatedDate)
+                                           select new ReportItemDto()
+                                           {
+                                               SprintName = sprint.Name,
+                                               Distance = sprint.Distance,
+                                               StartDate = sprint.StartDateTime,
+                                               ParticipantsCount = participantCount,
+                                               ParticipantsMarkedAttendance = participantsMarkedAttendance,
+                                               ParticipantsFinishedSprint = participantsFinishedSprint
+                                           }
+                                    ).Distinct().ToListAsync();
+
+                return sprintDetails;
+            }
         }
 
         /// <summary>

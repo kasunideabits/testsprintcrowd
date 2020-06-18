@@ -134,6 +134,11 @@
         /// </summary>
         /// <returns>Retuns list of all sprints</returns>
         Task<List<Sprint>> GetAllSprints();
+        /// Get SprintReportDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>SprintReportDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
 
     }
 }

@@ -7,6 +7,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -135,5 +136,11 @@
         /// </summary>
         /// <returns>Sprints</returns>
         Task<List<Sprint>> GetAllSprints();
+        /// Get ReportItemDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>ReportItemDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
+
     }
 }

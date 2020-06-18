@@ -41,9 +41,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<Sprint, bool>> BuildOpenEvents(int offset)
         {
-            var afterSevenDays = DateTime.UtcNow.AddDays(7);
+            // var afterSevenDays = DateTime.UtcNow.AddDays(7);
             Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
-                s.StartDateTime > DateTime.UtcNow && s.StartDateTime < afterSevenDays &&
+                s.StartDateTime > DateTime.UtcNow &&
                 s.Status != (int)SprintStatus.ARCHIVED && s.Status != (int)SprintStatus.NOTPUBLISHEDYET; //added draft sprint exlusion here
             // Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
             //     s.StartDateTime > DateTime.UtcNow && s.StartDateTime < afterSevenDays &&
@@ -103,9 +103,12 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         private Expression<Func<Sprint, bool>> DistanceQuery()
         {
             Expression<Func<Sprint, bool>> query = s =>
-                (this._userPreference.TwoToTen && s.Distance >= 2000 && s.Distance <= 10000) ||
-                (this._userPreference.EleToTwenty && s.Distance > 10000 && s.Distance <= 20000) ||
-                (this._userPreference.TOneToThirty && s.Distance > 20000 && s.Distance <= 30000);
+                (this._userPreference.TwoToFive && s.Distance >= 2000 && s.Distance <= 5000) ||
+                (this._userPreference.SixToTen && s.Distance >= 6000 && s.Distance <= 10000) ||
+                (this._userPreference.ElevenToFifteen && s.Distance >= 11000 && s.Distance <= 15000) ||
+                (this._userPreference.SixteenToTwenty && s.Distance >= 16000 && s.Distance <= 20000) ||
+                (this._userPreference.TOneToThirty && s.Distance >= 21000 && s.Distance <= 30000) ||
+                (this._userPreference.ThirtyOneToFortyOne && s.Distance >= 31000 && s.Distance <= 41000);
             return query;
         }
     }

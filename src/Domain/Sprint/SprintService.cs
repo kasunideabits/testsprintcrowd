@@ -765,5 +765,11 @@
             var sprintsList = await this.SprintRepo.GetAllSprints();
             return sprintsList;
         }
+        public async Task<List<ReportItemDto>> GetReport(string timespan)
+        {
+            var reportData = await this.SprintRepo.GetReport(timespan);
+            return reportData;
+        }
+
     }
 }
