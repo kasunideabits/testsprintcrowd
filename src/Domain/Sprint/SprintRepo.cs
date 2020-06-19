@@ -345,7 +345,7 @@
                 foreach (var item in participantCount) participantCounVal = item.CountStage;
                 var sprintDetails = await (from sprint in this.dbContext.Sprint
                                            join sprintParticipant in this.dbContext.SprintParticipant on sprint.Id equals sprintParticipant.SprintId
-                                           where (sprint.StartDateTime >= timePeriod && sprint.Status == 2)
+                                           where (sprint.StartDateTime >= timePeriod && sprint.Status == 2 && sprint.Type == 0)
                                            //    where (timePeriod < sprint.StartDateTime)
                                            select new ReportItemDto()
                                            {
