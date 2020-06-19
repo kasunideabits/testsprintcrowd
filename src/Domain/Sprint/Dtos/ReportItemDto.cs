@@ -33,8 +33,15 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>event distnace</value>
-        [DisplayName("Distance")]
+        [DisplayName("Distance(Meters)")]
         public int Distance { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>event name.</value>
+        [DisplayName("Sprint Type")]
+        public int SprintType { get; set; }
 
         /// <summary>
         /// gets or sets value.
