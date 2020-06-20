@@ -25,7 +25,7 @@
         /// </summary>
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional : false, reloadOnChange : true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -34,7 +34,7 @@
         /// needs this method
         /// </summary>
         /// <param name="args">arguments</param>
-        public static IWebHostBuilder CreateWebHostBuilder(string [] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
             .UseConfiguration(Program.Configuration)
             .UseSerilog((context, configuration) =>
@@ -45,15 +45,15 @@
                     .MinimumLevel.Override("System", LogEventLevel.Warning)
                     .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                     .Enrich.FromLogContext()
-                    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme : AnsiConsoleTheme.Literate);
+                    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
             })
-            .UseUrls("http://0.0.0.0:5002")
+            .UseUrls("http://0.0.0.0:7702")
             .UseStartup<Startup>();
 
         /// <summary>
         /// main method for dotnet core application
         /// </summary>
-        public static void Main(string [] args)
+        public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -65,7 +65,7 @@
 
             IWebHost host = CreateWebHostBuilder(args).Build();
 
-            using(IServiceScope scope = host.Services.CreateScope())
+            using (IServiceScope scope = host.Services.CreateScope())
             {
                 IServiceProvider provider = scope.ServiceProvider;
                 ScrowdDbContext context = provider.GetRequiredService<ScrowdDbContext>();
