@@ -56,7 +56,7 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            // services.AddCors();
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -82,6 +82,15 @@
             });
             this.AddSwagger(services);
             this.RegisterDependencyInjection(services);
+            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+            
             NotificationWorkerEntry.Initialize(this.Configuration, services);
         }
 
@@ -129,12 +138,15 @@
             NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+            // app.UseCors(x => x
+            //     .AllowAnyOrigin()
+            //     .AllowAnyMethod()
+            //     .AllowAnyHeader()
+            //     .AllowCredentials());
+              app.UseCors("CorsPolicy");
+              
             app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
