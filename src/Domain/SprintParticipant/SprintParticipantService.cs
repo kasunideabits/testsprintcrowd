@@ -319,20 +319,33 @@
                 s.Sprint.CreatedBy.Id == userId &&
                 s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                 (s.Sprint.StartDateTime > now);
-            var creatorEvent = await this.SprintParticipantRepo.Get(creatorQuery);
+            var creatorEvent = this.SprintParticipantRepo.GetAll(creatorQuery);
             if (creatorEvent != null)
             {
-                var creatorDto = new SprintInfoDTO()
-                {
-                    Id = creatorEvent.Sprint.Id,
-                    Name = creatorEvent.Sprint.Name,
-                    Distance = creatorEvent.Sprint.Distance,
-                    StartTime = creatorEvent.Sprint.StartDateTime,
-                    ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
-                    Type = creatorEvent.Sprint.Type,
-                    Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
-                };
-                joinedSprintDto.Creator = creatorDto;
+                joinedSprintDto.Creator = creatorEvent.Select(
+                  sp => new SprintInfoDTO()
+                  {
+                      Id = sp.Sprint.Id,
+                      Name = sp.Sprint.Name,
+                      Distance = sp.Sprint.Distance,
+                      StartTime = sp.Sprint.StartDateTime,
+                      ExtendedTime = sp.Sprint.StartDateTime.AddMinutes(15),
+                      Type = sp.Sprint.Type,
+                      Creator = sp.Sprint.CreatedBy.Id == sp.UserId
+                  }
+              ).ToList();
+
+                //var creatorDto = new SprintInfoDTO()
+                //{
+                //    Id = creatorEvent.Sprint.Id,
+                //    Name = creatorEvent.Sprint.Name,
+                //    Distance = creatorEvent.Sprint.Distance,
+                //    StartTime = creatorEvent.Sprint.StartDateTime,
+                //    ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
+                //    Type = creatorEvent.Sprint.Type,
+                //    Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
+                //};
+                //joinedSprintDto.Creator = creatorDto;
             }
             return joinedSprintDto;
         }
