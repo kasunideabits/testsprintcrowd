@@ -140,5 +140,10 @@
         /// <returns>SprintReportDto</returns>
         Task<List<ReportItemDto>> GetReport(string timespan);
 
+        /// <summary>
+        /// update simulation
+        /// </summary>
+        Task<UpdateSprintDto> UpdateSimulation(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent, int? status);
+
     }
 }

@@ -771,5 +771,86 @@
             return reportData;
         }
 
+        /// <summary>
+        /// Update instance of SprintService
+        /// </summary>
+        public async Task<UpdateSprintDto> UpdateSimulation(
+            int userId,
+            int sprintId,
+            string name,
+            int? distance,
+            DateTime? startTime,
+            int? numberOfParticipants,
+            string influencerEmail,
+            int? draftEvent,
+            int? status)
+        {
+            Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
+            var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+            if (sprintAavail == null)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
+            }
+            else if (sprintAavail.CreatedBy.Id != userId)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
+            }
+            string oldName = sprintAavail.Name;
+            if (name != String.Empty)
+            {
+                sprintAavail.Name = name;
+            }
+            if (distance != null)
+            {
+                sprintAavail.Distance = (int)distance;
+            }
+            if (startTime != null)
+            {
+                sprintAavail.StartDateTime = (DateTime)startTime;
+            }
+            if (distance != null)
+            {
+                sprintAavail.Distance = (int)distance;
+            }
+            if (numberOfParticipants != null)
+            {
+                sprintAavail.NumberOfParticipants = (int)numberOfParticipants;
+            }
+            if (influencerEmail != String.Empty)
+            {
+                sprintAavail.InfluencerAvailability = true;
+                sprintAavail.InfluencerEmail = influencerEmail;
+            }
+            if (status != null)
+            {
+                sprintAavail.Status = (int)status;
+            }
+            Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
+            this.SprintRepo.SaveChanges();
+
+            this.NotificationClient.SprintNotificationJobs.SprintUpdate(
+                sprint.Id,
+                oldName,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartDateTime,
+                sprint.NumberOfParticipants,
+                (SprintStatus)sprint.Status,
+                (SprintType)sprint.Type,
+                sprint.CreatedBy.Id
+            );
+            UpdateSprintDto result = new UpdateSprintDto(
+                sprint.Id,
+                sprint.Name,
+                sprint.Distance,
+                sprint.NumberOfParticipants,
+                sprint.StartDateTime,
+                (SprintType)sprint.Type,
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability,
+                sprint.InfluencerEmail);
+            return result;
+        }
+
     }
 }
