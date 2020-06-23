@@ -6,7 +6,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 {
     public class GetSprintDto
     {
-        public SprintInfoDTO Creator { get; set; }
+        public List<SprintInfoDTO> Creator { get; set; }
         public List<JoinedSprintDTO> Other { get; set; }
 
     }
