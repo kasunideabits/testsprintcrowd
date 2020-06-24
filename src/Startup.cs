@@ -61,15 +61,20 @@
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
-            var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
-            services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
+            // var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
+            // services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
 
             var firebaseConfigSection = this.Configuration.GetSection("FirebaseConfig");
             services.Configure<FirebaseConfig>(firebaseConfigSection);
 
             var appSettings = appSettingsSection.Get<AppSettings>();
             this.AddAuthentication(services, appSettings);
+            
+            var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
+            services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
+            
             this.AddDatabase(services);
+            
             services.AddMvc(options =>
             {
                 // ignore self referencing loops newtonsoft.
@@ -80,7 +85,9 @@
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     }, ArrayPool<char>.Shared));
             });
+            
             this.AddSwagger(services);
+            
             this.RegisterDependencyInjection(services);
             
             services.AddCors(options =>
@@ -135,7 +142,7 @@
         /// <param name="app">generated automatically</param>
         public virtual void Configure(IApplicationBuilder app)
         {
-            NotificationWorkerEntry.EnableWorkerDashboard(app);
+            //NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
@@ -154,6 +161,9 @@
             });
 
             app.UseAuthentication();
+            
+           NotificationWorkerEntry.EnableWorkerDashboard(app);
+              
             app.UseSwagger(c =>
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
