@@ -5,7 +5,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-
+    using Hangfire.Dashboard;
     /// <summary>
     /// Hangfire configuration class
     /// </summary>
