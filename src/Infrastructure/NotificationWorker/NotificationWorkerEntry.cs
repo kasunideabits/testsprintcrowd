@@ -31,7 +31,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         /// </summary>
         public static void EnableWorkerDashboard(IApplicationBuilder app)
         {
-            app.UseHangfireDashboard();
+           var dashboardOptions =
+            new DashboardOptions
+            {
+                IgnoreAntiforgeryToken = true
+            };
+
+            app.UseHangfireDashboard("/hangfire", dashboardOptions);
         }
     }
 }
