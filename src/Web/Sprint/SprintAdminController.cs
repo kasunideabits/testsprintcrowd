@@ -1,21 +1,21 @@
 ﻿namespace SprintCrowd.BackEnd.Web.Event
 {
+    using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using OfficeOpenXml;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Admin.Dashboard;
+    using SprintCrowd.BackEnd.Domain.Device;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Enums;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Domain.Device;
-    using OfficeOpenXml;
-    using System.IO;
-    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using System.Collections.Generic;
 
     /// <summary>
     /// event controller
@@ -143,7 +143,7 @@
                     sprint.DraftEvent,
                     sprint.InfluencerAvailability,
                     repeatType
-                    );
+                );
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -163,15 +163,15 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.DuplicateSprint(
-              user,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.SprintType,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent,
-              sprint.InfluencerAvailability);
+                user,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.SprintType,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -221,7 +221,7 @@
                     sprint.DraftEvent,
                     sprint.InfluencerAvailability,
                     repeatType
-                    );
+                );
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -258,14 +258,14 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.UpdateSprint(
-              user.Id,
-              sprintId,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent);
+                user.Id,
+                sprintId,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent);
 
             ResponseObject response = new ResponseObject()
             {
@@ -330,6 +330,7 @@
             return this.Ok(response);
         }
 
+        /// <summary>
         /// Return report according to given time period
         /// </summary>
         /// <param name="timespan">timespan to generate the report</param>
@@ -339,7 +340,7 @@
             var reportData = await this.SprintService.GetReport(timespan);
             var stream = new MemoryStream();
 
-            using (var package = new ExcelPackage(stream))
+            using(var package = new ExcelPackage(stream))
             {
                 var workSheet = package.Workbook.Worksheets.Add("sheetName");
                 workSheet.Cells.LoadFromCollection(reportData, true);

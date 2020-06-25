@@ -92,6 +92,20 @@
         }
 
         /// <summary>
+        /// Get all pariticipant with given sprint id <see cref="SprintParticipant"> stage </see>
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
+        public async Task<List<SprintParticipant>> GetAllParticipants(int sprintId)
+        {
+            return await this.Context.SprintParticipant
+                .Include(p => p.User)
+                .Include(p => p.Sprint)
+                .Where(p => p.SprintId == sprintId && (p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE) && p.User.UserState == UserState.Active)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Check user exist in sprint
         /// </summary>
         /// <param name="sprintId">sprint id for check</param>
@@ -291,7 +305,7 @@
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
-        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string[] includeProperties) where T : class, new()
+        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new()
         {
             IQueryable<T> query = this.Context.Set<T>();
             foreach (var includePropertie in includeProperties)

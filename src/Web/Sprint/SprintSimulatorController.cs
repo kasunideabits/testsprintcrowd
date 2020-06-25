@@ -10,6 +10,7 @@ namespace SprintCrowd.BackEnd.Web.Event
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
@@ -27,14 +28,17 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         /// <param name="userService">user service</param>
         /// <param name="sprintService">sprint service</param>
-        public SprintSimulatorController(IUserService userService, ISprintService sprintService)
+        /// <param name="sprintParticipantService">instance reference for ISprintParticipantService</param>
+        public SprintSimulatorController(IUserService userService, ISprintService sprintService, ISprintParticipantService sprintParticipantService)
         {
             this.SprintService = sprintService;
             this.UserService = userService;
+            this.SprintParticipantService = sprintParticipantService;
         }
 
         private ISprintService SprintService { get; }
         private IUserService UserService { get; }
+        private ISprintParticipantService SprintParticipantService { get; }
 
         /// <summary>
         /// Get dashboard data
@@ -81,6 +85,38 @@ namespace SprintCrowd.BackEnd.Web.Event
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Get all participant who join with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to look up</param>
+        [HttpGet("getparticipants/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetAllParticipants(int sprintId)
+        {
+            var result = await this.SprintParticipantService.GetAllParticipants(sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Remove simulation participant
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="participantId">creator id</param>
+        [HttpDelete("participant/{sprintId:int}/{participantId:int}/")]
+        public async Task<IActionResult> RemoveParticipant(int sprintId, int participantId)
+        {
+            await this.SprintParticipantService.RemoveSimulationParticipant(sprintId, participantId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
 
     }
 }

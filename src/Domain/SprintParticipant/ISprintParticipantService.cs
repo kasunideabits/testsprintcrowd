@@ -46,6 +46,13 @@
         Task<List<ParticipantInfoDto>> GetParticipants(int sprintId, ParticipantStage stage);
 
         /// <summary>
+        /// Get all pariticipant with given sprint <see cref="ParticipantStage"> stage </see>
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <returns><see cref="ParticipantInfoDto"> list of participant info</see></returns>
+        Task<List<ParticipantMinInfoDto>> GetAllParticipants(int sprintId);
+
+        /// <summary>
         /// Get all sprint info with given filters
         /// Change request 12/11/2019 Mobile application event start now tab require user already created event
         /// reguradless 24H, for easyness change this API to send creator event embedded with sprints
@@ -84,6 +91,13 @@
         /// <param name="sprintId">sprint id</param>
         /// <param name="participantId">participant id for remove</param>
         Task RemoveParticipant(int requesterId, int sprintId, int participantId);
+
+        /// <summary>
+        /// Remove participant from  simulation
+        /// </summary>
+        /// <param name="sprintId">sprint id</param>
+        /// <param name="participantId">participant id for remove</param>
+        Task RemoveSimulationParticipant(int sprintId, int participantId);
 
         /// <summary>
         /// Get friend status in sprint
