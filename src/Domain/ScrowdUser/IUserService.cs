@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -18,6 +19,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId">user id for lookup</param>
         /// <returns><see cref="UserDto"> user info details </see></returns>
         Task<UserDto> GetUser(int? userId);
+
+        /// <summary>
+        /// Gets all users
+        /// </summary>
+        /// <returns><see cref="User"> All users info details </see></returns>
+        Task<List<User>> GetAllUsers(string keyword, int simulationId);
 
         /// <summary>
         /// retrieve the user by facebook user id.

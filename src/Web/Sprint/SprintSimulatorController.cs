@@ -20,7 +20,7 @@ namespace SprintCrowd.BackEnd.Web.Event
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class SprintSimulatorController : ControllerBase
     {
         /// <summary>
@@ -111,6 +111,41 @@ namespace SprintCrowd.BackEnd.Web.Event
         public async Task<IActionResult> RemoveParticipant(int sprintId, int participantId)
         {
             await this.SprintParticipantService.RemoveSimulationParticipant(sprintId, participantId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <param name="keyword">search keyword</param>
+        /// <param name="simulationId">simulation id</param>
+        [HttpGet("getallusers/{keyword}/{simulationId:int}")]
+        public async Task<IActionResult> GetAllUsers(string keyword, int simulationId)
+        {
+            var result = await this.UserService.GetAllUsers(keyword, simulationId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// add participants to an event
+        /// </summary>
+        /// <param name="userIds">list of user ids</param>
+        /// <param name="sprintId">simulation id</param>
+        [HttpPost("joinsimulation/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinSimulation([FromBody] List<int> userIds, int sprintId)
+        {
+            await this.SprintParticipantService.JoinSimulation(userIds, sprintId);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success

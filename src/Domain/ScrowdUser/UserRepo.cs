@@ -1,5 +1,8 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
@@ -224,6 +227,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public void UpdateUserSettings(UserNotificationReminder notificationReminder)
         {
             this.dbContext.UserNotificationReminders.Update(notificationReminder);
+        }
+
+        /// <summary>
+        /// Gets all users
+        /// </summary>
+        /// <param name="keyword">user id to add</param>
+        /// <returns><see cref="User"> All users info details </see></returns>
+        public async Task<List<User>> GetAllUsers(string keyword)
+        {
+            var allUsers = await (from user in this.dbContext.User where(keyword.Equals("null") || user.Name.StartsWith(keyword, System.StringComparison.OrdinalIgnoreCase))select user).ToListAsync();
+
+            return allUsers;
         }
     }
 }

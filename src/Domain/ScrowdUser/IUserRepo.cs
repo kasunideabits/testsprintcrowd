@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+  using System.Collections.Generic;
   using System.Threading.Tasks;
   using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
   using SprintCrowd.BackEnd.Web.Account;
@@ -93,5 +94,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// Update user settings for notification reminder
     /// </summary>
     void UpdateUserSettings(UserNotificationReminder notificationReminder);
+
+    /// <summary>
+    /// Gets all users
+    /// </summary>
+    /// <param name="keyword">user id to add</param>
+    /// <returns><see cref="User"> All users info details </see></returns>
+    Task<List<User>> GetAllUsers(string keyword);
   }
 }

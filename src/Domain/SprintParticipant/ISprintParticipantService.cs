@@ -147,5 +147,12 @@
         Task<SprintInfo> GetSprint(int sprintId);
 
         Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
+
+        /// <summary>
+        /// Add users to a simulation
+        /// </summary>
+        /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="userIds">user id who going to join</param>
+        Task JoinSimulation(List<int> userIds, int sprintId);
     }
 }

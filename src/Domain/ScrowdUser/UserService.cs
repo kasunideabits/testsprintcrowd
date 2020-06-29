@@ -1,7 +1,9 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
@@ -15,15 +17,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     public class UserService : IUserService
     {
         private readonly IUserRepo userRepo;
+        private readonly ISprintParticipantRepo sprintParticipantRepo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
         /// </summary>
         /// <param name="userRepo">instance of userRepo, dependency injected.</param>
+        /// <param name="sprintParticipantRepo">instance of sprintparticipantRepo, dependency injected.</param>
 
-        public UserService(IUserRepo userRepo)
+        public UserService(IUserRepo userRepo, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.userRepo = userRepo;
+            this.sprintParticipantRepo = sprintParticipantRepo;
         }
 
         /// <summary>
@@ -42,6 +47,32 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             {
                 throw new Application.ApplicationException("User Not Found");
             }
+        }
+
+        /// <summary>
+        /// Gets all users
+        /// </summary>
+        /// <returns><see cref="User"> All users info details </see></returns>
+        public async Task<List<User>> GetAllUsers(string keyword, int simulationId)
+        {
+            var joinedParticipants = await this.sprintParticipantRepo.GetAllParticipants(simulationId);
+            var users = await this.userRepo.GetAllUsers(keyword);
+            List<User> filteredUsers = new List<User>();
+
+            foreach (var joinedparticipant in joinedParticipants)
+            {
+                foreach (var user in users)
+                {
+                    if (user.Id == joinedparticipant.UserId)
+                    {
+                        filteredUsers.Add(user);
+                    }
+                }
+                //var userList = users.FindAll(i => i.Id != joinedparticipant.UserId);
+                //filteredUsers = users.ForEach()
+            }
+            users.RemoveAll(x => filteredUsers.Contains(x));
+            return users;
         }
 
         /// <summary>

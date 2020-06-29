@@ -157,6 +157,34 @@
         }
 
         /// <summary>
+        /// Add users to a simulation
+        /// </summary>
+        /// <param name="sprintId">sprint id going to join</param>
+        /// <param name="userIds">user id who going to join</param>
+        public async Task JoinSimulation(List<int> userIds, int sprintId)
+        {
+            var simulation = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (simulation == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Simulation not found");
+            }
+            else
+            {
+                var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                if (simulation.NumberOfParticipants <= numberOfParticipants)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                }
+            }
+
+            foreach (var userId in userIds)
+            {
+                await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                this.SprintParticipantRepo.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Exit sprint which join for event
         /// </summary>
         /// <param name="sprintId ">exit sprint id</param>
