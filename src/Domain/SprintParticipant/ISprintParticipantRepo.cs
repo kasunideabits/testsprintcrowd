@@ -30,6 +30,14 @@
         Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId);
 
         /// <summary>
+        /// User mark attendance for an event directly
+        /// </summary>
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        Task<SprintParticipant> AddSprintParticipantMarkAttendance(int sprintId, int userId);
+
+        /// <summary>
         /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
@@ -148,7 +156,7 @@
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
-        Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new();
+        Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string[] includeProperties) where T : class, new();
 
         /// <summary>
         /// Get joined sprints

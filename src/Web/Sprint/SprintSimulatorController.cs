@@ -41,6 +41,33 @@ namespace SprintCrowd.BackEnd.Web.Event
         private ISprintParticipantService SprintParticipantService { get; }
 
         /// <summary>
+        /// creates an simulation
+        /// </summary>
+        /// <param name="sprint">info about the sprint</param>
+        [HttpPost("create")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.CreateNewSimulation(
+                user,
+                sprint.Name,
+                sprint.Distance,
+                sprint.StartTime,
+                sprint.SprintType,
+                sprint.NumberOfParticipants,
+                sprint.InfluencerEmail,
+                sprint.DraftEvent,
+                sprint.InfluencerAvailability);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// Get dashboard data
         /// </summary>
         /// <returns>Dashboard related data</returns>
@@ -148,7 +175,45 @@ namespace SprintCrowd.BackEnd.Web.Event
             await this.SprintParticipantService.JoinSimulation(userIds, sprintId);
             ResponseObject response = new ResponseObject()
             {
-                StatusCode = (int)ApplicationResponseCode.Success
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = "Participants added to simulation successfully"
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// mark attendance participants to an event
+        /// </summary>
+        /// <param name="userIds">list of user ids</param>
+        /// <param name="sprintId">simulation id</param>
+        [HttpPost("markattendancesimulation/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> MarkAttendanceSimulation([FromBody] List<int> userIds, int sprintId)
+        {
+            await this.SprintParticipantService.MarkAttendanceSimulation(userIds, sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = "Participants marked attendance successfully"
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Exit simulation
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userIds">user ids which leaving the event</param>
+        [HttpPost("exitsimulation/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> ExitSimulation([FromBody] List<int> userIds, int sprintId)
+        {
+            ExitSprintResult result = await this.SprintParticipantService.ExitSimulation(userIds, sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
             };
             return this.Ok(response);
         }

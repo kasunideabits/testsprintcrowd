@@ -54,6 +54,29 @@
         }
 
         /// <summary>
+        /// Mark the attendece for the given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for mark attendance</param>
+        /// <param name="userIds">list of user ids for for participant</param>
+        public async Task MarkAttendanceSimulation(List<int> userIds, int sprintId)
+        {
+            var simulation = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (simulation.StartDateTime.AddMinutes(-10) <= DateTime.UtcNow && DateTime.UtcNow <= simulation.StartDateTime.AddMinutes(15))
+            {
+                foreach (var userId in userIds)
+                {
+                    await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+                    this.SprintParticipantRepo.SaveChanges();
+                }
+            }
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Operation not allowed");
+            }
+
+        }
+
+        /// <summary>
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
@@ -168,19 +191,46 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Simulation not found");
             }
-            else
+            // else
+            // {
+            //     var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+            //     if (simulation.NumberOfParticipants <= numberOfParticipants)
+            //     {
+            //         throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+            //     }
+            // }
+
+            if (simulation.StartDateTime <= DateTime.UtcNow && DateTime.UtcNow <= simulation.StartDateTime.AddMinutes(15))
             {
-                var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
-                if (simulation.NumberOfParticipants <= numberOfParticipants)
+                foreach (var userId in userIds)
                 {
-                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                    var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                    if (simulation.NumberOfParticipants <= numberOfParticipants)
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                    }
+                    else
+                    {
+                        await this.SprintParticipantRepo.AddSprintParticipantMarkAttendance(sprintId, userId);
+                        this.SprintParticipantRepo.SaveChanges();
+                    }
                 }
             }
-
-            foreach (var userId in userIds)
+            else
             {
-                await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                this.SprintParticipantRepo.SaveChanges();
+                foreach (var userId in userIds)
+                {
+                    var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                    if (simulation.NumberOfParticipants <= numberOfParticipants)
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
+                    }
+                    else
+                    {
+                        await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                        this.SprintParticipantRepo.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -227,6 +277,36 @@
             {
                 return new ExitSprintResult { Result = ExitResult.Faild, Reason = ex.Message.ToString() };
             }
+        }
+
+        /// <summary>
+        /// Exit simulation
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userIds">user ids which leaving the event</param>
+        /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
+        public async Task<ExitSprintResult> ExitSimulation(List<int> userIds, int sprintId)
+        {
+            try
+            {
+                foreach (var userId in userIds)
+                {
+                    Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
+                    var participant = await this.SprintParticipantRepo.Get(participantQuery);
+                    if (participant.Stage != ParticipantStage.COMPLETED)
+                    {
+                        participant.Stage = ParticipantStage.QUIT;
+                        participant.FinishTime = DateTime.UtcNow;
+                    }
+                    this.SprintParticipantRepo.SaveChanges();
+                }
+                return new ExitSprintResult { Result = ExitResult.Success };
+            }
+            catch (Exception ex)
+            {
+                return new ExitSprintResult { Result = ExitResult.Faild, Reason = ex.Message.ToString() };
+            }
+
         }
 
         /// <summary>

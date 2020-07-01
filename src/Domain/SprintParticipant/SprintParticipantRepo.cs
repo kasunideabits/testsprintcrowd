@@ -77,6 +77,24 @@
         }
 
         /// <summary>
+        /// User mark attendance for an event directly
+        /// </summary>
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        public async Task<SprintParticipant> AddSprintParticipantMarkAttendance(int sprintId, int userId)
+        {
+            SprintParticipant participant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.MARKED_ATTENDENCE,
+            };
+            var result = await this.Context.SprintParticipant.AddAsync(participant);
+            return result.Entity;
+        }
+
+        /// <summary>
         /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
@@ -101,7 +119,7 @@
             return await this.Context.SprintParticipant
                 .Include(p => p.User)
                 .Include(p => p.Sprint)
-                .Where(p => p.SprintId == sprintId && (p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE) && p.User.UserState == UserState.Active)
+                .Where(p => p.SprintId == sprintId && (p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE || p.Stage == ParticipantStage.QUIT) && p.User.UserState == UserState.Active)
                 .ToListAsync();
         }
 
@@ -305,7 +323,7 @@
         /// generic method to find with include
         /// </summary>
         /// <typeparam name="T">any database entity</typeparam>
-        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string [] includeProperties)where T : class, new()
+        public async Task<T> FindWithInclude<T>(Expression<Func<T, bool>> predicate, params string[] includeProperties) where T : class, new()
         {
             IQueryable<T> query = this.Context.Set<T>();
             foreach (var includePropertie in includeProperties)

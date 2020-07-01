@@ -21,6 +21,13 @@
         Task MarkAttendence(int sprintId, int userId);
 
         /// <summary>
+        /// Mark the attendece for the given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for mark attendance</param>
+        /// <param name="userIds">list of user ids for for participant</param>
+        Task MarkAttendanceSimulation(List<int> userIds, int sprintId);
+
+        /// <summary>
         /// Join user for a sprint
         /// </summary>
         /// <param name="sprintId">sprint id going to join</param>
@@ -36,6 +43,14 @@
         /// <param name="userId">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
         Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
+
+        /// <summary>
+        /// Exit simulation
+        /// </summary>
+        /// <param name="sprintId">exit sprint id</param>
+        /// <param name="userIds">user ids which leaving the event</param>
+        /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
+        Task<ExitSprintResult> ExitSimulation(List<int> userIds, int sprintId);
 
         /// <summary>
         /// Get all pariticipant with given stage <see cref="ParticipantStage"> stage </see>

@@ -243,6 +243,30 @@
         }
 
         /// <summary>
+        /// creates a new simulation
+        /// </summary>
+        public async Task<CreateSprintDto> CreateNewSimulation(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability)
+        {
+            Sprint sprint = new Sprint();
+
+            sprint.Name = name;
+            sprint.Distance = distance;
+            sprint.StartDateTime = startTime;
+            sprint.CreatedBy = user;
+            sprint.Type = type;
+            sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+            sprint.InfluencerAvailability = influencerAvailability;
+            sprint.InfluencerEmail = infulenceEmail;
+            sprint.DraftEvent = draft;
+
+            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+            this.SprintRepo.SaveChanges();
+
+            return CreateSprintDtoMapper(sprint, user);
+        }
+
+        /// <summary>
         /// Create multiple sprints
         /// </summary>
         public async Task CreateMultipleSprints(
