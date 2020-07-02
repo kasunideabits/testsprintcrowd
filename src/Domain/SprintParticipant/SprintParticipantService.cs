@@ -61,7 +61,7 @@
         public async Task MarkAttendanceSimulation(List<int> userIds, int sprintId)
         {
             var simulation = await this.SprintParticipantRepo.GetSprint(sprintId);
-            if (simulation.StartDateTime.AddMinutes(-10) <= DateTime.UtcNow && DateTime.UtcNow <= simulation.StartDateTime.AddMinutes(15))
+            if (simulation.StartDateTime.AddMinutes(-5) <= DateTime.UtcNow && DateTime.UtcNow <= simulation.StartDateTime.AddMinutes(15))
             {
                 foreach (var userId in userIds)
                 {
@@ -191,45 +191,18 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Simulation not found");
             }
-            // else
-            // {
-            //     var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
-            //     if (simulation.NumberOfParticipants <= numberOfParticipants)
-            //     {
-            //         throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
-            //     }
-            // }
 
-            if (simulation.StartDateTime <= DateTime.UtcNow && DateTime.UtcNow <= simulation.StartDateTime.AddMinutes(15))
+            foreach (var userId in userIds)
             {
-                foreach (var userId in userIds)
+                var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
+                if (simulation.NumberOfParticipants <= numberOfParticipants)
                 {
-                    var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
-                    if (simulation.NumberOfParticipants <= numberOfParticipants)
-                    {
-                        throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
-                    }
-                    else
-                    {
-                        await this.SprintParticipantRepo.AddSprintParticipantMarkAttendance(sprintId, userId);
-                        this.SprintParticipantRepo.SaveChanges();
-                    }
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
                 }
-            }
-            else
-            {
-                foreach (var userId in userIds)
+                else
                 {
-                    var numberOfParticipants = this.SprintParticipantRepo.GetParticipantCount(sprintId);
-                    if (simulation.NumberOfParticipants <= numberOfParticipants)
-                    {
-                        throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
-                    }
-                    else
-                    {
-                        await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                        this.SprintParticipantRepo.SaveChanges();
-                    }
+                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                    this.SprintParticipantRepo.SaveChanges();
                 }
             }
         }
@@ -428,22 +401,22 @@
             var other = sprints.Select(s => new JoinedSprintDTO()
             {
                 SprintInfo = new SprintInfoDTO()
-                {
-                    Id = s.Sprint.Id,
-                    Name = s.Sprint.Name,
-                    Distance = s.Sprint.Distance,
-                    StartTime = s.Sprint.StartDateTime,
-                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
-                    Type = s.Sprint.Type,
-                    NumberOfParticipants = s.Sprint.NumberOfParticipants
-                },
-                ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pquery).Select(
+                    {
+                        Id = s.Sprint.Id,
+                            Name = s.Sprint.Name,
+                            Distance = s.Sprint.Distance,
+                            StartTime = s.Sprint.StartDateTime,
+                            ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                            Type = s.Sprint.Type,
+                            NumberOfParticipants = s.Sprint.NumberOfParticipants
+                    },
+                    ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pquery).Select(
                         sp => new ParticipantInfoDTO()
                         {
                             Id = sp.User.Id,
-                            Name = sp.User.Name,
-                            ColorCode = sp.User.ColorCode,
-                            IsFriend = friends.Contains(sp.User.Id)
+                                Name = sp.User.Name,
+                                ColorCode = sp.User.ColorCode,
+                                IsFriend = friends.Contains(sp.User.Id)
 
                         }
                     ).ToList()
@@ -463,13 +436,13 @@
             {
                 var creatorDto = new SprintInfoDTO()
                 {
-                    Id = creatorEvent.Sprint.Id,
-                    Name = creatorEvent.Sprint.Name,
-                    Distance = creatorEvent.Sprint.Distance,
-                    StartTime = creatorEvent.Sprint.StartDateTime,
-                    ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
-                    Type = creatorEvent.Sprint.Type,
-                    Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
+                Id = creatorEvent.Sprint.Id,
+                Name = creatorEvent.Sprint.Name,
+                Distance = creatorEvent.Sprint.Distance,
+                StartTime = creatorEvent.Sprint.StartDateTime,
+                ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
+                Type = creatorEvent.Sprint.Type,
+                Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
                 };
                 joinedSprintDto.Creator = creatorDto;
             }
