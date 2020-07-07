@@ -14,6 +14,11 @@ namespace SprintCrowd.BackEnd.Web.Event
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
+    using SprintCrowd.BackEnd.Web.Account;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using Newtonsoft.Json;
+    using System.Text;
 
     /// <summary>
     /// event controller
@@ -214,6 +219,41 @@ namespace SprintCrowd.BackEnd.Web.Event
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Upload users
+        /// </summary>
+        /// <param name="uploadData">upload user data</param>
+        [HttpPost("uploaduser")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> UploadUser([FromBody] List<RegisterModel> uploadData)
+        {
+            string BaseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+                var firstItem = uploadData[0];
+                if (firstItem.Email == string.Empty || firstItem.AccessToken == null)
+                {
+                    return this.BadRequest();
+                }
+                else
+                {
+                    foreach (var data in uploadData)
+                    {
+                        string payload = JsonConvert.SerializeObject(data);
+                        var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                        await client.PostAsync("/account/register", content);
+                    }
+                }
+            }
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = "Users uploaded successfully",
             };
             return this.Ok(response);
         }

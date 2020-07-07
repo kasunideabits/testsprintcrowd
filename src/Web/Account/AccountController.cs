@@ -42,5 +42,6 @@ namespace SprintCrowd.BackEnd.Web.Account
             await this.AchievementService.SignUp(user.Id);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = user });
         }
+
     }
 }
