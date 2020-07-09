@@ -165,6 +165,24 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
             SprintNotification entitySprintNotification = existingNotification.OrderByDescending(x => x.Id).FirstOrDefault();
 
+            if (existingNotification.Count == 1 && entitySprintNotification.SprintNotificationType != SprintNotificaitonType.Edit)
+            {
+                var sprintNotificaitonOne = new SprintNotification
+                {
+                    SprintNotificationType = SprintNotificaitonType.Edit,
+                    UpdatorId = entitySprintNotification.UpdatorId,
+                    SprintId = entitySprintNotification.SprintId,
+                    SprintName = entitySprintNotification.SprintName,
+                    Distance = entitySprintNotification.Distance,
+                    StartDateTime = entitySprintNotification.StartDateTime,
+                    SprintType = entitySprintNotification.SprintType,
+                    SprintStatus = entitySprintNotification.SprintStatus,
+                    NumberOfParticipants = entitySprintNotification.NumberOfParticipants
+                };
+
+                this.Context.SprintNotifications.Add(sprintNotificaitonOne);
+            }
+
             if (entitySprintNotification != null)
             {
                 var sprintNotificaiton = new SprintNotification
