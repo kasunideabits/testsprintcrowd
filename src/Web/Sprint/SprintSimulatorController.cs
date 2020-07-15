@@ -1,10 +1,14 @@
 namespace SprintCrowd.BackEnd.Web.Event
 {
     using System.Collections.Generic;
+    using System.Net.Http.Headers;
+    using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
     using System;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
@@ -13,19 +17,15 @@ namespace SprintCrowd.BackEnd.Web.Event
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Web.Account;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using Newtonsoft.Json;
-    using System.Text;
+    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// event controller
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class SprintSimulatorController : ControllerBase
     {
         /// <summary>
@@ -232,10 +232,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         public async Task<IActionResult> UploadUser([FromBody] List<RegisterModel> uploadData)
         {
             string BaseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
-            using (var client = new HttpClient())
+            using(var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(BaseUrl);
-                var firstItem = uploadData[0];
+                var firstItem = uploadData [0];
                 if (firstItem.Email == string.Empty || firstItem.AccessToken == null)
                 {
                     return this.BadRequest();

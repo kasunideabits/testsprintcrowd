@@ -65,7 +65,16 @@
             {
                 foreach (var userId in userIds)
                 {
-                    await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+                    var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+                    this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
+                        sprintId,
+                        userId,
+                        result.Name,
+                        result.ProfilePicture,
+                        result.Country,
+                        result.CountryCode,
+                        result.City,
+                        result.ColorCode);
                     this.SprintParticipantRepo.SaveChanges();
                 }
             }
@@ -201,7 +210,15 @@
                 }
                 else
                 {
-                    await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                    var joinedUser = await this.SprintParticipantRepo.AddSimulationParticipant(sprintId, userId);
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                        simulation.Id,
+                        simulation.Name,
+                        (SprintType)simulation.Type,
+                        joinedUser.User.Id,
+                        joinedUser.User.Name,
+                        joinedUser.User.ProfilePicture,
+                        true);
                     this.SprintParticipantRepo.SaveChanges();
                 }
             }
@@ -272,6 +289,23 @@
                         participant.FinishTime = DateTime.UtcNow;
                     }
                     this.SprintParticipantRepo.SaveChanges();
+                    this.NotificationClient.SprintNotificationJobs.SprintExit(
+                        participant.SprintId,
+                        participant.Sprint.Name,
+                        participant.Sprint.Distance,
+                        participant.Sprint.StartDateTime,
+                        participant.Sprint.NumberOfParticipants,
+                        (SprintStatus)participant.Sprint.Status,
+                        (SprintType)participant.Sprint.Type,
+                        participant.Sprint.CreatedBy.Id,
+                        participant.UserId,
+                        (int)participant.Stage,
+                        participant.User.Name,
+                        participant.User.ProfilePicture,
+                        participant.User.Code,
+                        participant.User.City,
+                        participant.User.Country,
+                        participant.User.CountryCode);
                 }
                 return new ExitSprintResult { Result = ExitResult.Success };
             }
@@ -401,22 +435,22 @@
             var other = sprints.Select(s => new JoinedSprintDTO()
             {
                 SprintInfo = new SprintInfoDTO()
-                    {
-                        Id = s.Sprint.Id,
-                            Name = s.Sprint.Name,
-                            Distance = s.Sprint.Distance,
-                            StartTime = s.Sprint.StartDateTime,
-                            ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
-                            Type = s.Sprint.Type,
-                            NumberOfParticipants = s.Sprint.NumberOfParticipants
-                    },
-                    ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pquery).Select(
+                {
+                    Id = s.Sprint.Id,
+                    Name = s.Sprint.Name,
+                    Distance = s.Sprint.Distance,
+                    StartTime = s.Sprint.StartDateTime,
+                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                    Type = s.Sprint.Type,
+                    NumberOfParticipants = s.Sprint.NumberOfParticipants
+                },
+                ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pquery).Select(
                         sp => new ParticipantInfoDTO()
                         {
                             Id = sp.User.Id,
-                                Name = sp.User.Name,
-                                ColorCode = sp.User.ColorCode,
-                                IsFriend = friends.Contains(sp.User.Id)
+                            Name = sp.User.Name,
+                            ColorCode = sp.User.ColorCode,
+                            IsFriend = friends.Contains(sp.User.Id)
 
                         }
                     ).ToList()
@@ -436,13 +470,13 @@
             {
                 var creatorDto = new SprintInfoDTO()
                 {
-                Id = creatorEvent.Sprint.Id,
-                Name = creatorEvent.Sprint.Name,
-                Distance = creatorEvent.Sprint.Distance,
-                StartTime = creatorEvent.Sprint.StartDateTime,
-                ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
-                Type = creatorEvent.Sprint.Type,
-                Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
+                    Id = creatorEvent.Sprint.Id,
+                    Name = creatorEvent.Sprint.Name,
+                    Distance = creatorEvent.Sprint.Distance,
+                    StartTime = creatorEvent.Sprint.StartDateTime,
+                    ExtendedTime = creatorEvent.Sprint.StartDateTime.AddMinutes(15),
+                    Type = creatorEvent.Sprint.Type,
+                    Creator = creatorEvent.Sprint.CreatedBy.Id == creatorEvent.UserId
                 };
                 joinedSprintDto.Creator = creatorDto;
             }

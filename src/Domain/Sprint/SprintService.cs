@@ -262,7 +262,14 @@
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
             this.SprintRepo.SaveChanges();
-
+            this.NotificationClient.NotificationReminderJobs.TimeReminder(
+                addedSprint.Id,
+                addedSprint.Name,
+                addedSprint.Distance,
+                addedSprint.StartDateTime,
+                addedSprint.NumberOfParticipants,
+                (SprintType)addedSprint.Type,
+                (SprintStatus)addedSprint.Status);
             return CreateSprintDtoMapper(sprint, user);
         }
 

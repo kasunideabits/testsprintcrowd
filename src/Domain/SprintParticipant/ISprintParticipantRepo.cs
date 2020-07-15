@@ -30,6 +30,14 @@
         Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId);
 
         /// <summary>
+        /// User join for an event
+        /// </summary>
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        Task<SprintParticipant> AddSimulationParticipant(int sprintId, int userId);
+
+        /// <summary>
         /// User mark attendance for an event directly
         /// </summary>
         /// <param name="sprintId">sprint id for join</param>

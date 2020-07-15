@@ -77,6 +77,26 @@
         }
 
         /// <summary>
+        /// User join for an event
+        /// </summary>
+        /// <param name="sprintId">sprint id for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        public async Task<SprintParticipant> AddSimulationParticipant(int sprintId, int userId)
+        {
+            var user = await this.GetParticipant(userId);
+            SprintParticipant participant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.JOINED,
+                User = user
+            };
+            var result = await this.Context.SprintParticipant.AddAsync(participant);
+            return result.Entity;
+        }
+
+        /// <summary>
         /// User mark attendance for an event directly
         /// </summary>
         /// <param name="sprintId">sprint id for join</param>
