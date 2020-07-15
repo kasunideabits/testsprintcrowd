@@ -81,7 +81,7 @@
         /// <param name="startFrom">start from time in minutes</param>
         /// <param name="currentTimeBuff">current time difference</param>
         /// <returns><see cref="SprintInfo"> sprint info </see> </returns>
-        Task<GetSprintDto> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
+        Task<List<GetCommonSprintDto>> GetSprints(int userId, SprintType? sprintType, ParticipantStage? stage, int? distanceFrom, int? distanceTo, int? startFrom, int? currentTimeBuff);
 
         /// <summary>
         /// Invite user to sprint

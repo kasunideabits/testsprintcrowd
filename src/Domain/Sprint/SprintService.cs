@@ -184,15 +184,15 @@
             int draft,
             bool influencerAvailability)
         {
-            if (type == (int)SprintType.PrivateSprint)
-            {
-                Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
-                var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
-                if (isAlreadyCreatedSprint != null)
-                {
-                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
-                }
-            }
+            // if (type == (int)SprintType.PrivateSprint)
+            // {
+            //     Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
+            //     var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
+            //     if (isAlreadyCreatedSprint != null)
+            //     {
+            //         throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
+            //     }
+            // }
 
             Sprint sprint = new Sprint();
             if (draft == 0)

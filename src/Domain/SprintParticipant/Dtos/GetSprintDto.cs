@@ -6,11 +6,17 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 {
     public class GetSprintDto
     {
-        public SprintInfoDTO Creator { get; set; }
+        public List<SprintInfoDTO> Creator { get; set; }
         public List<JoinedSprintDTO> Other { get; set; }
 
     }
 
+    public class GetCommonSprintDto
+    {
+        public SprintInfoDTO SprintInfo { get; set; }
+        public List<ParticipantInfoDTO> ParticipantInfo { get; set; }
+
+    }
     public class JoinedSprintDTO
     {
         public SprintInfoDTO SprintInfo { get; set; }
@@ -41,6 +47,5 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int Type { get; set; }
 
         public int NumberOfParticipants { get; set; }
-
     }
 }

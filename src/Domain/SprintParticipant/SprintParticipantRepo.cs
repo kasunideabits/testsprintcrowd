@@ -306,8 +306,8 @@
                 .Include(f => f.AcceptedUser)
                 .Include(f => f.SharedUser)
                 .Where(f =>
-                    (f.AcceptedUserId == userId || f.SharedUserId == userId) &&
-                    (f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                    (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
+                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>
