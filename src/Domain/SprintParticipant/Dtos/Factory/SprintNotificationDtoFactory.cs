@@ -81,6 +81,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintType,
                 notification.SprintStatus,
+                notification.PreviousSprintName,
+                notification.PreviousDistance,
+                notification.PreviousStartDate,
                 sender,
                 receiver
             );
@@ -100,6 +103,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintType,
                 notification.SprintStatus,
+                notification.PreviousSprintName,
+                notification.PreviousDistance,
+                notification.PreviousStartDate,
                 sender
             );
         }
@@ -118,6 +124,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.NumberOfParticipants,
                 notification.SprintStatus,
                 notification.SprintType,
+                notification.PreviousSprintName,
+                notification.PreviousDistance,
+                notification.PreviousStartDate,
                 sender.Id,
                 sender.Name,
                 sender.ProfilePicture,
@@ -160,7 +169,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
                 notification.SprintType,
-                notification.SprintStatus
+                notification.SprintStatus,
+                notification.PreviousSprintName,
+                notification.PreviousDistance,
+                notification.PreviousStartDate
             );
             this.NotificationType = notificationType;
         }
@@ -184,7 +196,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
                 notification.StartDateTime,
                 notification.NumberOfParticipants,
                 notification.SprintType,
-                notification.SprintStatus
+                notification.SprintStatus,
+                notification.PreviousSprintName,
+                notification.PreviousDistance,
+                notification.PreviousStartDate
             );
             this.EditedBy = new NotificationUserInfo(
                 editer.Id,
@@ -211,6 +226,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             int numberOfParticipant,
             SprintStatus sprintStatus,
             SprintType sprintType,
+            string previousSprintName,
+            string previousSprintDistance,
+            string previousSprintStartTime,
             int userId,
             string name,
             string profilePicture,
@@ -220,7 +238,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             string country,
             string countryCode)
         {
-            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startTime, numberOfParticipant, sprintType, sprintStatus);
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startTime, numberOfParticipant, sprintType, sprintStatus,previousSprintName,previousSprintDistance,previousSprintStartTime);
             this.DeletedBy = new NotificationUserInfo(userId, name, profilePicture, code, colorCode, city, country, countryCode);
         }
         public SprintNotificationInfo Sprint { get; }
@@ -237,9 +255,12 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             int numberOfParticipants,
             SprintType sprintType,
             SprintStatus sprintStatus,
+            string previousSprintName,
+            string previousSprintDistance,
+            string previousSprintStartTime,
             User user)
         {
-            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus,previousSprintName,previousSprintDistance,previousSprintStartTime);
             this.User = new NotificationUserInfo(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
         }
         public SprintNotificationInfo Sprint { get; }
@@ -256,10 +277,13 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             int numberOfParticipants,
             SprintType sprintType,
             SprintStatus sprintStatus,
+            string previousSprintName,
+            string previousSprintDistance,
+            string previousSprintStartTime,
             User inviter,
             User invitee)
         {
-            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
+            this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus, previousSprintName, previousSprintDistance, previousSprintStartTime);
             this.Inviter = new NotificationUserInfo(inviter.Id, inviter.Name, inviter.Email, inviter.ProfilePicture, inviter.Code, inviter.City, inviter.Country, inviter.CountryCode);
             this.Invitee = new NotificationUserInfo(invitee.Id, invitee.Name, invitee.Email, invitee.ProfilePicture, invitee.Code, invitee.City, invitee.Country, invitee.CountryCode);
 
@@ -278,7 +302,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             DateTime startTime,
             int numberOfParticipant,
             SprintType sprintType,
-            SprintStatus sprintStatus)
+            SprintStatus sprintStatus,
+            string previousSprintName,
+            string previousSprintDistance,
+            string previousSprintStartTime)
         {
             this.Id = id;
             this.Name = name;
@@ -287,7 +314,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             this.NumberOfParticipant = numberOfParticipant;
             this.SprintStatus = sprintStatus;
             this.SprintType = sprintType;
+            this.PreviousSprintName = previousSprintName;
+            this.PreviousSprintDistance = previousSprintDistance;
+            this.PreviousSprintStartTime = previousSprintStartTime;
         }
+       
 
         public int Id { get; }
         public string Name { get; }
@@ -296,6 +327,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int NumberOfParticipant { get; }
         public SprintStatus SprintStatus { get; }
         public SprintType SprintType { get; }
+
+        public string PreviousSprintName { get; }
+        public string PreviousSprintDistance { get; }
+        public string PreviousSprintStartTime { get; }
     }
 
     /// <summary>

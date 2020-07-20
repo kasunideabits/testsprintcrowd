@@ -21,6 +21,10 @@
         public SprintType SprintType { get; set; }
         public SprintStatus SprintStatus { get; set; }
         public int NumberOfParticipants { get; set; }
+
+        public string PreviousSprintName { get; set; }
+        public string PreviousStartDate { get; set; }
+        public string PreviousDistance { get; set; }
     }
 
     public class FriendNoticiation : Notification

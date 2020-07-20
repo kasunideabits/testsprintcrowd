@@ -195,7 +195,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     StartDateTime = edit.StartTime,
                     SprintType = entitySprintNotification.SprintType,
                     SprintStatus = entitySprintNotification.SprintStatus,
-                    NumberOfParticipants = entitySprintNotification.NumberOfParticipants
+                    NumberOfParticipants = entitySprintNotification.NumberOfParticipants,
+                    PreviousSprintName = "Previous Sprint Name : " + entitySprintNotification.SprintName,
+                    PreviousStartDate = "Previous Sprint Date : " + entitySprintNotification.StartDateTime.ToString(),
+                    PreviousDistance = "Previous Sprint Distance : " + entitySprintNotification.Distance.ToString()
+
                 };
 
                 this.Context.SprintNotifications.Add(sprintNotificaiton);
