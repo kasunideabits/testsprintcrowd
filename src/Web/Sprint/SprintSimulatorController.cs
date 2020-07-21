@@ -231,11 +231,13 @@ namespace SprintCrowd.BackEnd.Web.Event
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> UploadUser([FromBody] List<RegisterModel> uploadData)
         {
-            string BaseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
-            using(var client = new HttpClient())
+            // string baseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
+            string baseUrl = "http://localhost:7702"; // for dev environment. temp fix
+            using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(BaseUrl);
-                var firstItem = uploadData [0];
+                Console.WriteLine(baseUrl);
+                client.BaseAddress = new Uri(baseUrl);
+                var firstItem = uploadData[0];
                 if (firstItem.Email == string.Empty || firstItem.AccessToken == null)
                 {
                     return this.BadRequest();
