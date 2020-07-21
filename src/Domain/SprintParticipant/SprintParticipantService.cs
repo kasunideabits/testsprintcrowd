@@ -40,6 +40,8 @@
         public async Task MarkAttendence(int sprintId, int userId)
         {
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+            Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
+
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
