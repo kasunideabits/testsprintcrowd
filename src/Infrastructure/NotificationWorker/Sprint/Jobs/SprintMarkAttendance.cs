@@ -4,6 +4,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using System;
 
     /// <summary>
     /// Mark attendance notification handling
@@ -33,6 +34,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             MarkAttendance markAttendance = message as MarkAttendance;
             if (markAttendance != null)
             {
+                Console.WriteLine("SprintMarkAttendence Run" + markAttendance.Name + "markAttendance Run Sprint ID " + markAttendance.SprintId);
                 this.AblyMessage(markAttendance);
                 this.SendPushNotification(markAttendance);
             }
