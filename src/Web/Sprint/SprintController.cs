@@ -18,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    //  [Authorize]
+     [Authorize]
     public class SprintController : ControllerBase
     {
         /// <summary>
