@@ -761,5 +761,30 @@
             return reportData;
         }
 
+        /// <summary>
+        /// Validate Private Sprint Count For User
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+        /// <param name="privateSprintCount"> Limit of Private sprints </param>
+        /// <returns></returns>
+        public async Task<bool> ValidatePrivateSprintCountForUser(int userId, int lapsTime, int privateSprintCount)
+        {
+
+            var sprints = await this.SprintRepo.GetAllPrivateSprintsByUser(userId, lapsTime);
+            if (sprints != null)
+            {
+                if (sprints.Count > privateSprintCount)
+                    return false;
+                else
+                    return true;
+
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }

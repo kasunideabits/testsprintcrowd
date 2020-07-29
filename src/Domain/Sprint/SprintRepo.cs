@@ -372,5 +372,24 @@
             this.dbContext.SaveChanges();
         }
 
+
+        /// <summary>
+        /// Get created sprint count for given date range
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+        /// <param name="privateSprintCount"> Limit of Private sprints </param>
+        /// <returns>Created All, Public, Private sprints</returns>
+        public async Task<List<Sprint>> GetAllPrivateSprintsByUser(int userId, int lapsTime)
+        {
+            var now = lapsTime == 0 ? DateTime.UtcNow : DateTime.UtcNow.AddMinutes(lapsTime);
+
+
+
+            return await this.dbContext.Sprint
+                .Where(s => s.CreatedBy.Id == userId && s.Status != (int)SprintStatus.ARCHIVED && s.Type == (int)SprintType.PrivateSprint && s.StartDateTime > now)
+                .ToListAsync();
+        }
+
     }
 }
