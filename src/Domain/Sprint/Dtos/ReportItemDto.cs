@@ -41,13 +41,13 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         /// </summary>
         /// <value>event name.</value>
         [DisplayName("Sprint Type")]
-        public int SprintType { get; set; }
+        public string SprintType { get; set; }
 
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>event participants count.</value>
-        [DisplayName("Participants joined")]
+        [DisplayName("Joined")]
         public int ParticipantsCount { get; set; }
 
 
@@ -55,14 +55,14 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>participants count who marked their attendance.</value>
-        [DisplayName("Participants marked attendance")]
+        [DisplayName("Marked Attendance")]
         public int ParticipantsMarkedAttendance { get; set; }
 
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>participants count who finished event.</value>
-        [DisplayName("Participants finished sprint")]
+        [DisplayName("Completed")]
         public int ParticipantsFinishedSprint { get; set; }
     }
 }
