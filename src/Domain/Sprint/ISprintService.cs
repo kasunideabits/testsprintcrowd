@@ -134,7 +134,7 @@
         /// </summary>
         /// <param name="timespan">timespanc of the report</param>
         /// <returns>SprintReportDto</returns>
-        Task<List<SprintReportDto>> GetReport(string timespan);
+        Task<List<ReportItemDto>> GetReport(string timespan);
 
     }
 }

@@ -143,17 +143,11 @@
         Task<List<String>> GetSprintNames(string sprintName);
 
         /// <summary>
-        /// Get SprintReportDto by timespan
+        /// Get ReportItemDto by timespan
         /// </summary>
         /// <param name="timespan">timespanc of the report</param>
-        /// <returns>SprintReportDto</returns>
-        Task<List<SprintReportDto>> GetReport(string timespan);
+        /// <returns>ReportItemDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
 
-        /// <summary>
-        /// Get participant count for given sprint
-        /// </summary>
-        /// <param name="sprintName">sprint name</param>
-        /// <returns>sprint participant count</returns>
-        //int GetParticipantCount(string sprintName);
     }
 }

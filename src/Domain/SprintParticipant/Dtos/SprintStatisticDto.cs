@@ -17,6 +17,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         {
             if (participate.DistanceRan > 0)
             {
+                this.PublicEvent.TotalCompleted += 1;
                 this.PublicEvent.TotalDistance += participate.DistanceRan;
                 this.PublicEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
             }
@@ -26,6 +27,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         {
             if (participate.DistanceRan > 0)
             {
+                this.PrivateEvent.TotalCompleted += 1;
                 this.PrivateEvent.TotalDistance += participate.DistanceRan;
                 this.PrivateEvent.TotalTime += CalcTime(participate.StartedTime, participate.FinishTime);
             }
@@ -40,6 +42,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     public class EventStatDto
     {
+        public int TotalCompleted { get; set; }
         public int TotalDistance { get; set; }
         public int TotalTime { get; set; }
     }

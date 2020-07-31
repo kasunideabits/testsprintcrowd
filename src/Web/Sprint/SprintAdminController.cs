@@ -22,7 +22,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    //[Authorize(Policy.ADMIN)]
+    [Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -328,6 +328,9 @@
             {
                 var workSheet = package.Workbook.Worksheets.Add("sheetName");
                 workSheet.Cells.LoadFromCollection(reportData, true);
+                workSheet.Column(2).Style.Numberformat.Format = "dd/MM/yyyy hh:mm:ss AM/PM";
+                workSheet.Cells["A1:G1"].Style.Font.Bold = true;
+                workSheet.Cells["A1:G1"].AutoFitColumns();
                 package.Save();
             }
 

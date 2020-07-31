@@ -284,6 +284,7 @@
         /// </summary>
         /// <param name="timespan">timespanc of the report</param>
         /// <returns>SprintReportDto</returns>
+<<<<<<< HEAD
         public async Task<List<SprintReportDto>> GetReport(string timespan)
         {
             var participantCount = (from sprint in this.dbContext.Sprint
@@ -322,6 +323,97 @@
         //     return participantCount;
         // }
 
+=======
+        public async Task<List<ReportItemDto>> GetReport(string timespan)
+        {
+            var timePeriod = DateTime.Now;
+            switch (timespan)
+            {
+                case "week=1":
+                    timePeriod = DateTime.Now.AddDays(-7);
+                    break;
+                case "week=2":
+                    timePeriod = DateTime.Now.AddDays(-14);
+                    break;
+                case "month=1":
+                    timePeriod = DateTime.Now.AddMonths(-1);
+                    break;
+                case "mlast=3":
+                    timePeriod = DateTime.Now.AddMonths(-3);
+                    break;
+                case "mlast=6":
+                    timePeriod = DateTime.Now.AddMonths(-6);
+                    break;
+                case "year=1":
+                    timePeriod = DateTime.Now.AddYears(-1);
+                    break;
+            }
+
+            int GetJoinedParticipantsBySprint(int sprintId)
+            {
+                var joinedParticipantsCount = (from participant in this.dbContext.SprintParticipant
+                                               join sprint in this.dbContext.Sprint on participant.SprintId equals sprint.Id
+                                               join user in this.dbContext.User on participant.UserId equals user.Id
+                                               where ((participant.Stage == ParticipantStage.JOINED || participant.Stage == ParticipantStage.MARKED_ATTENDENCE || participant.Stage == ParticipantStage.COMPLETED || participant.Stage == ParticipantStage.QUIT) && sprint.Id == sprintId)
+                                               select new { participant }
+                                              ).Distinct().Count();
+
+                return joinedParticipantsCount;
+            }
+
+            int GetMarkedAttendanceParticipantsBySprint(int sprintId)
+            {
+                var markedParticipantsCount = (from participant in this.dbContext.SprintParticipant
+                                               join sprint in this.dbContext.Sprint on participant.SprintId equals sprint.Id
+                                               join user in this.dbContext.User on participant.UserId equals user.Id
+                                               where ((participant.Stage == ParticipantStage.MARKED_ATTENDENCE || participant.Stage == ParticipantStage.COMPLETED || participant.Stage == ParticipantStage.QUIT) && sprint.Id == sprintId)
+                                               select new { participant }
+                                              ).Distinct().Count();
+
+                return markedParticipantsCount;
+            }
+
+            int GetCompletedParticipantsBySprint(int sprintId)
+            {
+                var completedParticipantsCount = (from participant in this.dbContext.SprintParticipant
+                                                  join sprint in this.dbContext.Sprint on participant.SprintId equals sprint.Id
+                                                  join user in this.dbContext.User on participant.UserId equals user.Id
+                                                  where (participant.Stage == ParticipantStage.COMPLETED && sprint.Id == sprintId)
+                                                  select new { participant }
+                                              ).Distinct().Count();
+
+                return completedParticipantsCount;
+            }
+
+            //Query for sprints for the given timespan and output as a list if sprints.
+            var filteredSprintList = await (from sprint in this.dbContext.Sprint
+                                            where (timePeriod <= sprint.StartDateTime && sprint.Status == 2 && sprint.Type == 0)
+                                            select sprint
+                                     ).ToListAsync();
+
+            //Empty ReportItemDto list
+            List<ReportItemDto> reportItemDtos = new List<ReportItemDto>();
+
+            //Run a foreach on the above list of sprints and inside foreach bind data to the ReportItemDto object. Add the returned ReportItemDto list into another list.
+            foreach (var sprint in filteredSprintList)
+            {
+                var completedParticipantsCount = GetCompletedParticipantsBySprint(sprint.Id);
+                var rptItem = new ReportItemDto()
+                {
+                    SprintName = sprint.Name,
+                    Distance = sprint.Distance,
+                    StartDate = sprint.StartDateTime.ToLocalTime(),
+                    SprintType = sprint.Type == 0 ? "Public" : "Private",
+                    ParticipantsCount = (GetJoinedParticipantsBySprint(sprint.Id)),
+                    ParticipantsMarkedAttendance = (GetMarkedAttendanceParticipantsBySprint(sprint.Id)),
+                    ParticipantsFinishedSprint = completedParticipantsCount
+                };
+                reportItemDtos.Add(rptItem);
+            }
+            //return above returned ReportItemDto list.
+            return reportItemDtos;
+        }
+>>>>>>> SCROWD-533-BE-v2
         /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF

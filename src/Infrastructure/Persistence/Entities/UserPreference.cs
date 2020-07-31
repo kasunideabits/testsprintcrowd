@@ -5,19 +5,22 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public int Id { get; set; }
         public int UserId { get; set; }
         public bool Mon { get; set; } = true;
-        public bool Tue { get; set; } = false;
-        public bool Wed { get; set; } = false;
+        public bool Tue { get; set; } = true;
+        public bool Wed { get; set; } = true;
         public bool Thur { get; set; } = true;
-        public bool Fri { get; set; } = false;
+        public bool Fri { get; set; } = true;
         public bool Sat { get; set; } = true;
-        public bool Sun { get; set; } = false;
+        public bool Sun { get; set; } = true;
         public bool Morning { get; set; } = true;
-        public bool AfterNoon { get; set; } = false;
+        public bool AfterNoon { get; set; } = true;
         public bool Evening { get; set; } = true;
-        public bool Night { get; set; } = false;
-        public bool TwoToTen { get; set; } = true;
-        public bool EleToTwenty { get; set; } = false;
-        public bool TOneToThirty { get; set; } = false;
+        public bool Night { get; set; } = true;
+        public bool TwoToFive { get; set; } = true;
+        public bool SixToTen { get; set; } = true;
+        public bool ElevenToFifteen { get; set; } = true;
+        public bool SixteenToTwenty { get; set; } = true;
+        public bool TOneToThirty { get; set; } = true;
+        public bool ThirtyOneToFortyOne { get; set; } = true;
         public virtual User User { get; set; }
     }
 }
