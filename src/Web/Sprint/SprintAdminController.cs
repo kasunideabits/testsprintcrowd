@@ -318,6 +318,7 @@
         /// Return report according to given time period
         /// </summary>
         /// <param name="timespan">timespan to generate the report</param>
+        [AllowAnonymous]
         [HttpGet("getreport/{timespan}")]
         public async Task<IActionResult> GetReport(string timespan)
         {
