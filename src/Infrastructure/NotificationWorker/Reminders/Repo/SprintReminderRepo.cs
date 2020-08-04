@@ -33,7 +33,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                 .Where(s =>
                     s.User.SprintId == sprintId &&
                     s.User.User.UserState == Application.UserState.Active &&
-                    (s.User.Stage == ParticipantStage.JOINED || s.User.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
+                    (s.User.Stage == ParticipantStage.JOINED) &&
                     (
                         (s.Reminders.TwentyFourH && SprintNotificaitonType.TimeReminderBeforeStart == notificationType) ||
                         (s.Reminders.OneH && SprintNotificaitonType.TimeReminderOneHourBefore == notificationType) ||
