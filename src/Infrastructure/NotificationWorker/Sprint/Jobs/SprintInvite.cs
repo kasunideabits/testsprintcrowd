@@ -127,7 +127,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private User GetUser(int userId)
         {
-            return this.Context.User.FirstOrDefault(u => u.Id == userId && u.UserState == UserState.Active);
+            return this.Context.User.FirstOrDefault(u => u.Id == userId);
         }
 
         private SCFireBaseNotificationMessage GetNotification(string userLang)
