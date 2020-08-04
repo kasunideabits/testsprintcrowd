@@ -178,7 +178,7 @@
         public async Task<IActionResult> ValidatePrivateSprintCountForUser(int userId)
         {
             int lapsTime = Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime != null ? int.Parse(Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime) : 15;
-            int privateSprintCount = Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount != null ? int.Parse(Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount) : 2;
+            int privateSprintCount = Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount != null ? int.Parse(Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount) : 100;
             var result = await this.SprintService.ValidatePrivateSprintCountForUser(userId, lapsTime, privateSprintCount);
             return this.Ok(result);
         }
