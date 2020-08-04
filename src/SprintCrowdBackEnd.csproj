@@ -35,6 +35,6 @@
     <PackageReference Include="EPPlus" Version="4.5.2.1"/>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// inerface for event repo
@@ -115,6 +116,11 @@
         /// <returns>Friends</returns>
         IEnumerable<Friend> GetFriends(int userId);
 
+        /// <summary>
+        /// Get user list for given influencerEmail
+        /// </summary>
+        /// <param name="influencerEmail">influencerEmail to fetch</param>
+        /// <returns>User</returns>
         Task<User> FindInfluencer(string influencerEmail);
 
         /// <summary>
@@ -122,6 +128,11 @@
         /// </summary>
         void SaveChanges();
 
+        /// <summary>
+        /// Get UserPreference for given userId
+        /// </summary>
+        /// <param name="userId">userId to fetch</param>
+        /// <returns>UserPreference</returns>
         Task<UserPreference> GetUserPreference(int userId);
 
         /// <summary>
