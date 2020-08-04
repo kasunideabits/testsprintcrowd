@@ -22,7 +22,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    // [Authorize(Policy.ADMIN)]
+    [Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -184,6 +184,7 @@
         /// drafts an event
         /// </summary>
         /// <param name="sprint">info about the sprint</param>
+        /// <param name="repeatType">repeat type of the sprint</param>
         [HttpPost("draft/{repeatType}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint, string repeatType)
@@ -317,6 +318,7 @@
         /// Return report according to given time period
         /// </summary>
         /// <param name="timespan">timespan to generate the report</param>
+        [AllowAnonymous]
         [HttpGet("getreport/{timespan}")]
         public async Task<IActionResult> GetReport(string timespan)
         {
@@ -339,7 +341,6 @@
 
             return this.File(stream, contentType, fileName);
         }
-
 
     }
 }
