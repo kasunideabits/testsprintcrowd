@@ -331,7 +331,7 @@
                 workSheet.Cells.LoadFromCollection(reportData, true);
                 workSheet.Column(2).Style.Numberformat.Format = "dd/MM/yyyy hh:mm:ss AM/PM";
                 workSheet.Cells["A1:G1"].Style.Font.Bold = true;
-                workSheet.Cells["A1:G1"].AutoFitColumns();
+                //workSheet.Cells["A1:G1"].AutoFitColumns();
                 package.Save();
             }
 

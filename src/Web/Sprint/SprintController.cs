@@ -18,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+     [Authorize]
     public class SprintController : ControllerBase
     {
         /// <summary>
@@ -164,6 +164,23 @@
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
+        }
+
+
+        /// <summary>
+        /// Validate Private Sprint Count For User
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("privatesprintcount/{userId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> ValidatePrivateSprintCountForUser(int userId)
+        {
+            int lapsTime = Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime != null ? int.Parse(Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime) : 15;
+            int privateSprintCount = Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount != null ? int.Parse(Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount) : 100;
+            var result = await this.SprintService.ValidatePrivateSprintCountForUser(userId, lapsTime, privateSprintCount);
+            return this.Ok(result);
         }
 
     }
