@@ -54,7 +54,7 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
         public int GetTotalDistance(int userId, SprintType sprintType)
         {
             var result = this.Context.SprintParticipant
-                .Where(s => s.Sprint.Type == (int)sprintType && s.UserId == userId && s.Stage == ParticipantStage.COMPLETED)
+                .Where(s => s.UserId == userId && s.Stage == ParticipantStage.COMPLETED)
                 .Sum(s => s.Sprint.Distance);
             return result;
         }
