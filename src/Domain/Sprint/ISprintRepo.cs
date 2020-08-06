@@ -149,5 +149,15 @@
         /// <returns>ReportItemDto</returns>
         Task<List<ReportItemDto>> GetReport(string timespan);
 
+        /// <summary>
+        /// Get new private sprint count for given user ID
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllPrivateSprintsByUser(int userId, int lapsTime);
+
+
     }
 }
