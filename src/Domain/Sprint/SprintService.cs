@@ -774,7 +774,7 @@
             var sprints = await this.SprintRepo.GetAllPrivateSprintsByUser(userId, lapsTime);
             if (sprints != null)
             {
-                if (sprints.Count > privateSprintCount)
+                if (sprints.Count >= privateSprintCount)
                     return false;
                 else
                     return true;
