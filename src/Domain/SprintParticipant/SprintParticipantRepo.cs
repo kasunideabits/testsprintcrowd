@@ -140,7 +140,23 @@
                 .Include(p => p.User)
                 .Include(p => p.Sprint)
                 .Where(p => p.SprintId == sprintId && (p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE || p.Stage == ParticipantStage.QUIT) && p.User.UserState == UserState.Active)
+                // .Where(p => p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE || p.Stage == ParticipantStage.QUIT && p.User.UserState == UserState.Active)
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get all non joined pariticipant<see cref="SprintParticipant"> stage </see>
+        /// </summary>
+        /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
+        public async Task<List<SprintParticipant>> GetAllNonJoinedParticipants()
+        {
+            var nonJoined = await this.Context.SprintParticipant
+                .Include(p => p.User)
+                .Include(p => p.Sprint)
+                .Where(p => p.Stage == ParticipantStage.JOINED || p.Stage == ParticipantStage.MARKED_ATTENDENCE && p.User.UserState == UserState.Active)
+                .ToListAsync();
+
+            return nonJoined;
         }
 
         /// <summary>
@@ -307,7 +323,7 @@
                 .Include(f => f.SharedUser)
                 .Where(f =>
                     (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
-                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                                                                              //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>

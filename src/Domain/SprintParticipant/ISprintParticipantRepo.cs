@@ -194,6 +194,12 @@
         User GetCreator(int sprintId);
 
         /// <summary>
+        /// Get all non joined pariticipant<see cref="SprintParticipant"> stage </see>
+        /// </summary>
+        /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
+        Task<List<SprintParticipant>> GetAllNonJoinedParticipants();
+
+        /// <summary>
         /// saves changed to db
         /// </summary>
         void SaveChanges();

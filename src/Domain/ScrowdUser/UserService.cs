@@ -55,7 +55,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns><see cref="User"> All users info details </see></returns>
         public async Task<List<User>> GetAllUsers(string keyword, int simulationId)
         {
-            var joinedParticipants = await this.sprintParticipantRepo.GetAllParticipants(simulationId);
+            var joinedParticipants = await this.sprintParticipantRepo.GetAllNonJoinedParticipants();
             var users = await this.userRepo.GetAllUsers(keyword);
             List<User> filteredUsers = new List<User>();
 
