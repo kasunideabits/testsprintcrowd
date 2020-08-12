@@ -37,10 +37,10 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
             {
                 UserAchievement firstSignUp = new UserAchievement()
                 {
-                Type = Infrastructure.Persistence.Entities.AchievementType.JoinedTheCrowd,
-                AchivedOn = DateTime.UtcNow,
-                UserId = userId,
-                Percentage = 100,
+                    Type = Infrastructure.Persistence.Entities.AchievementType.JoinedTheCrowd,
+                    AchivedOn = DateTime.UtcNow,
+                    UserId = userId,
+                    Percentage = 100,
                 };
                 var achievement = await this.AchievementRepo.Add(firstSignUp);
                 this.AchievementRepo.SaveChanges();
@@ -226,9 +226,9 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
             return new UserAchievement()
             {
                 Type = type,
-                    AchivedOn = DateTime.UtcNow,
-                    UserId = userId,
-                    Percentage = 100,
+                AchivedOn = DateTime.UtcNow,
+                UserId = userId,
+                Percentage = 100,
             };
         }
 

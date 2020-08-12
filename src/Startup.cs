@@ -69,12 +69,12 @@
 
             var appSettings = appSettingsSection.Get<AppSettings>();
             this.AddAuthentication(services, appSettings);
-            
+
             var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
             services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
-            
+
             this.AddDatabase(services);
-            
+
             services.AddMvc(options =>
             {
                 // ignore self referencing loops newtonsoft.
@@ -85,20 +85,25 @@
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     }, ArrayPool<char>.Shared));
             });
-            
+
             this.AddSwagger(services);
-            
+
             this.RegisterDependencyInjection(services);
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Content-Disposition")); //added for reports
+
             });
-            
+
+
             NotificationWorkerEntry.Initialize(this.Configuration, services);
+
+            // SetupDefaultPrivateSprintConfiguration();
         }
 
         /// <summary>
@@ -152,8 +157,8 @@
             //     .AllowAnyMethod()
             //     .AllowAnyHeader()
             //     .AllowCredentials());
-              app.UseCors("CorsPolicy");
-              
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
@@ -161,14 +166,14 @@
             });
 
             app.UseAuthentication();
-            
-           NotificationWorkerEntry.EnableWorkerDashboard(app);
-              
+
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
+
             app.UseSwagger(c =>
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Host = httpReq.Host.Value;;
+                    swaggerDoc.Host = httpReq.Host.Value; ;
                     swaggerDoc.BasePath = httpReq.PathBase;
                 });
             });
@@ -215,5 +220,14 @@
             // register the scope authorization handler
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
+
+        // private void SetupDefaultPrivateSprintConfiguration()
+        // {
+
+        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount = Configuration["PrivateSprint:PrivateSprintCount"] != null ? Configuration["PrivateSprint:PrivateSprintCount"].ToString() : "100";
+        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime = Configuration["PrivateSprint:LapsTime"] != null ? Configuration["PrivateSprint:LapsTime"].ToString() : "15";
+
+
+        // }
     }
 }

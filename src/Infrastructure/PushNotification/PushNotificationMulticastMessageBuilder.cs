@@ -14,6 +14,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         public PushNotificationMulticastMessageBuilder()
         {
             this.FireBaseMessage = new MulticastMessage();
+            this.FireBaseMessage.Apns = new ApnsConfig()
+            {
+                Aps = new Aps()
+                {
+                    CriticalSound = new CriticalSound()
+                    {
+                        Critical = false,
+                        Name = "default",
+                        Volume = 1.0
+                    }
+                }
+            };
         }
 
         private MulticastMessage FireBaseMessage { get; set; }

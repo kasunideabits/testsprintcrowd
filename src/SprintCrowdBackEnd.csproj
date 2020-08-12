@@ -1,32 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <ProjectGuid>{7abf6823-deaf-44cc-b5d9-0311fe1e3950}</ProjectGuid>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
     <ProjectGuid>{698696AD-9060-4DA3-9DFB-0B406BBAF4C3}</ProjectGuid>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
-
   <PropertyGroup>
     <CodeAnalysisRuleSet>../sprintcrowd.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefaultItemExcludes>$(DefaultItemExcludes);Tests/**</DefaultItemExcludes>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="ably.io" Version="0.8.11" />
-    <PackageReference Include="FirebaseAdmin" Version="1.9.1" />
-    <PackageReference Include="IdentityServer4" Version="2.3.2" />
-
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.0" />
-    <PackageReference Include="RestSharp" Version="106.6.7" />
-    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00788" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0-dev-00806" />
-    <PackageReference Include="RestSharp" Version="106.6.7" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
-    <PackageReference Include="HangFire.Core" Version="1.7.6" />
-    <PackageReference Include="Hangfire.PostgreSql" Version="1.6.3" />
+    <PackageReference Include="ably.io" Version="0.8.11"/>
+    <PackageReference Include="FirebaseAdmin" Version="1.9.1"/>
+    <PackageReference Include="IdentityServer4" Version="2.3.2"/>
+    <PackageReference Include="Microsoft.AspNetCore.App"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.0"/>
+    <PackageReference Include="RestSharp" Version="106.6.7"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1"/>
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00788"/>
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0-dev-00806"/>
+    <PackageReference Include="RestSharp" Version="106.6.7"/>
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6"/>
+    <PackageReference Include="HangFire.Core" Version="1.7.6"/>
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.6.3"/>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-beta.61">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -35,11 +31,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1"/>
+    <PackageReference Include="EPPlus" Version="4.5.2.1"/>
   </ItemGroup>
-
   <ItemGroup>
-    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="Translations\**" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-
 </Project>

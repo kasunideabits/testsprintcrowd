@@ -129,5 +129,22 @@
         /// <returns>cereated sprint</returns>
         Task<CreateSprintDto> DuplicateSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability);
 
+        /// <summary>
+        /// Get SprintReportDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>SprintReportDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
+
+
+        /// <summary>
+        /// Validate Private Sprint Count For User
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+        /// <param name="privateSprintCount"> Limit of Private sprints </param>
+        /// <returns></returns>
+        Task<bool> ValidatePrivateSprintCountForUser(int userId, int lapsTime, int privateSprintCount);
+
     }
 }

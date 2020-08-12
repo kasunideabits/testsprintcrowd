@@ -7,7 +7,9 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// inerface for event repo
@@ -114,6 +116,11 @@
         /// <returns>Friends</returns>
         IEnumerable<Friend> GetFriends(int userId);
 
+        /// <summary>
+        /// Get user list for given influencerEmail
+        /// </summary>
+        /// <param name="influencerEmail">influencerEmail to fetch</param>
+        /// <returns>User</returns>
         Task<User> FindInfluencer(string influencerEmail);
 
         /// <summary>
@@ -121,6 +128,11 @@
         /// </summary>
         void SaveChanges();
 
+        /// <summary>
+        /// Get UserPreference for given userId
+        /// </summary>
+        /// <param name="userId">userId to fetch</param>
+        /// <returns>UserPreference</returns>
         Task<UserPreference> GetUserPreference(int userId);
 
         /// <summary>
@@ -129,5 +141,23 @@
         /// <param name="sprintName">name of the sprint</param>
         /// <returns>Friends</returns>
         Task<List<String>> GetSprintNames(string sprintName);
+
+        /// <summary>
+        /// Get ReportItemDto by timespan
+        /// </summary>
+        /// <param name="timespan">timespanc of the report</param>
+        /// <returns>ReportItemDto</returns>
+        Task<List<ReportItemDto>> GetReport(string timespan);
+
+        /// <summary>
+        /// Get new private sprint count for given user ID
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllPrivateSprintsByUser(int userId, int lapsTime);
+
+
     }
 }

@@ -56,13 +56,22 @@ namespace SprintCrowd.BackEnd.Web.ScrowdUser.Models
     public class DistanceModel
     {
         [Required]
-        public bool TwoToTen { get; set; }
+        public bool TwoToFive { get; set; }
 
         [Required]
-        public bool EleToTwenty { get; set; }
+        public bool SixToTen { get; set; }
+
+        [Required]
+        public bool ElevenToFifteen { get; set; }
+
+        [Required]
+        public bool SixteenToTwenty { get; set; }
 
         [Required]
         public bool TOneToThirty { get; set; }
+
+        [Required]
+        public bool ThirtyOneToFortyOne { get; set; }
     }
 
 }

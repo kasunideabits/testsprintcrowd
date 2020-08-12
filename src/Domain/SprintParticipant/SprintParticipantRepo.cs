@@ -254,8 +254,8 @@
                 .Include(f => f.AcceptedUser)
                 .Include(f => f.SharedUser)
                 .Where(f =>
-                    (f.AcceptedUserId == userId || f.SharedUserId == userId) &&
-                    (f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                    (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
+                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>
@@ -314,7 +314,7 @@
                 .Include(s => s.Sprint)
                 .Where(s =>
                     s.UserId == userId &&
-                    (s.Sprint.StartDateTime > fetchDate.Date && s.Sprint.StartDateTime.Date < fetchDate.AddDays(1).Date && s.Sprint.StartDateTime > now.AddMinutes(-15)) &&
+                    (s.Sprint.StartDateTime > fetchDate.Date && s.Sprint.StartDateTime > now.AddMinutes(-15)) &&
                     (s.Sprint.Status == (int)SprintStatus.NOTSTARTEDYET || s.Sprint.Status == (int)SprintStatus.INPROGRESS) &&
                     s.Stage == ParticipantStage.JOINED)
                 .Select(s => s.Sprint);

@@ -184,15 +184,15 @@
             int draft,
             bool influencerAvailability)
         {
-            if (type == (int)SprintType.PrivateSprint)
-            {
-                Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
-                var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
-                if (isAlreadyCreatedSprint != null)
-                {
-                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
-                }
-            }
+            // if (type == (int)SprintType.PrivateSprint)
+            // {
+            //     Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
+            //     var isAlreadyCreatedSprint = await this.SprintRepo.GetSprint(predicate);
+            //     if (isAlreadyCreatedSprint != null)
+            //     {
+            //         throw new SCApplicationException((int)SprintErrorCode.AlreadyExistSprint, "Already exist event");
+            //     }
+            // }
 
             Sprint sprint = new Sprint();
             if (draft == 0)
@@ -753,7 +753,38 @@
                 }
             }
             return sprintDto;
-
         }
+
+        public async Task<List<ReportItemDto>> GetReport(string timespan)
+        {
+            var reportData = await this.SprintRepo.GetReport(timespan);
+            return reportData;
+        }
+
+        /// <summary>
+        /// Validate Private Sprint Count For User
+        /// </summary>
+        /// <param name="userId"> creator id </param>
+        /// <param name="lapsTime"> laps Time </param>
+        /// <param name="privateSprintCount"> Limit of Private sprints </param>
+        /// <returns></returns>
+        public async Task<bool> ValidatePrivateSprintCountForUser(int userId, int lapsTime, int privateSprintCount)
+        {
+
+            var sprints = await this.SprintRepo.GetAllPrivateSprintsByUser(userId, lapsTime);
+            if (sprints != null)
+            {
+                if (sprints.Count >= privateSprintCount)
+                    return false;
+                else
+                    return true;
+
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }

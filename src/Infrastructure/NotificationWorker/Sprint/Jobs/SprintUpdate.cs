@@ -153,14 +153,62 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void UpdateSprintNotification(UpdateSprint edit)
         {
+            //List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
+            //existingNotification.ForEach(n =>
+            //{
+            //    n.SprintName = edit.NewSprintName;
+            //    n.Distance = edit.Distance;
+            //    n.StartDateTime = edit.StartTime;
+            //});
+            //this.Context.SprintNotifications.UpdateRange(existingNotification);
+
             List<SprintNotification> existingNotification = this.Context.SprintNotifications.Where(s => s.SprintId == edit.SprintId).ToList();
-            existingNotification.ForEach(n =>
+            SprintNotification entitySprintNotification = existingNotification.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            if (existingNotification.Count == 1 && entitySprintNotification.SprintNotificationType != SprintNotificaitonType.Edit)
             {
-                n.SprintName = edit.NewSprintName;
-                n.Distance = edit.Distance;
-                n.StartDateTime = edit.StartTime;
-            });
-            this.Context.SprintNotifications.UpdateRange(existingNotification);
+                var sprintNotificaitonOne = new SprintNotification
+                {
+                    SprintNotificationType = SprintNotificaitonType.Edit,
+                    UpdatorId = entitySprintNotification.UpdatorId,
+                    SprintId = entitySprintNotification.SprintId,
+                    SprintName = entitySprintNotification.SprintName,
+                    Distance = entitySprintNotification.Distance,
+                    StartDateTime = entitySprintNotification.StartDateTime,
+                    SprintType = entitySprintNotification.SprintType,
+                    SprintStatus = entitySprintNotification.SprintStatus,
+                    NumberOfParticipants = entitySprintNotification.NumberOfParticipants
+                };
+
+                this.Context.SprintNotifications.Add(sprintNotificaitonOne);
+            }
+
+            if (entitySprintNotification != null)
+            {
+                var sprintNotificaiton = new SprintNotification
+                {
+                    SprintNotificationType = SprintNotificaitonType.Edit,
+                    UpdatorId = entitySprintNotification.UpdatorId,
+                    SprintId = entitySprintNotification.SprintId,
+                    SprintName = edit.NewSprintName,
+                    Distance = edit.Distance,
+                    StartDateTime = edit.StartTime,
+                    SprintType = entitySprintNotification.SprintType,
+                    SprintStatus = entitySprintNotification.SprintStatus,
+                    NumberOfParticipants = entitySprintNotification.NumberOfParticipants
+                };
+
+                this.Context.SprintNotifications.Add(sprintNotificaiton);
+            }
+
+            //if (entitySprintNotification != null)
+            //{
+            //    entitySprintNotification.SprintName = edit.NewSprintName;
+            //    entitySprintNotification.Distance = edit.Distance;
+            //    entitySprintNotification.StartDateTime = edit.StartTime;
+
+            //    this.Context.SprintNotifications.UpdateRange(entitySprintNotification);
+            //}
         }
 
         private List<string> GetTokens(List<int> participantIds)
