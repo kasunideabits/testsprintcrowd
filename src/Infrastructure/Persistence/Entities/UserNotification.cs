@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     public class UserNotification : BaseEntity
@@ -9,5 +11,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public virtual User Sender { get; set; }
         public virtual User Receiver { get; set; }
         public virtual Notification Notification { get; set; }
+        
+        [DefaultValue(1)]
+        public int BadgeValue { get; set; }       
     }
 }

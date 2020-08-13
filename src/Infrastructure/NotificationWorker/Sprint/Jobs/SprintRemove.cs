@@ -13,19 +13,23 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     public class SprintRemove : ISprintRemove
     {
-        public SprintRemove(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory)
+        public SprintRemove(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.PushNotificationClient = client;
             this.AblyConnectionFactory = ablyFactory;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
 
         public void Run(object message = null)
         {
@@ -74,7 +78,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.Remove).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(null, 0)
                 .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
@@ -152,6 +156,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     SenderId = remove.UserId,
                     ReceiverId = id,
                     NotificationId = notification.Entity.Id,
+                    BadgeValue = 1,
                 });
 
             });

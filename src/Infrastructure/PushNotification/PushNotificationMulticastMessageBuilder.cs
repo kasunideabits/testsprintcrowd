@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FirebaseAdmin.Messaging;
+using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
 namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
 {
@@ -11,13 +12,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         /// <summary>
         /// Initialize PushNotificationMulticastMessageBuilder class
         /// </summary>
-        public PushNotificationMulticastMessageBuilder()
+        public PushNotificationMulticastMessageBuilder(ISprintParticipantRepo sprintParticipantRepo, int participantUserId)
         {
+            
             this.FireBaseMessage = new MulticastMessage();
             this.FireBaseMessage.Apns = new ApnsConfig()
             {
                 Aps = new Aps()
                 {
+                    Badge = sprintParticipantRepo != null ? sprintParticipantRepo.GetParticipantUnreadNotificationCount(participantUserId) :0,
                     CriticalSound = new CriticalSound()
                     {
                         Critical = false,
@@ -28,7 +31,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
             };
         }
 
+       
         private MulticastMessage FireBaseMessage { get; set; }
+        private  int ParticipantUser { get; set; }
 
         /// <summary>
         /// Data for message
@@ -53,6 +58,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.PushNotification
         /// </summary>
         public PushNotificationMulticastMessageBuilder Notification(string title, string body)
         {
+            
             var notificaiton = new Notification()
             {
                 Title = title,

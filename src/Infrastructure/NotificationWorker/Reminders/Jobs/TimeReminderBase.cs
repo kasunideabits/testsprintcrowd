@@ -14,7 +14,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
     {
         public TimeReminderBase()
         {
-            this.MessageBuilder = new PushNotificationMulticastMessageBuilder();
+            this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null,0);
         }
 
         private PushNotificationMulticastMessageBuilder MessageBuilder { get; set; }

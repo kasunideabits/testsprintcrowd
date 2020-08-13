@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using SprintCrowd.BackEnd.Domain.SprintParticipant;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Dtos;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -10,14 +11,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
 {
     public class AchievementJob : IAchievementJob
     {
-        public AchievementJob(ScrowdDbContext context, IPushNotificationClient client)
+        public AchievementJob(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.AchievementJobRepo = new AchievementJobRepo(context);
             this.Client = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
-
+        
         private AchievementJobRepo AchievementJobRepo { get; }
         private IPushNotificationClient Client { get; }
+
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
 
         public void Run(object message = null)
         {
@@ -29,6 +34,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
                 var notificationId = this.AchievementJobRepo.AddNotification((AchievementType)achievement.Type, achievement.AchievedOn);
                 var systemUser = this.AchievementJobRepo.GetSystemUser();
                 var participant = this.AchievementJobRepo.GetUser(achievement.UserId);
+                this.ParticipantUserId = achievement.UserId;
                 this.AchievementJobRepo.AddUserNotification(systemUser.Id, achievement.UserId, notificationId);
                 var notification = new AchievementTranslation(participant.LanguagePreference).Get((AchievementType)achievement.Type);
                 var tokens = this.AchievementJobRepo.GetTokens(achievement.UserId);
@@ -52,7 +58,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             data.Add("SubType", ((int)notificationData.Type).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+
+            
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo,this.ParticipantUserId)
                 .Notification(notification.Title, notification.Body)
                 .Message(data)
                 .Tokens(tokens)

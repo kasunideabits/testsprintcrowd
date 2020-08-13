@@ -12,22 +12,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     public class SprintParticipantRemove : ISprintParticipantRemove
     {
 
-        public SprintParticipantRemove(ScrowdDbContext context, IAblyConnectionFactory ablyConnectionFactory, IPushNotificationClient pushNotificationClient)
+        public SprintParticipantRemove(ScrowdDbContext context, IAblyConnectionFactory ablyConnectionFactory, IPushNotificationClient pushNotificationClient, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyConnectionFactory;
             this.PushNotificationClient = pushNotificationClient;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
         private IPushNotificationClient PushNotificationClient { get; }
 
-
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
         public void Run(Object message = null)
         {
             RemoveParticipant removeParticipant = null;
@@ -56,6 +59,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 var notificationData = RemoveParticipantNotificationMessageMapper.PushNotificationMessgeMapper(removeParticipant);
                 var user = this.GetUser(removeParticipant.UserId);
                 var tokens = this.GetTokens(removeParticipant.UserId);
+                this.ParticipantUserId = removeParticipant.UserId;
                 var notification = this.GetNotification(user.LanguagePreference);
                 var notificationBody = String.Format(notification.Body, removeParticipant.CreatorName, removeParticipant.SprintName);
                 var notificationMessage = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationData);
@@ -73,7 +77,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.RemoveParticipsnt).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notificationTitle, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
@@ -101,6 +105,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 SenderId = creatorId,
                 ReceiverId = removeParticipant.UserId,
                 NotificationId = notification.Entity.Id,
+                BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
             return notification.Entity.Id;

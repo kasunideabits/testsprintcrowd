@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SprintCrowd.BackEnd.Application;
+using SprintCrowd.BackEnd.Domain.SprintParticipant;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -17,10 +18,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     /// </summary>
     public class SprintInvite : ISprintInvite
     {
-        public SprintInvite(ScrowdDbContext context, IPushNotificationClient client)
+        public SprintInvite(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.PushNotificationClient = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private ScrowdDbContext Context { get; }
@@ -31,7 +33,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private Infrastructure.Persistence.Entities.Sprint Sprint { get; set; }
         private User Inviter { get; set; }
         private User Invitee { get; set; }
-
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
         /// <summary>
         /// Run notification logic
         /// </summary>
@@ -52,6 +55,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 if (this.Sprint != null && this.Invitee != null && this.Inviter != null)
                 {
                     var notificationId = this.AddToDatabaase();
+                    this.ParticipantUserId = this.Invitee.Id;
                     if (notificationId != -1)
                     {
                         this.SendPushNotification(notificationId);
@@ -119,7 +123,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notification = this.GetNotification(user.LanguagePreference);
             var notificationBody = String.Format(notification.Body, inviter.Name, sprint.Name);
             var tokens = this.GetTokens();
-            var message = new PushNotificationMulticastMessageBuilder()
+            var message = new PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notification.Title, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
@@ -173,6 +177,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     SenderId = this._inviterId,
                     ReceiverId = this._inviteeId,
                     NotificationId = result.Entity.Id,
+                    BadgeValue = 1,
                 };
                 this.Context.UserNotification.Add(userNotification);
                 this.Context.SaveChanges();
