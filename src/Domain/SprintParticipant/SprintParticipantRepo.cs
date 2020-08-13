@@ -193,6 +193,20 @@
         }
 
         /// <summary>
+        /// Update BadgeCount By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        public void UpdateBadgeCountByUserId(int userId)
+        {
+            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId).ToList();
+            userNotification.ForEach(n =>
+            {
+                n.BadgeValue = 0;
+            });
+            this.Context.UserNotification.UpdateRange(userNotification);
+        }
+
+        /// <summary>
         /// Get Unread Participant Notification Count
         /// </summary>
         /// <param name="userId"></param>

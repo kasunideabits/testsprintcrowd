@@ -520,6 +520,9 @@
         /// <returns>all notificaiton related to given userid</returns>
         public List<dynamic> GetNotification(int userId)
         {
+            // set badge cout to "0" for the requested user
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             var result = new List<object>();
 
