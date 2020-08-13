@@ -13,6 +13,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// join sprint notification handling
@@ -24,17 +25,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// </summary>
         /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintJoin(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, IPushNotificationClient client)
+        public SprintJoin(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
             this.PushNotificationClient = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
         private JoinSprint _joinSprint { get; set; }
+
+        private int ParticipantUserId { get; set; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         /// <summary>
         /// Run notification logic
@@ -110,9 +115,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
                     var translation = this.GetNotification(group.Key);
                     var notification = this.GetFriendJoin(translation);
+                    
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name, this._joinSprint.SprintName);
-                    var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, participant, eventInfo, SprintNotificaitonType.FriendJoin);
-                    this.PushNotificationClient.SendMulticaseMessage(message);
+                    group.Value.ForEach(receiverId =>
+                    {
+                        this.ParticipantUserId = receiverId;
+                        var token = this.GetToken(receiverId);
+                        var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, participant, eventInfo, SprintNotificaitonType.FriendJoin);
+                        this.PushNotificationClient.SendMulticaseMessage(message);
+                    });
+
+                    
                 }
             }
         }
@@ -130,7 +143,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)notificationType).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotificationMulticastMessageBuilder()
+            var message = new PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
@@ -228,6 +241,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return this.Context.FirebaseToken.Where(f => userIds.Contains(f.User.Id)).Select(f => f.Token).ToList();
         }
 
+        private List<string> GetToken(int creatorId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == creatorId)
+                .Select(f => f.Token).ToList();
+        }
         private int AddToDatabase(EventInfo eventInfo, Participant user, List<int> receiverIds, SprintNotificaitonType notificationType)
         {
             List<UserNotification> userNotifications = new List<UserNotification>();
@@ -251,6 +270,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     SenderId = user.Id,
                         ReceiverId = receiverId,
                         NotificationId = notification.Entity.Id,
+                        BadgeValue = 1,
                 });
             });
             if (userNotifications.Count > 0)

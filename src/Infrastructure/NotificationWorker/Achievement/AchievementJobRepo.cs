@@ -34,6 +34,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
                 SenderId = creatorId,
                 ReceiverId = receiverId,
                 NotificationId = notificationId,
+                BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
         }

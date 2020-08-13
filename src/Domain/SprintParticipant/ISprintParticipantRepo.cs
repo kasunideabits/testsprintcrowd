@@ -83,6 +83,12 @@
         /// <returns>User record</returns>
         Task<User> GetParticipant(int userId);
 
+        // <summary>
+        /// Get Participant Unread Notification Count
+        /// </summary>
+        /// <param name="userId"></param>
+        int GetParticipantUnreadNotificationCount(int userId);
+
         /// <summary>
         /// Get notifications for given user id
         /// </summary>

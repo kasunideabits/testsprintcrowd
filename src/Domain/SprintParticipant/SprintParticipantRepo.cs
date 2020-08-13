@@ -192,6 +192,17 @@
         }
 
         /// <summary>
+        /// Get Unread Participant Notification Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetParticipantUnreadNotificationCount(int userId)
+        {
+            var result = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.BadgeValue == 1).Count();
+            return result;
+        }
+
+        /// <summary>
         /// Join participant to given sprint
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
