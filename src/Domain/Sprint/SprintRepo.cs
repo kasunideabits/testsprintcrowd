@@ -214,6 +214,7 @@
         public async Task<Sprint> UpdateSprint(Sprint sprintData)
         {
             var result = this.dbContext.Sprint.Update(sprintData);
+            this.dbContext.SaveChanges();
             return result.Entity;
         }
 

@@ -46,6 +46,7 @@
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 paritipant.StartedTime = DateTime.UtcNow;
                 this.Context.SprintParticipant.Update(paritipant);
+                this.Context.SaveChanges();
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
             else if (paritipant.Stage == ParticipantStage.MARKED_ATTENDENCE)
@@ -203,6 +204,7 @@
                 n.BadgeValue = 0;
             });
             this.Context.UserNotification.UpdateRange(userNotification);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
@@ -228,6 +230,7 @@
             {
                 participant.Stage = ParticipantStage.JOINED;
                 this.Context.Update(participant);
+                this.Context.SaveChanges();
             }
         }
 
@@ -280,7 +283,7 @@
                 .Include(f => f.SharedUser)
                 .Where(f =>
                     (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
-                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                                                                              //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>
@@ -353,6 +356,7 @@
         public void UpdateParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Update(participant);
+            this.Context.SaveChanges();
         }
 
         /// <summary>

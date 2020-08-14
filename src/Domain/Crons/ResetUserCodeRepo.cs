@@ -67,6 +67,7 @@ namespace SprintCrowd.BackEnd.Domain.Crons
     public async Task<User> UpdateUserContext(User user)
     {
       var result = this.dbContext.User.Update(user);
+            this.dbContext.SaveChanges();
       return result.Entity;
     }
   }
