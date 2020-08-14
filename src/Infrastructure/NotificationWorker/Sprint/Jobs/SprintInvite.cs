@@ -38,7 +38,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"></param>
         public void Run(object message = null)
         {
-            InviteSprint inviteSprint = message as InviteSprint;
+            InviteSprint inviteSprint = null;
+            if (message != null)
+                inviteSprint = message as InviteSprint;
             if (inviteSprint != null)
             {
                 this._sprintId = inviteSprint.SprintId;

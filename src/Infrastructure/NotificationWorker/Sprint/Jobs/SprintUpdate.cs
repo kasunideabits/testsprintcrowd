@@ -30,7 +30,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public void Run(object message = null)
         {
             {
-                UpdateSprint editSprint = message as UpdateSprint;
+                UpdateSprint editSprint = null;
+                if (message != null)
+                    editSprint = message as UpdateSprint;
                 if (editSprint != null)
                 {
                     this.SendPushNotification(editSprint);

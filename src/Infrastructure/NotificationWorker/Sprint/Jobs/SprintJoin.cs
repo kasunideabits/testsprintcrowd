@@ -42,7 +42,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"><see cref="JoinSprint"> join data </see></param>
         public void Run(object message = null)
         {
-            JoinSprint joinSprint = message as JoinSprint;
+            JoinSprint joinSprint = null;
+            if (joinSprint != null)
+                joinSprint = message as JoinSprint;
             if (joinSprint != null)
             {
                 this._joinSprint = joinSprint;

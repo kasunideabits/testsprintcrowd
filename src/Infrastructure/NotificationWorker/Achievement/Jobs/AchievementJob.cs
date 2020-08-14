@@ -21,7 +21,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
 
         public void Run(object message = null)
         {
-            AchievementMessage achievement = message as AchievementMessage;
+            AchievementMessage achievement = null;
+            if (message != null)
+                achievement = message as AchievementMessage;
             if (achievement != null)
             {
                 var notificationId = this.AchievementJobRepo.AddNotification((AchievementType)achievement.Type, achievement.AchievedOn);
