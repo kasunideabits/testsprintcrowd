@@ -107,6 +107,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
+            this.Context.SaveChanges();
+
             return notification.Entity.Id;
         }
 
