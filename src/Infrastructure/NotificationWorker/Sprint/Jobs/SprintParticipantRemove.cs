@@ -30,8 +30,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         public void Run(Object message = null)
         {
-
-            RemoveParticipant removeParticipant = message as RemoveParticipant;
+            RemoveParticipant removeParticipant = null;
+            if (message != null)
+                removeParticipant = message as RemoveParticipant;
             if (removeParticipant != null)
             {
                 this.AblyMessage(removeParticipant);

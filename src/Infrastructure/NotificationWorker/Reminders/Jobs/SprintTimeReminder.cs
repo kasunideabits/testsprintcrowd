@@ -21,7 +21,9 @@
 
         public void Run(object message = null)
         {
-            SprintReminderMessage sprintReminder = message as SprintReminderMessage;
+            SprintReminderMessage sprintReminder = null;
+            if (message != null)
+                sprintReminder = message as SprintReminderMessage;
             if (sprintReminder != null)
             {
                 // var payload = SprintReminderDtoMapper.Map(sprintReminder);

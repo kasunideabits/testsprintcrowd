@@ -40,7 +40,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"><see cref="ExitSprint"> exit data </see></param>
         public void Run(object message = null)
         {
-            ExitSprint exitSprint = message as ExitSprint;
+            ExitSprint exitSprint = null;
+            if (message != null)
+                exitSprint = message as ExitSprint;
             if (exitSprint != null)
             {
                 this.AblyMessage(exitSprint);

@@ -29,7 +29,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         public void Run(object message = null)
         {
-            RemoveSprint removeSprint = message as RemoveSprint;
+            RemoveSprint removeSprint = null;
+            if (message != null)
+                removeSprint = message as RemoveSprint;
             if (removeSprint != null)
             {
                 this.SendPushNotification(removeSprint);
