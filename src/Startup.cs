@@ -56,14 +56,12 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            // services.AddCors();
+            
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
-            // var notificationWorkerConfigSection = this.Configuration.GetSection("NotificationConfig");
-            // services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
-
+           
             var firebaseConfigSection = this.Configuration.GetSection("FirebaseConfig");
             services.Configure<FirebaseConfig>(firebaseConfigSection);
 
@@ -152,11 +150,7 @@
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             // global cors policy
-            // app.UseCors(x => x
-            //     .AllowAnyOrigin()
-            //     .AllowAnyMethod()
-            //     .AllowAnyHeader()
-            //     .AllowCredentials());
+           
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
