@@ -1,6 +1,8 @@
 namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
 {
+    using System;
     using System.Threading.Tasks;
+    using IO.Ably;
     using IO.Ably.Realtime;
 
     /// <summary>
@@ -31,7 +33,38 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
         {
             try
             {
-                await this.Channel.PublishAsync(eventName, message);
+                
+                Console.WriteLine("Channel status when Publish:" + this.Channel.State);
+                Console.WriteLine("Channel Name when Publish:" + this.Channel.Name);
+                if (this.Channel.State == ChannelState.Detached)
+                {
+                    Console.WriteLine("Channel Detached Name  when Publish:" + this.Channel.Name);
+                    Result result = await this.Channel.AttachAsync();
+                    if (result.IsFailure)
+                    {
+                        Console.WriteLine("Attach failed  when Publish: " + result.Error.Message);
+                    }
+                    else if (this.Channel.State == ChannelState.Attached)
+                    {
+                        Result resultSucess = await this.Channel.PublishAsync(eventName, message); 
+                        if (resultSucess.IsFailure)
+                        {
+                            Console.WriteLine("Unable to publish message at Channel attach. Reason: " + resultSucess.Error.Message);
+                        }
+                    }
+                }
+                else if (this.Channel.State == ChannelState.Attached)
+                {
+                    Result result = await this.Channel.PublishAsync(eventName, message);
+                    if (result.IsFailure)
+                    {
+                        Console.WriteLine("Unable to publish message. Reason: " + result.Error.Message);
+                    }
+                }
+                else if (this.Channel.State == ChannelState.Failed)
+                {
+                    Console.WriteLine("ChannelState Failed  when Publish. Reason: " + this.Channel.ErrorReason);
+                }
             }
             catch (System.Exception e)
             {
