@@ -115,6 +115,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             {
                 exist.UserState = UserState.Active;
                 this.dbContext.Update(exist);
+                this.dbContext.SaveChanges();
             }
             return exist;
         }
@@ -153,6 +154,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 // update
                 existingToken.Token = fcmToken;
                 this.dbContext.FirebaseToken.Update(existingToken);
+                this.dbContext.SaveChanges();
             }
         }
 
@@ -189,6 +191,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public void UpdateUserPreference(UserPreference userPreference)
         {
             this.dbContext.Update(userPreference);
+            this.dbContext.SaveChanges();
         }
 
         /// <summary>
@@ -216,6 +219,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public void UpdateUser(User user)
         {
             this.dbContext.User.Update(user);
+            this.dbContext.SaveChanges();
         }
 
         /// <summary>
@@ -224,6 +228,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public void UpdateUserSettings(UserNotificationReminder notificationReminder)
         {
             this.dbContext.UserNotificationReminders.Update(notificationReminder);
+            this.dbContext.SaveChanges();
         }
     }
 }
