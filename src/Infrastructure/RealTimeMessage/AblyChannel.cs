@@ -35,35 +35,32 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
             {
                 
                 Console.WriteLine("Channel status when Publish:" + this.Channel.State);
-                Console.WriteLine("Channel Name when Publish:" + this.Channel.Name);
-                if (this.Channel.State == ChannelState.Detached)
+                if (this.Channel.State == ChannelState.Attached)
                 {
-                    Console.WriteLine("Channel Detached Name  when Publish:" + this.Channel.Name);
-                    Result result = await this.Channel.AttachAsync();
-                    if (result.IsFailure)
-                    {
-                        Console.WriteLine("Attach failed  when Publish: " + result.Error.Message);
-                    }
-                    else if (this.Channel.State == ChannelState.Attached)
-                    {
-                        Result resultSucess = await this.Channel.PublishAsync(eventName, message); 
-                        if (resultSucess.IsFailure)
-                        {
-                            Console.WriteLine("Unable to publish message at Channel attach. Reason: " + resultSucess.Error.Message);
-                        }
-                    }
-                }
-                else if (this.Channel.State == ChannelState.Attached)
-                {
+                    Console.WriteLine("Channel status when Attached first time: " + this.Channel.State);
                     Result result = await this.Channel.PublishAsync(eventName, message);
                     if (result.IsFailure)
                     {
                         Console.WriteLine("Unable to publish message. Reason: " + result.Error.Message);
                     }
                 }
-                else if (this.Channel.State == ChannelState.Failed)
+                else
                 {
-                    Console.WriteLine("ChannelState Failed  when Publish. Reason: " + this.Channel.ErrorReason);
+                    Console.WriteLine("Channel status when Not Attached: " + this.Channel.State);
+                    Result result = await this.Channel.AttachAsync();
+                    if (result.IsFailure)
+                    {
+                        Console.WriteLine("Attached failed  when Publish: " + result.Error.Message);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Attached when other status: " + this.Channel.State);
+                        Result resultSucess = await this.Channel.PublishAsync(eventName, message);
+                        if (resultSucess.IsFailure)
+                        {
+                            Console.WriteLine("Unable to publish message at Channel attach. Reason: " + resultSucess.Error.Message);
+                        }
+                    }
                 }
             }
             catch (System.Exception e)
