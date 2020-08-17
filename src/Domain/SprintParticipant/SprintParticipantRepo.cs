@@ -46,6 +46,7 @@
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 paritipant.StartedTime = DateTime.UtcNow;
                 this.Context.SprintParticipant.Update(paritipant);
+                this.Context.SaveChanges();
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
             else if (paritipant.Stage == ParticipantStage.MARKED_ATTENDENCE)
@@ -203,6 +204,7 @@
             {
                 participant.Stage = ParticipantStage.JOINED;
                 this.Context.Update(participant);
+                this.Context.SaveChanges();
             }
         }
 
@@ -328,6 +330,7 @@
         public void UpdateParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Update(participant);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
