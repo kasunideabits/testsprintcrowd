@@ -84,6 +84,7 @@
                     }, ArrayPool<char>.Shared));
             });
 
+          // To DO 
             this.AddSwagger(services);
 
             this.RegisterDependencyInjection(services);
