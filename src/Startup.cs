@@ -154,7 +154,7 @@
            
             app.UseCors("CorsPolicy");
 
-            app.UseAuthentication();
+            app.UseAuthentication(); // seems  duplicated 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
