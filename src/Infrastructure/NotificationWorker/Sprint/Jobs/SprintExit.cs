@@ -115,6 +115,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = exitSprint.NumberOfParticipant,
             };
             var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
             var userNotification = new UserNotification
             {
                 SenderId = exitSprint.UserId,
@@ -123,6 +124,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 

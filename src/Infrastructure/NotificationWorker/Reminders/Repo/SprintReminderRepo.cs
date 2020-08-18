@@ -120,7 +120,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                 NumberOfParticipants = numberOfParticipants
             };
             var notification = this.Context.Notification.Add(sprintNotification);
-
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
@@ -144,6 +144,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
 
             });
             this.Context.UserNotification.AddRange(userNotifications);
+            this.Context.SaveChanges();
         }
 
         /// <summary>

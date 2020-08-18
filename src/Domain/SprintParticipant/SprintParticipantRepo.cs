@@ -74,6 +74,7 @@
                 Stage = ParticipantStage.JOINED,
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
+            this.Context.SaveChanges();
             return result.Entity;
         }
 
@@ -154,6 +155,7 @@
                 Stage = ParticipantStage.PENDING,
             };
             var result = await this.Context.AddAsync(pariticipant);
+            this.Context.SaveChanges();
             return result.Entity;
         }
 
@@ -245,6 +247,7 @@
             if (participant != null)
             {
                 this.Context.Remove(participant);
+                this.Context.SaveChanges();
             }
             return;
         }
@@ -269,6 +272,7 @@
         public void RemoveParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Remove(participant);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
@@ -296,6 +300,7 @@
             if (notification != null)
             {
                 this.Context.Remove(notification);
+                this.Context.SaveChanges();
             }
             return;
         }
@@ -313,6 +318,7 @@
                 .Where(r => r.ReceiverId == userId)
                 .ToList();
             this.Context.UserNotification.RemoveRange(notifications);
+            this.Context.SaveChanges();
         }
 
         /// <summary>

@@ -42,9 +42,9 @@
 
                         lang.Value.ForEach(receiverId =>
                         {
-                            //this.ParticipantUserId = receiverId;
                             var token = this.SprintReminderRepo.GetToken(receiverId);
-                            var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, token, sprintReminder);
+                            var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, token, sprintReminder, receiverId);
+                            //this.Client.SendMulticaseMessage(notificaiton);
                             this.Client.SendMulticaseMessage(notificaiton);
                         });                      
                     }

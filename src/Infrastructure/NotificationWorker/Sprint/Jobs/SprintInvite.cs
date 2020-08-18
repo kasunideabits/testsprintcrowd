@@ -176,6 +176,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = this.Sprint.NumberOfParticipants
                 };
                 var result = this.Context.SprintNotifications.Add(sprintNotificaiton);
+                this.Context.SaveChanges();
                 var userNotification = new UserNotification
                 {
                     SenderId = this._inviterId,
