@@ -117,7 +117,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
                     var translation = this.GetNotification(group.Key);
                     var notification = this.GetFriendJoin(translation);
-                    
+
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name, this._joinSprint.SprintName);
                     group.Value.ForEach(receiverId =>
                     {
@@ -125,7 +125,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         var token = this.GetToken(receiverId);
                         var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, participant, eventInfo, SprintNotificaitonType.FriendJoin);
                         this.PushNotificationClient.SendMulticaseMessage(message);
-                    });                 
+                    });
+
+
                 }
             }
         }
@@ -169,14 +171,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(u => new Participant
                 {
                     Id = u.Id,
-                        Name = u.Name,
-                        Email = u.Email,
-                        ProfilePicture = u.ProfilePicture,
-                        Code = u.Code,
-                        ColorCode = u.ColorCode,
-                        City = u.City,
-                        Country = u.Country,
-                        CountryCode = u.CountryCode
+                    Name = u.Name,
+                    Email = u.Email,
+                    ProfilePicture = u.ProfilePicture,
+                    Code = u.Code,
+                    ColorCode = u.ColorCode,
+                    City = u.City,
+                    Country = u.Country,
+                    CountryCode = u.CountryCode
                 })
                 .FirstOrDefault(u => u.Id == this._joinSprint.UserId);
         }
@@ -184,15 +186,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private EventInfo GetEvent()
         {
             return this.Context.Sprint.Select(s => new EventInfo
-                {
-                    Id = s.Id,
-                        Name = s.Name,
-                        Distance = s.Distance,
-                        StartTime = s.StartDateTime,
-                        SprintStatus = (SprintStatus)s.Status,
-                        SprintType = (SprintType)s.Type,
-                        NumberOfPariticipants = s.NumberOfParticipants
-                })
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Distance = s.Distance,
+                StartTime = s.StartDateTime,
+                SprintStatus = (SprintStatus)s.Status,
+                SprintType = (SprintType)s.Type,
+                NumberOfPariticipants = s.NumberOfParticipants
+            })
                 .FirstOrDefault(s => s.Id == this._joinSprint.SprintId);
         }
 
@@ -228,9 +230,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             {
                 if (ids.ContainsKey(item.Key))
                 {
-                    var temp = ids [item.Key];
+                    var temp = ids[item.Key];
                     temp.AddRange(item.Value);
-                    ids [item.Key] = temp;
+                    ids[item.Key] = temp;
                 }
                 else
                 {
@@ -273,9 +275,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 userNotifications.Add(new UserNotification
                 {
                     SenderId = user.Id,
-                        ReceiverId = receiverId,
-                        NotificationId = notification.Entity.Id,
-                        BadgeValue = 1,
+                    ReceiverId = receiverId,
+                    NotificationId = notification.Entity.Id,
+                    BadgeValue = 1,
                 });
             });
             if (userNotifications.Count > 0)
@@ -304,9 +306,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return translation;
         }
 
-        private SCFireBaseNotificationMessage GetInvitationAccept(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinAccept"]);
-        private SCFireBaseNotificationMessage GetInvitationDecline(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinDecline"]);
-        private SCFireBaseNotificationMessage GetFriendJoin(JToken translation) => new SCFireBaseNotificationMessage(translation ["friendJoin"]);
+        private SCFireBaseNotificationMessage GetInvitationAccept(JToken translation) => new SCFireBaseNotificationMessage(translation["sprintJoinAccept"]);
+        private SCFireBaseNotificationMessage GetInvitationDecline(JToken translation) => new SCFireBaseNotificationMessage(translation["sprintJoinDecline"]);
+        private SCFireBaseNotificationMessage GetFriendJoin(JToken translation) => new SCFireBaseNotificationMessage(translation["friendJoin"]);
 
     }
 

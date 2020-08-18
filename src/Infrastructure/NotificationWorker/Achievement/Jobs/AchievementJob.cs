@@ -17,7 +17,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             this.Client = client;
             this.SprintParticipantRepo = sprintParticipantRepo;
         }
-        
+
         private AchievementJobRepo AchievementJobRepo { get; }
         private IPushNotificationClient Client { get; }
 
@@ -63,7 +63,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
 
 
 
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo,this.ParticipantUserId)
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notification.Title, notification.Body)
                 .Message(data)
                 .Tokens(tokens)

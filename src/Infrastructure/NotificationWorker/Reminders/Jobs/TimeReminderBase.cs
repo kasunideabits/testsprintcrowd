@@ -16,7 +16,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
         public TimeReminderBase(ISprintParticipantRepo sprintParticipantRepo)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
-            this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null,0);
+            this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null, 0);
         }
 
         private ISprintParticipantRepo SprintParticipantRepo { get; }
