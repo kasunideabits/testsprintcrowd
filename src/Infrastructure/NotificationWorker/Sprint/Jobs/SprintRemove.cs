@@ -148,6 +148,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var toDeleteNotifications = this.Context.SprintNotifications.Where(n => n.SprintId == sprintId && n.SprintNotificationType != SprintNotificaitonType.Remove);
             this.Context.RemoveRange(toDeleteNotifications);
+            this.Context.SaveChanges();
         }
 
         private int AddToDb(RemoveSprint remove, List<int> participantIds)
@@ -166,6 +167,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = remove.NumberOfParticipant
             };
             var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
             participantIds.ForEach(id =>
             {
                 userNotifications.Add(new UserNotification
@@ -178,6 +180,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
             });
             this.Context.UserNotification.AddRange(userNotifications);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 

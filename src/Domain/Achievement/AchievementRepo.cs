@@ -25,6 +25,7 @@ namespace SprintCrowd.BackEnd.Domain.Achievement
         public async Task<UserAchievement> Add(UserAchievement achievement)
         {
             var result = await this.Context.UserAchivements.AddAsync(achievement);
+            this.Context.SaveChanges();
             return result.Entity;
         }
 

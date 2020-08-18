@@ -154,6 +154,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = edit.NumberOfParticipant
             };
             var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
+
             participantIds.ForEach(id =>
             {
                 userNotifications.Add(new UserNotification
@@ -166,6 +168,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
             });
             this.Context.UserNotification.AddRange(userNotifications);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
@@ -199,6 +202,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 };
 
                 this.Context.SprintNotifications.Add(sprintNotificaitonOne);
+                this.Context.SaveChanges();
             }
 
             if (entitySprintNotification != null)
@@ -217,6 +221,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 };
 
                 this.Context.SprintNotifications.Add(sprintNotificaiton);
+                this.Context.SaveChanges();
             }
 
             //if (entitySprintNotification != null)
