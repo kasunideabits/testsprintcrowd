@@ -141,9 +141,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                         ReceiverId = id,
                         NotificationId = notificationId,
                         BadgeValue = 1,
+
                 });
 
             });
+
             this.Context.UserNotification.AddRange(userNotifications);
             this.Context.SaveChanges();
         }
