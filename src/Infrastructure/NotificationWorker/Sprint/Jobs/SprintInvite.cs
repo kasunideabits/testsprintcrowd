@@ -119,6 +119,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.InvitationRequest).ToString());
             data.Add("CreateDate", string.Format("{0:yyyy-MM-ddTHH:mm:ss.FFFZ}", DateTime.UtcNow));
             data.Add("Data", JsonConvert.SerializeObject(payload));
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
             var user = this.GetUser(this._inviteeId);
             var notification = this.GetNotification(user.LanguagePreference);
             var notificationBody = String.Format(notification.Body, inviter.Name, sprint.Name);

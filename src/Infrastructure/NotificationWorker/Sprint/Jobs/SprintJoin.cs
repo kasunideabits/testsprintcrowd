@@ -125,9 +125,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         var token = this.GetToken(receiverId);
                         var message = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, participant, eventInfo, SprintNotificaitonType.FriendJoin);
                         this.PushNotificationClient.SendMulticaseMessage(message);
-                    });
-
-                    
+                    });                 
                 }
             }
         }
@@ -145,6 +143,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)notificationType).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
             var message = new PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)

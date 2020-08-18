@@ -9,14 +9,17 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     internal class TimeReminderBase
     {
-        public TimeReminderBase()
+        public TimeReminderBase(ISprintParticipantRepo sprintParticipantRepo)
         {
+            this.SprintParticipantRepo = sprintParticipantRepo;
             this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null,0);
         }
 
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         private PushNotificationMulticastMessageBuilder MessageBuilder { get; set; }
 
         public MulticastMessage BuildNotificationMessage(
