@@ -140,6 +140,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                     SenderId = creatorId,
                         ReceiverId = id,
                         NotificationId = notificationId,
+                        BadgeValue = 1,
                 });
 
             });
