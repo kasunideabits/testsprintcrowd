@@ -44,7 +44,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"><see cref="ExitSprint"> exit data </see></param>
         public void Run(object message = null)
         {
-            ExitSprint exitSprint = message as ExitSprint;
+            ExitSprint exitSprint = null;
+            if (message != null)
+                exitSprint = message as ExitSprint;
             if (exitSprint != null)
             {
                 this.AblyMessage(exitSprint);
@@ -86,6 +88,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.LeaveParticipant).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
             var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notificationTitle, notificationBody)
                 .Message(data)

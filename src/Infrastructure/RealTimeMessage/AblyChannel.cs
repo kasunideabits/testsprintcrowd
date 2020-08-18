@@ -1,6 +1,8 @@
 namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
 {
+    using System;
     using System.Threading.Tasks;
+    using IO.Ably;
     using IO.Ably.Realtime;
 
     /// <summary>
@@ -31,7 +33,35 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
         {
             try
             {
-                await this.Channel.PublishAsync(eventName, message);
+                
+                Console.WriteLine("Channel status when Publish:" + this.Channel.State);
+                if (this.Channel.State == ChannelState.Attached)
+                {
+                    Console.WriteLine("Channel status when Attached first time: " + this.Channel.State);
+                    Result result = await this.Channel.PublishAsync(eventName, message);
+                    if (result.IsFailure)
+                    {
+                        Console.WriteLine("Unable to publish message. Reason: " + result.Error.Message);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Channel status when Not Attached: " + this.Channel.State);
+                    Result result = await this.Channel.AttachAsync();
+                    if (result.IsFailure)
+                    {
+                        Console.WriteLine("Attached failed  when Publish: " + result.Error.Message);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Attached when other status: " + this.Channel.State);
+                        Result resultSucess = await this.Channel.PublishAsync(eventName, message);
+                        if (resultSucess.IsFailure)
+                        {
+                            Console.WriteLine("Unable to publish message at Channel attach. Reason: " + resultSucess.Error.Message);
+                        }
+                    }
+                }
             }
             catch (System.Exception e)
             {

@@ -17,7 +17,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             this.Client = client;
             this.SprintParticipantRepo = sprintParticipantRepo;
         }
-        
+
         private AchievementJobRepo AchievementJobRepo { get; }
         private IPushNotificationClient Client { get; }
 
@@ -26,7 +26,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
 
         public void Run(object message = null)
         {
-            AchievementMessage achievement = message as AchievementMessage;
+            AchievementMessage achievement = null;
+            if (message != null)
+                achievement = message as AchievementMessage;
             if (achievement != null)
             {
                 var notificationId = this.AchievementJobRepo.AddNotification((AchievementType)achievement.Type, achievement.AchievedOn);
@@ -56,10 +58,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             data.Add("SubType", ((int)notificationData.Type).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
 
-            
 
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo,this.ParticipantUserId)
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notification.Title, notification.Body)
                 .Message(data)
                 .Tokens(tokens)

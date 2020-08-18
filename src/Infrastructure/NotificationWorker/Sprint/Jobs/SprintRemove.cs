@@ -33,7 +33,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         public void Run(object message = null)
         {
-            RemoveSprint removeSprint = message as RemoveSprint;
+            RemoveSprint removeSprint = null;
+            if (message != null)
+                removeSprint = message as RemoveSprint;
             if (removeSprint != null)
             {
                 this.SendPushNotification(removeSprint);
@@ -54,8 +56,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var tokens = this.GetTokens(item.Value);
                     var notification = this.GetNotification(item.Key);
                     var notificationBody = String.Format(notification.Body, removeSprint.SprintName, removeSprint.Name);
-                    var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationMsgData);
-                    this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+
+                    item.Value.ForEach(participantId =>
+                    {
+                        this.ParticipantUserId = participantId;
+                        var token = this.GetToken(participantId);
+                        var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, notificationMsgData);
+                        this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+
+                    });
                     this.SendAblyMessage(notificationMsgData.Sprint);
                 }
             }
@@ -76,7 +85,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.Remove).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder(null, 0)
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
@@ -125,6 +138,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(f => f.Token).ToList();
         }
 
+        private List<string> GetToken(int participantId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == participantId)
+                .Select(f => f.Token).ToList();
+        }
         private void RemoveOldNotificaiton(int sprintId)
         {
             var toDeleteNotifications = this.Context.SprintNotifications.Where(n => n.SprintId == sprintId && n.SprintNotificationType != SprintNotificaitonType.Remove);

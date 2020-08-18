@@ -31,7 +31,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"><see cref="MarkAttendance"> mark attendance data </see></param>
         public void Run(object message = null)
         {
-            MarkAttendance markAttendance = message as MarkAttendance;
+            MarkAttendance markAttendance = null;
+            if (message != null)
+                markAttendance = message as MarkAttendance;
             if (markAttendance != null)
             {
                 Console.WriteLine("SprintMarkAttendence Run" + markAttendance.Name + "markAttendance Run Sprint ID " + markAttendance.SprintId);

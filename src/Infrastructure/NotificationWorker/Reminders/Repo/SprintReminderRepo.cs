@@ -72,6 +72,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
             return result;
         }
 
+        public List<string> GetToken(int creatorId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == creatorId)
+                .Select(f => f.Token).ToList();
+        }
+
         /// <summary>
         ///
         /// </summary>

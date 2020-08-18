@@ -277,7 +277,7 @@
             //    (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
             //    ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
             //    (s.Sprint.StartDateTime > now);
-            
+
             Expression<Func<SprintParticipant, bool>> creatorQueryCommon = s =>
                s.UserId == userId &&
                s.User.UserState == UserState.Active &&
@@ -573,7 +573,7 @@
             // }
 
             this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
-            this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
+            // this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
             this.SprintParticipantRepo.SaveChanges();
             this.NotificationClient.SprintNotificationJobs.SprintParticipantRemove(
                 sprintParticipant.SprintId,

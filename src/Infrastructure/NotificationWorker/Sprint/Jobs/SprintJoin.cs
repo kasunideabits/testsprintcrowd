@@ -47,7 +47,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// <param name="message"><see cref="JoinSprint"> join data </see></param>
         public void Run(object message = null)
         {
-            JoinSprint joinSprint = message as JoinSprint;
+            JoinSprint joinSprint = null;
+            if (joinSprint != null)
+                joinSprint = message as JoinSprint;
             if (joinSprint != null)
             {
                 this._joinSprint = joinSprint;
@@ -115,7 +117,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var notificationId = this.AddToDatabase(eventInfo, participant, group.Value, SprintNotificaitonType.FriendJoin);
                     var translation = this.GetNotification(group.Key);
                     var notification = this.GetFriendJoin(translation);
-                    
+
                     var notificationBody = String.Format(notification.Body, this._joinSprint.Name, this._joinSprint.SprintName);
                     group.Value.ForEach(receiverId =>
                     {
@@ -125,7 +127,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                         this.PushNotificationClient.SendMulticaseMessage(message);
                     });
 
-                    
+
                 }
             }
         }
@@ -143,6 +145,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)notificationType).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
             var message = new PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)
@@ -165,14 +171,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 .Select(u => new Participant
                 {
                     Id = u.Id,
-                        Name = u.Name,
-                        Email = u.Email,
-                        ProfilePicture = u.ProfilePicture,
-                        Code = u.Code,
-                        ColorCode = u.ColorCode,
-                        City = u.City,
-                        Country = u.Country,
-                        CountryCode = u.CountryCode
+                    Name = u.Name,
+                    Email = u.Email,
+                    ProfilePicture = u.ProfilePicture,
+                    Code = u.Code,
+                    ColorCode = u.ColorCode,
+                    City = u.City,
+                    Country = u.Country,
+                    CountryCode = u.CountryCode
                 })
                 .FirstOrDefault(u => u.Id == this._joinSprint.UserId);
         }
@@ -180,15 +186,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private EventInfo GetEvent()
         {
             return this.Context.Sprint.Select(s => new EventInfo
-                {
-                    Id = s.Id,
-                        Name = s.Name,
-                        Distance = s.Distance,
-                        StartTime = s.StartDateTime,
-                        SprintStatus = (SprintStatus)s.Status,
-                        SprintType = (SprintType)s.Type,
-                        NumberOfPariticipants = s.NumberOfParticipants
-                })
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Distance = s.Distance,
+                StartTime = s.StartDateTime,
+                SprintStatus = (SprintStatus)s.Status,
+                SprintType = (SprintType)s.Type,
+                NumberOfPariticipants = s.NumberOfParticipants
+            })
                 .FirstOrDefault(s => s.Id == this._joinSprint.SprintId);
         }
 
@@ -224,9 +230,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             {
                 if (ids.ContainsKey(item.Key))
                 {
-                    var temp = ids [item.Key];
+                    var temp = ids[item.Key];
                     temp.AddRange(item.Value);
-                    ids [item.Key] = temp;
+                    ids[item.Key] = temp;
                 }
                 else
                 {
@@ -268,9 +274,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 userNotifications.Add(new UserNotification
                 {
                     SenderId = user.Id,
-                        ReceiverId = receiverId,
-                        NotificationId = notification.Entity.Id,
-                        BadgeValue = 1,
+                    ReceiverId = receiverId,
+                    NotificationId = notification.Entity.Id,
+                    BadgeValue = 1,
                 });
             });
             if (userNotifications.Count > 0)
@@ -299,9 +305,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             return translation;
         }
 
-        private SCFireBaseNotificationMessage GetInvitationAccept(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinAccept"]);
-        private SCFireBaseNotificationMessage GetInvitationDecline(JToken translation) => new SCFireBaseNotificationMessage(translation ["sprintJoinDecline"]);
-        private SCFireBaseNotificationMessage GetFriendJoin(JToken translation) => new SCFireBaseNotificationMessage(translation ["friendJoin"]);
+        private SCFireBaseNotificationMessage GetInvitationAccept(JToken translation) => new SCFireBaseNotificationMessage(translation["sprintJoinAccept"]);
+        private SCFireBaseNotificationMessage GetInvitationDecline(JToken translation) => new SCFireBaseNotificationMessage(translation["sprintJoinDecline"]);
+        private SCFireBaseNotificationMessage GetFriendJoin(JToken translation) => new SCFireBaseNotificationMessage(translation["friendJoin"]);
 
     }
 

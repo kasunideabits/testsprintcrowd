@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Jobs
 {
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,7 +11,7 @@
     internal class SprintTimeReminder : TimeReminderBase, ISprintTimeReminder
     {
 
-        public SprintTimeReminder(ScrowdDbContext context, IPushNotificationClient client)
+        public SprintTimeReminder(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo) : base(sprintParticipantRepo)
         {
             this.SprintReminderRepo = new SprintReminderRepo(context);
             this.Client = client;
@@ -21,7 +22,9 @@
 
         public void Run(object message = null)
         {
-            SprintReminderMessage sprintReminder = message as SprintReminderMessage;
+            SprintReminderMessage sprintReminder = null;
+            if (message != null)
+                sprintReminder = message as SprintReminderMessage;
             if (sprintReminder != null)
             {
                 // var payload = SprintReminderDtoMapper.Map(sprintReminder);
@@ -35,9 +38,15 @@
                         var notificationId = this.SprintReminderRepo.AddNotification(sprintReminder.NotificationType, sprint.Id, sprint.Name, sprint.Distance,
                             (SprintType)sprint.Type, (SprintStatus)sprint.Status, sprint.NumberOfParticipants, sprint.StartDateTime, systemUser.Id);
                         this.SprintReminderRepo.AddUserNotification(lang.Value, systemUser.Id, notificationId);
-                        var tokens = this.SprintReminderRepo.GetTokens(lang.Value);
-                        var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, tokens, sprintReminder);
-                        this.Client.SendMulticaseMessage(notificaiton);
+                        //var tokens = this.SprintReminderRepo.GetTokens(lang.Value);
+
+                        lang.Value.ForEach(receiverId =>
+                        {
+                            //this.ParticipantUserId = receiverId;
+                            var token = this.SprintReminderRepo.GetToken(receiverId);
+                            var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, token, sprintReminder);
+                            this.Client.SendMulticaseMessage(notificaiton);
+                        });                      
                     }
                     this.SprintReminderRepo.SaveChanges();
                 }
