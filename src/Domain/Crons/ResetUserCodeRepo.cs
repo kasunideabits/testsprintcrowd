@@ -68,8 +68,7 @@ namespace SprintCrowd.BackEnd.Domain.Crons
     {
       var result = this.dbContext.User.Update(user);
             this.dbContext.SaveChanges();
-
-            return result.Entity;
+      return result.Entity;
     }
   }
 }

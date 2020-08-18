@@ -204,6 +204,7 @@
                 n.BadgeValue = 0;
             });
             this.Context.UserNotification.UpdateRange(userNotification);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
@@ -282,7 +283,7 @@
                 .Include(f => f.SharedUser)
                 .Where(f =>
                     (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
-                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                                                                              //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>
