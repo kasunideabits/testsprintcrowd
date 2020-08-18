@@ -11,12 +11,13 @@
     internal class SprintTimeReminder : TimeReminderBase, ISprintTimeReminder
     {
 
-        public SprintTimeReminder(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo) : base(sprintParticipantRepo)
+        public SprintTimeReminder(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo) : base()
         {
             this.SprintReminderRepo = new SprintReminderRepo(context);
             this.Client = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
-
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         private ISprintReminderRepo SprintReminderRepo { get; }
         private IPushNotificationClient Client { get; }
 
@@ -43,7 +44,8 @@
                         lang.Value.ForEach(receiverId =>
                         {
                             var token = this.SprintReminderRepo.GetToken(receiverId);
-                            var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, token, sprintReminder, receiverId);
+                            var messageBuilder = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, receiverId);
+                            var notificaiton = this.BuildNotificationMessage(lang.Key, sprint.Name, systemUser.Id, sprintReminder.NotificationType, token, sprintReminder, receiverId, messageBuilder, this.SprintParticipantRepo);
                             //this.Client.SendMulticaseMessage(notificaiton);
                             this.Client.SendMulticaseMessage(notificaiton);
                         });                      

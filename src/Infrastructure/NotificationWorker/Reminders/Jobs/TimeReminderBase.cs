@@ -13,13 +13,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
 
     internal class TimeReminderBase
     {
-        public TimeReminderBase(ISprintParticipantRepo sprintParticipantRepo)
+        public TimeReminderBase()
         {
-            this.SprintParticipantRepo = sprintParticipantRepo;
-            this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null, 0);
+            //this.SprintParticipantRepo = sprintParticipantRepo;
+            //this.MessageBuilder = new PushNotificationMulticastMessageBuilder(null, 0);
         }
 
-        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; set; }
         private PushNotificationMulticastMessageBuilder MessageBuilder { get; set; }
 
         public MulticastMessage BuildNotificationMessage(
@@ -29,8 +29,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             SprintNotificaitonType notificationType,
             List<string> tokens,
             dynamic payload,
-            int participantUserId)
+            int participantUserId,
+            PushNotificationMulticastMessageBuilder messageBuilder,
+            ISprintParticipantRepo sprintParticipantRepo)
         {
+            this.MessageBuilder = messageBuilder;
+            this.SprintParticipantRepo = sprintParticipantRepo;
             this.BuildNotification(userLang, notificationType, sprintName);
             //this.BuildData(notificationId, notificationType, payload);
             this.BuildNotificationMessage(notificationId, tokens, payload, participantUserId, notificationType);
@@ -80,7 +84,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
         private dynamic BuildNotificationMessage(int notificationId, List<string> token, dynamic payload, int participantUserId, SprintNotificaitonType notificationType)
         {
             var data = new Dictionary<string, string>();
-            //var payload = notificationData;
+            
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "SprintType");
             data.Add("SubType", ((int)notificationType).ToString());
