@@ -72,6 +72,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
             return result;
         }
 
+        public List<string> GetToken(int creatorId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == creatorId)
+                .Select(f => f.Token).ToList();
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -113,7 +120,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                 NumberOfParticipants = numberOfParticipants
             };
             var notification = this.Context.Notification.Add(sprintNotification);
-
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
@@ -133,10 +140,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
                     SenderId = creatorId,
                         ReceiverId = id,
                         NotificationId = notificationId,
+                        BadgeValue = 1,
+
                 });
 
             });
+
             this.Context.UserNotification.AddRange(userNotifications);
+            this.Context.SaveChanges();
         }
 
         /// <summary>

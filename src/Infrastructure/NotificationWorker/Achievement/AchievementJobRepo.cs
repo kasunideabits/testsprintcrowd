@@ -24,6 +24,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
                 AchievedOn = achivedOn,
             };
             var notification = this.Context.Notification.Add(achievementNotification);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
@@ -34,8 +35,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement
                 SenderId = creatorId,
                 ReceiverId = receiverId,
                 NotificationId = notificationId,
+                BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
+            this.Context.SaveChanges();
         }
 
         public User GetSystemUser()

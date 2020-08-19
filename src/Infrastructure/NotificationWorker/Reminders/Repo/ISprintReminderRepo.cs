@@ -23,11 +23,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders.Repo
         Dictionary<string, List<int>> GetParticipantIdsByLangugage(int sprintId, SprintNotificaitonType notificationType);
 
         /// <summary>
-        ///
+        ///Get Tokens
         /// </summary>
         /// <param name="userIds"></param>
         /// <returns></returns>
         List<string> GetTokens(List<int> userIds);
+
+        /// <summary>
+        /// Get Token
+        /// </summary>
+        /// <param name="creatorId"></param>
+        /// <returns></returns>
+        List<string> GetToken(int creatorId);
 
         /// <summary>
         ///

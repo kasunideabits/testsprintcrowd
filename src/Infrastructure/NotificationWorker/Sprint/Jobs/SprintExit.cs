@@ -12,6 +12,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// Exit event notification handling
@@ -23,17 +24,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// </summary>
         /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintExit(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, IPushNotificationClient client)
+        public SprintExit(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
             this.PushNotificationClient = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
         private IPushNotificationClient PushNotificationClient { get; }
 
+        private int ParticipantUserId { get; set; }
         /// <summary>
         /// Run notification logic
         /// </summary>
@@ -66,6 +70,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 var notificationData = ExitNotificationMessageMapper.PushNotificationMessgeMapper(exitSprint);
                 var user = this.GetUser(exitSprint.CreatorId);
                 var tokens = this.GetTokens(exitSprint.CreatorId);
+                this.ParticipantUserId = exitSprint.CreatorId;
                 var notification = this.GetNotification(user.LanguagePreference);
                 var notificationBody = String.Format(notification.Body, exitSprint.Name, exitSprint.SprintName);
                 var notificationMessage = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationData);
@@ -83,7 +88,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.LeaveParticipant).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(notificationTitle, notificationBody)
                 .Message(data)
                 .Tokens(tokens)
@@ -106,13 +115,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = exitSprint.NumberOfParticipant,
             };
             var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
             var userNotification = new UserNotification
             {
                 SenderId = exitSprint.UserId,
                 ReceiverId = creatorId,
                 NotificationId = notification.Entity.Id,
+                BadgeValue = 1,
             };
             this.Context.UserNotification.Add(userNotification);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
