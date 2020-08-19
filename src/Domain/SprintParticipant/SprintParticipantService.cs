@@ -277,7 +277,7 @@
             //    (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
             //    ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
             //    (s.Sprint.StartDateTime > now);
-            
+
             Expression<Func<SprintParticipant, bool>> creatorQueryCommon = s =>
                s.UserId == userId &&
                s.User.UserState == UserState.Active &&
@@ -520,6 +520,9 @@
         /// <returns>all notificaiton related to given userid</returns>
         public List<dynamic> GetNotification(int userId)
         {
+            // set badge cout to "0" for the requested user
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             var result = new List<object>();
 
@@ -570,7 +573,7 @@
             // }
 
             this.SprintParticipantRepo.RemoveParticipant(sprintParticipant);
-            this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
+            // this.SprintParticipantRepo.RemoveSprintNotification(sprintId, participantId);
             this.SprintParticipantRepo.SaveChanges();
             this.NotificationClient.SprintNotificationJobs.SprintParticipantRemove(
                 sprintParticipant.SprintId,

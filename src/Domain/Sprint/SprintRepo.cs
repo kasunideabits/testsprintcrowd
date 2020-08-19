@@ -194,6 +194,7 @@
         public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
         {
             await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
+            this.dbContext.SaveChanges();
         }
 
         /// <summary>
