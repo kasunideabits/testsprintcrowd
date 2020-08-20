@@ -32,7 +32,7 @@ RUN mkdir -p /app/src/out/fcm_keystore
 COPY /config/firebase-token.json /app/src/out/fcm_keystore/firebase-token.json
 
 
-RUN echo $(ls -1 /app/src/out/fcm_keystore)
+# RUN echo $(ls -1 /app/src/out/fcm_keystore)
 
 
 EXPOSE 5002
