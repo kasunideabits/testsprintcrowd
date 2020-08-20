@@ -45,6 +45,7 @@
         /// <returns><see cref="SprintParticipant"> participant info</see></returns>
         Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId);
 
+        Task<List<SprintParticipant>> GetAllParticipants(Expression<Func<SprintParticipant, bool>> query);
         /// <summary>
         /// Get all sprints paritipant details with given query
         /// </summary>
