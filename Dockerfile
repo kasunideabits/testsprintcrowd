@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 COPY src/*.csproj ./
-COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
+#COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
 
 
 RUN mkdir -p /app/fcm_keystore 
