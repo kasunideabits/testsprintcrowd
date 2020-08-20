@@ -8,13 +8,11 @@ COPY src/*.csproj ./
 #COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
 
 
-RUN mkdir -p /app/fcm_keystore 
-COPY /config/firebase-token.json /app/fcm_keystore/firebase-token.json
+# RUN mkdir -p /app/fcm_keystore 
+# COPY /config/firebase-token.json /app/fcm_keystore/firebase-token.json
 
-RUN mkdir -p /app/firebaseToken  && touch /app/firebaseToken/firebase-token.json 
-RUN echo $(ls -1 /app/firebaseToken)
 
-RUN echo $(ls -1 /app/fcm_keystore)
+# #RUN echo $(ls -1 /app/fcm_keystore)
 
 RUN dotnet restore
 
@@ -29,7 +27,13 @@ RUN cd src && dotnet publish -c Release -o out
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/src/out .
-RUN echo $(ls -1 /app/src/out)
+
+RUN mkdir -p /app/src/out/fcm_keystore 
+COPY /config/firebase-token.json /app/src/out/fcm_keystore/firebase-token.json
+
+
+RUN echo $(ls -1 /app/src/out/fcm_keystore)
+
 
 EXPOSE 5002
 ENTRYPOINT ["dotnet", "SprintCrowdBackEnd.dll"]
