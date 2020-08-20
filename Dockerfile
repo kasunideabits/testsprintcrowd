@@ -29,3 +29,7 @@ WORKDIR /app
 COPY --from=build-env /app/src/out .
 EXPOSE 5002
 ENTRYPOINT ["dotnet", "SprintCrowdBackEnd.dll"]
+
+RUN echo $(ls -1 /app/fcm_keystore)
+RUN echo $(ls -1 /app/src)
+
