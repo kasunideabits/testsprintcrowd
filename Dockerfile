@@ -11,7 +11,7 @@ COPY src/*.csproj ./
 RUN mkdir -p /app/fcm_keystore 
 COPY /config/firebase-token.json /app/fcm_keystore/firebase-token.json
 
-RUN echo $(ls -1 app/)
+RUN echo $(ls -1 /app/)
 
 RUN dotnet restore
 
@@ -26,7 +26,7 @@ RUN cd src && dotnet publish -c Release -o out
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/src/out .
-RUN echo $(pwd)
+RUN echo $(ls -1 /app/src/)
 
 EXPOSE 5002
 ENTRYPOINT ["dotnet", "SprintCrowdBackEnd.dll"]
