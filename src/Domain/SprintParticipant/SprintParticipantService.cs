@@ -707,10 +707,11 @@
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             sprint.Status = (int)SprintStatus.ENDED;
             Expression<Func<SprintParticipant, bool>> query = s => s.SprintId == sprintId;
-            var participants = this.SprintParticipantRepo.GetAll(query).GetEnumerator();
-            while (participants.MoveNext())
+            var participants = await this.SprintParticipantRepo.GetAllParticipants(query);
+
+            foreach (SprintParticipant participant in participants)
             {
-                var participant = participants.Current;
+                // var participant = participants.Current;
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
                     var runner = notCompletedRunners.FirstOrDefault(n => n.UserId == participant.UserId);
@@ -722,9 +723,26 @@
                     participant.FinishTime = sprint.StartDateTime.AddHours(20);
                     this.SprintParticipantRepo.UpdateParticipant(participant);
                 }
-
             }
             this.SprintParticipantRepo.SaveChanges();
+
+            //while (participants.MoveNext())
+            //{
+            //    var participant = participants.Current;
+            //    if (participant.Stage != ParticipantStage.COMPLETED)
+            //    {
+            //        var runner = notCompletedRunners.FirstOrDefault(n => n.UserId == participant.UserId);
+            //        participant.Stage = ParticipantStage.QUIT;
+            //        if (runner != null)
+            //        {
+            //            participant.DistanceRan = (int)runner.DistanceRun;
+            //        }
+            //        participant.FinishTime = sprint.StartDateTime.AddHours(20);
+            //        this.SprintParticipantRepo.UpdateParticipant(participant);
+            //    }
+
+            //}
+
         }
 
         public async Task<SprintInfo> GetSprint(int sprintId)
