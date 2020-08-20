@@ -26,9 +26,10 @@ RUN cd src && dotnet publish -c Release -o out
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/src/out .
+RUN echo $(ls -1 /app/src/out)
+
 EXPOSE 5002
 ENTRYPOINT ["dotnet", "SprintCrowdBackEnd.dll"]
 
-RUN echo $(ls -1 /app/fcm_keystore)
-RUN echo $(ls -1 /app/src)
+
 
