@@ -81,6 +81,13 @@
         Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent);
 
         /// <summary>
+        /// Validate Sprint Edit By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<bool> ValidateSprintEditBySprintId(int sprintId);
+
+        /// <summary>
         /// Remove sprint
         /// </summary>
         /// <param name="userId">creator id </param>

@@ -7,5 +7,6 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         AlreadyExistParticipants = 2002,
         NotAllowedOperation = 2003,
         MarkAttendanceEnable = 2004,
+        CanNotEditSprint = 2005,
     }
 }
