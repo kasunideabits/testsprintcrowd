@@ -8,7 +8,8 @@ COPY src/*.csproj ./
 COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
 
 
-RUN mkdir -p /app/fcm_keystore && touch /app/fcm_keystore/file1 /app/fcm_keystore/file2
+RUN mkdir -p /app/fcm_keystore 
+COPY /config/firebase-token.json /app/fcm_keystore/firebase-token.json
 
 
 RUN echo $(ls -1 /app/fcm_keystore)
