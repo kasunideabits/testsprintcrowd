@@ -7,6 +7,8 @@ RUN mkdir -p app/fcm_keystore
 COPY src/*.csproj ./
 COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
 
+CMD ["cat", "/app/fcm_keystore/firebase-token.json"]
+
 RUN dotnet restore
 
 # Copy everything else and build
