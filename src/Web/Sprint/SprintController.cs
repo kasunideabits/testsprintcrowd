@@ -137,6 +137,20 @@
         }
 
         /// <summary>
+        /// Validate Sprint Edit By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        [HttpGet("ValidateSprintEditBySprintId/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> ValidateSprintEditBySprintId(int sprintId)
+        {
+            var result = await this.SprintService.ValidateSprintEditBySprintId(sprintId);
+            return this.Ok(result);
+        }
+
+        /// <summary>
         /// Query public sprint with  utc offset
         /// </summary>
         /// <param name="timeOffset">time offset</param>

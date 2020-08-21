@@ -12,25 +12,30 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.PushNotification;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     public class SprintUpdate : ISprintUpdate
     {
-        public SprintUpdate(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory)
+        public SprintUpdate(ScrowdDbContext context, IPushNotificationClient client, IAblyConnectionFactory ablyFactory, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.PushNotificationClient = client;
             this.AblyConnectionFactory = ablyFactory;
-
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
 
         public void Run(object message = null)
         {
             {
-                UpdateSprint editSprint = message as UpdateSprint;
+                UpdateSprint editSprint = null;
+                if (message != null)
+                    editSprint = message as UpdateSprint;
                 if (editSprint != null)
                 {
                     this.SendPushNotification(editSprint);
@@ -52,8 +57,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     var tokens = this.GetTokens(item.Value);
                     var notification = this.GetNotification(item.Key);
                     var notificationBody = String.Format(notification.Body, updateSprint.OldSprintName, editor.Name);
-                    var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, tokens, notificationMsgData);
-                    this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+
+                    item.Value.ForEach(participantId =>
+                    {
+                        this.ParticipantUserId = participantId;
+                        var token = this.GetToken(participantId);
+                        var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, notificationMsgData);
+                        this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
+
+                    });
+
                     this.SendAblyMessage(notificationMsgData.Sprint);
                 }
             }
@@ -70,7 +83,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("SubType", ((int)SprintNotificaitonType.Edit).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
@@ -137,6 +154,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 NumberOfParticipants = edit.NumberOfParticipant
             };
             var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
+
             participantIds.ForEach(id =>
             {
                 userNotifications.Add(new UserNotification
@@ -144,10 +163,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     SenderId = creatorId,
                     ReceiverId = id,
                     NotificationId = notification.Entity.Id,
+                    BadgeValue = 1,
                 });
 
             });
             this.Context.UserNotification.AddRange(userNotifications);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
         }
 
@@ -181,6 +202,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 };
 
                 this.Context.SprintNotifications.Add(sprintNotificaitonOne);
+                this.Context.SaveChanges();
             }
 
             if (entitySprintNotification != null)
@@ -199,6 +221,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 };
 
                 this.Context.SprintNotifications.Add(sprintNotificaiton);
+                this.Context.SaveChanges();
             }
 
             //if (entitySprintNotification != null)
@@ -215,6 +238,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             return this.Context.FirebaseToken
                 .Where(f => participantIds.Contains(f.User.Id))
+                .Select(f => f.Token).ToList();
+        }
+
+        private List<string> GetToken(int participantId)
+        {
+            return this.Context.FirebaseToken
+                .Where(f => f.User.Id == participantId)
                 .Select(f => f.Token).ToList();
         }
 

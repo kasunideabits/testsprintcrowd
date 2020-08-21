@@ -46,6 +46,7 @@
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 paritipant.StartedTime = DateTime.UtcNow;
                 this.Context.SprintParticipant.Update(paritipant);
+                this.Context.SaveChanges();
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
             }
             else if (paritipant.Stage == ParticipantStage.MARKED_ATTENDENCE)
@@ -73,6 +74,7 @@
                 Stage = ParticipantStage.JOINED,
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
+            this.Context.SaveChanges();
             return result.Entity;
         }
 
@@ -139,6 +141,21 @@
         }
 
         /// <summary>
+        /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
+        /// </summary>
+        /// <param name="sprintId">sprint id to lookup</param>
+        /// <param name="stage">filter with stage</param>
+        /// <returns><see cref="SprintParticipant"> list of participant info</see></returns>
+        public async Task<List<SprintParticipant>> GetAllParticipants(Expression<Func<SprintParticipant, bool>> query)
+        {
+            return await this.Context.SprintParticipant
+                .Include(s => s.User)
+                .Include(s => s.Sprint)
+                .ThenInclude(s => s.CreatedBy)
+                .Where(query).ToListAsync();
+        }
+
+        /// <summary>
         /// Add pariticipant to sprint
         /// </summary>
         /// <param name="sprintId">sprint id </param>
@@ -153,6 +170,7 @@
                 Stage = ParticipantStage.PENDING,
             };
             var result = await this.Context.AddAsync(pariticipant);
+            this.Context.SaveChanges();
             return result.Entity;
         }
 
@@ -192,6 +210,32 @@
         }
 
         /// <summary>
+        /// Update BadgeCount By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        public void UpdateBadgeCountByUserId(int userId)
+        {
+            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId).ToList();
+            userNotification.ForEach(n =>
+            {
+                n.BadgeValue = 0;
+            });
+            this.Context.UserNotification.UpdateRange(userNotification);
+            this.Context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Get Unread Participant Notification Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetParticipantUnreadNotificationCount(int userId)
+        {
+            var result = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.BadgeValue == 1).Count();
+            return result;
+        }
+
+        /// <summary>
         /// Join participant to given sprint
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
@@ -203,6 +247,7 @@
             {
                 participant.Stage = ParticipantStage.JOINED;
                 this.Context.Update(participant);
+                this.Context.SaveChanges();
             }
         }
 
@@ -217,6 +262,7 @@
             if (participant != null)
             {
                 this.Context.Remove(participant);
+                this.Context.SaveChanges();
             }
             return;
         }
@@ -241,6 +287,7 @@
         public void RemoveParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Remove(participant);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
@@ -255,7 +302,7 @@
                 .Include(f => f.SharedUser)
                 .Where(f =>
                     (f.AcceptedUserId == userId || f.SharedUserId == userId));// &&
-                    //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
+                                                                              //(f.SharedUser.UserState == UserState.Active && f.AcceptedUser.UserState == UserState.Active));
         }
 
         /// <summary>
@@ -268,6 +315,7 @@
             if (notification != null)
             {
                 this.Context.Remove(notification);
+                this.Context.SaveChanges();
             }
             return;
         }
@@ -285,6 +333,7 @@
                 .Where(r => r.ReceiverId == userId)
                 .ToList();
             this.Context.UserNotification.RemoveRange(notifications);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
@@ -328,6 +377,7 @@
         public void UpdateParticipant(SprintParticipant participant)
         {
             this.Context.SprintParticipant.Update(participant);
+            this.Context.SaveChanges();
         }
 
         /// <summary>

@@ -45,6 +45,7 @@
         /// <returns><see cref="SprintParticipant"> participant info</see></returns>
         Task<SprintParticipant> CheckSprintParticipant(int sprintId, int userId);
 
+        Task<List<SprintParticipant>> GetAllParticipants(Expression<Func<SprintParticipant, bool>> query);
         /// <summary>
         /// Get all sprints paritipant details with given query
         /// </summary>
@@ -52,6 +53,11 @@
         /// <returns>all pariticpant details</returns>
         IEnumerable<SprintParticipant> GetAll(Expression<Func<SprintParticipant, bool>> query);
 
+        /// <summary>
+        /// Update Badge Count By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        void UpdateBadgeCountByUserId(int userId);
         Task<SprintParticipant> GetByUserId(int userId);
 
         /// <summary>
@@ -82,6 +88,12 @@
         /// <param name="userId">user id to fetch</param>
         /// <returns>User record</returns>
         Task<User> GetParticipant(int userId);
+
+        // <summary>
+        /// Get Participant Unread Notification Count
+        /// </summary>
+        /// <param name="userId"></param>
+        int GetParticipantUnreadNotificationCount(int userId);
 
         /// <summary>
         /// Get notifications for given user id

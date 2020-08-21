@@ -97,6 +97,7 @@
         {
             Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
             var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+            
             if (sprintAavail == null)
             {
                 throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
@@ -104,6 +105,10 @@
             else if (sprintAavail.CreatedBy.Id != userId)
             {
                 throw new Application.ApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can edit event");
+            }
+            else if (sprintAavail.StartDateTime.AddMinutes(-5) < DateTime.UtcNow)
+            {
+                throw new Application.ApplicationException((int)SprintErrorCode.CanNotEditSprint, "Can not edit this event");
             }
             string oldName = sprintAavail.Name;
             if (name != String.Empty)
@@ -169,6 +174,29 @@
                 sprint.InfluencerAvailability,
                 sprint.InfluencerEmail);
             return result;
+        }
+
+        /// <summary>
+        /// Validate Sprint Edit By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<bool> ValidateSprintEditBySprintId(int sprintId)
+        {
+            Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
+            var sprintAavail = await this.SprintRepo.GetSprint(predicate);
+            if (sprintAavail != null)
+            {
+                if (sprintAavail.StartDateTime.AddMinutes(-5) < DateTime.UtcNow)
+                    return false;
+                else
+                    return true;
+
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -522,7 +550,7 @@
             {
                 throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
             }
-            else if (sprint.StartDateTime.AddMinutes(-10) < DateTime.UtcNow)
+            else if (sprint.StartDateTime.AddMinutes(-5) < DateTime.UtcNow)
             {
                 throw new SCApplicationException((int)SprintErrorCode.MarkAttendanceEnable, "Mark attendance enable");
             }
