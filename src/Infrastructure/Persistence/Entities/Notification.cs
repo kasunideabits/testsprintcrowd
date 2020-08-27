@@ -79,7 +79,7 @@
         TimeReminderFinalCall, // final call,
         TimeReminderOneHourBefore, // 1 hour before call
         RemoveParticipsnt,
-
+        FriendRequestAccept,
 
     }
 

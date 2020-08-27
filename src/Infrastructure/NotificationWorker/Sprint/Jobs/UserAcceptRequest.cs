@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SprintCrowd.BackEnd.Application;
+using SprintCrowd.BackEnd.Domain.SprintParticipant;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -20,12 +21,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private ScrowdDbContext Context { get; }
         private IPushNotificationClient PushNotificationClient { get; }
 
-        public UserAcceptRequest(ScrowdDbContext context, IPushNotificationClient client)
+        public UserAcceptRequest(ScrowdDbContext context, IPushNotificationClient client, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.PushNotificationClient = client;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
+        private int ParticipantUserId { get; set; }
         /// <summary>
         /// Run notification logic
         /// </summary>
@@ -47,6 +51,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificationId = this.AddToDb(acceptRequest); 
             var token = this.GetToken(acceptRequest.RequestSenderId);
             var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.RequestSenderId));
+            this.ParticipantUserId = acceptRequest.RequestSenderId;
             var notificationBody = String.Format(notification.Body, acceptRequest.Name);
             var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, acceptRequest);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
@@ -61,10 +66,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var payload = notificationData;
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "SprintType");
-            data.Add("SubType", ((int)SprintNotificaitonType.Edit).ToString());
+            data.Add("SubType", ((int)SprintNotificaitonType.FriendRequestAccept).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            var message = new PushNotification.PushNotificationMulticastMessageBuilder()
+            
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
+            var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
                 .Message(data)
                 .Tokens(tokens)
@@ -74,25 +83,29 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private int AddToDb(AcceptRequest accRequest)
         {
-            List<UserNotification> userNotifications = new List<UserNotification>();
-            var acceptFriendNotification = new FriendAcceptNoticiation()
+            var sprintNotification = new SprintNotification()
             {
-                Type = FriendNoticiationType.Accepet,
-                RequesterId = accRequest.RequestSenderId,
-                Id = accRequest.Id,
-                Name = accRequest.Name,
-                ProfilePicture = accRequest.ProfilePicture,
-                Code = accRequest.Code,
-                Email = accRequest.Email,
-                City = accRequest.City,
-                Country = accRequest.Country,
-                CountryCode = accRequest.CountryCode,
-                ColorCode = accRequest.ColorCode,
-                CreatedDate = accRequest.CreatedDate
-
+                SprintNotificationType = SprintNotificaitonType.LeaveParticipant,
+                UpdatorId = accRequest.RequestSenderId,
+                SprintId = 0,
+                SprintName = string.Empty,
+                Distance = 0,
+        
             };
-            var notification = this.Context.Notification.Add(acceptFriendNotification);
+            var notification = this.Context.Notification.Add(sprintNotification);
+            this.Context.SaveChanges();
+            var userNotification = new UserNotification
+            {
+                SenderId = accRequest.Id,
+                ReceiverId = accRequest.RequestSenderId,
+                NotificationId = notification.Entity.Id,
+                BadgeValue = 1,
+            };
+            this.Context.UserNotification.Add(userNotification);
+            this.Context.SaveChanges();
             return notification.Entity.Id;
+
+            
         }
 
         private List<string> GetToken(int participantId)
