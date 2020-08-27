@@ -49,9 +49,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(AcceptRequest acceptRequest)
         {
             var notificationId = this.AddToDb(acceptRequest); 
-            var token = this.GetToken(acceptRequest.RequestSenderId);
+            var token = this.GetToken(acceptRequest.Id);
             var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.RequestSenderId));
-            this.ParticipantUserId = acceptRequest.RequestSenderId;
+            this.ParticipantUserId = acceptRequest.Id;
             var notificationBody = String.Format(notification.Body, acceptRequest.Name);
             var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, acceptRequest);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
