@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Domain.SprintParticipant;
 using SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models;
@@ -85,8 +86,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             var sprintNotification = new SprintNotification()
             {
-                SprintNotificationType = SprintNotificaitonType.LeaveParticipant,
+                SprintNotificationType = SprintNotificaitonType.FriendRequestAccept,
                 UpdatorId = accRequest.RequestSenderId,
+                StartDateTime = DateTime.UtcNow,
                 SprintId = 0,
                 SprintName = string.Empty,
                 Distance = 0,
