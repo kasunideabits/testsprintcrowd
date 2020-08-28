@@ -48,7 +48,7 @@
         public async Task<IActionResult> PlusFriend([FromBody] FriendRequestActionModel request)
         {
             User user = await this.User.GetUser(this.UserService);
-            var addedFriend = await this.FriendService.PlusFriend(user.Id, request.Code);
+            var addedFriend = await this.FriendService.PlusFriend(user, request.Code);
             return this.Ok(new SuccessResponse<FriendDto>(addedFriend));
         }
 

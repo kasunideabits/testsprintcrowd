@@ -31,7 +31,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="userId">resonder user id</param>
         /// <param name="friendCode">generate friend code</param>
-        public async Task<FriendDto> PlusFriend(int userId, string friendCode)
+        public async Task<FriendDto> PlusFriend(User userAccept, string friendCode)
         {
             User user = await this.FriendRepo.GetUserWithCode(friendCode);
 
@@ -41,35 +41,35 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             }
             else
             {
-                if ((int)user.Id == (int)userId)
+                if ((int)user.Id == (int)userAccept.Id)
                 {
                     throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserCode, "You cannot be friends with you");
                 }
                 else
                 {
-                    var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userId);
+                    var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userAccept.Id);
                     if (isFriends == null)
                     {
                         Friend friend = new Friend();
                         friend.AcceptedUserId = (int)user.Id;
-                        friend.SharedUserId = (int)userId;
+                        friend.SharedUserId = (int)userAccept.Id;
                         friend.CreatedDate = DateTime.Now;
                         friend.UpdatedTime = DateTime.Now;
                         await this.FriendRepo.PlusFriend(friend);
                         this.FriendRepo.SaveChanges();
 
                         this.NotificationClient.SprintNotificationJobs.AcceptRequest(
-                            user.Id,
-                            user.Name,
-                            user.ProfilePicture,
-                            user.Code,
-                            user.Email,
-                            user.City,
-                            user.Country,
-                            user.CountryCode,
-                            user.ColorCode,
-                            friend.CreatedDate, 
-                            userId);
+                            userAccept.Id,
+                            userAccept.Name,
+                            userAccept.ProfilePicture,
+                            userAccept.Code,
+                            userAccept.Email,
+                            userAccept.City,
+                            userAccept.Country,
+                            userAccept.CountryCode,
+                            userAccept.ColorCode,
+                            userAccept.CreatedDate,
+                            user.Id);
 
                         return new FriendDto(
                             user.Id,

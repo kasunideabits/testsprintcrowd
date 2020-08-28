@@ -50,9 +50,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(AcceptRequest acceptRequest)
         {
             var notificationId = this.AddToDb(acceptRequest); 
-            var token = this.GetToken(acceptRequest.Id);
+            var token = this.GetToken(acceptRequest.RequestSenderId);
             var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.RequestSenderId));
-            this.ParticipantUserId = acceptRequest.Id;
+            this.ParticipantUserId = acceptRequest.RequestSenderId;
             var notificationBody = String.Format(notification.Body, acceptRequest.Name);
             var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, acceptRequest);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
@@ -66,7 +66,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var data = new Dictionary<string, string>();
             var payload = notificationData;
             data.Add("NotificationId", notificationId.ToString());
-            data.Add("MainType", "SprintType");
+            data.Add("MainType", "FriendType");
             data.Add("SubType", ((int)SprintNotificaitonType.FriendRequestAccept).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
