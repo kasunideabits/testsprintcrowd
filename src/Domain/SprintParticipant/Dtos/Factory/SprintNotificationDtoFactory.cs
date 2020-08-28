@@ -62,7 +62,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
             this.NotificationId = notification.Id;
             this.SubType = notification.SprintNotificationType;
             this.CreateDate = notification.CreatedDate;
-            this.UserName = UserName;
+            this.Name = UserName;
         }
 
         public string MainType { get; }
@@ -70,7 +70,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public SprintNotificaitonType SubType { get; }
         public DateTime CreateDate { get; }
 
-        public string UserName { get; }
+        public string Name { get; }
     }
 
     internal class SprintInvitationRequestDto : SprintNotificationBaseDto, ISprintNotification
@@ -137,7 +137,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintEditResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintEditResponseDto(User editor, SprintNotification notification) : base(notification,editor.Name)
+        public SprintEditResponseDto(User editor, SprintNotification notification) : base(notification, editor.Name)
         {
             this.Data = new SprintEditResponsePayload(editor, notification);
         }
@@ -146,7 +146,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintTimeReminderDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintTimeReminderDto(SprintNotification notification) : base(notification,string.Empty)
+        public SprintTimeReminderDto(SprintNotification notification) : base(notification, string.Empty)
         {
             this.Data = new SprintTimeReminderResponsePayload(notification, notification.SprintNotificationType);
         }
@@ -245,11 +245,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         {
             this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
             this.User = new NotificationUserInfo(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
-            this.UserName = user.Name;
+            this.Name = user.Name;
         }
         public SprintNotificationInfo Sprint { get; }
         public NotificationUserInfo User { get; }
-        public string UserName { get; }
+        public string Name { get; }
     }
 
     internal class SprintNotificationPayload
