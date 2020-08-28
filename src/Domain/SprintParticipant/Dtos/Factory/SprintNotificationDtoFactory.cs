@@ -56,23 +56,26 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintNotificationBaseDto
     {
-        public SprintNotificationBaseDto(SprintNotification notification)
+        public SprintNotificationBaseDto(SprintNotification notification, string UserName)
         {
             this.MainType = "SprintType";
             this.NotificationId = notification.Id;
             this.SubType = notification.SprintNotificationType;
             this.CreateDate = notification.CreatedDate;
+            this.UserName = UserName;
         }
 
         public string MainType { get; }
         public int NotificationId { get; }
         public SprintNotificaitonType SubType { get; }
         public DateTime CreateDate { get; }
+
+        public string UserName { get; }
     }
 
     internal class SprintInvitationRequestDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintInvitationRequestDto(User sender, User receiver, SprintNotification notification) : base(notification)
+        public SprintInvitationRequestDto(User sender, User receiver, SprintNotification notification) : base(notification, sender.Name)
         {
             this.Data = new SprintNotificationPayload(
                 notification.SprintId,
@@ -91,7 +94,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintInvitationResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintInvitationResponseDto(User sender, SprintNotification notification) : base(notification)
+        public SprintInvitationResponseDto(User sender, SprintNotification notification) : base(notification, sender.Name)
         {
             this.Data = new SprintInvitationResponsePayload(
                 notification.SprintId,
@@ -109,7 +112,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintRemoveResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintRemoveResponseDto(User sender, SprintNotification notification) : base(notification)
+        public SprintRemoveResponseDto(User sender, SprintNotification notification) : base(notification, sender.Name)
         {
             this.Data = new SprintRemoveResponsePayload(
                 notification.SprintId,
@@ -134,7 +137,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintEditResponseDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintEditResponseDto(User editor, SprintNotification notification) : base(notification)
+        public SprintEditResponseDto(User editor, SprintNotification notification) : base(notification,editor.Name)
         {
             this.Data = new SprintEditResponsePayload(editor, notification);
         }
@@ -143,7 +146,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
 
     internal class SprintTimeReminderDto : SprintNotificationBaseDto, ISprintNotification
     {
-        public SprintTimeReminderDto(SprintNotification notification) : base(notification)
+        public SprintTimeReminderDto(SprintNotification notification) : base(notification,string.Empty)
         {
             this.Data = new SprintTimeReminderResponsePayload(notification, notification.SprintNotificationType);
         }
