@@ -125,6 +125,11 @@
     "title": "Friend joined to an event",
     "body": "{0} has joined {1}"
   },
+  "friendAccept": {
+    "_comment": "0 = accepted user name",
+    "title": "Friend Accepted",
+    "body": "{0} has accepted request "
+  },
   "sprintEdit": {
     "_comment": "0 = sprint name, 1 = updater name",
     "title": "Sprint Updated",
