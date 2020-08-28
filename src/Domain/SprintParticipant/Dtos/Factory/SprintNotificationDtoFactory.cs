@@ -245,9 +245,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         {
             this.Sprint = new SprintNotificationInfo(sprintId, sprintName, distance, startDateTime, numberOfParticipants, sprintType, sprintStatus);
             this.User = new NotificationUserInfo(user.Id, user.Name, user.Email, user.ProfilePicture, user.Code, user.City, user.Country, user.CountryCode);
+            this.UserName = user.Name;
         }
         public SprintNotificationInfo Sprint { get; }
         public NotificationUserInfo User { get; }
+        public string UserName { get; }
     }
 
     internal class SprintNotificationPayload

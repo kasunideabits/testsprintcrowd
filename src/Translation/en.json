@@ -128,7 +128,7 @@
   "friendAccept": {
     "_comment": "0 = accepted user name",
     "title": "Friend Accepted",
-    "body": "{0} has accepted request "
+    "body": "You are now friends with {0}"
   },
   "sprintEdit": {
     "_comment": "0 = sprint name, 1 = updater name",
