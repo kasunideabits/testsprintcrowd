@@ -17,7 +17,7 @@
         /// <param name="userId">resonder user id</param>
         /// <param name="friendCode">generate friend code</param>
         /// <returns><see cref="AddFriendDto"></see> and reason</returns>
-        Task<FriendDto> PlusFriend(int userId, string friendCode);
+        Task<FriendDto> PlusFriend(User userAccept, string friendCode);
 
         /// <summary>
         /// Get all friends of loggedin user
