@@ -10,6 +10,7 @@
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.SprintManager;
+    using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -518,31 +519,79 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>all notificaiton related to given userid</returns>
-        public List<dynamic> GetNotification(int userId)
+        public Notifications GetNotification(int userId)
         {
-            // set badge cout to "0" for the requested user
-            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
-
+            
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
-            var result = new List<object>();
+            //var result = new List<object>();
+
+            //var resultNew = new List<object>();
+            //var resultToday = new List<object>();
+            //var resultOlder = new List<object>();
+
+            Notifications notification = new Notifications();
 
             notifications
                 .OrderByDescending(n => n.Notification.CreatedDate)
                 .ToList().ForEach(s =>
                 {
-                    switch (s.Notification)
+                    if (s.BadgeCount == 1)
                     {
-                        case SprintNotification sprintTypeNotification:
-                            result.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
-                            break;
-                        case AchievementNoticiation achievementTypeNotification:
-                            result.Add(NotificationDtoFactory.AchievementBuild(achievementTypeNotification));
-                            break;
-                        default:
-                            break;
+                        // New Notifications
+                        switch (s.Notification)
+                        {
+                            case SprintNotification sprintTypeNotification:
+                                notification.ResultNew.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
+                                break;
+                            case AchievementNoticiation achievementTypeNotification:
+                                notification.ResultNew.Add(NotificationDtoFactory.AchievementBuild(achievementTypeNotification));
+                                break;
+                            default:
+                                break;
+                        }
+
+                        //notification.Result.Add(notification.ResultNew);
+
+                    } 
+                    else if (s.BadgeCount != 1 && s.CreatedDate.Date == DateTime.UtcNow.Date)
+                    {
+                        //Today Notification
+                        switch (s.Notification)
+                        {
+                            case SprintNotification sprintTypeNotification:
+                                notification.ResultToday.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
+                                break;
+                            case AchievementNoticiation achievementTypeNotification:
+                                notification.ResultToday.Add(NotificationDtoFactory.AchievementBuild(achievementTypeNotification));
+                                break;
+                            default:
+                                break;
+                        }
+
+                       // notification.Result.Add(notification.ResultToday);
                     }
+                    else
+                    {
+                        //Older Notification
+                        switch (s.Notification)
+                        {
+                            case SprintNotification sprintTypeNotification:
+                                notification.ResultOlder.Add(NotificationDtoFactory.Build(s.Sender, s.Receiver, sprintTypeNotification));
+                                break;
+                            case AchievementNoticiation achievementTypeNotification:
+                                notification.ResultOlder.Add(NotificationDtoFactory.AchievementBuild(achievementTypeNotification));
+                                break;
+                            default:
+                                break;
+                        }
+
+                       // notification.Result.Add(notification.ResultOlder);
+                    }
+
                 });
-            return result;
+            // set badge cout to "0" for the requested user
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
+            return notification;
         }
 
         /// <summary>
@@ -750,5 +799,23 @@
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             return new SprintInfo(sprint);
         }
+    }
+
+    public class Notifications //<T> where T : class, new()
+    {
+        public List<object> ResultNew { get; set; }
+        public List<object> ResultToday { get; set; }
+        public List<object> ResultOlder { get; set; }
+
+        //public List<object> Result { get; set; }
+
+        public Notifications()
+        {
+            this.ResultNew = new List<object>();
+            this.ResultToday = new List<object>();
+            this.ResultOlder = new List<object>();
+           // this.Result = new List<object>();
+        }
+
     }
 }
