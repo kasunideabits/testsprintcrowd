@@ -83,6 +83,17 @@
         }
 
         /// <summary>
+        /// Update Sprint Status By Sprint Id
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public bool UpdateSprintStatusBySprintId(int sprintId)
+        {
+            bool success = false;
+            success = this.SprintRepo.UpdateSprintStatusBySprintId(sprintId) > 0 ? true : false;   
+            return success;
+        }
+        /// <summary>
         /// Update instance of SprintService
         /// </summary>
         public async Task<UpdateSprintDto> UpdateSprint(

@@ -6,6 +6,7 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.Achievement;
+    using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Web.SprintManager;
 
@@ -21,14 +22,15 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         /// </summary>
         /// <param name="participantService">sprint paritcipant service</param>
         /// <param name="achievementService">sprint paritcipant service</param>
-        public SprintManagerController(ISprintParticipantService participantService, IAchievementService achievementService)
+        public SprintManagerController(ISprintParticipantService participantService, IAchievementService achievementService, ISprintService sprintService)
         {
             this.SprintParticipantService = participantService;
             this.AchievementService = achievementService;
+            this.SprintService = sprintService;
         }
         private ISprintParticipantService SprintParticipantService { get; }
         private IAchievementService AchievementService { get; }
-
+        private ISprintService SprintService { get; }
         /// <summary>
         /// Update participant completed the sprint
         /// </summary>
@@ -61,6 +63,21 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         {
             await this.SprintParticipantService.SprintExpired(notCompletedRunner.SprintId, notCompletedRunner.Runners);
             return this.Ok();
+        }
+
+        /// <summary>
+        /// Update Sprint Status By SprintId
+        /// </summary>
+        [HttpPost("sprint/UpdateSprintStatus")]
+        public async Task<IActionResult> UpdateSprintStatusBySprintId([FromBody] SprintUpdatedModel sprintUpdate)
+        {
+            var result = this.SprintService.UpdateSprintStatusBySprintId(sprintUpdate.SprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
     }
 }
