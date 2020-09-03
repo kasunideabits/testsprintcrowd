@@ -1,8 +1,19 @@
-FROM chamindu/dotnet-core-sdk-sonarqube:2.2 AS build-env
+#FROM chamindu/dotnet-core-sdk-sonarqube:2.2 AS build-env
+FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
+#RUN mkdir -p app/fcm_keystore
 
 # Copy csproj and restore as distinct layers
 COPY src/*.csproj ./
+#COPY config/firebase-token.json app/fcm_keystore/firebase-token.json
+
+
+# RUN mkdir -p /app/fcm_keystore
+# COPY /config/firebase-token.json /app/fcm_keystore/firebase-token.json
+
+
+# #RUN echo $(ls -1 /app/fcm_keystore)
+
 RUN dotnet restore
 
 # Copy everything else and build
@@ -16,5 +27,13 @@ RUN cd src && dotnet publish -c Release -o out
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/src/out .
-EXPOSE 5000
+
+RUN mkdir -p /app/src/out/fcm_keystore
+COPY /config/firebase-token.json /app/src/out/fcm_keystore/firebase-token.json
+
+
+# RUN echo $(ls -1 /app/src/out/fcm_keystore)
+
+
+EXPOSE 5002
 ENTRYPOINT ["dotnet", "SprintCrowdBackEnd.dll"]

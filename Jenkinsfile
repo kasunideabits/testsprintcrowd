@@ -9,33 +9,56 @@ pipeline {
     ECRPRODURL= '502141109913.dkr.ecr.eu-north-1.amazonaws.com'
     ECRPRODCREDS = 'ecr:eu-north-1:sprintcrowd_production_creds'
     REPOSITORY = 'sprintcrowd/backend'
+    REPOSITORY_QA = 'sprintcrowd-qa/backend'
   }
   stages {
     stage("build") {
+        environment{
+            APP_SETTINGS = credentials('sc-backend-prod-env')
+            APP_SETTINGS_QA = credentials('sc-backend-qa-env')
+        }
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
+        when { anyOf { branch 'master'; branch 'development'; branch  'SCROWD-952'} }
         steps {
             script {
-                image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+                if ( env.BRANCH_NAME == 'master' ){
+                    sh 'cp -f $APP_SETTINGS src/'
+
+                    image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+                }
+                if ( env.BRANCH_NAME == 'SCROWD-952' ){
+                    sh 'cp -f $APP_SETTINGS_QA src/'
+
+                    image = docker.build("${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+                }
+
             }
         }
     }
     stage("push-image") {
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
+        when { anyOf { branch 'master'; branch 'development'; branch 'SCROWD-952' } }
         steps {
             script {
-                docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+                // docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+                //     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                //     image.push("${env.BRANCH_NAME}.latest")
+                // }
+		      if (env.BRANCH_NAME == 'master'){
+                docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
-                }
-		if (env.BRANCH_NAME == 'qa'){
-                    docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
-                        image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
-                        image.push("${env.BRANCH_NAME}.latest")
                     }
-		}
-                sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+                    sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+		       }
+              if (env.BRANCH_NAME == 'SCROWD-952'){
+                docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
+                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                    image.push("${env.BRANCH_NAME}.latest")
+                    }
+                    sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.latest ${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+		       }
+
             }
         }
     }
@@ -53,20 +76,20 @@ pipeline {
         }
       }
     }
-    stage("deploy-qa") {
-      agent { label 'scrowd-qa' }
-      when {
-            branch 'qa'
-      }
-      steps {
-        script {
-            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-              sh 'cd ~/devops; git pull'
-              sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
-            }
-        }
-      }
-    }
+    // stage("deploy-qa") {
+    //   agent { label 'scrowd-qa' }
+    //   when {
+    //         branch 'qa'
+    //   }
+    //   steps {
+    //     script {
+    //         docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+    //           sh 'cd ~/devops; git pull'
+    //           sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
+    //         }
+    //     }
+    //   }
+    // }
     // stage("deploy-live") {
     //   agent { label 'scrowd-prod' }
     //   when {
