@@ -224,7 +224,6 @@
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
 
-
             if (type == (int)SprintType.PrivateSprint)
             {
                 await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
@@ -327,7 +326,7 @@
                     incementalSprintNumber++;
                     if (incementalSprintNumber != 1)
                     {
-                        name = name.Split(new char[] { '(', ')' })[0];
+                        name = name.Split(new char [] { '(', ')' }) [0];
                     }
                     name = name + "(" + incementalSprintNumber + ")";
                     startTime = startTime.AddDays(1);
@@ -368,7 +367,7 @@
                     incementalSprintNumber++;
                     if (incementalSprintNumber != 1)
                     {
-                        name = name.Split(new char[] { '(', ')' })[0];
+                        name = name.Split(new char [] { '(', ')' }) [0];
                     }
                     name = name + "(" + incementalSprintNumber + ")";
                     startTime = startTime.AddDays(7);
@@ -409,7 +408,7 @@
                     incementalSprintNumber++;
                     if (incementalSprintNumber != 1)
                     {
-                        name = name.Split(new char[] { '(', ')' })[0];
+                        name = name.Split(new char [] { '(', ')' }) [0];
                     }
                     name = name + "(" + incementalSprintNumber + ")";
                     startTime = startTime.AddMonths(1);
@@ -441,7 +440,7 @@
                 //var lastElement = splitSprintnames[splitSprintnames.Length - 1];
 
                 //recursive duplicate related code goes here
-                string lastElement = existingSprintNames.Last().Split(new char[] { '(', ')' })[1];
+                string lastElement = existingSprintNames.Last().Split(new char [] { '(', ')' }) [1];
 
                 if (int.TryParse(lastElement, out int incementalNumber))
                 {

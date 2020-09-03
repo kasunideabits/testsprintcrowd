@@ -118,6 +118,24 @@ namespace SprintCrowd.BackEnd.Web.Event
         }
 
         /// <summary>
+        /// Remove sprint with given sprint id
+        /// </summary>
+        /// <param name="sprintId">sprint id to remove</param>
+        [HttpPost("remove/{sprintId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveSprint(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintService.RemoveSprint(user.Id, sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
         /// Get all participant who join with given sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to look up</param>
@@ -233,11 +251,11 @@ namespace SprintCrowd.BackEnd.Web.Event
         {
             // string baseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
             string baseUrl = "http://localhost:7702"; // for dev environment. temp fix
-            using (var client = new HttpClient())
+            using(var client = new HttpClient())
             {
                 Console.WriteLine(baseUrl);
                 client.BaseAddress = new Uri(baseUrl);
-                var firstItem = uploadData[0];
+                var firstItem = uploadData [0];
                 if (firstItem.Email == string.Empty || firstItem.AccessToken == null)
                 {
                     return this.BadRequest();
