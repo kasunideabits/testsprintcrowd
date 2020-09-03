@@ -152,6 +152,11 @@
         /// <param name="privateSprintCount"> Limit of Private sprints </param>
         /// <returns></returns>
         Task<bool> ValidatePrivateSprintCountForUser(int userId, int lapsTime, int privateSprintCount);
-
+        /// <summary>
+        /// Update Sprint Status By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        bool UpdateSprintStatusBySprintId(int sprintId);
     }
 }

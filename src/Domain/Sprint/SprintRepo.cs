@@ -404,5 +404,17 @@
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Update Sprint Status By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        public int UpdateSprintStatusBySprintId(int sprintId)
+        {
+           var userNotification = this.dbContext.Sprint.Where(s => s.Id == sprintId).ToList().FirstOrDefault();
+            userNotification.Status = (int)SprintStatus.INPROGRESS;
+            this.dbContext.Sprint.Update(userNotification);
+            return this.dbContext.SaveChanges();
+        }
+
     }
 }

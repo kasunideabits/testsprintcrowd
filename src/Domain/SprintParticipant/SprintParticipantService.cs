@@ -426,7 +426,7 @@
         /// <returns><see cref=" SprintInfo">class </see></returns>
         public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
         {
-            var expiredDate = DateTime.UtcNow.AddHours(-20);
+            var expiredDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
                 s.User.UserState == UserState.Active &&
@@ -720,7 +720,7 @@
                     {
                         participant.DistanceRan = (int)runner.DistanceRun;
                     }
-                    participant.FinishTime = sprint.StartDateTime.AddHours(20);
+                    participant.FinishTime = sprint.StartDateTime.AddHours(8);
                     this.SprintParticipantRepo.UpdateParticipant(participant);
                 }
             }
