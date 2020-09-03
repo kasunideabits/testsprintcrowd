@@ -529,7 +529,7 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
-            var expireDate = DateTime.UtcNow.AddHours(-20);
+            var expireDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
