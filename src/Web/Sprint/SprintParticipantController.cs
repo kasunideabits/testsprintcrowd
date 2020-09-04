@@ -211,7 +211,7 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetNotification(user.Id);
-            return this.Ok(new SuccessResponse<List<dynamic>>(result));
+            return this.Ok(new SuccessResponse<Notifications> (result));
         }
 
         /// <summary>
