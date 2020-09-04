@@ -206,7 +206,7 @@
                 .Join(this.Context.Notification,
                     u => u.NotificationId,
                     n => n.Id,
-                    (u, n) => new NotificationInfo { Sender = u.Sender, Receiver = u.Receiver, Notification = n });
+                    (u, n) => new NotificationInfo { Sender = u.Sender, Receiver = u.Receiver, Notification = n, BadgeCount = u.BadgeValue ,CreatedDate = u.CreatedDate});
         }
 
         /// <summary>
