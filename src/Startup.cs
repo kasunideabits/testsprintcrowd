@@ -131,6 +131,8 @@
             NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
+
+            app.UseHttpsRedirection();
             // global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
@@ -149,7 +151,7 @@
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Host = httpReq.Host.Value; ;
+                    swaggerDoc.Host = httpReq.Host.Value;;
                     swaggerDoc.BasePath = httpReq.PathBase;
                 });
             });
@@ -197,13 +199,11 @@
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
-
         // private void SetupDefaultPrivateSprintConfiguration()
         // {
 
         //     Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount = Configuration["PrivateSprint:PrivateSprintCount"] != null ? Configuration["PrivateSprint:PrivateSprintCount"].ToString() : "100";
         //     Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime = Configuration["PrivateSprint:LapsTime"] != null ? Configuration["PrivateSprint:LapsTime"].ToString() : "15";
-
 
         // }
     }
