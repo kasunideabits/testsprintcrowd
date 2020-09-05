@@ -160,7 +160,7 @@
 
             app.UseAuthentication();
 
-            NotificationWorkerEntry.EnableWorkerDashboard(app);
+            //  NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseSwagger(c =>
             {
