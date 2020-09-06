@@ -8,18 +8,18 @@ pipeline {
     ECRCRED = 'ecr:ap-southeast-1:aws-client-creds'
     ECRPRODURL= '502141109913.dkr.ecr.eu-north-1.amazonaws.com'
     ECRPRODCREDS = 'ecr:eu-north-1:sprintcrowd_production_creds'
-    REPOSITORY = 'sprintcrowd/backend'
+    REPOSITORY = 'sprintcrowd-qa/backend'
   }
   stages {
     stage("build") {
         environment{
-            APP_SETTINGS = credentials('sc-backend-prod-env')
+            APP_SETTINGS = credentials('sc-backend-qa-env')
         }
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
+        when { anyOf { branch 'SCROWD-952-master'; branch 'development'; branch 'qa' } }
         steps {
             script {
-                if ( env.BRANCH_NAME == 'master' ){
+                if ( env.BRANCH_NAME == 'SCROWD-952-master' ){
                     sh 'cp -f $APP_SETTINGS src/'
                 }
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
@@ -28,14 +28,14 @@ pipeline {
     }
     stage("push-image") {
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
+        when { anyOf { branch 'SCROWD-952-master'; branch 'development'; branch 'qa' } }
         steps {
             script {
                 docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
                 }
-		      if (env.BRANCH_NAME == 'master'){
+		      if (env.BRANCH_NAME == 'SCROWD-952-master'){
                 docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
@@ -59,20 +59,20 @@ pipeline {
         }
       }
     }
-    stage("deploy-qa") {
-      agent { label 'scrowd-qa' }
-      when {
-            branch 'qa'
-      }
-      steps {
-        script {
-            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-              sh 'cd ~/devops; git pull'
-              sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
-            }
-        }
-      }
-    }
+    // stage("deploy-qa") {
+    //   agent { label 'scrowd-qa' }
+    //   when {
+    //         branch 'qa'
+    //   }
+    //   steps {
+    //     script {
+    //         docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+    //           sh 'cd ~/devops; git pull'
+    //           sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
+    //         }
+    //     }
+    //   }
+    // }
     // stage("deploy-live") {
     //   agent { label 'scrowd-prod' }
     //   when {
