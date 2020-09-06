@@ -31,10 +31,10 @@ pipeline {
         when { anyOf { branch 'SCROWD-952-master'; branch 'development'; branch 'qa' } }
         steps {
             script {
-                docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
-                    image.push("${env.BRANCH_NAME}.latest")
-                }
+                // docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+                //     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                //     image.push("${env.BRANCH_NAME}.latest")
+                // }
 		      if (env.BRANCH_NAME == 'SCROWD-952-master'){
                 docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
