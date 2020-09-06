@@ -98,7 +98,7 @@
 
             });
 
-            // NotificationWorkerEntry.Initialize(this.Configuration, services);
+            NotificationWorkerEntry.Initialize(this.Configuration, services);
 
             // SetupDefaultPrivateSprintConfiguration();
         }
@@ -144,7 +144,7 @@
         /// <param name="app">generated automatically</param>
         public virtual void Configure(IApplicationBuilder app)
         {
-            //NotificationWorkerEntry.EnableWorkerDashboard(app);
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
@@ -160,7 +160,7 @@
 
             app.UseAuthentication();
 
-            //  NotificationWorkerEntry.EnableWorkerDashboard(app);
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseSwagger(c =>
             {
