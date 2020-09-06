@@ -140,10 +140,10 @@
         /// <param name="app">generated automatically</param>
         public virtual void Configure(IApplicationBuilder app)
         {
-            //NotificationWorkerEntry.EnableWorkerDashboard(app);
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             // global cors policy
             app.UseCors("CorsPolicy");
 
@@ -209,6 +209,5 @@
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
-        
     }
 }
