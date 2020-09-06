@@ -209,12 +209,6 @@
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
-        // private void SetupDefaultPrivateSprintConfiguration()
-        // {
-
-        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount = Configuration["PrivateSprint:PrivateSprintCount"] != null ? Configuration["PrivateSprint:PrivateSprintCount"].ToString() : "100";
-        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime = Configuration["PrivateSprint:LapsTime"] != null ? Configuration["PrivateSprint:LapsTime"].ToString() : "15";
-
-        // }
+        
     }
 }
