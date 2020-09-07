@@ -61,7 +61,7 @@
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
-            WaitForDependecyServices();
+            WaitForDependecyServices(); // do wee nedd this?
 
             IWebHost host = CreateWebHostBuilder(args).Build();
 
