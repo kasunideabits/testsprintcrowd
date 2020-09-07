@@ -18,7 +18,7 @@ pipeline {
             APP_SETTINGS_QA = credentials('sc-backend-qa-env')
         }
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch  'SCROWD-952'} }
+        when { anyOf { branch 'master'; branch 'development'; branch  'qa'} }
         steps {
             script {
                 if ( env.BRANCH_NAME == 'master' ){
@@ -26,7 +26,7 @@ pipeline {
 
                     image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
                 }
-                if ( env.BRANCH_NAME == 'SCROWD-952' ){
+                if ( env.BRANCH_NAME == 'qa' ){
                     sh 'cp -f $APP_SETTINGS_QA src/'
 
                     image = docker.build("${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}")
@@ -37,7 +37,7 @@ pipeline {
     }
     stage("push-image") {
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'SCROWD-952' } }
+        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
             script {
                 // docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
@@ -51,7 +51,7 @@ pipeline {
                     }
                     sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
 		       }
-              if (env.BRANCH_NAME == 'SCROWD-952'){
+              if (env.BRANCH_NAME == 'qa'){
                 docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
