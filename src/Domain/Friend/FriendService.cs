@@ -7,7 +7,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-    using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -18,20 +17,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Initialize <see cref="FriendService"> class </see>
         /// </summary>
         /// <param name="friendRepo">friend repository</param>
-        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient)
+        public FriendService(IFriendRepo friendRepo)
         {
             this.FriendRepo = friendRepo;
-            this.NotificationClient = notificationClient;
         }
 
         private IFriendRepo FriendRepo { get; }
-        private INotificationClient NotificationClient { get; }
+
         /// <summary>
         /// Add given user with matching friend code
         /// </summary>
         /// <param name="userId">resonder user id</param>
         /// <param name="friendCode">generate friend code</param>
-        public async Task<FriendDto> PlusFriend(User userAccept, string friendCode)
+        public async Task<FriendDto> PlusFriend(int userId, string friendCode)
         {
             User user = await this.FriendRepo.GetUserWithCode(friendCode);
 
@@ -41,35 +39,22 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             }
             else
             {
-                if ((int)user.Id == (int)userAccept.Id)
+                if ((int)user.Id == (int)userId)
                 {
                     throw new Application.SCApplicationException((int)FriendCustomErrorCodes.InvalidUserCode, "You cannot be friends with you");
                 }
                 else
                 {
-                    var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userAccept.Id);
+                    var isFriends = await this.FriendRepo.checkFiendShip((int)user.Id, (int)userId);
                     if (isFriends == null)
                     {
                         Friend friend = new Friend();
                         friend.AcceptedUserId = (int)user.Id;
-                        friend.SharedUserId = (int)userAccept.Id;
+                        friend.SharedUserId = (int)userId;
                         friend.CreatedDate = DateTime.Now;
                         friend.UpdatedTime = DateTime.Now;
                         await this.FriendRepo.PlusFriend(friend);
                         this.FriendRepo.SaveChanges();
-
-                        this.NotificationClient.SprintNotificationJobs.AcceptRequest(
-                            userAccept.Id,
-                            userAccept.Name,
-                            userAccept.ProfilePicture,
-                            userAccept.Code,
-                            userAccept.Email,
-                            userAccept.City,
-                            userAccept.Country,
-                            userAccept.CountryCode,
-                            userAccept.ColorCode,
-                            userAccept.CreatedDate,
-                            user.Id);
 
                         return new FriendDto(
                             user.Id,
@@ -82,8 +67,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             user.CountryCode,
                             user.ColorCode,
                             friend.CreatedDate);
-
-                       
                     }
                     else
                     {

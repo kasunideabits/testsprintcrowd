@@ -33,23 +33,6 @@
         public virtual User Accepter { get; }
     }
 
-    public class FriendAcceptNoticiation : Notification
-    {
-        public FriendNoticiationType Type { get; set; }
-        public int? RequesterId { get; set; }
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string ProfilePicture { get; set; }
-        public string Code { get; set; }
-        public string Email { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string CountryCode { get; set; }
-        public string ColorCode { get; set; }
-        public DateTime CreatedDate { get; set; }
-
-    }
-
     public class AchievementNoticiation : Notification
     {
         public AchievementType AchievementType { get; set; }
@@ -79,7 +62,7 @@
         TimeReminderFinalCall, // final call,
         TimeReminderOneHourBefore, // 1 hour before call
         RemoveParticipsnt,
-        FriendRequestAccept,
+
 
     }
 
