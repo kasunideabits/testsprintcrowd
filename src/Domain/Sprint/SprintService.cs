@@ -83,17 +83,6 @@
         }
 
         /// <summary>
-        /// Update Sprint Status By Sprint Id
-        /// </summary>
-        /// <param name="sprintId"></param>
-        /// <returns></returns>
-        public bool UpdateSprintStatusBySprintId(int sprintId)
-        {
-            bool success = false;
-            success = this.SprintRepo.UpdateSprintStatusBySprintId(sprintId) > 0 ? true : false;   
-            return success;
-        }
-        /// <summary>
         /// Update instance of SprintService
         /// </summary>
         public async Task<UpdateSprintDto> UpdateSprint(
@@ -529,7 +518,7 @@
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
-            var expireDate = DateTime.UtcNow.AddHours(-8);
+            var expireDate = DateTime.UtcNow.AddHours(-20);
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
