@@ -143,7 +143,7 @@
             NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection(); //check https redirection issue
+            app.UseHttpsRedirection(); //check https redirection issue not sure
             // global cors policy
             app.UseCors("CorsPolicy");
 
