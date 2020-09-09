@@ -24,7 +24,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Gets all users
         /// </summary>
         /// <returns><see cref="User"> All users info details </see></returns>
-        Task<List<User>> GetAllUsers(string keyword, int simulationId);
+        Task<List<User>> GetAllUsers(string keyword, int simulationId, int pageIndex);
 
         /// <summary>
         /// retrieve the user by facebook user id.

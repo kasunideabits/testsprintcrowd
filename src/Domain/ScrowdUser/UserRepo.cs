@@ -146,8 +146,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 // no token yet saved, insert
                 FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
                 {
-                User = await this.GetUserById(userId),
-                Token = fcmToken,
+                    User = await this.GetUserById(userId),
+                    Token = fcmToken,
                 };
                 await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
             }
@@ -233,12 +233,28 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Gets all users
         /// </summary>
         /// <param name="keyword">user id to add</param>
+        /// <param name="pageIndex">page no</param>
         /// <returns><see cref="User"> All users info details </see></returns>
-        public async Task<List<User>> GetAllUsers(string keyword)
+        public async Task<List<User>> GetAllUsers(string keyword, int pageIndex)
         {
-            var allUsers = await (from user in this.dbContext.User where(keyword.Equals("null") || user.Name.StartsWith(keyword, System.StringComparison.OrdinalIgnoreCase))select user).ToListAsync();
+            // var allUsers = await (from user in this.dbContext.User where (keyword.Equals("null") || user.Name.StartsWith(keyword, System.StringComparison.OrdinalIgnoreCase)) select user).Distinct().AsQueryable().ToListAsync();
 
-            return allUsers;
+            // var allUsers = await (from user in this.dbContext.User
+            //                       join participant in this.dbContext.SprintParticipant on user.Id equals participant.UserId
+            //                       join sprint in this.dbContext.Sprint on participant.SprintId equals sprint.Id
+            //                       where (keyword.Equals("null") || user.Name.StartsWith(keyword, System.StringComparison.OrdinalIgnoreCase)
+            //                       )
+            //                       select user).Skip((pageIndex - 1) * 10).Take(10).ToListAsync();
+
+            var filteredUsers = await (from user in this.dbContext.User
+                                       join participant in this.dbContext.SprintParticipant on user.Id equals participant.UserId
+                                       select user).ToListAsync();
+
+            var allUsers = await (from user in this.dbContext.User where (keyword.Equals("null") || user.Name.StartsWith(keyword, System.StringComparison.OrdinalIgnoreCase)) select user).Distinct().AsQueryable().ToListAsync();
+
+            allUsers.RemoveAll(x => filteredUsers.Contains(x));
+
+            return allUsers.Skip((pageIndex - 1) * 100).Take(100).Distinct().AsQueryable().ToList();
         }
     }
 }

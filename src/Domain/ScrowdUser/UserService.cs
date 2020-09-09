@@ -53,26 +53,27 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Gets all users
         /// </summary>
         /// <returns><see cref="User"> All users info details </see></returns>
-        public async Task<List<User>> GetAllUsers(string keyword, int simulationId)
+        public async Task<List<User>> GetAllUsers(string keyword, int simulationId, int pageIndex)
         {
-            var joinedParticipants = await this.sprintParticipantRepo.GetAllNonJoinedParticipants();
-            var users = await this.userRepo.GetAllUsers(keyword);
-            List<User> filteredUsers = new List<User>();
-
-            foreach (var joinedparticipant in joinedParticipants)
-            {
-                foreach (var user in users)
-                {
-                    if (user.Id == joinedparticipant.UserId)
-                    {
-                        filteredUsers.Add(user);
-                    }
-                }
-                //var userList = users.FindAll(i => i.Id != joinedparticipant.UserId);
-                //filteredUsers = users.ForEach()
-            }
-            users.RemoveAll(x => filteredUsers.Contains(x));
+            var users = await this.userRepo.GetAllUsers(keyword, pageIndex);
             return users;
+
+            // var joinedParticipants = await this.sprintParticipantRepo.GetAllNonJoinedParticipants();
+            // var users = await this.userRepo.GetAllUsers(keyword, pageIndex);
+            // List<User> filteredUsers = new List<User>();
+
+            // foreach (var joinedparticipant in joinedParticipants)
+            // {
+            //     foreach (var user in users)
+            //     {
+            //         if (user.Id == joinedparticipant.UserId)
+            //         {
+            //             filteredUsers.Add(user);
+            //         }
+            //     }
+            // }
+            // users.RemoveAll(x => filteredUsers.Contains(x));
+            // return users;
         }
 
         /// <summary>

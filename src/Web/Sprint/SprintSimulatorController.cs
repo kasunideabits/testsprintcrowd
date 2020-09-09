@@ -173,10 +173,13 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         /// <param name="keyword">search keyword</param>
         /// <param name="simulationId">simulation id</param>
-        [HttpGet("getallusers/{keyword}/{simulationId:int}")]
-        public async Task<IActionResult> GetAllUsers(string keyword, int simulationId)
+        /// <param name="pageIndex">page no</param>
+        [AllowAnonymous]
+        [HttpGet("getallusers/{keyword}/{simulationId:int}/{pageIndex:int}")]
+        public async Task<IActionResult> GetAllUsers(string keyword, int simulationId, int pageIndex)
         {
-            var result = await this.UserService.GetAllUsers(keyword, simulationId);
+            //include pageIndex and pageLimit parameters as well
+            var result = await this.UserService.GetAllUsers(keyword, simulationId, pageIndex);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -251,11 +254,11 @@ namespace SprintCrowd.BackEnd.Web.Event
         {
             // string baseUrl = $"{this.Request.Scheme}://{this.Request.Host.Value.ToString()}{this.Request.PathBase.Value.ToString()}";
             string baseUrl = "http://localhost:7702"; // for dev environment. temp fix
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 Console.WriteLine(baseUrl);
                 client.BaseAddress = new Uri(baseUrl);
-                var firstItem = uploadData [0];
+                var firstItem = uploadData[0];
                 if (firstItem.Email == string.Empty || firstItem.AccessToken == null)
                 {
                     return this.BadRequest();
