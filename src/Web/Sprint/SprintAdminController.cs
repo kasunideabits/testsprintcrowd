@@ -22,7 +22,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy.ADMIN)]
+   // [Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -122,7 +122,8 @@
                     sprint.NumberOfParticipants,
                     sprint.InfluencerEmail,
                     sprint.DraftEvent,
-                    sprint.InfluencerAvailability);
+                    sprint.InfluencerAvailability,
+                    sprint.ImageUrl);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -201,7 +202,8 @@
                     sprint.NumberOfParticipants,
                     sprint.InfluencerEmail,
                     sprint.DraftEvent,
-                    sprint.InfluencerAvailability);
+                    sprint.InfluencerAvailability,
+                    sprint.ImageUrl);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -266,7 +268,8 @@
               sprint.StartTime,
               sprint.NumberOfParticipants,
               sprint.InfluencerEmail,
-              sprint.DraftEvent);
+              sprint.DraftEvent,
+              sprint.ImageUrl);
 
             ResponseObject response = new ResponseObject()
             {
@@ -341,6 +344,21 @@
 
             return this.File(stream, contentType, fileName);
         }
+
+        /// <summary>
+        /// Get All Images related to public sprints
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("GetAllImages")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetAllImages()
+        {
+            var result = this.SprintService.GetAllImages();
+            return this.Ok(result);
+        }
+
 
     }
 }
