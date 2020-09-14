@@ -201,12 +201,13 @@
         /// <returns>notificaitons</returns>
         public IQueryable<NotificationInfo> GetNotification(int userId)
         {
+            var dateCriteria = DateTime.Now.Date.AddDays(-14);
             return this.Context.UserNotification
                 .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active)
                 .Join(this.Context.Notification,
                     u => u.NotificationId,
                     n => n.Id,
-                    (u, n) => new NotificationInfo { Sender = u.Sender, Receiver = u.Receiver, Notification = n, BadgeCount = u.BadgeValue ,CreatedDate = u.CreatedDate});
+                    (u, n) => new NotificationInfo { Sender = u.Sender, Receiver = u.Receiver, Notification = n, BadgeCount = u.BadgeValue ,CreatedDate = u.CreatedDate}).Where(x => x.CreatedDate >= dateCriteria);
         }
 
         /// <summary>

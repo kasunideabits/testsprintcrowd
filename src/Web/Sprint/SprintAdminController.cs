@@ -22,7 +22,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-   // [Authorize(Policy.ADMIN)]
+    [Authorize(Policy.ADMIN)]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -345,7 +345,7 @@
             return this.File(stream, contentType, fileName);
         }
 
-        /// <summary>
+        // <summary>
         /// Get All Images related to public sprints
         /// </summary>
         /// <param name="timeOffset">time offset</param>
@@ -356,9 +356,13 @@
         public async Task<dynamic> GetAllImages()
         {
             var result = this.SprintService.GetAllImages();
-            return this.Ok(result);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
-
 
     }
 }
