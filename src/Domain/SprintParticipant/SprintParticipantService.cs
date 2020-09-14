@@ -313,7 +313,8 @@
                     ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
-                    NumberOfParticipants = s.Sprint.NumberOfParticipants
+                    NumberOfParticipants = s.Sprint.NumberOfParticipants,
+                    ImageUrl =s.Sprint.ImageUrl
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()

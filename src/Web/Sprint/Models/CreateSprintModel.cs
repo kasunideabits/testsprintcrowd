@@ -50,6 +50,10 @@ namespace SprintCrowd.BackEnd.Web.Event
     /// Draft or not
     /// </summary>
     public int DraftEvent { get; set; }
+        /// <summary>
+        /// ImageUrl
+        /// </summary>
+        public string ImageUrl { get; set; }
 
   }
 }

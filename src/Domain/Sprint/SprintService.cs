@@ -116,7 +116,8 @@
             DateTime? startTime,
             int? numberOfParticipants,
             string influencerEmail,
-            int? draftEvent)
+            int? draftEvent,
+            string imageUrl)
         {
             if (influencerEmail != null)
             {
@@ -180,6 +181,7 @@
                     sprintAavail.Status = (int)SprintStatus.NOTPUBLISHEDYET;
                 }
             }
+            sprintAavail.ImageUrl = imageUrl;
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
@@ -241,7 +243,8 @@
             int? numberOfParticipants,
             string infulenceEmail,
             int draft,
-            bool influencerAvailability)
+            bool influencerAvailability,
+            string imageUrl)
         {
 
             if (infulenceEmail != null)
@@ -274,6 +277,7 @@
                 sprint.InfluencerAvailability = influencerAvailability;
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
+                sprint.ImageUrl = imageUrl;
             }
             else
             {
@@ -287,6 +291,7 @@
                 sprint.InfluencerAvailability = influencerAvailability;
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
+                sprint.ImageUrl = imageUrl;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
@@ -871,6 +876,17 @@
                 return true;
             }
         }
+
+        public Dictionary<string, string> GetAllImages()
+        {
+            Dictionary<string, string> imageUrlList = new Dictionary<string, string>();
+            imageUrlList.Add("Image 1", "http://tiles.sprintcrowd.com/0001.png");
+            imageUrlList.Add("Image 2", "http://tiles.sprintcrowd.com/0002.png");
+            imageUrlList.Add("Image 3", "http://tiles.sprintcrowd.com/0003.png");
+            return imageUrlList;
+        }
+
+
 
     }
 }
