@@ -40,6 +40,18 @@
         /// <returns>Available all events</returns>
         public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
+            List<Sprint> allSprints = new List<Sprint>();
+
+            allSprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+
+            for (int i = 0; i < allSprints.Count; i++)
+            {
+                if (allSprints[i].InfluencerEmail != null)
+                {
+                    allSprints[i].InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(allSprints[i].InfluencerEmail);
+                }
+            }
+
             return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
         }
 
@@ -90,7 +102,7 @@
         public bool UpdateSprintStatusBySprintId(int sprintId)
         {
             bool success = false;
-            success = this.SprintRepo.UpdateSprintStatusBySprintId(sprintId) > 0 ? true : false;   
+            success = this.SprintRepo.UpdateSprintStatusBySprintId(sprintId) > 0 ? true : false;
             return success;
         }
         /// <summary>
@@ -104,11 +116,20 @@
             DateTime? startTime,
             int? numberOfParticipants,
             string influencerEmail,
-            int? draftEvent)
+            int? draftEvent,
+            string imageUrl)
         {
+            if (influencerEmail != null)
+            {
+                var email = influencerEmail;
+                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+
+                influencerEmail = encryptedEamil;
+            }
+
             Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
             var sprintAavail = await this.SprintRepo.GetSprint(predicate);
-            
+
             if (sprintAavail == null)
             {
                 throw new Application.ApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint not found");
@@ -160,6 +181,7 @@
                     sprintAavail.Status = (int)SprintStatus.NOTPUBLISHEDYET;
                 }
             }
+            sprintAavail.ImageUrl = imageUrl;
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
@@ -221,8 +243,17 @@
             int? numberOfParticipants,
             string infulenceEmail,
             int draft,
-            bool influencerAvailability)
+            bool influencerAvailability,
+            string imageUrl)
         {
+
+            if (infulenceEmail != null)
+            {
+                var email = infulenceEmail;
+                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+
+                infulenceEmail = encryptedEamil;
+            }
             // if (type == (int)SprintType.PrivateSprint)
             // {
             //     Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
@@ -246,6 +277,7 @@
                 sprint.InfluencerAvailability = influencerAvailability;
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
+                sprint.ImageUrl = imageUrl;
             }
             else
             {
@@ -259,6 +291,7 @@
                 sprint.InfluencerAvailability = influencerAvailability;
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
+                sprint.ImageUrl = imageUrl;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
@@ -296,6 +329,16 @@
             bool influencerAvailability,
             string repeatType)
         {
+
+            if (infulenceEmail != null)
+            {
+                var email = infulenceEmail;
+                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+
+                infulenceEmail = encryptedEamil;
+            }
+            //var decryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(encryptedEamil);
+
             List<Sprint> recurrentSprints = new List<Sprint>();
             DateTime endDate = startTime.AddMonths(3);
             int incementalSprintNumber = 0;
@@ -440,6 +483,15 @@
             int draft,
             bool influencerAvailability)
         {
+
+            if (infulenceEmail != null)
+            {
+                var email = infulenceEmail;
+                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+
+                infulenceEmail = encryptedEamil;
+            }
+
             Sprint duplicatedSprint = new Sprint();
             List<string> existingSprintNames = await this.SprintRepo.GetSprintNames(name);
 
@@ -824,6 +876,17 @@
                 return true;
             }
         }
+
+        public Dictionary<string, string> GetAllImages()
+        {
+            Dictionary<string, string> imageUrlList = new Dictionary<string, string>();
+            imageUrlList.Add("Image 1", "http://tiles.sprintcrowd.com/0001.png");
+            imageUrlList.Add("Image 2", "http://tiles.sprintcrowd.com/0002.png");
+            imageUrlList.Add("Image 3", "http://tiles.sprintcrowd.com/0003.png");
+            return imageUrlList;
+        }
+
+
 
     }
 }

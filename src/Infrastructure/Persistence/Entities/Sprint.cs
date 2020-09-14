@@ -97,6 +97,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>draft event status, drafted or not.</value>
         public int DraftEvent { get; set; }
+        public string ImageUrl { get; set; }
 
     }
 }
