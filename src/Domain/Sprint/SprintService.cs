@@ -825,7 +825,7 @@
                     var resultDto = new PublicSprintWithParticipantsDto(
                         sprint.Id, sprint.Name, sprint.Distance,
                         sprint.NumberOfParticipants, sprint.StartDateTime,
-                        (SprintType)sprint.Type,sprint.ImageUrl, sprint.Location);
+                        (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
