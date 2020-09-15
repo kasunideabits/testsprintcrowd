@@ -7,9 +7,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
     public class PublicSprintWithParticipantsDto
     {
         public PublicSprintWithParticipantsDto(int sprintId, string sprintName, int distance,
-            int numberOfParticipants, DateTime startTime, SprintType type, string sprintLocation)
+            int numberOfParticipants, DateTime startTime, SprintType type, string sprintLocation,string imageUrl)
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, imageUrl, sprintLocation);
             this.ParticipantInfo = new List<ParticipantInfoWithFriend>();
         }
 
