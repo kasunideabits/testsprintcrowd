@@ -40,17 +40,18 @@
         /// <returns>Available all events</returns>
         public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
-            List<Sprint> allSprints = new List<Sprint>();
 
-            allSprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+           // List<Sprint> allSprints = new List<Sprint>();
 
-            for (int i = 0; i < allSprints.Count; i++)
-            {
-                if (allSprints[i].InfluencerEmail != null)
-                {
-                    allSprints[i].InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(allSprints[i].InfluencerEmail);
-                }
-            }
+            //allSprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+
+            //for (int i = 0; i < allSprints.Count; i++)
+            //{
+            //    if (allSprints[i].InfluencerEmail != null)
+            //    {
+            //        allSprints[i].InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(allSprints[i].InfluencerEmail);
+            //    }
+            //}
 
             return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
         }
