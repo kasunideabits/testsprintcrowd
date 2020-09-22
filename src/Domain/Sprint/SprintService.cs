@@ -881,9 +881,9 @@
         public Dictionary<string, string> GetAllImages()
         {
             Dictionary<string, string> imageUrlList = new Dictionary<string, string>();
-            imageUrlList.Add("Image_1", "http://tiles.sprintcrowd.com/0001.png");
-            imageUrlList.Add("Image_2", "http://tiles.sprintcrowd.com/0002.png");
-            imageUrlList.Add("Image_3", "http://tiles.sprintcrowd.com/0003.png");
+            imageUrlList.Add("Image_1", "http://tiles.sprintcrowd.com/0001.jpg");
+            imageUrlList.Add("Image_2", "http://tiles.sprintcrowd.com/0002.jpg");
+            imageUrlList.Add("Image_3", "http://tiles.sprintcrowd.com/0003.jpg");
             return imageUrlList;
         }
 
