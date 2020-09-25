@@ -101,7 +101,7 @@ namespace SprintCrowd.BackEnd
 
             NotificationWorkerEntry.Initialize(this.Configuration, services);
 
-            // SetupDefaultPrivateSprintConfiguration();
+            
         }
 
         /// <summary>
