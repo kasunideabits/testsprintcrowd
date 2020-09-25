@@ -15,10 +15,7 @@ pipeline {
     stage("build") {
         environment{
             APP_SETTINGS = credentials('sc-backend-prod-env')
-<<<<<<< HEAD
-=======
             APP_SETTINGS_QA = credentials('sc-backend-qa-env')
->>>>>>> qa
         }
         agent { label 'scrowd-slave' }
         when { anyOf { branch 'master'; branch 'development'; branch  'qa'} }
@@ -26,10 +23,6 @@ pipeline {
             script {
                 if ( env.BRANCH_NAME == 'master' ){
                     sh 'cp -f $APP_SETTINGS src/'
-<<<<<<< HEAD
-                }
-                image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
-=======
 
                     image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
                 }
@@ -39,7 +32,6 @@ pipeline {
                     image = docker.build("${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}")
                 }
 
->>>>>>> qa
             }
         }
     }
@@ -63,14 +55,6 @@ pipeline {
                 docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
-<<<<<<< HEAD
-                }
-		      if (env.BRANCH_NAME == 'master'){
-                docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
-                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
-                    image.push("${env.BRANCH_NAME}.latest")
-=======
->>>>>>> qa
                     }
                     sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.latest ${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}"
 		       }
