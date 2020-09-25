@@ -38,6 +38,15 @@ namespace SprintCrowd.BackEnd.Web.Account
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerData)
         {
+
+
+            var email = registerData.Email;
+            var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+
+            registerData.Email = encryptedEamil;
+            //var decryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(encryptedEamil);
+
+
             User user = await this.UserService.RegisterUser(registerData);
             await this.AchievementService.SignUp(user.Id);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = user });

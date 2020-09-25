@@ -9,20 +9,37 @@ pipeline {
     ECRPRODURL= '502141109913.dkr.ecr.eu-north-1.amazonaws.com'
     ECRPRODCREDS = 'ecr:eu-north-1:sprintcrowd_production_creds'
     REPOSITORY = 'sprintcrowd/backend'
+    REPOSITORY_QA = 'sprintcrowd-qa/backend'
   }
   stages {
     stage("build") {
         environment{
             APP_SETTINGS = credentials('sc-backend-prod-env')
+<<<<<<< HEAD
+=======
+            APP_SETTINGS_QA = credentials('sc-backend-qa-env')
+>>>>>>> qa
         }
         agent { label 'scrowd-slave' }
-        when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
+        when { anyOf { branch 'master'; branch 'development'; branch  'qa'} }
         steps {
             script {
                 if ( env.BRANCH_NAME == 'master' ){
                     sh 'cp -f $APP_SETTINGS src/'
+<<<<<<< HEAD
                 }
                 image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+=======
+
+                    image = docker.build("${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+                }
+                if ( env.BRANCH_NAME == 'qa' ){
+                    sh 'cp -f $APP_SETTINGS_QA src/'
+
+                    image = docker.build("${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}")
+                }
+
+>>>>>>> qa
             }
         }
     }
@@ -31,17 +48,33 @@ pipeline {
         when { anyOf { branch 'master'; branch 'development'; branch 'qa' } }
         steps {
             script {
-                docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
-                    image.push("${env.BRANCH_NAME}.latest")
-                }
+                // docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
+                //     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                //     image.push("${env.BRANCH_NAME}.latest")
+                // }
 		      if (env.BRANCH_NAME == 'master'){
                 docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
                     image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
                     image.push("${env.BRANCH_NAME}.latest")
                     }
-		}
-                sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+                    sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY}:${env.BRANCH_NAME}.latest ${env.REPOSITORY}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+		       }
+              if (env.BRANCH_NAME == 'qa'){
+                docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
+                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                    image.push("${env.BRANCH_NAME}.latest")
+<<<<<<< HEAD
+                }
+		      if (env.BRANCH_NAME == 'master'){
+                docker.withRegistry("https://${env.ECRPRODURL}", ECRPRODCREDS) {
+                    image.push("${env.BRANCH_NAME}.${env.BUILD_ID}")
+                    image.push("${env.BRANCH_NAME}.latest")
+=======
+>>>>>>> qa
+                    }
+                    sh "docker rmi -f ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID} ${env.ECRURL}/${env.REPOSITORY_QA}:${env.BRANCH_NAME}.latest ${env.REPOSITORY_QA}:${env.BRANCH_NAME}.${env.BUILD_ID}"
+		       }
+
             }
         }
     }

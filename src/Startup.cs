@@ -56,12 +56,19 @@
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+<<<<<<< HEAD
             
+=======
+            // services.AddCors();
+>>>>>>> qa
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
+<<<<<<< HEAD
            
+=======
+>>>>>>> qa
             var firebaseConfigSection = this.Configuration.GetSection("FirebaseConfig");
             services.Configure<FirebaseConfig>(firebaseConfigSection);
 
@@ -72,7 +79,10 @@
             services.Configure<NotificationWorkerConfig>(notificationWorkerConfigSection);
 
             this.AddDatabase(services);
+<<<<<<< HEAD
 
+=======
+>>>>>>> qa
             services.AddMvc(options =>
             {
                 // ignore self referencing loops newtonsoft.
@@ -83,10 +93,14 @@
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     }, ArrayPool<char>.Shared));
             });
+<<<<<<< HEAD
 
           // To DO 
             this.AddSwagger(services);
 
+=======
+            this.AddSwagger(services);
+>>>>>>> qa
             this.RegisterDependencyInjection(services);
 
             services.AddCors(options =>
@@ -99,6 +113,7 @@
 
             });
 
+<<<<<<< HEAD
 
             NotificationWorkerEntry.Initialize(this.Configuration, services);
 
@@ -107,6 +122,15 @@
 
         /// <summary>
         /// Adds jwt token authentication with idenety server
+=======
+            NotificationWorkerEntry.Initialize(this.Configuration, services);
+
+            //  SetupDefaultPrivateSprintConfiguration();
+        }
+
+        /// <summary>
+        /// Adds jwt token authentication
+>>>>>>> qa
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSettings"></param>
@@ -146,6 +170,7 @@
         /// <param name="app">generated automatically</param>
         public virtual void Configure(IApplicationBuilder app)
         {
+<<<<<<< HEAD
             //NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
@@ -155,6 +180,16 @@
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication(); // seems  duplicated 
+=======
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
+
+            app.UseStaticFiles();
+            app.UseHttpsRedirection(); //check https redirection issue not sure
+            // global cors policy
+            app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
+>>>>>>> qa
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
@@ -168,7 +203,11 @@
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
+<<<<<<< HEAD
                     swaggerDoc.Host = httpReq.Host.Value; ;
+=======
+                    swaggerDoc.Host = httpReq.Host.Value;;
+>>>>>>> qa
                     swaggerDoc.BasePath = httpReq.PathBase;
                 });
             });
@@ -216,6 +255,7 @@
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
+<<<<<<< HEAD
         // private void SetupDefaultPrivateSprintConfiguration()
         // {
 
@@ -226,3 +266,7 @@
         // }
     }
 }
+=======
+    }
+}
+>>>>>>> qa

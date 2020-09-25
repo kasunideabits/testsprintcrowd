@@ -47,5 +47,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public int Type { get; set; }
 
         public int NumberOfParticipants { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

@@ -5,7 +5,7 @@
 
     public class SprintBaseDto
     {
-        public SprintBaseDto(int id, string name, int distance, int numberOfParticipants, DateTime startTime, SprintType type)
+        public SprintBaseDto(int id, string name, int distance, int numberOfParticipants, DateTime startTime, SprintType type,string imageUrl)
         {
             this.Id = id;
             this.Name = name;
@@ -13,6 +13,7 @@
             this.NumberOfParticipants = numberOfParticipants;
             this.StartTime = startTime;
             this.Type = type;
+            this.ImageUrl = imageUrl;
         }
 
         public int Id { get; set; }
@@ -21,5 +22,6 @@
         public int NumberOfParticipants { get; set; }
         public DateTime StartTime { get; set; }
         public SprintType Type { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
