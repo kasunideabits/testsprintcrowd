@@ -22,8 +22,15 @@ namespace SprintCrowd.BackEnd.Application
         /// admin user, have access to Control panel.
         /// </summary>
         AdminUser = 4,
+        /// <summary>
+        /// Sys Admin User Type
+        /// </summary>
+        SystemUser = 5,
 
-        SystemUser = 5
+        /// <summary>
+        /// Apple User ype
+        /// </summary>
+        AppleUser = 6
 
     }
 
