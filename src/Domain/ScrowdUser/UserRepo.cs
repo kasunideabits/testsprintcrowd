@@ -71,7 +71,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<User> RegisterUser(RegisterModel registerData)
         {
             RestRequest request = new RestRequest("Account/RegisterUser", Method.POST);
-            request.AddJsonBody(new { UserType = (int)UserType.Facebook, Email = string.Empty, Token = registerData.AccessToken });
+
+            if (registerData.UserType == (int)UserType.Facebook)
+                request.AddJsonBody(new { UserType = (int)UserType.Facebook, Email = string.Empty, Token = registerData.AccessToken });
+            else
+                if (registerData.UserType == (int)UserType.AppleUser)
+                request.AddJsonBody(new { UserType = (int)UserType.AppleUser, Email = registerData.Email, Token = registerData.AccessToken, Name = registerData.Name });
+
             // user returned by the identity server
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
             if (registerResponse.StatusCode != 200)
