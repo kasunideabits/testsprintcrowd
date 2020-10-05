@@ -26,5 +26,18 @@ namespace SprintCrowd.BackEnd.Web.Account
         /// </summary>
         /// <value>language code</value>
         public string LanguagePreference { get; set; }
+
+
+        /// <summary>
+        /// gets or sets value
+        /// </summary>
+        /// <value>Name of the user.</value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// gets or sets value
+        /// </summary>
+        /// <value>UserType of the user.</value>
+        public int UserType { get; set; }
     }
 }
