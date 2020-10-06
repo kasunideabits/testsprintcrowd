@@ -123,7 +123,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 exist.UserState = UserState.Active;
                 this.dbContext.Update(exist);
                 this.dbContext.SaveChanges();
-                exist.IsUserExist = true;
+                
             }
             return exist;
         }
@@ -213,11 +213,23 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">id of the user</param>
+        /// <returns>user</returns>
+        public async Task<UserNotificationReminder> GetUserNotificationReminderById(int userId)
+        {
+            return await this.dbContext.UserNotificationReminders.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        }
+
+        /// <summary>
         /// Add default user settings for given user id
         /// </summary>
         /// <param name="userId">user id to add</param>
         public async Task AddDefaultUserSettings(int userId)
         {
+            var userNotRem = this.GetUserNotificationReminderById(userId);
+            if (userNotRem == null && userNotRem.Id < 1 )
             await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
         }
 
