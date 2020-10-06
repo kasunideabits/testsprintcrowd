@@ -115,6 +115,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user.ColorCode = new UserColorCode().PickColor();
                 user.UserState = UserState.Active;
                 var FbUser = await this.dbContext.User.AddAsync(user);
+                this.dbContext.SaveChanges();
                 return FbUser.Entity;
             }
             else
@@ -122,6 +123,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 exist.UserState = UserState.Active;
                 this.dbContext.Update(exist);
                 this.dbContext.SaveChanges();
+                exist.IsUserExist = true;
             }
             return exist;
         }
