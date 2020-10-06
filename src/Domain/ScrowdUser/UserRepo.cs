@@ -189,7 +189,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddUserPreference(int userId)
         {
             var userPref = this.GetUserPreference(userId);
-            if(userPref ==null && userPref.Result.UserId>0)
+            if(userPref.Result ==null )
             await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
             return;
         }
@@ -231,7 +231,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddDefaultUserSettings(int userId)
         {
             var userNotRem = this.GetUserNotificationReminderById(userId);
-            if (userNotRem == null && userNotRem.Result.UserId < 1 )
+            if (userNotRem.Result == null )
             await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
         }
 
