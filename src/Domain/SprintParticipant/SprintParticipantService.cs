@@ -5,12 +5,12 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System;
+    using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.SprintManager;
-    using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -280,15 +280,15 @@
             //    (s.Sprint.StartDateTime > now);
 
             Expression<Func<SprintParticipant, bool>> creatorQueryCommon = s =>
-               s.UserId == userId &&
-               s.User.UserState == UserState.Active &&
-               (s.Sprint.Type == (int)sprintType || sprintType == null) &&
-               (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
-               s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
-               (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
-               (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-               ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
-               (s.Sprint.StartDateTime > now);
+                s.UserId == userId &&
+                s.User.UserState == UserState.Active &&
+                (s.Sprint.Type == (int)sprintType || sprintType == null) &&
+                (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
+                s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
+                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
+                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
+                ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
+                (s.Sprint.StartDateTime > now);
 
             var sprintsCommon = this.SprintParticipantRepo.GetAll(creatorQueryCommon).ToList();
             var friendsRelationsCommon = this.SprintParticipantRepo.GetFriends(userId);
@@ -298,33 +298,33 @@
 
             var creatorEventCommon = this.SprintParticipantRepo.GetAll(creatorQueryCommon);
             Expression<Func<SprintParticipant, bool>> pqueryCommon = s =>
-                   s.User.Id != userId &&
-                   (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
-                   s.User.UserState == UserState.Active;
+                s.User.Id != userId &&
+                (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
+                s.User.UserState == UserState.Active;
 
             var otherCommon = sprintsCommon.Select(s => new GetCommonSprintDto()
             {
                 SprintInfo = new SprintInfoDTO()
-                {
-                    Id = s.Sprint.Id,
-                    Name = s.Sprint.Name,
-                    Distance = s.Sprint.Distance,
-                    StartTime = s.Sprint.StartDateTime,
-                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
-                    Type = s.Sprint.Type,
-                    Creator = s.Sprint.CreatedBy.Id == s.UserId,
-                    NumberOfParticipants = s.Sprint.NumberOfParticipants,
-                    ImageUrl =s.Sprint.ImageUrl
-                },
-                ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
-                 sp => new ParticipantInfoDTO()
-                 {
-                     Id = sp.User.Id,
-                     Name = sp.User.Name,
-                     ColorCode = sp.User.ColorCode,
-                     IsFriend = friendsCommon.Contains(sp.User.Id)
-                 }
-             ).ToList()
+                    {
+                        Id = s.Sprint.Id,
+                            Name = s.Sprint.Name,
+                            Distance = s.Sprint.Distance,
+                            StartTime = s.Sprint.StartDateTime,
+                            ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                            Type = s.Sprint.Type,
+                            Creator = s.Sprint.CreatedBy.Id == s.UserId,
+                            NumberOfParticipants = s.Sprint.NumberOfParticipants,
+                            ImageUrl = s.Sprint.ImageUrl
+                    },
+                    ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
+                        sp => new ParticipantInfoDTO()
+                        {
+                            Id = sp.User.Id,
+                                Name = sp.User.Name,
+                                ColorCode = sp.User.ColorCode,
+                                IsFriend = friendsCommon.Contains(sp.User.Id)
+                        }
+                    ).ToList()
             });
 
             return otherCommon.ToList();
@@ -344,7 +344,6 @@
             //      }
             //  ).ToList();
 
-
             //    var sprints = this.SprintParticipantRepo.GetAll(query).ToList();
             //var friendsRelations = this.SprintParticipantRepo.GetFriends(userId);
             //var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
@@ -354,7 +353,6 @@
             //        s.User.Id != userId &&
             //        (s.Stage == ParticipantStage.JOINED || s.Stage == ParticipantStage.MARKED_ATTENDENCE) &&
             //        s.User.UserState == UserState.Active;
-
 
             //var other = sprints.Select(s => new JoinedSprintDTO()
             //{
@@ -446,7 +444,7 @@
             }
             else
             {
-                throw new Application.ApplicationException("NOT_FOUND_MARKED_ATTENDACE ");
+                throw new Application.ApplicationException("NOT_FOUND_MARKED_ATTENDACE");
             }
         }
 
@@ -522,7 +520,7 @@
         /// <returns>all notificaiton related to given userid</returns>
         public Notifications GetNotification(int userId)
         {
-            
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             //var result = new List<object>();
 
@@ -553,7 +551,7 @@
 
                         //notification.Result.Add(notification.ResultNew);
 
-                    } 
+                    }
                     else if (s.BadgeCount != 1 && s.CreatedDate.Date == DateTime.UtcNow.Date)
                     {
                         //Today Notification
@@ -569,7 +567,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultToday);
+                        // notification.Result.Add(notification.ResultToday);
                     }
                     else
                     {
@@ -586,7 +584,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultOlder);
+                        // notification.Result.Add(notification.ResultOlder);
                     }
 
                 });
@@ -815,7 +813,7 @@
             this.ResultNew = new List<object>();
             this.ResultToday = new List<object>();
             this.ResultOlder = new List<object>();
-           // this.Result = new List<object>();
+            // this.Result = new List<object>();
         }
 
     }
