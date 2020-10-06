@@ -165,5 +165,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual UserNotificationReminder UserNotificationReminder { get; set; }
 
+        
+
     }
 }
