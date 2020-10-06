@@ -188,6 +188,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 
         public async Task AddUserPreference(int userId)
         {
+            var userPref = this.GetUserPreference(userId);
+            if(userPref ==null && userPref.Result.UserId>0)
             await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
             return;
         }
@@ -219,7 +221,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns>user</returns>
         public async Task<UserNotificationReminder> GetUserNotificationReminderById(int userId)
         {
-            return await this.dbContext.UserNotificationReminders.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            return await this.dbContext.UserNotificationReminders.FirstOrDefaultAsync(u => u.UserId.Equals(userId));
         }
 
         /// <summary>
@@ -229,7 +231,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddDefaultUserSettings(int userId)
         {
             var userNotRem = this.GetUserNotificationReminderById(userId);
-            if (userNotRem == null && userNotRem.Id < 1 )
+            if (userNotRem == null && userNotRem.Result.UserId < 1 )
             await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
         }
 
