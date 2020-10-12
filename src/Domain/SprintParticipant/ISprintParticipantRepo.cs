@@ -7,6 +7,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Interface for sprint participant repository
@@ -58,6 +59,14 @@
         /// </summary>
         /// <param name="userId"></param>
         void UpdateBadgeCountByUserId(int userId);
+
+        /// <summary>
+        /// Update Country Detail By UserId
+        /// </summary>
+        /// <param name="userCountry"></param>
+        /// <returns></returns>
+        int UpdateCountryByUserId(UserCountryDetail userCountry);
+
         Task<SprintParticipant> GetByUserId(int userId);
 
         /// <summary>
