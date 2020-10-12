@@ -7,7 +7,7 @@ namespace SprintCrowdBackEnd.Web.Sprint.Models
 {
     public class UserCountryDetail
     {
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public string CountryName { get; set; }
 
         

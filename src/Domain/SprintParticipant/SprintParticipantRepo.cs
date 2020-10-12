@@ -233,7 +233,7 @@
         /// <returns></returns>
         public int UpdateCountryByUserId(UserCountryDetail userCountry)
         {
-            var userInfo = this.Context.User.Where(s => s.FacebookUserId == userCountry.UserId).ToList().FirstOrDefault();
+            var userInfo = this.Context.User.Where(s => s.Id == userCountry.UserId).ToList().FirstOrDefault();
             userInfo.Country = userCountry.CountryName;
             userInfo.CountryCode = userCountry.CountryCode;
             this.Context.User.Update(userInfo);
