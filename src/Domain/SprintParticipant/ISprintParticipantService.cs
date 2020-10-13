@@ -6,6 +6,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Web.SprintManager;
+    using SprintCrowdBackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -92,6 +93,13 @@
         /// <param name="sprintId">sprint id</param>
         /// <returns><see cref="FriendInSprintDto">friend in sprint </see></returns>
         List<FriendInSprintDto> GetFriendsStatusInSprint(int userId, int sprintId);
+
+        /// <summary>
+        /// Update User Country Detail By UserId
+        /// </summary>
+        /// <param name="userCountryInfo"></param>
+        /// <returns></returns>
+        bool UpdateUserCountryDetailByUserId(UserCountryDetail userCountryInfo);
 
         /// <summary>
         /// Remove notification

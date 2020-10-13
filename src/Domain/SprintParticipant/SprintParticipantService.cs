@@ -11,6 +11,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.SprintManager;
     using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+    using SprintCrowdBackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -157,6 +158,18 @@
             this.SprintParticipantRepo.SaveChanges();
             return userDto;
 
+        }
+
+        /// <summary>
+        /// Update User Country Detail By UserId
+        /// </summary>
+        /// <param name="userCountryInfo"></param>
+        /// <returns></returns>
+        public bool UpdateUserCountryDetailByUserId(UserCountryDetail userCountryInfo)
+        {
+            bool success = false;
+            success = this.SprintParticipantRepo.UpdateCountryByUserId(userCountryInfo) > 0 ? true : false;
+            return success;
         }
 
         /// <summary>
