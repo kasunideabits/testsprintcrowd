@@ -14,6 +14,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Web.Sprint.Models;
+    using SprintCrowdBackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Controller for handle sprint participants
@@ -74,6 +75,21 @@
                 joinUser.Status
             );
             return this.Ok();
+        }
+
+        /// <summary>
+        /// Update Sprint Status By SprintId
+        /// </summary>
+        [HttpPost("UpdateCountryDetailByUserId")]
+        public async Task<IActionResult> UpdateCountryDetailByUserId([FromBody] UserCountryDetail userCountryData)
+        {
+            var result = this.SprintParticipantService.UpdateUserCountryDetailByUserId(userCountryData);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
 
         [HttpPost("public/join")]

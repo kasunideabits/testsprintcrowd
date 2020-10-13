@@ -9,6 +9,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
+    using SprintCrowdBackEnd.Web.Sprint.Models;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -225,6 +226,19 @@
             this.Context.SaveChanges();
         }
 
+        /// <summary>
+        /// Update Country By UserId
+        /// </summary>
+        /// <param name="userDetail"></param>
+        /// <returns></returns>
+        public int UpdateCountryByUserId(UserCountryDetail userCountry)
+        {
+            var userInfo = this.Context.User.Where(s => s.Id == userCountry.UserId).ToList().FirstOrDefault();
+            userInfo.Country = userCountry.CountryName;
+            userInfo.CountryCode = userCountry.CountryCode;
+            this.Context.User.Update(userInfo);
+            return this.Context.SaveChanges();
+        }
         /// <summary>
         /// Get Unread Participant Notification Count
         /// </summary>
