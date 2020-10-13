@@ -36,7 +36,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             this.MessageBuilder = messageBuilder;
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.BuildNotification(userLang, notificationType, sprintName);
-            this.BuildData(notificationId, notificationType, payload);
+            this.BuildData(notificationId, notificationType, payload, participantUserId);
             this.BuildNotificationMessage(notificationId, tokens, payload, participantUserId, notificationType);
             return this.MessageBuilder.Tokens(tokens).Build();
         }
@@ -70,7 +70,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             this.MessageBuilder.Notification(message.Title, String.Format(message.Body, sprintName));
         }
 
-        private void BuildData(int notificationId, SprintNotificaitonType notificationType, dynamic payload)
+        private void BuildData(int notificationId, SprintNotificaitonType notificationType, dynamic payload, int participantUserId)
         {
             var data = new Dictionary<string, string>();
             data.Add("NotificationId", notificationId.ToString());
@@ -78,6 +78,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             data.Add("SubType", ((int)notificationType).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(participantUserId) : 0;
+            data.Add("Count", badge.ToString());
+
             this.MessageBuilder.Message(data);
         }
 
