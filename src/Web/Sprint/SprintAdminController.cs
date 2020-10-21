@@ -113,7 +113,13 @@
         public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
-            int userId = await this.SprintService.GetInfluencerIdByEmail(sprint.InfluencerEmail);
+            string encryptedEamil = null;
+            if (sprint.InfluencerEmail != null)
+            {
+                var email = sprint.InfluencerEmail;
+                encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+            }
+            int userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
 
             if (userId != 0 || sprint.InfluencerEmail != null)
             {
