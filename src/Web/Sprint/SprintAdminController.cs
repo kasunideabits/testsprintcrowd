@@ -16,6 +16,7 @@
     using System.IO;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using System.Collections.Generic;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// event controller
@@ -30,14 +31,15 @@
         /// </summary>
         /// <param name="sprintService">sprint service</param>
         /// <param name="userService">user service</param>
-        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService)
+        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService, ISprintParticipantService sprintParticipantService)
         {
             this.SprintService = sprintService;
             this.UserService = userService;
             this.DashboardService = dashboardService;
             this.DeviceService = deviceService;
+            this.SprintParticipantService = sprintParticipantService;
         }
-
+        private ISprintParticipantService SprintParticipantService { get; }
         private ISprintService SprintService { get; }
 
         private IUserService UserService { get; }
@@ -111,47 +113,73 @@
         public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
-            if (repeatType == "NONE")
+            int userId = await this.SprintService.GetInfluencerIdByEmail(sprint.InfluencerEmail);
+
+            if (userId != 0 || sprint.InfluencerEmail != null)
             {
-                var result = await this.SprintService.CreateNewSprint(
-                    user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
-                    sprint.ImageUrl);
-                ResponseObject response = new ResponseObject()
+                if (repeatType == "NONE")
                 {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = result,
-                };
-                return this.Ok(response);
+                    var result = await this.SprintService.CreateNewSprint(
+                        user,
+                        sprint.Name,
+                        sprint.Distance,
+                        sprint.StartTime,
+                        sprint.SprintType,
+                        sprint.NumberOfParticipants,
+                        sprint.InfluencerEmail,
+                        sprint.DraftEvent,
+                        sprint.InfluencerAvailability,
+                        sprint.ImageUrl);
+                    ResponseObject response = new ResponseObject()
+                    {
+                        StatusCode = (int)ApplicationResponseCode.Success,
+                        Data = result,
+                    };
+
+                    if(response.StatusCode == (int)ApplicationResponseCode.Success)
+                    {
+                        var joinResult = await this.SprintParticipantService.JoinSprint(
+                                result.SprintInfo.Id,
+                                userId,
+                                0,
+                                true
+                            );
+                    }
+                    return this.Ok(response);
+                }
+                else
+                {
+                    await this.SprintService.CreateMultipleSprints(
+                        user,
+                        sprint.Name,
+                        sprint.Distance,
+                        sprint.StartTime,
+                        sprint.SprintType,
+                        sprint.NumberOfParticipants,
+                        sprint.InfluencerEmail,
+                        sprint.DraftEvent,
+                        sprint.InfluencerAvailability,
+                        repeatType
+                        );
+                    ResponseObject response = new ResponseObject()
+                    {
+                        StatusCode = (int)ApplicationResponseCode.Success,
+                        Data = null,
+                    };
+                    
+                    return this.Ok(response);
+                }
             }
             else
             {
-                await this.SprintService.CreateMultipleSprints(
-                    user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
-                    repeatType
-                    );
                 ResponseObject response = new ResponseObject()
                 {
-                    StatusCode = (int)ApplicationResponseCode.Success,
-                    Data = null,
+                    StatusCode = (int)ApplicationResponseCode.NotExist,
+                    Data = "User Not Exist",
                 };
                 return this.Ok(response);
             }
+          
         }
 
         /// <summary>

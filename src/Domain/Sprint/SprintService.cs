@@ -234,6 +234,22 @@
         }
 
         /// <summary>
+        /// Get Influencer User Id By Email
+        /// </summary>
+        /// <param name="infulenceEmail"></param>
+        /// <returns></returns>
+        public async Task<int> GetInfluencerIdByEmail(string infulenceEmail)
+        {
+            int infulenceId = 0;
+            User userInfluencer = null;
+            userInfluencer = await this.SprintRepo.FindInfluencer(infulenceEmail);
+            if (userInfluencer != null)
+            {
+                infulenceId = userInfluencer.Id;
+            }
+            return infulenceId;
+        }
+        /// <summary>
         /// creates a new sprint
         /// </summary>
         public async Task<CreateSprintDto> CreateNewSprint(
@@ -247,7 +263,7 @@
             bool influencerAvailability,
             string imageUrl)
         {
-
+           
             if (infulenceEmail != null)
             {
                 var email = infulenceEmail;
