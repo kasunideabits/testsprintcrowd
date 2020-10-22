@@ -23,6 +23,11 @@ namespace SprintCrowd.BackEnd.Application
     /// <summary>
     /// Bad request.
     /// </summary>
-    BadRequest = 400
+    BadRequest = 400,
+
+   /// <summary>
+   ///NotExist.
+   /// </summary>
+   NotExist = 1001
   }
 }
