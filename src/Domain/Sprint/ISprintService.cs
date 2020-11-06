@@ -37,6 +37,13 @@
         Task<LiveSprintCount> GetLiveSprintCount();
 
         /// <summary>
+        /// Get Influencer Id By Email
+        /// </summary>
+        /// <param name="infulenceEmail"></param>
+        /// <returns></returns>
+        Task<int> GetInfluencerIdByEmail(string infulenceEmail);
+
+        /// <summary>
         /// Create a new sprint, TODO : remove user object passing
         /// </summary>
         /// <param name="user">user who creating the sprint</param>
