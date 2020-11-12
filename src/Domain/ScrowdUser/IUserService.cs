@@ -32,6 +32,27 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         Task<User> RegisterUser(RegisterModel registerData);
 
         /// <summary>
+        /// Register Email User
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        Task<User> RegisterEmailUser(EmailUser registerData);
+        /// <summary>
+        /// Email Confirmation By Mail
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        /// 
+        Task<bool> EmailConfirmationByMail(EmailUser registerData);
+
+        /// <summary>
+        /// Add Promotion Code
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        Task AddPromotionCode(EmailUser registerData);
+
+        /// <summary>
         /// saves fcm token
         /// </summary>
         /// <param name="userId">id of the user</param>

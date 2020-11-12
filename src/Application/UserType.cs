@@ -30,7 +30,12 @@ namespace SprintCrowd.BackEnd.Application
         /// <summary>
         /// Apple User ype
         /// </summary>
-        AppleUser = 6
+        AppleUser = 6,
+
+        /// <summary>
+        /// Email User
+        /// </summary>
+        EmailUser = 7
 
     }
 

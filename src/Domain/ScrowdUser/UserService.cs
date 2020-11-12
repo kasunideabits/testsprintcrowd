@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
@@ -21,10 +22,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="userRepo">instance of userRepo, dependency injected.</param>
 
-        public UserService(IUserRepo userRepo)
+        public UserService(IUserRepo userRepo, ISprintParticipantService _sprintParticipantService)
         {
             this.userRepo = userRepo;
+            this.sprintParticipantService = _sprintParticipantService;
         }
+
+        private ISprintParticipantService sprintParticipantService { get; }
 
         /// <summary>
         /// Gets user info
@@ -73,6 +77,55 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             await this.userRepo.AddDefaultUserSettings(user.Id);
             this.userRepo.SaveChanges();
             return user;
+        }
+
+        /// <summary>
+        /// register a email user
+        /// if multiple user types are needed
+        /// then heres the place to make the change.
+        /// </summary>
+        /// <param name="registerData">registeration data.</param>
+        public async Task<User> RegisterEmailUser(EmailUser registerData)
+        {
+            User user = await this.userRepo.RegisterEmailUser(registerData);
+            await this.userRepo.AddUserPreference(user.Id);
+            await this.userRepo.AddDefaultUserSettings(user.Id);
+           // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            this.userRepo.SaveChanges();
+            //Promocode User join to the sprint
+            await this.sprintParticipantService.JoinSprint(
+               registerData.SprintId,
+               user.Id,
+               0,
+               true
+           );
+            return user;
+        }
+
+        /// <summary>
+        /// Add Promotion Code
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task AddPromotionCode(EmailUser registerData)
+        {
+            User user = await this.userRepo.RegisterEmailUser(registerData);
+            await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            this.userRepo.SaveChanges();
+        }
+
+        /// <summary>
+        /// Email Confirmation By Mail
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> EmailConfirmationByMail(EmailUser registerData)
+        {
+            bool success = await this.userRepo.EmailConfirmationByMail(registerData);
+            //await this.userRepo.AddUserPreference(user.Id);
+            //await this.userRepo.AddDefaultUserSettings(user.Id);
+            //this.userRepo.SaveChanges();
+            return success;
         }
 
         /// <summary>
