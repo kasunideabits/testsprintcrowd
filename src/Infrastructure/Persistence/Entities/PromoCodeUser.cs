@@ -29,10 +29,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public string PromoCode { get; set; }
 
-        /// <summary>
-        /// Creted Date
-        /// </summary>
-        public DateTime CretedDate { get; set; }
-
+        
     }
 }

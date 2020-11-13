@@ -45,6 +45,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="registerData"></param>
         /// <returns></returns>
         Task<bool> EmailConfirmationByMail(EmailUser registerData);
+
+        /// <summary>
+        /// Get Sprint By Promotion Code
+        /// </summary>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        Task<Sprint> GetSprintByPromoCode(string promoCode);
+
         /// <summary>
         /// saves fcm token
         /// </summary>

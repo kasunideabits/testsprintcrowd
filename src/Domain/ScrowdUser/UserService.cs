@@ -93,12 +93,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
            // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
-            await this.sprintParticipantService.JoinSprint(
-               registerData.SprintId,
-               user.Id,
-               0,
-               true
-           );
+           
             return user;
         }
 
@@ -110,8 +105,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddPromotionCode(EmailUser registerData)
         {
             User user = await this.userRepo.RegisterEmailUser(registerData);
-            await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            //Get the sprint Id related to promotion code.
+            Sprint sprint = await this.userRepo.GetSprintByPromoCode(registerData.PromotionCode);
+            ///Add Promotion code user details.
+            await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, sprint.Id);
             this.userRepo.SaveChanges();
+            //join to sprint after adding promotion code
+            await this.sprintParticipantService.JoinSprint(
+              registerData.SprintId,
+              user.Id,
+              0,
+              true
+          );
         }
 
         /// <summary>
