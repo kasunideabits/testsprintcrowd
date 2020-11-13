@@ -102,7 +102,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="registerData"></param>
         /// <returns></returns>
-        public async Task AddPromotionCode(EmailUser registerData)
+        public async Task<Sprint> AddPromotionCode(EmailUser registerData)
         {
             User user = await this.userRepo.RegisterEmailUser(registerData);
             //Get the sprint Id related to promotion code.
@@ -117,6 +117,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
               0,
               true
           );
+
+            return sprint;
         }
 
         /// <summary>
