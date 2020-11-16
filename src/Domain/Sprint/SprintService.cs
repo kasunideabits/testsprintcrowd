@@ -118,7 +118,8 @@
             int? numberOfParticipants,
             string influencerEmail,
             int? draftEvent,
-            string imageUrl)
+            string imageUrl,
+            string promotionCode)
         {
             if (influencerEmail != null)
             {
@@ -183,6 +184,7 @@
                 }
             }
             sprintAavail.ImageUrl = imageUrl;
+            sprintAavail.PromotionCode = promotionCode;
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
@@ -261,7 +263,8 @@
             string infulenceEmail,
             int draft,
             bool influencerAvailability,
-            string imageUrl)
+            string imageUrl,
+            string promotionCode)
         {
            
             if (infulenceEmail != null)
@@ -295,6 +298,7 @@
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
+                sprint.PromotionCode = promotionCode;
             }
             else
             {
@@ -309,6 +313,7 @@
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
+                sprint.PromotionCode = promotionCode;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);

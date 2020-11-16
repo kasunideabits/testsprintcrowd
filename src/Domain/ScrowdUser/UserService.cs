@@ -106,16 +106,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             //Get the sprint Id related to promotion code.
             Sprint sprint = await this.userRepo.GetSprintByPromoCode(registerData.PromotionCode);
-            ///Add Promotion code user details.
-            await this.userRepo.AddPromocodeUser(userId, registerData.PromotionCode, sprint.Id);
-            this.userRepo.SaveChanges();
-            //join to sprint after adding promotion code
-            await this.sprintParticipantService.JoinSprint(
-              registerData.SprintId,
-              userId,
-              0,
-              true
-          );
+
+            if (sprint != null)
+            {
+                ///Add Promotion code user details.
+                await this.userRepo.AddPromocodeUser(userId, registerData.PromotionCode, sprint.Id);
+                this.userRepo.SaveChanges();
+                //join to sprint after adding promotion code
+                await this.sprintParticipantService.JoinSprint(
+                  sprint.Id,
+                  userId,
+                  0,
+                  true
+              );
+            }
 
             return sprint;
         }
