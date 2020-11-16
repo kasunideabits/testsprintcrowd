@@ -50,7 +50,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="registerData"></param>
         /// <returns></returns>
-        Task<Sprint> AddPromotionCode(EmailUser registerData);
+        Task<Sprint> AddPromotionCode(EmailUser registerData, int userId);
 
         /// <summary>
         /// saves fcm token

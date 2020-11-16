@@ -77,7 +77,8 @@ namespace SprintCrowd.BackEnd.Web.Account
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> SavePromotionCode([FromBody] EmailUser registerDatal)
         {
-            var sprint = await this.UserService.AddPromotionCode(registerDatal);
+            User user = await this.User.GetUser(this.UserService);
+            var sprint = await this.UserService.AddPromotionCode(registerDatal, user.Id);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
