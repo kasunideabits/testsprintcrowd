@@ -805,7 +805,7 @@
 
                 if (!participants.Any(p => p.UserId == userId))
                 {
-                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl);
+                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl ,sprint.PromotionCode);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
@@ -846,7 +846,7 @@
                     var resultDto = new PublicSprintWithParticipantsDto(
                         sprint.Id, sprint.Name, sprint.Distance,
                         sprint.NumberOfParticipants, sprint.StartDateTime,
-                        (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl);
+                        (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl,sprint.PromotionCode);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
