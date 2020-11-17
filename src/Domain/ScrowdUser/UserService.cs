@@ -120,6 +120,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                   true
               );
             }
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.InvalidPromotionCode, "Promotion code is invalid");
+            }
 
             return sprint;
         }
