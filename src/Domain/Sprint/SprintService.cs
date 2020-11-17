@@ -758,7 +758,8 @@
                 sprint.NumberOfParticipants,
                 sprint.StartDateTime,
                 (SprintType)sprint.Type,
-                sprint.Location);
+                sprint.Location,
+                sprint.PromotionCode);
             participants
                 .ForEach(p =>
                 {
