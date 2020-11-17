@@ -9,7 +9,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
-    
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
+
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
     /// NO DIRECT ACCESS FROM SERVICES OR CONTROLLERS ALLOWED.
@@ -300,7 +301,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             var userPromo = this.GetUserSprintPromotionCode(userId , promoCode , sprintId);
             if (userPromo.Result == null)
                 await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId , PromoCode=promoCode,SprintId=sprintId,CreatedDate = System.DateTime.UtcNow });
-            return;
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+            }
         }
 
         /// <summary>

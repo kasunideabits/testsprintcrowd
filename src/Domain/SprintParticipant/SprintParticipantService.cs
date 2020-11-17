@@ -125,7 +125,7 @@
             }
             else
             {
-                if (sprint.PromotionCode != string.Empty)
+                if (sprint.PromotionCode == string.Empty)
                 {
                     if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
                     {
@@ -159,12 +159,10 @@
                 }
                 else
                 {
-                    if (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE)
-                    {
-                        throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
-                    }
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
-                       var currentUser = await this._userRepo.GetUser(userId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+
+                    var currentUser = await this._userRepo.GetUser(userId);
+
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
