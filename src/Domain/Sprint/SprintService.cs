@@ -134,7 +134,7 @@
             if (promotionCode != null && promotionCode != string.Empty)
             {
                 Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
-                if (sprintPromoCode != null)
+                if (sprintPromoCode != null && sprintPromoCode.Id != sprintId)
                 {
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
                 }
