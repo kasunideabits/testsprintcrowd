@@ -159,17 +159,16 @@
                 }
                 else
                 {
+                    var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
                     await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
-
-                    var currentUser = await this._userRepo.GetUser(userId);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
                             (SprintType)sprint.Type,
-                            userId,
-                            currentUser.Name,
-                            currentUser.ProfilePicture,
+                            joinedUser.User.Id,
+                            joinedUser.User.Name,
+                            joinedUser.User.ProfilePicture,
                             accept);
                 }
             }
