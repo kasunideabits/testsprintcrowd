@@ -287,6 +287,16 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode && u.StartDateTime >= System.DateTime.UtcNow);
         }
 
+        /// <summary>
+        /// Get Sprint By Promo Code
+        /// </summary>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        public async Task<Sprint> IsPromoCodeExist(string promoCode)
+        {
+            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
+        }
+
         public async Task AddUserPreference(int userId)
         {
             var userPref = this.GetUserPreference(userId);
