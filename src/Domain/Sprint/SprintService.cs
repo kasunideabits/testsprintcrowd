@@ -10,6 +10,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     /// Sprint service
@@ -21,12 +22,13 @@
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
+            this.userRepo = _userRepo;
         }
-
+        private readonly IUserRepo userRepo;
         private ISprintRepo SprintRepo { get; }
         private INotificationClient NotificationClient { get; }
 
@@ -274,6 +276,15 @@
 
                 infulenceEmail = encryptedEamil;
             }
+            if (promotionCode != null && promotionCode != string.Empty)
+            {
+                Sprint sprintPromoCode = await this.userRepo.GetSprintByPromoCode(promotionCode);
+                if (sprintPromoCode != null)
+                {
+                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+                }
+            }
+
             // if (type == (int)SprintType.PrivateSprint)
             // {
             //     Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
