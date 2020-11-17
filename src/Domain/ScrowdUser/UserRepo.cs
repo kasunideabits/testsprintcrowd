@@ -10,6 +10,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using System;
 
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -284,7 +285,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         public async Task<Sprint> GetSprintByPromoCode(string promoCode)
         {
-            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
+            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode && u.StartDateTime <= DateTime.UtcNow);
         }
 
         public async Task AddUserPreference(int userId)

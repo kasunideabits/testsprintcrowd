@@ -122,7 +122,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             }
             else
             {
-                throw new Application.SCApplicationException((int)ErrorCodes.InvalidPromotionCode, "Promotion code is invalid");
+                throw new Application.SCApplicationException((int)ErrorCodes.InvalidPromotionCode, "Promotion code is invalid or expired.");
             }
 
             return sprint;
