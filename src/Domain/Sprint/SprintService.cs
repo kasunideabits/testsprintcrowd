@@ -849,32 +849,34 @@
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
             foreach (var sprint in openEvents)
             {
-
-                var participants = sprint.Participants.Where(s =>
-                    s.User.UserState == UserState.Active &&
-                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
-                if (!participants.Any(p => p.Id == userId))
+                if (sprint.PromotionCode == string.Empty)
                 {
-                    var resultDto = new PublicSprintWithParticipantsDto(
-                        sprint.Id, sprint.Name, sprint.Distance,
-                        sprint.NumberOfParticipants, sprint.StartDateTime,
-                        (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl,sprint.PromotionCode);
-                    foreach (var participant in participants)
+                    var participants = sprint.Participants.Where(s =>
+                        s.User.UserState == UserState.Active &&
+                        s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
+                    if (!participants.Any(p => p.Id == userId))
                     {
-                        resultDto.AddParticipant(
-                            participant.User.Id,
-                            participant.User.Name,
-                            participant.User.ProfilePicture,
-                            participant.User.City,
-                            participant.User.Country,
-                            participant.User.CountryCode,
-                            participant.User.ColorCode,
-                            false,
-                            ParticipantStage.JOINED,
-                            friends.Contains(participant.User.Id));
+                        var resultDto = new PublicSprintWithParticipantsDto(
+                            sprint.Id, sprint.Name, sprint.Distance,
+                            sprint.NumberOfParticipants, sprint.StartDateTime,
+                            (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl,sprint.PromotionCode);
+                        foreach (var participant in participants)
+                        {
+                            resultDto.AddParticipant(
+                                participant.User.Id,
+                                participant.User.Name,
+                                participant.User.ProfilePicture,
+                                participant.User.City,
+                                participant.User.Country,
+                                participant.User.CountryCode,
+                                participant.User.ColorCode,
+                                false,
+                                ParticipantStage.JOINED,
+                                friends.Contains(participant.User.Id));
 
+                        }
+                        sprintDto.Add(resultDto);
                     }
-                    sprintDto.Add(resultDto);
                 }
             }
             return sprintDto;
