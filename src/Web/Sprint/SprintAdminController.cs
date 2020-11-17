@@ -135,7 +135,9 @@
                         sprint.InfluencerEmail,
                         sprint.DraftEvent,
                         sprint.InfluencerAvailability,
-                        sprint.ImageUrl);
+                        sprint.ImageUrl,
+                        sprint.promotionCode
+                        );
                     ResponseObject response = new ResponseObject()
                     {
                         StatusCode = (int)ApplicationResponseCode.Success,
@@ -237,7 +239,8 @@
                     sprint.InfluencerEmail,
                     sprint.DraftEvent,
                     sprint.InfluencerAvailability,
-                    sprint.ImageUrl);
+                    sprint.ImageUrl,
+                    sprint.promotionCode);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -303,7 +306,8 @@
               sprint.NumberOfParticipants,
               sprint.InfluencerEmail,
               sprint.DraftEvent,
-              sprint.ImageUrl);
+              sprint.ImageUrl,
+              sprint.promotionCode);
 
             ResponseObject response = new ResponseObject()
             {

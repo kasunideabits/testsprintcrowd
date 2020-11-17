@@ -99,5 +99,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public int DraftEvent { get; set; }
         public string ImageUrl { get; set; }
 
+        public string PromotionCode { get; set; }
+
     }
 }

@@ -10,6 +10,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     /// Sprint service
@@ -21,12 +22,13 @@
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
+            this.userRepo = _userRepo;
         }
-
+        private readonly IUserRepo userRepo;
         private ISprintRepo SprintRepo { get; }
         private INotificationClient NotificationClient { get; }
 
@@ -118,7 +120,8 @@
             int? numberOfParticipants,
             string influencerEmail,
             int? draftEvent,
-            string imageUrl)
+            string imageUrl,
+            string promotionCode)
         {
             if (influencerEmail != null)
             {
@@ -183,6 +186,7 @@
                 }
             }
             sprintAavail.ImageUrl = imageUrl;
+            sprintAavail.PromotionCode = promotionCode;
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
@@ -261,7 +265,8 @@
             string infulenceEmail,
             int draft,
             bool influencerAvailability,
-            string imageUrl)
+            string imageUrl,
+            string promotionCode)
         {
            
             if (infulenceEmail != null)
@@ -271,6 +276,15 @@
 
                 infulenceEmail = encryptedEamil;
             }
+            if (promotionCode != null && promotionCode != string.Empty)
+            {
+                Sprint sprintPromoCode = await this.userRepo.GetSprintByPromoCode(promotionCode);
+                if (sprintPromoCode != null)
+                {
+                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+                }
+            }
+
             // if (type == (int)SprintType.PrivateSprint)
             // {
             //     Expression<Func<Sprint, bool>> predicate = s => s.CreatedBy.Id == user.Id && s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED;
@@ -295,6 +309,7 @@
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
+                sprint.PromotionCode = promotionCode;
             }
             else
             {
@@ -309,6 +324,7 @@
                 sprint.InfluencerEmail = infulenceEmail;
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
+                sprint.PromotionCode = promotionCode;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
@@ -753,7 +769,8 @@
                 sprint.NumberOfParticipants,
                 sprint.StartDateTime,
                 (SprintType)sprint.Type,
-                sprint.Location);
+                sprint.Location,
+                sprint.PromotionCode);
             participants
                 .ForEach(p =>
                 {
@@ -800,7 +817,7 @@
 
                 if (!participants.Any(p => p.UserId == userId))
                 {
-                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl);
+                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl ,sprint.PromotionCode);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
@@ -832,32 +849,34 @@
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
             foreach (var sprint in openEvents)
             {
-
-                var participants = sprint.Participants.Where(s =>
-                    s.User.UserState == UserState.Active &&
-                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
-                if (!participants.Any(p => p.Id == userId))
+                if (sprint.PromotionCode == string.Empty)
                 {
-                    var resultDto = new PublicSprintWithParticipantsDto(
-                        sprint.Id, sprint.Name, sprint.Distance,
-                        sprint.NumberOfParticipants, sprint.StartDateTime,
-                        (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl);
-                    foreach (var participant in participants)
+                    var participants = sprint.Participants.Where(s =>
+                        s.User.UserState == UserState.Active &&
+                        s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
+                    if (!participants.Any(p => p.Id == userId))
                     {
-                        resultDto.AddParticipant(
-                            participant.User.Id,
-                            participant.User.Name,
-                            participant.User.ProfilePicture,
-                            participant.User.City,
-                            participant.User.Country,
-                            participant.User.CountryCode,
-                            participant.User.ColorCode,
-                            false,
-                            ParticipantStage.JOINED,
-                            friends.Contains(participant.User.Id));
+                        var resultDto = new PublicSprintWithParticipantsDto(
+                            sprint.Id, sprint.Name, sprint.Distance,
+                            sprint.NumberOfParticipants, sprint.StartDateTime,
+                            (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl,sprint.PromotionCode);
+                        foreach (var participant in participants)
+                        {
+                            resultDto.AddParticipant(
+                                participant.User.Id,
+                                participant.User.Name,
+                                participant.User.ProfilePicture,
+                                participant.User.City,
+                                participant.User.Country,
+                                participant.User.CountryCode,
+                                participant.User.ColorCode,
+                                false,
+                                ParticipantStage.JOINED,
+                                friends.Contains(participant.User.Id));
 
+                        }
+                        sprintDto.Add(resultDto);
                     }
-                    sprintDto.Add(resultDto);
                 }
             }
             return sprintDto;

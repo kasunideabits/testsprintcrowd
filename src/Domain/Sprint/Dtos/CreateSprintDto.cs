@@ -26,7 +26,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             ParticipantStage stage
         )
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, string.Empty);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, string.Empty ,string.Empty);
             var participant = new List<ParticipantInfoDto>();
             participant.Add(new ParticipantInfoDto(userId, userName, profilePicture, city, country, countryCode, colorCode, creator, stage));
             this.ParticipantInfo = participant;
