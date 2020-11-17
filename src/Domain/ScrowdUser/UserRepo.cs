@@ -284,7 +284,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         public async Task<Sprint> GetSprintByPromoCode(string promoCode)
         {
-            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode && u.StartDateTime <= System.DateTime.UtcNow);
+            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode && u.StartDateTime >= System.DateTime.UtcNow);
         }
 
         public async Task AddUserPreference(int userId)
