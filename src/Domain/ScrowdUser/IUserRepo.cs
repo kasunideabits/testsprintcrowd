@@ -54,6 +54,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         Task<Sprint> GetSprintByPromoCode(string promoCode);
 
         /// <summary>
+        /// Is Promo Code Exist
+        /// </summary>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        Task<Sprint> IsPromoCodeExist(string promoCode);
+        /// <summary>
         /// saves fcm token
         /// </summary>
         /// <param name="userId">id of the user</param>

@@ -131,6 +131,15 @@
                 influencerEmail = encryptedEamil;
             }
 
+            if (promotionCode != null && promotionCode != string.Empty)
+            {
+                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
+                if (sprintPromoCode != null)
+                {
+                    throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+                }
+            }
+
             Expression<Func<Sprint, bool>> predicate = s => s.Id == sprintId;
             var sprintAavail = await this.SprintRepo.GetSprint(predicate);
 
@@ -278,7 +287,7 @@
             }
             if (promotionCode != null && promotionCode != string.Empty)
             {
-                Sprint sprintPromoCode = await this.userRepo.GetSprintByPromoCode(promotionCode);
+                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
                 if (sprintPromoCode != null)
                 {
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
