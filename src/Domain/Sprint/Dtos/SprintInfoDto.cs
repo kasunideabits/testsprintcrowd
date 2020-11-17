@@ -14,7 +14,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             DateTime startTime,
             SprintType type,
             string imageUrl,
-            string location = null) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl)
+            string promoCode,
+            string location = null) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode)
         {
             this.Location = location;
             this.ExtendedTime = startTime.AddMinutes(15);

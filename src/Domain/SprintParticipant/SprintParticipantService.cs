@@ -12,6 +12,7 @@
     using SprintCrowd.BackEnd.Web.SprintManager;
     using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -23,12 +24,14 @@
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient, IUserRepo userRepo)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.NotificationClient = notificationClient;
+            this._userRepo = userRepo;
         }
 
+        private readonly IUserRepo _userRepo;
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         private INotificationClient NotificationClient { get; }
@@ -122,35 +125,52 @@
             }
             else
             {
-                if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                if (sprint.PromotionCode == string.Empty)
                 {
-                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
-                }
-                else if (inviteUser != null)
-                {
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
-                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                        sprint.Id,
-                        sprint.Name,
-                        (SprintType)sprint.Type,
-                        inviteUser.User.Id,
-                        inviteUser.User.Name,
-                        inviteUser.User.ProfilePicture,
-                        accept);
+                    if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                    }
+                    else if (inviteUser != null)
+                    {
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                            sprint.Id,
+                            sprint.Name,
+                            (SprintType)sprint.Type,
+                            inviteUser.User.Id,
+                            inviteUser.User.Name,
+                            inviteUser.User.ProfilePicture,
+                            accept);
+                    }
+                    else
+                    {
+                        var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
+                        this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                            sprint.Id,
+                            sprint.Name,
+                            (SprintType)sprint.Type,
+                            joinedUser.User.Id,
+                            joinedUser.User.Name,
+                            joinedUser.User.ProfilePicture,
+                            accept);
+                    }
+
                 }
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                        sprint.Id,
-                        sprint.Name,
-                        (SprintType)sprint.Type,
-                        joinedUser.User.Id,
-                        joinedUser.User.Name,
-                        joinedUser.User.ProfilePicture,
-                        accept);
-                }
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
 
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                            sprint.Id,
+                            sprint.Name,
+                            (SprintType)sprint.Type,
+                            joinedUser.User.Id,
+                            joinedUser.User.Name,
+                            joinedUser.User.ProfilePicture,
+                            accept);
+                }
             }
 
             var user = await this.SprintParticipantRepo.GetParticipant(userId);
