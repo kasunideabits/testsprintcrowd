@@ -40,4 +40,18 @@ namespace SprintCrowd.BackEnd.Web.Account
         /// <value>UserType of the user.</value>
         public int UserType { get; set; }
     }
+    /// <summary>
+    /// User register by Email class
+    /// </summary>
+    public class EmailUser
+    {
+        public string Email { get; set; }
+        public string AccessToken { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public string Id { get; set; }
+        public string EmailVerificationCode { get; set; }
+        public string PromotionCode { get; set; }
+        public int SprintId { get; set; }
+    }
 }

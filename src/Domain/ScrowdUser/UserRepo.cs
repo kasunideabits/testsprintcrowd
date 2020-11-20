@@ -9,6 +9,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
+
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
     /// NO DIRECT ACCESS FROM SERVICES OR CONTROLLERS ALLOWED.
@@ -129,6 +131,90 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// register user in identity server and register user in db.
+        /// </summary>
+        /// <param name="registerData">registeration data.</param>
+        public async Task<User> RegisterEmailUser(EmailUser emailUserData)
+        {
+            RestRequest request = new RestRequest("Account/RegisterEmailUser", Method.POST);
+            request.AddJsonBody(new { Name = emailUserData.Name, Email = emailUserData.Email ,Password =emailUserData.Password});
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                // Oh ohh, error occured during registeration in identity server
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "Failed to register user");
+            }
+
+            var exist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Equals(registerResponse.Data.Email));
+
+            var code = SCrowdUniqueKey.GetUniqueKey();
+            var codeExist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Code.Equals(code));
+
+            while (codeExist != null)
+            {
+                code = SCrowdUniqueKey.GetUniqueKey();
+                codeExist = await this.dbContext.User.FirstOrDefaultAsync(u => u.Code.Equals(code));
+            }
+
+            if (exist == null)
+            {
+                User user = new User();
+                user.Email = registerResponse.Data.Email;
+                user.FacebookUserId = registerResponse.Data.UserId;
+                user.Name = registerResponse.Data.Name;
+                user.UserType = (int)UserType.EmailUser;
+                user.ProfilePicture = registerResponse.Data.ProfilePicture;
+                user.AccessToken.Token = emailUserData.AccessToken;
+                user.Country = registerResponse.Data.Country;
+                user.City = registerResponse.Data.City;
+                user.CountryCode = registerResponse.Data.CountryCode;
+                user.Code = code;
+                user.ColorCode = new UserColorCode().PickColor();
+                user.UserState = UserState.Active;
+                var FbUser = await this.dbContext.User.AddAsync(user);
+                this.dbContext.SaveChanges();
+                return FbUser.Entity;
+            }
+            else
+            {
+                exist.UserState = UserState.Active;
+                this.dbContext.Update(exist);
+                this.dbContext.SaveChanges();
+
+            }
+            return exist;
+        }
+        /// <summary>
+        /// Email Confirmation By Mail
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> EmailConfirmationByMail(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/EmailConfirmationByMail", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email, Name = registerData.Name, Password = registerData.Password });
+           
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to send email confirmation fron identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
@@ -186,12 +272,49 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.dbContext.UserPreferences.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
+        public async Task<PromoCodeUser> GetUserSprintPromotionCode(int userId, string promoCode, int sprintId)
+        {
+            return await this.dbContext.PromoCodeUser.FirstOrDefaultAsync(u => u.UserId == userId && u.SprintId == sprintId && u.PromoCode == promoCode);
+        }
+
+        /// <summary>
+        /// Get Sprint By Promo Code
+        /// </summary>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        public async Task<Sprint> GetSprintByPromoCode(string promoCode)
+        {
+            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode && u.StartDateTime >= System.DateTime.UtcNow);
+        }
+
+        /// <summary>
+        /// Get Sprint By Promo Code
+        /// </summary>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        public async Task<Sprint> IsPromoCodeExist(string promoCode)
+        {
+            return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
+        }
+
         public async Task AddUserPreference(int userId)
         {
             var userPref = this.GetUserPreference(userId);
             if(userPref.Result ==null )
             await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
             return;
+        }
+
+
+        public async Task AddPromocodeUser(int userId , string promoCode,int sprintId )
+        {
+            var userPromo = this.GetUserSprintPromotionCode(userId , promoCode , sprintId);
+            if (userPromo.Result == null)
+                await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId , PromoCode=promoCode,SprintId=sprintId,CreatedDate = System.DateTime.UtcNow });
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+            }
         }
 
         /// <summary>

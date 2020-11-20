@@ -12,5 +12,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         NotAllowedOperation = 1007,
         MarkAttendanceEnable = 1008,
         SprintNotFound = 1009,
+        InvalidPromotionCode = 1010,
     }
 }

@@ -8,5 +8,6 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         NotAllowedOperation = 2003,
         MarkAttendanceEnable = 2004,
         CanNotEditSprint = 2005,
+        AlreadyExistPromoCode = 2006,
     }
 }
