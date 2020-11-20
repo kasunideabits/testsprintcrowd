@@ -858,7 +858,7 @@
             var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
             foreach (var sprint in openEvents)
             {
-                if (sprint.PromotionCode == string.Empty)
+                if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
                 {
                     var participants = sprint.Participants.Where(s =>
                         s.User.UserState == UserState.Active &&
