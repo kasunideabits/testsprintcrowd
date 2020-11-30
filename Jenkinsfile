@@ -76,20 +76,6 @@ pipeline {
         }
       }
     }
-    stage("deploy-qa") {
-      agent { label 'scrowd-qa' }
-      when {
-            branch 'qa'
-      }
-      steps {
-        script {
-            docker.withRegistry("https://${env.ECRURL}", ECRCRED) {
-              sh 'cd ~/devops; git pull'
-              sh 'cd ~/devops/sprintcrowd-backend/qa; chmod 744 ./deploy.sh; ./deploy.sh'
-            }
-        }
-      }
-    }
     // stage("deploy-live") {
     //   agent { label 'scrowd-prod' }
     //   when {
