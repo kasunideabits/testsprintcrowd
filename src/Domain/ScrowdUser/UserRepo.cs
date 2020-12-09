@@ -215,6 +215,58 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/GenerateEmailUserTokenForPwReset", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to send password verification mail from identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/ResetPassword", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email, VerificationCode = registerData.VerificationCode, Password = registerData.Password });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to reset password from identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.

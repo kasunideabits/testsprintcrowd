@@ -44,6 +44,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         /// 
         Task<bool> EmailConfirmationByMail(EmailUser registerData);
+        /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData);
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        Task<bool> ResetPassword(EmailUser registerData);
 
         /// <summary>
         /// Add Promotion Code

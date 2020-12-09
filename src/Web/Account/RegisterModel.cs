@@ -50,7 +50,7 @@ namespace SprintCrowd.BackEnd.Web.Account
         public string Name { get; set; }
         public string Password { get; set; }
         public string Id { get; set; }
-        public string EmailVerificationCode { get; set; }
+        public string VerificationCode { get; set; }
         public string PromotionCode { get; set; }
         public int SprintId { get; set; }
     }
