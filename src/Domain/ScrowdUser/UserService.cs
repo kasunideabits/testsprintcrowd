@@ -143,6 +143,28 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData)
+        {
+            bool success = await this.userRepo.GenerateEmailUserTokenForPwReset(registerData);
+            return success;
+        }
+
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(EmailUser registerData)
+        {
+            bool success = await this.userRepo.ResetPassword(registerData);
+            return success;
+        }
+
+        /// <summary>
         /// saves fcm token
         /// </summary>
         /// <param name="userId">id of the user</param>
