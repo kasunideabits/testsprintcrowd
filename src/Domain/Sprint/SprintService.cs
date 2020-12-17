@@ -922,6 +922,10 @@
             }
         }
 
+        /// <summary>
+        /// Get All Images
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, string> GetAllImages()
         {
             Dictionary<string, string> imageUrlList = new Dictionary<string, string>();
@@ -949,7 +953,21 @@
             return imageUrlList;
         }
 
-
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<UserMailReportDto>> GetAllUserMails()
+        {
+            try
+            {
+                return await this.userRepo.GetAllEmailUsers();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }
