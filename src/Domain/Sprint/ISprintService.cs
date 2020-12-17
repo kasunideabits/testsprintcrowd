@@ -150,6 +150,11 @@
         /// <returns>SprintReportDto</returns>
         Task<List<ReportItemDto>> GetReport(string timespan);
 
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        Task<List<UserMailReportDto>> GetAllUserMails();
 
         /// <summary>
         /// Validate Private Sprint Count For User

@@ -10,6 +10,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using System.Collections.Generic;
+    using System.Linq;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using System.Text.RegularExpressions;
 
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -347,6 +351,44 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<Sprint> IsPromoCodeExist(string promoCode)
         {
             return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
+        }
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        public async Task<List<UserMailReportDto>> GetAllEmailUsers()
+        {
+            try
+            {
+                List<UserMailReportDto> users = new List<UserMailReportDto>();
+                var usersList = await this.dbContext.User.Select(u => new { u.Name, u.Country, u.CountryCode, u.Email }).ToListAsync();
+                foreach (var user in usersList)
+                {
+                    var rptItem = new UserMailReportDto()
+                    {
+                        Name = user.Name,
+                        Country = user.Country,
+                        CountryCode = user.CountryCode,
+                        Email = this.IsBase64String(user.Email)
+                    };
+                    users.Add(rptItem);
+                }
+                return users;
+            }catch(System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string IsBase64String(string base64)
+        {
+            string email = string.Empty;
+            base64 = base64.Trim();
+            if ((base64.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(base64, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+                email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
+            else
+                email = base64;
+            return email;
         }
 
         public async Task AddUserPreference(int userId)

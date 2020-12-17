@@ -402,5 +402,34 @@
             return this.Ok(response);
         }
 
+
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("GetAllUserMails")]
+        public async Task<IActionResult> GetAllUserMails()
+        {
+            var reportData = await this.SprintService.GetAllUserMails();
+            var stream = new MemoryStream();
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var workSheet = package.Workbook.Worksheets.Add("sheetName");
+                workSheet.Cells.LoadFromCollection(reportData, true);
+                workSheet.Column(2).Style.Numberformat.Format = "dd/MM/yyyy hh:mm:ss AM/PM";
+                workSheet.Cells["A1:G1"].Style.Font.Bold = true;
+                //workSheet.Cells["A1:G1"].AutoFitColumns();
+                package.Encryption.Password = "sc275";
+                package.Save();
+            }
+
+            stream.Position = 0;
+            var contentType = "application/octet-stream";
+            string fileName = $"EmailData-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+            return this.File(stream, contentType, fileName);
+        }
     }
 }
