@@ -1,6 +1,8 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
@@ -59,6 +61,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="registerData"></param>
         /// <returns></returns>
         Task<bool> ResetPassword(EmailUser registerData);
+
+        /// <summary>
+        /// Get All Users
+        /// </summary>
+        /// <returns></returns>
+        Task<List<UserMailReportDto>> GetAllEmailUsers();
 
         /// <summary>
         /// Get Sprint By Promotion Code
