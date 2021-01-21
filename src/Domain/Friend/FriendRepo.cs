@@ -64,7 +64,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="sharedId">shared user id</param>
         public async Task<Friend> checkFiendShip(int acceptedId, int sharedId)
         {
-            var res = await this.dbContext.Frineds.FirstOrDefaultAsync(u => (u.AcceptedUser.Equals(acceptedId) && u.SharedUserId.Equals(sharedId)) || (u.AcceptedUser.Equals(sharedId) && u.SharedUserId.Equals(acceptedId)));
+            var res = await this.dbContext.Frineds.FirstOrDefaultAsync(u => ((u.AcceptedUser.Equals(acceptedId) && u.SharedUserId.Equals(sharedId)) || (u.AcceptedUser.Equals(sharedId) && u.SharedUserId.Equals(acceptedId))));
             return res;
         }
 
