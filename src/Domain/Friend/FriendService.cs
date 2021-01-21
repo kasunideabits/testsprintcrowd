@@ -102,8 +102,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             List<FriendDto> parts = new List<FriendDto>();
             friends.ForEach(obj =>
             {
-                if (obj.AcceptedUserId == userId)
-                {
+                if (obj.AcceptedUserId == userId && parts.Find(x => x.Id == obj.SharedUser.Id) == null) 
+            {
                     parts.Add(new FriendDto(
                         obj.SharedUser.Id,
                         obj.SharedUser.Name,
@@ -117,7 +117,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.CreatedDate));
                 }
 
-                else if (obj.SharedUserId == userId)
+                else if (obj.SharedUserId == userId && parts.Find(x => x.Id == obj.AcceptedUser.Id) == null)
                 {
                     parts.Add(new FriendDto(
                         obj.AcceptedUser.Id,
