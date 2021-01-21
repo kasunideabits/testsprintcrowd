@@ -82,8 +82,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             user.CountryCode,
                             user.ColorCode,
                             friend.CreatedDate);
-
-                       
                     }
                     else
                     {
