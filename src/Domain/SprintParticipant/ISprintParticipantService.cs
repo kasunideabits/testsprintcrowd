@@ -7,6 +7,7 @@
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Web.SprintManager;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowdBackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -141,5 +142,23 @@
         Task<SprintInfo> GetSprint(int sprintId);
 
         Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
+
+        /// <summary>
+        /// Add Gpx data for a user for a given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for user</param>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="gpxData">gpx data of the user for a perticular run</param>
+        /// <returns>true or false.If saved successfully returns true</returns>
+        Task<UserGpxDataDto> AddGpxValues(int sprintId, int userId, string gpxData);
+
+        /// <summary>
+        /// Returns GPX data for a user in given sprint
+        /// </summary>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="sprintId">sprint id of the sprint</param>
+        /// <returns>user gpx data</returns>
+
+        Task<UserGpxDataDto> GetGpxValues(int userId, int sprintId);
     }
 }

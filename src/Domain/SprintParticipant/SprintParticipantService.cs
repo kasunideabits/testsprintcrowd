@@ -13,6 +13,7 @@
     using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -347,7 +348,7 @@
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
-                    ImageUrl =s.Sprint.ImageUrl
+                    ImageUrl = s.Sprint.ImageUrl
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()
@@ -555,7 +556,7 @@
         /// <returns>all notificaiton related to given userid</returns>
         public Notifications GetNotification(int userId)
         {
-            
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             //var result = new List<object>();
 
@@ -586,7 +587,7 @@
 
                         //notification.Result.Add(notification.ResultNew);
 
-                    } 
+                    }
                     else if (s.BadgeCount != 1 && s.CreatedDate.Date == DateTime.UtcNow.Date)
                     {
                         //Today Notification
@@ -602,7 +603,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultToday);
+                        // notification.Result.Add(notification.ResultToday);
                     }
                     else
                     {
@@ -619,7 +620,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultOlder);
+                        // notification.Result.Add(notification.ResultOlder);
                     }
 
                 });
@@ -828,6 +829,46 @@
 
         }
 
+
+        /// <summary>
+        /// Add Gpx data for a user for a given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for user</param>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="gpxData">gpx data of the user for a perticular run</param>
+        /// <returns>true or false.If saved successfully returns true</returns>
+        public async Task<UserGpxDataDto> AddGpxValues(int sprintId, int userId, string gpxData)
+        {
+            var result = await this.SprintParticipantRepo.AddUserGPxData(sprintId, userId, gpxData);
+
+            return new UserGpxDataDto()
+            {
+                UserId = result.UserId,
+                SprintId = result.SprintId,
+                GpxData = result.GpxValue,
+            };
+        }
+
+        /// <summary>
+        /// Returns GPX data for a user in given sprint
+        /// </summary>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="sprintId">sprint id of the sprint</param>
+        /// <returns>user gpx data</returns>
+
+        public async Task<UserGpxDataDto> GetGpxValues(int userId, int sprintId)
+        {
+            var result = await this.SprintParticipantRepo.GetUserGpxData(userId, sprintId);
+
+            return new UserGpxDataDto()
+            {
+                UserId = result.UserId,
+                SprintId = result.SprintId,
+                GpxData = result.GpxValue,
+            };
+
+        }
+
         public async Task<SprintInfo> GetSprint(int sprintId)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
@@ -848,7 +889,7 @@
             this.ResultNew = new List<object>();
             this.ResultToday = new List<object>();
             this.ResultOlder = new List<object>();
-           // this.Result = new List<object>();
+            // this.Result = new List<object>();
         }
 
     }

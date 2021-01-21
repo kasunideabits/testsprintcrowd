@@ -79,6 +79,38 @@
             return result.Entity;
         }
 
+
+        /// <summary>
+        /// Add Gpx data for a user for a given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for user</param>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="gpxData">gpx data of the user for a perticular run</param>
+        /// <returns>true or false.If saved successfully returns true</returns>
+        public async Task<UserGpxData> AddUserGPxData(int sprintId, int userId, string gpxData)
+        {
+            UserGpxData gpxdata = new UserGpxData()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                GpxValue = gpxData,
+            };
+            var result = await this.Context.UserGpxData.AddAsync(gpxdata);
+            this.Context.SaveChanges();
+            return result.Entity;
+        }
+
+        /// <summary>
+        /// Returns GPX data for a user in given sprint
+        /// </summary>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="sprintId">sprint id of the sprint</param>
+        /// <returns>user gpx data</returns>
+        public async Task<UserGpxData> GetUserGpxData(int userId,int sprintId)
+        {
+            return await this.Context.UserGpxData.Where(u => u.UserId == userId && u.SprintId == sprintId).SingleAsync();
+        }
+
         /// <summary>
         /// Get all pariticipant with given stage <see cref="SprintParticipant"> stage </see>
         /// </summary>
