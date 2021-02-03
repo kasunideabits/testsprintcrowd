@@ -196,6 +196,23 @@
         /// </summary>
         void SaveChanges();
 
+        /// <summary>
+        /// Add Gpx data for a user for a given sprint
+        /// </summary>
+        /// <param name="sprintId">sprint id for user</param>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="gpxData">gpx data of the user for a perticular run</param>
+        /// <returns>saved Gpx data</returns>
+        Task<UserGpxData> AddUserGPxData(int sprintId, int userId, string gpxData);
+
+        /// <summary>
+        /// Returns GPX data for a user in given sprint
+        /// </summary>
+        /// <param name="userId">user id of the user</param>
+        /// <param name="sprintId">sprint id of the sprint</param>
+        /// <returns>user gpx data</returns>
+        Task<UserGpxData> GetUserGpxData(int userId, int sprintId);
+
         IEnumerable<SprintParticipant> GetAllById(int sprintId, Expression<Func<SprintParticipant, bool>> query);
     }
 }
