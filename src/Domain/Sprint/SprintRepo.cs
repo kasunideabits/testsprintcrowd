@@ -228,8 +228,6 @@
         public IEnumerable<SprintParticipant> GetParticipants(Expression<Func<SprintParticipant, bool>> predicate)
         {
             return this.dbContext.SprintParticipant
-                .Include(s => s.Sprint)
-                .ThenInclude(s => s.CreatedBy)
                 .Include(s => s.User)
                 .Where(predicate);
         }

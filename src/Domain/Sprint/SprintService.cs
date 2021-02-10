@@ -639,6 +639,19 @@
         }
 
         /// <summary>
+        /// Get Sprint Paticipants
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId)
+        {
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+               s.SprintId == sprintId;
+
+            return this.SprintRepo.GetParticipants(participantPredicate).ToList();
+        }
+
+        /// <summary>
         /// Remove sprint
         /// </summary>
         /// <param name="userId">creator id </param>
