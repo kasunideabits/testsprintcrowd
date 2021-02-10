@@ -116,6 +116,12 @@
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
 
+        /// <summary>
+        /// Get Sprint Paticipants list
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>

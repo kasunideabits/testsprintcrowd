@@ -747,6 +747,18 @@
         }
 
         /// <summary>
+        /// Get Participant Sprints History
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId)
+        {
+
+            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId);
+            
+        }
+
+        /// <summary>
         /// Get all joined sprints for given date
         /// </summary>
         /// <param name="userId">user id to fetch</param>
