@@ -7,6 +7,7 @@
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Web.SprintManager;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -141,5 +142,12 @@
         Task<SprintInfo> GetSprint(int sprintId);
 
         Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
+
+        /// <summary>
+        /// Get All Sprints History By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId);
     }
 }

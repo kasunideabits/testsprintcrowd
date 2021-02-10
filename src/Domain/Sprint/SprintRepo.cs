@@ -228,8 +228,6 @@
         public IEnumerable<SprintParticipant> GetParticipants(Expression<Func<SprintParticipant, bool>> predicate)
         {
             return this.dbContext.SprintParticipant
-                .Include(s => s.Sprint)
-                .ThenInclude(s => s.CreatedBy)
                 .Include(s => s.User)
                 .Where(predicate);
         }
@@ -410,11 +408,12 @@
         /// <param name="sprintId"></param>
         public int UpdateSprintStatusBySprintId(int sprintId)
         {
-           var userNotification = this.dbContext.Sprint.Where(s => s.Id == sprintId).ToList().FirstOrDefault();
+            var userNotification = this.dbContext.Sprint.Where(s => s.Id == sprintId).ToList().FirstOrDefault();
             userNotification.Status = (int)SprintStatus.INPROGRESS;
             this.dbContext.Sprint.Update(userNotification);
             return this.dbContext.SaveChanges();
         }
 
+      
     }
 }

@@ -443,5 +443,28 @@
                 .Where(query);
         }
 
+
+        /// <summary>
+        /// Get All Sprints History By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId)
+        {
+            try
+            {
+                return await (from participant in this.Context.SprintParticipant
+                              join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
+                              where (participant.Stage == ParticipantStage.COMPLETED && participant.Id == userId && (sprint.Status == (int)SprintStatus.ARCHIVED || sprint.Status == (int)SprintStatus.ENDED))
+                              orderby sprint.StartDateTime
+                              select sprint).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
     }
 }

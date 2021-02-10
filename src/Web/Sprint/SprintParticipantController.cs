@@ -259,13 +259,13 @@
         /// <summary>
         /// Get sprint statistics
         /// </summary>
-        [HttpGet("sprint/statistic")]
+        [HttpGet("GetAllSprintsHistoryByUserId")]
         [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
-        public async Task<IActionResult> GetSprintStatistic()
+        public async Task<IActionResult> GetAllSprintsHistoryByUserId()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetStatistic(user.Id);
-            return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+            var result = await this.SprintParticipantService.GetAllSprintsHistoryByUserId(user.Id);
+            return this.Ok(result);
         }
 
         /// <summary>
