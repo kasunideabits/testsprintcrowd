@@ -457,7 +457,7 @@
                               join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
                               where (participant.Stage == ParticipantStage.COMPLETED && participant.UserId == userId && (sprint.Status == (int)SprintStatus.ARCHIVED || sprint.Status == (int)SprintStatus.ENDED))
                               orderby sprint.StartDateTime
-                              select sprint).ToListAsync();
+                              select sprint).Include(s => s.Participants).ToListAsync();
             }
             catch (Exception ex)
             {
