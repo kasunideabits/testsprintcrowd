@@ -74,7 +74,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + message.Id);
             channel.Publish("Remove", message);
-            channel.SwitchOffChannel();
+            //channel.SwitchOffChannel();
         }
 
         private dynamic BuildNotificationMessage(int notificationId, string title, string body, List<string> tokens, SprintRemoveNotificationMessage notificationData)
