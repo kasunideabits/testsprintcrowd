@@ -48,7 +48,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificaitonMsg = RemoveParticipantNotificationMessageMapper.AblyNotificationMessageMapper(removeParticipant);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + removeParticipant.SprintId);
             channel.Publish("ParticipantRemove", notificaitonMsg);
-            channel.SwitchOffChannel();
+            //channel.SwitchOffChannel();
         }
 
         private void SendPushNotification(RemoveParticipant removeParticipant)
