@@ -118,6 +118,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         {
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + message.Id);
             channel.Publish("Edit", message);
+            channel.SwitchOffChannel();
         }
 
         private Dictionary<string, List<int>> SprintParticipantIds(int sprintId, int creatorId)

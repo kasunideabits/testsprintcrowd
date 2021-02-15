@@ -68,5 +68,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
                 throw new Application.ApplicationException($"Ably channel error {e}");
             }
         }
+
+
+        /// <summary>
+        /// Switch Off(Detach) Channel
+        /// </summary>
+        public void SwitchOffChannel()
+        {
+            this.Channel.Detach();
+        }
     }
 }
