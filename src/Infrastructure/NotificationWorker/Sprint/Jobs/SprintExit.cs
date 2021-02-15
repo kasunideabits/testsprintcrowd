@@ -59,6 +59,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(exitSprint);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + exitSprint.SprintId);
             channel.Publish("Exit", notificaitonMsg);
+            channel.SwitchOffChannel();
+           
         }
 
         private void SendPushNotification(ExitSprint exitSprint)
