@@ -8,5 +8,6 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         public int SprintId { get; set; }
         public int Distance { get; set; }
         public DateTime Time { get; set; }
+        public double Position { get; set; }
     }
 }

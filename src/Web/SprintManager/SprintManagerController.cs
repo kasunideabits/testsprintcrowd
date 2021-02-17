@@ -38,7 +38,7 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         [HttpPost("sprint/completed")]
         public async Task<IActionResult> RaceCompleted([FromBody] EventStatusModel race)
         {
-            await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Time, ParticipantStage.COMPLETED);
+            await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Time, ParticipantStage.COMPLETED, race.Position);
             var sprint = await this.SprintParticipantService.GetSprint(race.SprintId);
             var achievements = await this.AchievementService.RaceCompleted(race.UserId, (SprintType)sprint.SprintType);
             return this.Ok(new SuccessResponse<List<SprintCrowd.Domain.Achievement.AchievementDto>>(achievements));
@@ -51,7 +51,7 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         [HttpPost("sprint/exit")]
         public async Task<IActionResult> RaceExited([FromBody] EventStatusModel race)
         {
-            await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Time, ParticipantStage.QUIT);
+            await this.SprintParticipantService.UpdateParticipantStatus(race.UserId, race.SprintId, race.Time, ParticipantStage.QUIT, 0);
             return this.Ok();
         }
 
