@@ -643,12 +643,12 @@
         /// </summary>
         /// <param name="sprintId"></param>
         /// <returns></returns>
-        public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId)
+        public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId, int pageNo, int limit)
         {
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                s.SprintId == sprintId;
 
-            return this.SprintRepo.GetParticipants(participantPredicate).ToList();
+            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
         }
 
         /// <summary>
