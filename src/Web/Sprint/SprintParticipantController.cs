@@ -261,10 +261,10 @@
         /// </summary>
         [HttpGet("GetAllSprintsHistoryByUserId")]
         [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
-        public async Task<IActionResult> GetAllSprintsHistoryByUserId()
+        public async Task<IActionResult> GetAllSprintsHistoryByUserId(int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintParticipantService.GetAllSprintsHistoryByUserId(user.Id);
+            var result = await this.SprintParticipantService.GetAllSprintsHistoryByUserId(user.Id, pageNo, limit);
             return this.Ok(result);
         }
 

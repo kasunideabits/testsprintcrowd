@@ -203,6 +203,6 @@
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId);
+        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit);
     }
 }
