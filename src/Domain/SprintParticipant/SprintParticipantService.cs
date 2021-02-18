@@ -751,10 +751,10 @@
         /// </summary>
         /// <param name = "userId" ></ param >
         /// < returns ></ returns >
-        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId)
+        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId,int pageNo, int limit)
         {
 
-            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId);
+            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
             
         }
 

@@ -121,7 +121,7 @@
         /// </summary>
         /// <param name="sprintId"></param>
         /// <returns></returns>
-        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId);
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>
