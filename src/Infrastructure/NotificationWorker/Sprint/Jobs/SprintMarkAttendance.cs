@@ -47,6 +47,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + markAttendance.SprintId);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
+            //channel.SwitchOffChannel();
         }
 
         private void SendPushNotification(MarkAttendance markAttendance) { System.Console.WriteLine(markAttendance.City); }

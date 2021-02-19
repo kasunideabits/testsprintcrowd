@@ -116,6 +116,12 @@
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
 
+        /// <summary>
+        /// Get Sprint Paticipants list
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>
@@ -150,6 +156,11 @@
         /// <returns>SprintReportDto</returns>
         Task<List<ReportItemDto>> GetReport(string timespan);
 
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        Task<List<UserMailReportDto>> GetAllUserMails();
 
         /// <summary>
         /// Validate Private Sprint Count For User

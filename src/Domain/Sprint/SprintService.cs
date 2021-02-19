@@ -639,6 +639,19 @@
         }
 
         /// <summary>
+        /// Get Sprint Paticipants
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId, int pageNo, int limit)
+        {
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+               s.SprintId == sprintId;
+
+            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
+        }
+
+        /// <summary>
         /// Remove sprint
         /// </summary>
         /// <param name="userId">creator id </param>
@@ -922,6 +935,10 @@
             }
         }
 
+        /// <summary>
+        /// Get All Images
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, string> GetAllImages()
         {
             Dictionary<string, string> imageUrlList = new Dictionary<string, string>();
@@ -949,7 +966,21 @@
             return imageUrlList;
         }
 
-
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<UserMailReportDto>> GetAllUserMails()
+        {
+            try
+            {
+                return await this.userRepo.GetAllEmailUsers();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }

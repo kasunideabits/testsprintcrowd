@@ -747,6 +747,18 @@
         }
 
         /// <summary>
+        /// Get Participant Sprints History
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId,int pageNo, int limit)
+        {
+
+            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
+            
+        }
+
+        /// <summary>
         /// Get all joined sprints for given date
         /// </summary>
         /// <param name="userId">user id to fetch</param>
@@ -773,13 +785,15 @@
         /// <param name="sprintId"></param>
         /// <param name="time"></param>
         /// <param name="stage"></param>
-        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage)
+        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position)
         {
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
             var participant = await this.SprintParticipantRepo.Get(query);
             participant.Stage = stage;
             participant.DistanceRan = participant.Sprint.Distance;
             participant.FinishTime = time;
+            if (position != 0)
+            participant.Position = position;
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
             return;

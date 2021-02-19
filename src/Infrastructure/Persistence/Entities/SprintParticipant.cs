@@ -46,6 +46,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public int DistanceRan { get; set; }
 
         /// <summary>
+        /// Position of the user
+        /// </summary>
+        public double Position { get; set; }
+
+        /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>user who has participated.</value>

@@ -197,5 +197,12 @@
         void SaveChanges();
 
         IEnumerable<SprintParticipant> GetAllById(int sprintId, Expression<Func<SprintParticipant, bool>> query);
+
+        /// <summary>
+        /// Get All Sprints History By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit);
     }
 }

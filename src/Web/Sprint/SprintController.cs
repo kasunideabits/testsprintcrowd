@@ -83,6 +83,24 @@
         }
 
         /// <summary>
+        /// Get all Paticipants in sprint 
+        /// </summary>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
+        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit)
+        {
+            var result = await this.SprintService.GetSprintPaticipants(sprintId, pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+
+        /// <summary>
         /// Get created sprint with userId
         /// </summary>
         /// <param name="userId"></param>

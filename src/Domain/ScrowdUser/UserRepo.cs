@@ -10,6 +10,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using System.Collections.Generic;
+    using System.Linq;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using System.Text.RegularExpressions;
 
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -215,6 +219,58 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/GenerateEmailUserTokenForPwReset", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to send password verification mail from identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/ResetPassword", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email, VerificationCode = registerData.VerificationCode, Password = registerData.Password });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to reset password from identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
         /// commit and save changes to the db
         /// only call this from the service, DO NOT CALL FROM REPO ITSELF
         /// Unit of work methology.
@@ -295,6 +351,44 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<Sprint> IsPromoCodeExist(string promoCode)
         {
             return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
+        }
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        public async Task<List<UserMailReportDto>> GetAllEmailUsers()
+        {
+            try
+            {
+                List<UserMailReportDto> users = new List<UserMailReportDto>();
+                var usersList = await this.dbContext.User.Select(u => new { u.Name, u.Country, u.CountryCode, u.Email }).ToListAsync();
+                foreach (var user in usersList)
+                {
+                    var rptItem = new UserMailReportDto()
+                    {
+                        Name = user.Name,
+                        Country = user.Country,
+                        CountryCode = user.CountryCode,
+                        Email = this.IsBase64String(user.Email)
+                    };
+                    users.Add(rptItem);
+                }
+                return users;
+            }catch(System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string IsBase64String(string base64)
+        {
+            string email = string.Empty;
+            base64 = base64.Trim();
+            if ((base64.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(base64, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+                email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
+            else
+                email = base64;
+            return email;
         }
 
         public async Task AddUserPreference(int userId)

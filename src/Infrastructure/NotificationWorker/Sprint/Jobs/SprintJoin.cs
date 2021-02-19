@@ -76,6 +76,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             };
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + this._joinSprint.SprintId);
             channel.Publish("Join", message);
+           // channel.SwitchOffChannel();
         }
 
         private void SendPushNotification(Participant participant)

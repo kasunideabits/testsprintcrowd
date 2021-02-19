@@ -105,5 +105,31 @@ namespace SprintCrowd.BackEnd.Web.Account
             //await this.AchievementService.SignUp(user.Id);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
         }
+
+        /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        [HttpPost("GenerateEmailUserTokenForPwReset")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GenerateEmailUserTokenForPwReset([FromBody] EmailUser registerData)
+        {
+            bool success = await this.UserService.GenerateEmailUserTokenForPwReset(registerData);
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
+        }
+
+        /// <summary>
+        ///  Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        [HttpPost("ResetPassword")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> ResetPassword([FromBody] EmailUser registerData)
+        {
+            bool success = await this.UserService.ResetPassword(registerData);
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
+        }
     }
 }
