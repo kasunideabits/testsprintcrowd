@@ -648,7 +648,7 @@
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                s.SprintId == sprintId;
 
-            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
+            return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
 
         /// <summary>
