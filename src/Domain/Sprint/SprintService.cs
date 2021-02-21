@@ -628,6 +628,7 @@
                 s.SprintId == sprintId &&
                 s.User.UserState == UserState.Active &&
                 s.Sprint.StartDateTime > expireDate &&
+                s.User.Name != string.Empty &&
                 (s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE);
             var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
             User influencer = null;
@@ -648,7 +649,7 @@
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                s.SprintId == sprintId;
 
-            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
+            return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
 
         /// <summary>
