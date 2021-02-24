@@ -785,7 +785,7 @@
         /// <param name="sprintId"></param>
         /// <param name="time"></param>
         /// <param name="stage"></param>
-        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position)
+        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position, string raceCompletedDuration)
         {
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
             var participant = await this.SprintParticipantRepo.Get(query);
@@ -794,6 +794,7 @@
             participant.FinishTime = time;
             if (position != 0)
             participant.Position = position;
+            participant.RaceCompletedDuration = raceCompletedDuration;
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
             return;
