@@ -647,7 +647,7 @@
         public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId, int pageNo, int limit)
         {
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
-               s.SprintId == sprintId;
+               s.SprintId == sprintId && s.User.Name != string.Empty;
 
             return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
