@@ -51,6 +51,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public double Position { get; set; }
 
         /// <summary>
+        /// RaceCompletedDuration of the user
+        /// </summary>
+        public string RaceCompletedDuration { get; set; }
+        /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>user who has participated.</value>

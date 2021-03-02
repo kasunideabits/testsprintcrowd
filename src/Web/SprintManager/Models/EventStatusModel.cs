@@ -9,5 +9,6 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         public int Distance { get; set; }
         public DateTime Time { get; set; }
         public double Position { get; set; }
+        public string RaceCompletedDuration { get; set; }
     }
 }
