@@ -121,7 +121,8 @@
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
-            string promotionCode)
+            string promotionCode
+          )
         {
             if (influencerEmail != null)
             {
@@ -275,7 +276,9 @@
             int draft,
             bool influencerAvailability,
             string imageUrl,
-            string promotionCode)
+            string promotionCode,
+            bool isTimeBased,
+            TimeSpan durationForTimeBasedEvent)
         {
            
             if (infulenceEmail != null)
@@ -319,6 +322,8 @@
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
                 sprint.PromotionCode = promotionCode;
+                sprint.IsTimeBased = isTimeBased;
+                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             }
             else
             {
@@ -334,6 +339,8 @@
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
                 sprint.PromotionCode = promotionCode;
+                sprint.IsTimeBased = isTimeBased;
+                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
