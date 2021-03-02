@@ -122,7 +122,7 @@
             int? draftEvent,
             string imageUrl,
             string promotionCode,
-            bool isTimeBased, 
+            bool isTimeBased,
             TimeSpan durationForTimeBasedEvent
           )
         {
