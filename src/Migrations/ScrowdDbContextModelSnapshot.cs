@@ -229,9 +229,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<int>("DraftEvent")
                         .HasColumnName("draft_event");
 
-                    b.Property<TimeSpan>("DurationForTimeBasedEvent")
-                        .HasColumnName("duration_for_time_based_event");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnName("image_url");
 
@@ -240,9 +237,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("InfluencerEmail")
                         .HasColumnName("influencer_email");
-
-                    b.Property<bool>("IsTimeBased")
-                        .HasColumnName("is_time_based");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()

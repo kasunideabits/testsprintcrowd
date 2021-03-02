@@ -136,9 +136,7 @@
                         sprint.DraftEvent,
                         sprint.InfluencerAvailability,
                         sprint.ImageUrl,
-                        sprint.promotionCode,
-                        sprint.IsTimeBased,
-                        sprint.DurationForTimeBasedEvent
+                        sprint.promotionCode
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -242,9 +240,7 @@
                     sprint.DraftEvent,
                     sprint.InfluencerAvailability,
                     sprint.ImageUrl,
-                    sprint.promotionCode,
-                    sprint.IsTimeBased,
-                    sprint.DurationForTimeBasedEvent);
+                    sprint.promotionCode);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -311,9 +307,7 @@
               sprint.InfluencerEmail,
               sprint.DraftEvent,
               sprint.ImageUrl,
-              sprint.promotionCode,
-              sprint.IsTimeBased,
-              sprint.DurationForTimeBasedEvent);
+              sprint.promotionCode);
 
             ResponseObject response = new ResponseObject()
             {
