@@ -13,6 +13,9 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string InfluencerEmail { get; set; }
         public int? DraftEvent { get; set; }
         public string ImageUrl { get; set; }
-        public string promotionCode { get; set; }
+        public string promotionCode { get; set; }     
+        public bool IsTimeBased { get; set; }
+        public TimeSpan DurationForTimeBasedEvent { get; set; }
+
     }
 }

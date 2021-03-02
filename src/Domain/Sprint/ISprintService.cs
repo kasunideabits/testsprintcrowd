@@ -85,7 +85,7 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent, string imageUrl, string promotionCode);
+        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent, string imageUrl, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent);
 
         /// <summary>
         /// Validate Sprint Edit By SprintId

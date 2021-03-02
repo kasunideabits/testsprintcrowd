@@ -121,7 +121,9 @@
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
-            string promotionCode
+            string promotionCode,
+            bool isTimeBased,
+            TimeSpan durationForTimeBasedEvent
           )
         {
             if (influencerEmail != null)
@@ -197,6 +199,8 @@
             }
             sprintAavail.ImageUrl = imageUrl;
             sprintAavail.PromotionCode = promotionCode;
+            sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            sprintAavail.IsTimeBased = isTimeBased;
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
