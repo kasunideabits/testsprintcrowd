@@ -311,7 +311,9 @@
               sprint.InfluencerEmail,
               sprint.DraftEvent,
               sprint.ImageUrl,
-              sprint.promotionCode);
+              sprint.promotionCode,
+              sprint.IsTimeBased,
+              sprint.DurationForTimeBasedEvent);
 
             ResponseObject response = new ResponseObject()
             {
