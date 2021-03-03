@@ -99,6 +99,23 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Get Sprint Paticipants Counts
+        /// </summary>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
+        [HttpGet("GetSprintPaticipantsCounts/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId)
+        {
+            var result = await this.SprintService.GetSprintPaticipantsCounts(sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
 
         /// <summary>
         /// Get created sprint with userId

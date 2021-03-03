@@ -759,6 +759,17 @@
         }
 
         /// <summary>
+        /// Get All Sprints History Count By UserId
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public Task<int> GetAllSprintsHistoryCountByUserId(int userId)
+        {
+
+            return this.SprintParticipantRepo.GetAllSprintsHistoryCountByUserId(userId);
+        }
+
+        /// <summary>
         /// Get all joined sprints for given date
         /// </summary>
         /// <param name="userId">user id to fetch</param>
@@ -865,6 +876,5 @@
             this.ResultOlder = new List<object>();
            // this.Result = new List<object>();
         }
-
     }
 }
