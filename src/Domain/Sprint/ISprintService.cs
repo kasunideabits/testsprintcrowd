@@ -181,5 +181,12 @@
         /// </summary>
         /// <returns></returns>
         Dictionary<string, string> GetAllImages();
+
+        /// <summary>
+        /// Get Sprint Paticipants Counts
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<int> GetSprintPaticipantsCounts(int sprintId);
     }
 }

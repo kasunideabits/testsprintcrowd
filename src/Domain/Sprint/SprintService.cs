@@ -652,6 +652,20 @@
             return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
 
+
+        /// <summary>
+        /// Get Sprint Paticipants Counts
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<int> GetSprintPaticipantsCounts(int sprintId)
+        {
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+               s.SprintId == sprintId && s.User.Name != string.Empty;
+
+            return this.SprintRepo.GetParticipants(participantPredicate).ToList().Count;
+        }
+
         /// <summary>
         /// Remove sprint
         /// </summary>
