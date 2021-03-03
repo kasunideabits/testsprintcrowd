@@ -149,5 +149,12 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprints History Count By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<int> GetAllSprintsHistoryCountByUserId(int userId);
     }
 }
