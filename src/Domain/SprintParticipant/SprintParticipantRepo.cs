@@ -457,7 +457,7 @@
             {
                 return await (from participant in this.Context.SprintParticipant
                               join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
-                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow && participant.Stage == ParticipantStage.COMPLETED)
+                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow )
                               orderby participant.FinishTime descending
                               select sprint).Take(60).Include(s => s.Participants).Skip(pageNo).Take(limit).ToListAsync();
             }
