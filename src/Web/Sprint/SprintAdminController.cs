@@ -332,7 +332,11 @@
               sprint.ImageUrl,
               sprint.promotionCode,
               sprint.IsTimeBased,
+<<<<<<< HEAD
               durationForTimeBasedEvent);
+=======
+              sprint.DurationForTimeBasedEvent);
+>>>>>>> 38c0bc115675852e1b4bf417913c87e2cf83b76c
 
             ResponseObject response = new ResponseObject()
             {
