@@ -257,7 +257,7 @@
         }
 
         /// <summary>
-        /// Get sprint statistics
+        /// Get All Sprints History By UserId
         /// </summary>
         [HttpGet("GetAllSprintsHistoryByUserId")]
         [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
@@ -265,6 +265,18 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintParticipantService.GetAllSprintsHistoryByUserId(user.Id, pageNo, limit);
+            return this.Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Sprints History Count ByUserId
+        /// </summary>
+        [HttpGet("GetAllSprintsHistoryCountByUserId")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> GetAllSprintsHistoryCountByUserId()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetAllSprintsHistoryCountByUserId(user.Id);
             return this.Ok(result);
         }
 

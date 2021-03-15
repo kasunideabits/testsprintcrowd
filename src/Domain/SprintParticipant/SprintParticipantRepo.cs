@@ -448,6 +448,8 @@
         /// Get All Sprints History By User Id
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
         public async Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
         {
@@ -455,9 +457,9 @@
             {
                 return await (from participant in this.Context.SprintParticipant
                               join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
-                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow)
-                              orderby sprint.StartDateTime
-                              select sprint).Include(s => s.Participants).OrderByDescending(d => d.StartDateTime).Skip(pageNo).Take(limit).ToListAsync();
+                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow )
+                              orderby participant.FinishTime descending
+                              select sprint).Take(60).Include(s => s.Participants).Skip(pageNo).Take(limit).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -466,5 +468,24 @@
 
         }
 
+        /// <summary>
+        /// Get All Sprints History Count By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<int> GetAllSprintsHistoryCountByUserId(int userId)
+        {
+            try
+            {
+                return await (from participant in this.Context.SprintParticipant
+                              join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
+                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow)
+                              select sprint).CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
