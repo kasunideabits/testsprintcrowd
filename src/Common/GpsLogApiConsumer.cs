@@ -31,7 +31,7 @@ namespace SprintCrowdBackEnd.Common
 
             var result = await this.ConsumeApi(path);
 
-            return Convert.ToInt32(result.Data);
+            return result != null ? Convert.ToInt32(result.Data) : 0;
            
         }
 
