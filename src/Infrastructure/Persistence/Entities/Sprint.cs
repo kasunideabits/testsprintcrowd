@@ -111,5 +111,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         // </summary>
         public TimeSpan DurationForTimeBasedEvent { get; set; }
 
+        // <summary>
+        /// Description for a time based event
+        // </summary>
+        public string DescriptionForTimeBasedEvent { get; set; }
+
     }
 }

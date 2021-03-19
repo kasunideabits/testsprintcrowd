@@ -62,7 +62,8 @@
                 sprint.ImageUrl,
                 sprint.promotionCode,
                 sprint.IsTimeBased,
-                durationForTimeBasedEvent);
+                durationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -174,7 +175,8 @@
                 sprint.ImageUrl,
                 sprint.promotionCode,
                 sprint.IsTimeBased,
-                durationForTimeBasedEvent);
+                durationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent);
 
             ResponseObject response = new ResponseObject()
             {

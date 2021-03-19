@@ -16,5 +16,6 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string promotionCode { get; set; }
         public bool IsTimeBased { get; set; }
         public string DurationForTimeBasedEvent { get; set; }
+        public string DescriptionForTimeBasedEvent { get; set; }
     }
 }

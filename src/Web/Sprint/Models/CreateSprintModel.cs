@@ -69,5 +69,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// Duration for a time based event
         // </summary>
         public string DurationForTimeBasedEvent { get; set; }
+
+        // <summary>
+        /// Description for a time based event
+        // </summary>
+        public string DescriptionForTimeBasedEvent { get; set; }
     }
 }
