@@ -113,6 +113,8 @@
         public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
             string encryptedEamil = null;
             if (sprint.InfluencerEmail != null)
             {
@@ -138,7 +140,7 @@
                         sprint.ImageUrl,
                         sprint.promotionCode,
                         sprint.IsTimeBased,
-                        sprint.DurationForTimeBasedEvent
+                        durationForTimeBasedEvent
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -231,6 +233,8 @@
             User user = await this.User.GetUser(this.UserService);
             if (repeatType == "NONE")
             {
+                TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
                 var result = await this.SprintService.CreateNewSprint(
                     user,
                     sprint.Name,
@@ -244,7 +248,7 @@
                     sprint.ImageUrl,
                     sprint.promotionCode,
                     sprint.IsTimeBased,
-                    sprint.DurationForTimeBasedEvent);
+                    durationForTimeBasedEvent);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -301,6 +305,8 @@
         public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+           
             var result = await this.SprintService.UpdateSprint(
               user.Id,
               sprintId,
@@ -313,7 +319,7 @@
               sprint.ImageUrl,
               sprint.promotionCode,
               sprint.IsTimeBased,
-              sprint.DurationForTimeBasedEvent);
+              durationForTimeBasedEvent);
 
             ResponseObject response = new ResponseObject()
             {
