@@ -116,7 +116,7 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        Task JoinSprint(int userId, int sprintId);
+        Task JoinSprint(int userId, int sprintId, bool isIinfluencerEventParticipant);
 
         /// <summary>
         /// Delete pariticipant form sprint

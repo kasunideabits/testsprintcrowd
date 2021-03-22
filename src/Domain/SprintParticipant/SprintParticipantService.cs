@@ -70,6 +70,7 @@
         /// <param name="accept">accept or decline</param>
         public async Task<ParticipantInfoDto> JoinSprint(int sprintId, int userId, int notificationId, bool accept = true)
         {
+            bool isIinfluencerEventParticipant = false;
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             if (sprint == null)
             {
@@ -106,7 +107,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId,false);
                     }
                     else
                     {
@@ -126,6 +127,9 @@
             }
             else
             {
+                //Check Is Iinfluencer Event Participant 
+                if (sprint.InfluencerAvailability)
+                    isIinfluencerEventParticipant = true;
                 if (sprint.PromotionCode == string.Empty)
                 {
                     if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
@@ -134,7 +138,7 @@
                     }
                     else if (inviteUser != null)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, isIinfluencerEventParticipant);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
@@ -161,7 +165,7 @@
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId, isIinfluencerEventParticipant);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
@@ -175,7 +179,7 @@
             }
 
             var user = await this.SprintParticipantRepo.GetParticipant(userId);
-            var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, ParticipantStage.JOINED, creator.Id == userId);
+            var userDto = new ParticipantInfoDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.ColorCode, user.City, user.Country, user.CountryCode, isIinfluencerEventParticipant, ParticipantStage.JOINED, creator.Id == userId);
             this.SprintParticipantRepo.SaveChanges();
             return userDto;
 
@@ -259,6 +263,7 @@
                     p.User.City,
                     p.User.Country,
                     p.User.CountryCode,
+                    p.IsIinfluencerEventParticipant,
                     p.Stage,
                     p.User.Id == p.Sprint.CreatedBy.Id);
                 participantInfos.Add(participant);
@@ -519,6 +524,7 @@
                         invitee.City,
                         invitee.Country,
                         invitee.CountryCode,
+                        false,
                         ParticipantStage.PENDING
                     ));
                 }
@@ -536,6 +542,7 @@
                             user.User.City,
                             user.User.Country,
                             user.User.CountryCode,
+                            user.IsIinfluencerEventParticipant,
                             ParticipantStage.PENDING
                         ));
                     }

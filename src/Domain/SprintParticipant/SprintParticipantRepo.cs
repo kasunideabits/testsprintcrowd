@@ -255,12 +255,13 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        public async Task JoinSprint(int userId, int sprintId)
+        public async Task JoinSprint(int userId, int sprintId , bool isIinfluencerEventParticipant)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
+                participant.IsIinfluencerEventParticipant = isIinfluencerEventParticipant;
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
             }
