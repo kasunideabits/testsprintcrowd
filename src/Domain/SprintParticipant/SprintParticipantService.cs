@@ -13,6 +13,7 @@
     using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Common;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -806,6 +807,14 @@
             if (position != 0)
             participant.Position = position;
             participant.RaceCompletedDuration = raceCompletedDuration;
+
+            if(stage == ParticipantStage.COMPLETED)
+            {
+                GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                int totalElevation = gpsApi.GetTotalElevation(sprintId, userId).Result;
+                participant.TotalElevation = totalElevation;
+            }
+        
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
             return;

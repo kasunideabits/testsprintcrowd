@@ -123,7 +123,8 @@
             string imageUrl,
             string promotionCode,
             bool isTimeBased,
-            TimeSpan durationForTimeBasedEvent)
+            TimeSpan durationForTimeBasedEvent,
+            string descriptionForTimeBasedEvent)
         {
             if (influencerEmail != null)
             {
@@ -200,6 +201,7 @@
             sprintAavail.PromotionCode = promotionCode;
             sprintAavail.IsTimeBased = isTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
 
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
@@ -282,7 +284,8 @@
             string imageUrl,
             string promotionCode,
             bool isTimeBased,
-            TimeSpan durationForTimeBasedEvent)
+            TimeSpan durationForTimeBasedEvent,
+            string descriptionForTimeBasedEvent)
         {
            
             if (infulenceEmail != null)
@@ -328,6 +331,7 @@
                 sprint.PromotionCode = promotionCode;
                 sprint.IsTimeBased = isTimeBased;
                 sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             }
             else
             {
@@ -345,6 +349,7 @@
                 sprint.PromotionCode = promotionCode;
                 sprint.IsTimeBased = isTimeBased;
                 sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
