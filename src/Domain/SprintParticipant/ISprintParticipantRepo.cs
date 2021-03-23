@@ -19,8 +19,9 @@
         /// </summary>
         /// <param name="sprintId">sprint id for mark attendance</param>
         /// <param name="userId">user id for mark attendance</param>
+        /// <param name="isIinfluencerEventParticipant">to check influencer user for mark attendance</param>
         /// <returns>User details</returns>
-        Task<User> MarkAttendence(int sprintId, int userId);
+        Task<User> MarkAttendence(int sprintId, int userId , bool isIinfluencerEventParticipant);
 
         /// <summary>
         /// User join for an event

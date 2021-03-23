@@ -45,7 +45,13 @@
         /// <param name="userId">user id for for participant</param>
         public async Task MarkAttendence(int sprintId, int userId)
         {
-            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+            //Check whether Influencer sprint or not
+            bool IsIinfluencerEventParticipant = false;
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if(sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+                IsIinfluencerEventParticipant =true;
+
+            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
 
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
@@ -476,7 +482,8 @@
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
-                    markedAttendaceDetails.Sprint.Type);
+                    markedAttendaceDetails.Sprint.Type,
+                    markedAttendaceDetails.IsIinfluencerEventParticipant);
             }
             else
             {
