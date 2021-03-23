@@ -33,7 +33,7 @@
         /// <param name="sprintId">sprint id for mark attendance</param>
         /// <param name="userId">user id for mark attendance</param>
         /// <returns>User details</returns>
-        public async Task<User> MarkAttendence(int sprintId, int userId)
+        public async Task<User> MarkAttendence(int sprintId, int userId , bool isIinfluencerEventParticipant)
         {
             SprintParticipant paritipant = await this.Context.SprintParticipant
                 .FirstOrDefaultAsync(s => s.Sprint.Id == sprintId && s.User.Id == userId);
@@ -46,6 +46,7 @@
             {
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 paritipant.StartedTime = DateTime.UtcNow;
+                paritipant.IsIinfluencerEventParticipant = isIinfluencerEventParticipant;
                 this.Context.SprintParticipant.Update(paritipant);
                 this.Context.SaveChanges();
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
@@ -255,13 +256,12 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        public async Task JoinSprint(int userId, int sprintId , bool isIinfluencerEventParticipant)
+        public async Task JoinSprint(int userId, int sprintId)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
-                participant.IsIinfluencerEventParticipant = isIinfluencerEventParticipant;
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
             }

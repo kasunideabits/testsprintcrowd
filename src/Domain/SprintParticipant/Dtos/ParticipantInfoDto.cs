@@ -30,7 +30,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             string city,
             string country,
             string countryCode,
-            bool isIinfluencerEventParticipant,
             ParticipantStage stage,
             bool creator = false) : base(userId, userName, profilePicture, city, country, countryCode)
         {
@@ -38,7 +37,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.ColorCode = colorCode;
             this.Creator = creator;
             this.Stage = stage;
-            this.IsIinfluencerEventParticipant = isIinfluencerEventParticipant;
         }
 
         /// <summary>

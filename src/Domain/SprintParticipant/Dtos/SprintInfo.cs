@@ -16,7 +16,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="sprintType">sprint type</param>
         /// <param name="startTime">start date time</param>
         /// <param name="sprintCreator">sprint creator or not</param>
-        public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool sprintCreator = false)
+        public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool isInfluencerEventParticipant, bool sprintCreator = false)
         {
             this.Id = id;
             this.Name = name;
@@ -24,6 +24,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.StartTime = startTime;
             this.SprintType = sprintType;
             this.SprintCreator = sprintCreator;
+            this.IsInfluencerEventParticipant = isInfluencerEventParticipant;
         }
 
         public SprintInfo(Infrastructure.Persistence.Entities.Sprint sprint)
@@ -64,5 +65,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         ///  Get sprint creator or not
         /// </summary>
         public bool SprintCreator { get; }
+
+        /// <summary>
+        /// Get Is Influencer Event Participant
+        /// </summary>
+        public bool IsInfluencerEventParticipant { get; }
     }
 }
