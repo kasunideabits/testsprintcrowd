@@ -14,6 +14,7 @@
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Common;
+    using Serilog;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -815,12 +816,20 @@
             participant.Position = position;
             participant.RaceCompletedDuration = raceCompletedDuration;
 
-            if(stage == ParticipantStage.COMPLETED)
+            try
             {
-                GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                int totalElevation = gpsApi.GetTotalElevation(sprintId, userId).Result;
-                participant.TotalElevation = totalElevation;
+                if (stage == ParticipantStage.COMPLETED)
+                {
+                    GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                    int totalElevation = gpsApi.GetTotalElevation(sprintId, userId).Result;
+                    participant.TotalElevation = totalElevation;
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Logger.Information($" GetTotalElevation - {ex}");
+            }
+
         
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
