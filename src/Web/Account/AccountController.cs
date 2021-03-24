@@ -58,9 +58,9 @@ namespace SprintCrowd.BackEnd.Web.Account
         public async Task<IActionResult> RegisterByMail([FromBody] EmailUser registerData)
         {
             var email = registerData.Email;
-            //var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+            var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
 
-            // registerData.Email = encryptedEamil;
+             registerData.Email = encryptedEamil;
             //var decryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(encryptedEamil);
 
             User user = await this.UserService.RegisterEmailUser(registerData);
