@@ -56,7 +56,7 @@
         /// <param name="draft">sprint draft or publish</param>
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
-        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl,string promotionCode);
+        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl,string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
 
         /// <summary>
         /// Create multiple sprints based on repeat option, TODO : remove user object passing
@@ -85,7 +85,7 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent, string imageUrl, string promotionCode);
+        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, string influencerEmail, int? draftEvent, string imageUrl, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
 
         /// <summary>
         /// Validate Sprint Edit By SprintId

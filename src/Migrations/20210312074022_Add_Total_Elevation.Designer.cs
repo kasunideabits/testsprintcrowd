@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210312074022_Add_Total_Elevation")]
+    partial class Add_Total_Elevation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,17 +225,11 @@ namespace SprintCrowdBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
 
-                    b.Property<string>("DescriptionForTimeBasedEvent")
-                        .HasColumnName("description_for_time_based_event");
-
                     b.Property<int>("Distance")
                         .HasColumnName("distance");
 
                     b.Property<int>("DraftEvent")
                         .HasColumnName("draft_event");
-
-                    b.Property<TimeSpan>("DurationForTimeBasedEvent")
-                        .HasColumnName("duration_for_time_based_event");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnName("image_url");
@@ -243,9 +239,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("InfluencerEmail")
                         .HasColumnName("influencer_email");
-
-                    b.Property<bool>("IsTimeBased")
-                        .HasColumnName("is_time_based");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
@@ -331,9 +324,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<DateTime>("FinishTime")
                         .HasColumnName("finish_time");
-
-                    b.Property<bool>("IsIinfluencerEventParticipant")
-                        .HasColumnName("is_iinfluencer_event_participant");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()

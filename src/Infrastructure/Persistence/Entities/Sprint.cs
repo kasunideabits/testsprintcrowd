@@ -101,5 +101,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 
         public string PromotionCode { get; set; }
 
+        /// <summary>
+        /// deternined if the sprint is time based or not
+        /// </summary>
+        public bool IsTimeBased { get; set; }
+
+        // <summary>
+        /// Duration for a time based event
+        // </summary>
+        public TimeSpan DurationForTimeBasedEvent { get; set; }
+
+        // <summary>
+        /// Description for a time based event
+        // </summary>
+        public string DescriptionForTimeBasedEvent { get; set; }
+
     }
 }

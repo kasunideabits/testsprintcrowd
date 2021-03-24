@@ -121,7 +121,10 @@
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
-            string promotionCode)
+            string promotionCode,
+            bool isTimeBased,
+            TimeSpan durationForTimeBasedEvent,
+            string descriptionForTimeBasedEvent)
         {
             if (influencerEmail != null)
             {
@@ -196,6 +199,10 @@
             }
             sprintAavail.ImageUrl = imageUrl;
             sprintAavail.PromotionCode = promotionCode;
+            sprintAavail.IsTimeBased = isTimeBased;
+            sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
 
@@ -275,7 +282,10 @@
             int draft,
             bool influencerAvailability,
             string imageUrl,
-            string promotionCode)
+            string promotionCode,
+            bool isTimeBased,
+            TimeSpan durationForTimeBasedEvent,
+            string descriptionForTimeBasedEvent)
         {
            
             if (infulenceEmail != null)
@@ -319,6 +329,9 @@
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
                 sprint.PromotionCode = promotionCode;
+                sprint.IsTimeBased = isTimeBased;
+                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             }
             else
             {
@@ -334,6 +347,9 @@
                 sprint.DraftEvent = draft;
                 sprint.ImageUrl = imageUrl;
                 sprint.PromotionCode = promotionCode;
+                sprint.IsTimeBased = isTimeBased;
+                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);

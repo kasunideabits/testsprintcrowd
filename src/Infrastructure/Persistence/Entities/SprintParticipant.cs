@@ -49,11 +49,20 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Position of the user
         /// </summary>
         public double Position { get; set; }
-
+        /// <summary>
+        /// Is Influencer Event Participant
+        /// </summary>
+        public bool IsIinfluencerEventParticipant { get; set; }
         /// <summary>
         /// RaceCompletedDuration of the user
         /// </summary>
         public string RaceCompletedDuration { get; set; }
+
+        /// <summary>
+        /// TotalElevation of a user
+        /// </summary>
+        public double TotalElevation { get; set; }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210302134956_SprintTimeBasedValues")]
+    partial class SprintTimeBasedValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,9 +225,6 @@ namespace SprintCrowdBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
 
-                    b.Property<string>("DescriptionForTimeBasedEvent")
-                        .HasColumnName("description_for_time_based_event");
-
                     b.Property<int>("Distance")
                         .HasColumnName("distance");
 
@@ -332,9 +331,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<DateTime>("FinishTime")
                         .HasColumnName("finish_time");
 
-                    b.Property<bool>("IsIinfluencerEventParticipant")
-                        .HasColumnName("is_iinfluencer_event_participant");
-
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("last_updated");
@@ -353,9 +349,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<DateTime>("StartedTime")
                         .HasColumnName("started_time");
-
-                    b.Property<double>("TotalElevation")
-                        .HasColumnName("total_elevation");
 
                     b.Property<int>("UserId")
                         .HasColumnName("user_id");
