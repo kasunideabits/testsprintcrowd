@@ -49,8 +49,8 @@
             //Check whether Influencer sprint or not
             bool IsIinfluencerEventParticipant = false;
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
-            if(sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
-                IsIinfluencerEventParticipant =true;
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+                IsIinfluencerEventParticipant = true;
 
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
@@ -355,7 +355,7 @@
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
-                    ImageUrl =s.Sprint.ImageUrl
+                    ImageUrl = s.Sprint.ImageUrl
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()
@@ -564,7 +564,7 @@
         /// <returns>all notificaiton related to given userid</returns>
         public Notifications GetNotification(int userId)
         {
-            
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             //var result = new List<object>();
 
@@ -595,7 +595,7 @@
 
                         //notification.Result.Add(notification.ResultNew);
 
-                    } 
+                    }
                     else if (s.BadgeCount != 1 && s.CreatedDate.Date == DateTime.UtcNow.Date)
                     {
                         //Today Notification
@@ -611,7 +611,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultToday);
+                        // notification.Result.Add(notification.ResultToday);
                     }
                     else
                     {
@@ -628,7 +628,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultOlder);
+                        // notification.Result.Add(notification.ResultOlder);
                     }
 
                 });
@@ -760,11 +760,11 @@
         /// </summary>
         /// <param name = "userId" ></ param >
         /// < returns ></ returns >
-        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId,int pageNo, int limit)
+        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
         {
 
             return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
-            
+
         }
 
         /// <summary>
@@ -813,7 +813,7 @@
             participant.DistanceRan = participant.Sprint.Distance;
             participant.FinishTime = time;
             if (position != 0)
-            participant.Position = position;
+                participant.Position = position;
             participant.RaceCompletedDuration = raceCompletedDuration;
 
             try
@@ -823,6 +823,7 @@
                 {
                     GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
                     int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
+                    Log.Logger.Information($" totalElevation - {totalElevation}");
                     participant.TotalElevation = totalElevation;
                 }
 
@@ -831,7 +832,7 @@
             {
                 Log.Logger.Information($" GetTotalElevation - {ex}");
             }
-        
+
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
             return;
@@ -900,7 +901,7 @@
             this.ResultNew = new List<object>();
             this.ResultToday = new List<object>();
             this.ResultOlder = new List<object>();
-           // this.Result = new List<object>();
+            // this.Result = new List<object>();
         }
     }
 }
