@@ -811,7 +811,7 @@
             if(stage == ParticipantStage.COMPLETED)
             {
                 GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                int totalElevation = gpsApi.GetTotalElevation(sprintId, userId).Result;
+                int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
                 participant.TotalElevation = totalElevation;
             }
         
