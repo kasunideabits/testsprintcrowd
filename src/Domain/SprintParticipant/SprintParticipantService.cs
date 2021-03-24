@@ -818,18 +818,19 @@
 
             try
             {
+
                 if (stage == ParticipantStage.COMPLETED)
                 {
                     GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                    int totalElevation = gpsApi.GetTotalElevation(sprintId, userId).Result;
+                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
                     participant.TotalElevation = totalElevation;
                 }
+
             }
             catch (Exception ex)
             {
                 Log.Logger.Information($" GetTotalElevation - {ex}");
             }
-
         
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
