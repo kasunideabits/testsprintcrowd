@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,9 @@ namespace SprintCrowdBackEnd.Common
 
             var result = await this.ConsumeApi(path);
 
+            if(result == null)
+            Log.Logger.Information($" GetTotalElevation result NULL");
+
             return result != null ? Convert.ToInt32(result.Data) : 0;
            
         }
@@ -38,12 +42,17 @@ namespace SprintCrowdBackEnd.Common
 
         private async Task<ResponseObject> ConsumeApi(string path)
         {
+            Log.Logger.Information($" ConsumeApi path - {path}");
             ResponseObject oResponseObject = null;
             HttpResponseMessage response = await client.GetAsync(path);
+
+            Log.Logger.Information($" ConsumeApi response - {response}");
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
                 oResponseObject = JsonConvert.DeserializeObject<ResponseObject>(jsonString);
+
+                Log.Logger.Information($" ConsumeApi oResponseObject - {oResponseObject}");
             }
             return oResponseObject;
         }
