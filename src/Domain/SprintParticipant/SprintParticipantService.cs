@@ -14,6 +14,7 @@
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Common;
+    using Serilog;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -45,7 +46,13 @@
         /// <param name="userId">user id for for participant</param>
         public async Task MarkAttendence(int sprintId, int userId)
         {
-            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
+            //Check whether Influencer sprint or not
+            bool IsIinfluencerEventParticipant = false;
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if(sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+                IsIinfluencerEventParticipant =true;
+
+            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
 
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
@@ -476,7 +483,8 @@
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
-                    markedAttendaceDetails.Sprint.Type);
+                    markedAttendaceDetails.Sprint.Type,
+                    markedAttendaceDetails.IsIinfluencerEventParticipant);
             }
             else
             {
@@ -808,11 +816,20 @@
             participant.Position = position;
             participant.RaceCompletedDuration = raceCompletedDuration;
 
-            if(stage == ParticipantStage.COMPLETED)
+            try
             {
-                GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
-                participant.TotalElevation = totalElevation;
+
+                if (stage == ParticipantStage.COMPLETED)
+                {
+                    GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
+                    participant.TotalElevation = totalElevation;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Information($" GetTotalElevation - {ex}");
             }
         
             this.SprintParticipantRepo.UpdateParticipant(participant);

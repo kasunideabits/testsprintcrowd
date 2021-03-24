@@ -58,5 +58,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// participant stage
         /// </summary>
         public ParticipantStage Stage { get; }
+
+        /// <summary>
+        /// Is Iinfluencer Event Participant
+        /// </summary>
+        public bool IsIinfluencerEventParticipant { get; }
     }
 }
