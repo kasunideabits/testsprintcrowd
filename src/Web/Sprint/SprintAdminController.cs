@@ -115,13 +115,20 @@
             User user = await this.User.GetUser(this.UserService);
             TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
 
+            int userId = 0;
+            string email = string.Empty;
+
             string encryptedEamil = null;
             if (sprint.InfluencerEmail != null)
             {
-                var email = sprint.InfluencerEmail;
+                email = sprint.InfluencerEmail;
                 encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
             }
-            int userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
+             userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
+            if(userId == 0)
+            {
+                userId = await this.SprintService.GetInfluencerIdByEmail(email);
+            }
 
             if (userId != 0 || sprint.InfluencerEmail != null)
             {
