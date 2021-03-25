@@ -650,7 +650,7 @@
             User influencer = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
             {
-                influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
+                influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
             }
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer);
         }
