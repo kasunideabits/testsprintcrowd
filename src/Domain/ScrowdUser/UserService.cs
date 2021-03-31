@@ -307,15 +307,5 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.userRepo.SaveChanges();
         }
 
-        /// <summary>
-        /// Is User Exist In C
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public async Task<bool> IsUserExistInSC(string email)
-        {
-            bool success = await this.userRepo.IsUserExistInSC(email);
-            return success;
-        }
     }
 }

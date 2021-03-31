@@ -121,12 +121,5 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId">user id to logout</param>
         Task AccountLogout(int userId);
 
-        /// <summary>
-        /// Is User Exist In SC
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        Task<bool> IsUserExistInSC(string email);
-
     }
 }
