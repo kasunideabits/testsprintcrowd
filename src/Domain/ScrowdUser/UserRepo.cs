@@ -469,5 +469,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.dbContext.UserNotificationReminders.Update(notificationReminder);
             this.dbContext.SaveChanges();
         }
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserExistInSC(string email)
+        {
+            User user = null;
+            user =  await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
+           
+            return (user == null)?false :true;
+        }
     }
 }

@@ -131,5 +131,24 @@ namespace SprintCrowd.BackEnd.Web.Account
             bool success = await this.UserService.ResetPassword(registerData);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
         }
+
+
+        /// <summary>
+        /// Is User Exist in SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpGet("{IsUserExistinSC:string}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> IsUserExistinSC(string email)
+        {
+            var result = await this.UserService.IsUserExistInSC(email);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
