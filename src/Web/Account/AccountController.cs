@@ -138,7 +138,7 @@ namespace SprintCrowd.BackEnd.Web.Account
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        [HttpGet("{IsUserExistinSC:string}")]
+        [HttpGet("IsUserExistinSC/email")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> IsUserExistinSC(string email)
         {
