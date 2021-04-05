@@ -157,5 +157,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="email"></param>
         /// <returns></returns>
         Task<bool> IsUserExistInSC(string email);
+
     }
 }

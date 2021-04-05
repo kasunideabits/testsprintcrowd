@@ -308,7 +308,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
-        /// Is User Exist In C
+        /// Is User Exist In SC
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
