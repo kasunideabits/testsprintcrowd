@@ -129,7 +129,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 exist.UserState = UserState.Active;
                 this.dbContext.Update(exist);
                 this.dbContext.SaveChanges();
-                
+
             }
             return exist;
         }
@@ -141,7 +141,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<User> RegisterEmailUser(EmailUser emailUserData)
         {
             RestRequest request = new RestRequest("Account/RegisterEmailUser", Method.POST);
-            request.AddJsonBody(new { Name = emailUserData.Name, Email = emailUserData.Email ,Password =emailUserData.Password});
+            request.AddJsonBody(new { Name = emailUserData.Name, Email = emailUserData.Email, Password = emailUserData.Password });
 
             // user returned by the identity server
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
@@ -202,7 +202,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             bool isMailSent = false;
             RestRequest request = new RestRequest("Account/EmailConfirmationByMail", Method.POST);
             request.AddJsonBody(new { Email = registerData.Email, Name = registerData.Name, Password = registerData.Password });
-           
+
             // user returned by the identity server
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
             if (registerResponse.StatusCode != 200)
@@ -294,8 +294,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 // no token yet saved, insert
                 FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
                 {
-                User = await this.GetUserById(userId),
-                Token = fcmToken,
+                    User = await this.GetUserById(userId),
+                    Token = fcmToken,
                 };
                 await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
             }
@@ -374,7 +374,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                     users.Add(rptItem);
                 }
                 return users;
-            }catch(System.Exception ex)
+            }
+            catch (System.Exception ex)
             {
                 throw ex;
             }
@@ -394,17 +395,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddUserPreference(int userId)
         {
             var userPref = this.GetUserPreference(userId);
-            if(userPref.Result ==null )
-            await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
+            if (userPref.Result == null)
+                await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
             return;
         }
 
 
-        public async Task AddPromocodeUser(int userId , string promoCode,int sprintId )
+        public async Task AddPromocodeUser(int userId, string promoCode, int sprintId)
         {
-            var userPromo = this.GetUserSprintPromotionCode(userId , promoCode , sprintId);
+            var userPromo = this.GetUserSprintPromotionCode(userId, promoCode, sprintId);
             if (userPromo.Result == null)
-                await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId , PromoCode=promoCode,SprintId=sprintId,CreatedDate = System.DateTime.UtcNow });
+                await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId, PromoCode = promoCode, SprintId = sprintId, CreatedDate = System.DateTime.UtcNow });
             else
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
@@ -448,8 +449,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddDefaultUserSettings(int userId)
         {
             var userNotRem = this.GetUserNotificationReminderById(userId);
-            if (userNotRem.Result == null )
-            await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
+            if (userNotRem.Result == null)
+                await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
         }
 
         /// <summary>
@@ -468,6 +469,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             this.dbContext.UserNotificationReminders.Update(notificationReminder);
             this.dbContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserExistInSC(string email)
+        {
+            User user = null;
+            user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
+
+            return (user == null) ? false : true;
+
         }
     }
 }

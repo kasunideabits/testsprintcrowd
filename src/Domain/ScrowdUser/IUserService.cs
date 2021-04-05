@@ -42,7 +42,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="registerData"></param>
         /// <returns></returns>
-        /// 
+        ///
         Task<bool> EmailConfirmationByMail(EmailUser registerData);
         /// <summary>
         /// Generate Email User Token For Password Reset
@@ -120,6 +120,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="userId">user id to logout</param>
         Task AccountLogout(int userId);
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> IsUserExistInSC(string email);
+
+
 
     }
 }
