@@ -483,6 +483,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
            
             return (user == null)?false :true;
+
         }
     }
 }
