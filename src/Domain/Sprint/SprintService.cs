@@ -351,21 +351,6 @@
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
-
-            if (draft == 0)
-            {
-
-                var socialLink = isSmartInvite ?
-                await this.SocialShareService.updateTokenAndGetInvite(new { campaign_name = "sprintshare", sprintId = addedSprint.Id.ToString() }) :
-                await this.SocialShareService.GetSmartLink(new SocialLink()
-                {
-                    Name = name,
-                    Description = descriptionForTimeBasedEvent,
-                    ImageUrl = imageUrl,
-                });
-                addedSprint.SocialMediaLink = socialLink;
-            }
-
             if (type == (int)SprintType.PrivateSprint)
             {
                 await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
@@ -381,8 +366,22 @@
                 addedSprint.NumberOfParticipants,
                 (SprintType)addedSprint.Type,
                 (SprintStatus)addedSprint.Status);
-            CreateSprintDto createSprintDto = CreateSprintDtoMapper(sprint, user);
-            return createSprintDto;
+
+            if (draft == 0)
+            {
+                var socialLink = isSmartInvite ?
+                await this.SocialShareService.updateTokenAndGetInvite(new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString() }) :
+                await this.SocialShareService.GetSmartLink(new SocialLink()
+                {
+                    Name = name,
+                    Description = descriptionForTimeBasedEvent,
+                    ImageUrl = imageUrl,
+                });
+                sprint.SocialMediaLink = socialLink;
+                await this.SprintRepo.UpdateSprint(sprint);
+            }
+
+            return CreateSprintDtoMapper(sprint, user);
         }
 
         /// <summary>
@@ -810,19 +809,8 @@
         public static CreateSprintDto CreateSprintDtoMapper(Sprint sprint, User user)
         {
             CreateSprintDto result = new CreateSprintDto(
-                sprint.Id,
-                sprint.Name,
-                sprint.Distance,
-                sprint.NumberOfParticipants,
-                sprint.StartDateTime,
-                (SprintType)sprint.Type,
-                user.Id,
-                user.Name,
-                user.ProfilePicture,
-                user.City,
-                user.Country,
-                user.CountryCode,
-                user.ColorCode,
+                sprint,
+                user,
                 true,
                 ParticipantStage.JOINED);
             return result;

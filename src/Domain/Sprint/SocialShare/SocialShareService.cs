@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
     using System;
     using Newtonsoft.Json.Linq;
     using RestSharp;
+    using Serilog;
 
     /// <summary>
     /// SocialShareService
@@ -39,6 +40,7 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             }
             catch (Exception ex)
             {
+                Log.Logger.Error($" getSmartLink - {ex}");
                 return null;
             }
 
@@ -68,6 +70,7 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             }
             catch (Exception ex)
             {
+                Log.Logger.Error($" getInvitationLink - {ex}");
                 return null;
             }
 
@@ -87,7 +90,6 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             request.AddQueryParameter("identity_type", "email");
             request.AddQueryParameter("value", "scrowd@ideabits.se");
             request.AddQueryParameter("token", GetSocialApiKey);
-            // request.AddHeader("X-GetSocial-API-Key", GetSocialApiKey);
             Console.WriteLine("Before getToken");
             try
             {
@@ -98,6 +100,7 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             }
             catch (Exception ex)
             {
+                Log.Logger.Error($" get Invitation Link Token - {ex}");
                 return null;
             }
             // return "test";
