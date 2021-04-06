@@ -280,7 +280,9 @@
         public async Task<CreateSprintDto> CreateNewSprint(
             User user,
             string name,
-            int distance, DateTime startTime,
+            int distance,
+            bool isSmartInvite,
+            DateTime startTime,
             int type,
             int? numberOfParticipants,
             string infulenceEmail,
@@ -320,54 +322,49 @@
             // }
 
             Sprint sprint = new Sprint();
+
+            sprint.SocialMediaLink = string.Empty;
+            sprint.Name = name;
+            sprint.Distance = distance;
+            sprint.StartDateTime = startTime;
+            sprint.CreatedBy = user;
+            sprint.Type = type;
+            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
+            sprint.InfluencerAvailability = influencerAvailability;
+            sprint.InfluencerEmail = infulenceEmail;
+            sprint.DraftEvent = draft;
+            sprint.ImageUrl = imageUrl;
+            sprint.PromotionCode = promotionCode;
+            sprint.IsSmartInvite = isSmartInvite;
+            sprint.IsTimeBased = isTimeBased;
+            sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+
+            if (draft == 0)
+            {
+                sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
+
+            }
+            else
+            {
+                sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
+            }
+
+            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+
             if (draft == 0)
             {
 
-                var socialLink = await this.SocialShareService.GetSmartLink(new SocialLink()
+                var socialLink = isSmartInvite ?
+                await this.SocialShareService.updateTokenAndGetInvite(new { campaign_name = "sprintshare", sprintId = addedSprint.Id.ToString() }) :
+                await this.SocialShareService.GetSmartLink(new SocialLink()
                 {
                     Name = name,
                     Description = descriptionForTimeBasedEvent,
                     ImageUrl = imageUrl,
                 });
-
-                sprint.SocialMediaLink = socialLink;
-                sprint.Name = name;
-                sprint.Distance = distance;
-                sprint.StartDateTime = startTime;
-                sprint.CreatedBy = user;
-                sprint.Type = type;
-                sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
-                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
-                sprint.InfluencerAvailability = influencerAvailability;
-                sprint.InfluencerEmail = infulenceEmail;
-                sprint.DraftEvent = draft;
-                sprint.ImageUrl = imageUrl;
-                sprint.PromotionCode = promotionCode;
-                sprint.IsTimeBased = isTimeBased;
-                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
-                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+                addedSprint.SocialMediaLink = socialLink;
             }
-            else
-            {
-                sprint.Name = name;
-                sprint.Distance = distance;
-                sprint.StartDateTime = startTime;
-                sprint.CreatedBy = user;
-                sprint.Type = type;
-                sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
-                sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
-                sprint.InfluencerAvailability = influencerAvailability;
-                sprint.InfluencerEmail = infulenceEmail;
-                sprint.DraftEvent = draft;
-                sprint.ImageUrl = imageUrl;
-                sprint.PromotionCode = promotionCode;
-                sprint.IsTimeBased = isTimeBased;
-                sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
-                sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
-            }
-
-            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
-
 
             if (type == (int)SprintType.PrivateSprint)
             {
@@ -375,6 +372,7 @@
             }
 
             this.SprintRepo.SaveChanges();
+
             this.NotificationClient.NotificationReminderJobs.TimeReminder(
                 addedSprint.Id,
                 addedSprint.Name,
@@ -383,7 +381,8 @@
                 addedSprint.NumberOfParticipants,
                 (SprintType)addedSprint.Type,
                 (SprintStatus)addedSprint.Status);
-            return CreateSprintDtoMapper(sprint, user);
+            CreateSprintDto createSprintDto = CreateSprintDtoMapper(sprint, user);
+            return createSprintDto;
         }
 
         /// <summary>

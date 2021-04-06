@@ -43,5 +43,77 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             }
 
         }
+
+        /// <summary>
+        /// GetSmartLink
+        /// </summary>
+        public async Task<string> GetInvitionLink(string token, object customdata)
+        {
+
+            RestClient restClient = new RestClient("https://api.getsocial.im/v1/smart-invites");
+            var guid = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var strToken = System.Text.RegularExpressions.Regex.Replace(guid, "[a-zA-Z]", string.Empty).Substring(0, 12);
+
+            RestRequest request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("X-GetSocial-Access-Token", token);
+            request.AddJsonBody(new { app_id = AppId, channel = "facebook", custom_data = customdata });
+            Console.WriteLine("Before getInvitation 1 post call ");
+            try
+            {
+                var response = restClient.Execute(request, Method.POST);
+                dynamic data = JObject.Parse(response.Content);
+                Console.WriteLine("Get invite link 1 after POST call");
+                return Convert.ToString(data["url"]);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+
+        /// <summary>
+        /// GetSmartLink
+        /// </summary>
+        public async Task<string> GetToken()
+        {
+
+            RestClient restClient = new RestClient("https://api.getsocial.im/v1/authenticate/user");
+
+            RestRequest request = new RestRequest(Method.POST);
+            request.AddQueryParameter("app_id", AppId);
+            request.AddQueryParameter("identity_type", "email");
+            request.AddQueryParameter("value", "scrowd@ideabits.se");
+            request.AddQueryParameter("token", GetSocialApiKey);
+            // request.AddHeader("X-GetSocial-API-Key", GetSocialApiKey);
+            Console.WriteLine("Before getToken");
+            try
+            {
+                var response = restClient.Execute(request, Method.POST);
+                dynamic data = JObject.Parse(response.Content);
+                Console.WriteLine("GetDeepLink 1 after POST call");
+                return Convert.ToString(data["access_token"]);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            // return "test";
+
+        }
+
+        /// <summary>
+        /// GetSmartLink
+        /// </summary>
+        public async Task<string> updateTokenAndGetInvite(object customdata)
+        {
+
+            var newtoken = await this.GetToken();
+            return await this.GetInvitionLink(newtoken, customdata);
+
+        }
+
     }
 }

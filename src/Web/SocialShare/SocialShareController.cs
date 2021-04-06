@@ -43,5 +43,23 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// creates Social Shareble link
+        /// </summary>
+        /// <param name="socialInvitation">info about the Social media link creation</param>
+        [HttpPost("invitation")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateInvitation([FromBody] object customdata)
+        {
+            var result = await this.socialShareService.updateTokenAndGetInvite(customdata);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+
     }
 }

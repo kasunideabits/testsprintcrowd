@@ -87,6 +87,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public bool InfluencerAvailability { get; set; }
 
         /// <summary>
+        /// select smart link or invite.
+        /// </summary>
+        /// <value>smart link or invite.</value>
+        public bool IsSmartInvite { get; set; }
+
+        /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>Influencer Email.</value>

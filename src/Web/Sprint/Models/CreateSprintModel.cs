@@ -17,6 +17,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string Name { get; set; }
 
         /// <summary>
+        /// smart link or invite
+        /// </summary>
+        public bool IsSmartInvite { get; set; }
+        /// <summary>
         /// Influencer Availability
         /// </summary>
         public bool InfluencerAvailability { get; set; } = false;
