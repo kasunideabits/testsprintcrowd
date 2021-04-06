@@ -11,6 +11,8 @@
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SocialShare;
+    using SprintCrowd.BackEnd.Web.SocialShare;
 
     /// <summary>
     /// Sprint service
@@ -22,13 +24,16 @@
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
             this.userRepo = _userRepo;
+            this.SocialShareService = socialShareService;
         }
         private readonly IUserRepo userRepo;
+
+        private ISocialShareService SocialShareService { get; }
         private ISprintRepo SprintRepo { get; }
         private INotificationClient NotificationClient { get; }
 
@@ -43,7 +48,7 @@
         public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
 
-           // List<Sprint> allSprints = new List<Sprint>();
+            // List<Sprint> allSprints = new List<Sprint>();
 
             //allSprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
 
@@ -287,7 +292,7 @@
             TimeSpan durationForTimeBasedEvent,
             string descriptionForTimeBasedEvent)
         {
-           
+
             if (infulenceEmail != null)
             {
                 var email = infulenceEmail;
@@ -317,6 +322,15 @@
             Sprint sprint = new Sprint();
             if (draft == 0)
             {
+
+                var socialLink = await this.SocialShareService.GetSmartLink(new SocialLink()
+                {
+                    Name = name,
+                    Description = descriptionForTimeBasedEvent,
+                    ImageUrl = imageUrl,
+                });
+
+                sprint.SocialMediaLink = socialLink;
                 sprint.Name = name;
                 sprint.Distance = distance;
                 sprint.StartDateTime = startTime;
@@ -651,8 +665,8 @@
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
             {
                 influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
-                if( influencer== null )
-                influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
+                if (influencer == null)
+                    influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
             }
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer);
         }
@@ -662,7 +676,7 @@
         /// </summary>
         /// <param name="sprintId"></param>
         /// <returns></returns>
-        public async Task<List<SprintParticipant>>  GetSprintPaticipants(int sprintId, int pageNo, int limit)
+        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit)
         {
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                s.SprintId == sprintId && s.User.Name != string.Empty;
@@ -872,7 +886,7 @@
 
                 if (!participants.Any(p => p.UserId == userId))
                 {
-                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl ,sprint.PromotionCode);
+                    var resultDto = new PublicSprintWithParticipantsDto(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode);
                     foreach (var participant in participants)
                     {
                         resultDto.AddParticipant(
@@ -914,7 +928,7 @@
                         var resultDto = new PublicSprintWithParticipantsDto(
                             sprint.Id, sprint.Name, sprint.Distance,
                             sprint.NumberOfParticipants, sprint.StartDateTime,
-                            (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl,sprint.PromotionCode);
+                            (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode);
                         foreach (var participant in participants)
                         {
                             resultDto.AddParticipant(
@@ -995,7 +1009,7 @@
             imageUrlList.Add("Image_18", "http://tiles.sprintcrowd.com/0018.jpg");
             imageUrlList.Add("Image_19", "http://tiles.sprintcrowd.com/0019.jpg");
             imageUrlList.Add("Image_20", "http://tiles.sprintcrowd.com/0020.jpg");
-        
+
             return imageUrlList;
         }
 
@@ -1009,7 +1023,7 @@
             {
                 return await this.userRepo.GetAllEmailUsers();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

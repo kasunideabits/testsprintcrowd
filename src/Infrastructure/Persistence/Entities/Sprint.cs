@@ -116,5 +116,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         // </summary>
         public string DescriptionForTimeBasedEvent { get; set; }
 
+        /// <summary>
+        /// Social media shareble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
+
     }
 }

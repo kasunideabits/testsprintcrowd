@@ -74,5 +74,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// Description for a time based event
         // </summary>
         public string DescriptionForTimeBasedEvent { get; set; }
+
+        /// <summary>
+        /// Social media sharble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
     }
 }
