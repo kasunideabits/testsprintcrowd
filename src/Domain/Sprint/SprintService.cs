@@ -123,6 +123,7 @@
             int? distance,
             DateTime? startTime,
             int? numberOfParticipants,
+            bool influencerAvailability,
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
@@ -131,13 +132,6 @@
             TimeSpan durationForTimeBasedEvent,
             string descriptionForTimeBasedEvent)
         {
-            if (influencerEmail != null)
-            {
-                var email = influencerEmail;
-                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
-
-                influencerEmail = encryptedEamil;
-            }
 
             if (promotionCode != null && promotionCode != string.Empty)
             {
@@ -184,11 +178,16 @@
             {
                 sprintAavail.NumberOfParticipants = (int)numberOfParticipants;
             }
-            if (influencerEmail != String.Empty)
+
+            sprintAavail.InfluencerAvailability = influencerAvailability;
+
+            if (!string.IsNullOrEmpty(influencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, influencerEmail))
             {
+                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(influencerEmail);
+                sprintAavail.InfluencerEmail = encryptedEamil;
                 sprintAavail.InfluencerAvailability = true;
-                sprintAavail.InfluencerEmail = influencerEmail;
             }
+
             if (draftEvent != null)
             {
                 sprintAavail.DraftEvent = (int)draftEvent;
@@ -300,6 +299,9 @@
                 var email = infulenceEmail;
                 var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
 
+            if (!string.IsNullOrEmpty(infulenceEmail))
+            {
+                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(infulenceEmail);
                 infulenceEmail = encryptedEamil;
             }
             if (promotionCode != null && promotionCode != string.Empty)
