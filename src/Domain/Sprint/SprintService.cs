@@ -298,6 +298,7 @@
             {
                 var email = infulenceEmail;
                 var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+            }
 
             if (!string.IsNullOrEmpty(infulenceEmail))
             {
@@ -371,7 +372,7 @@
 
             if (draft == 0)
             {
-                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString() , promotionCode = sprint.PromotionCode};
+                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode };
 
                 var socialLink = isSmartInvite ?
                 await this.SocialShareService.updateTokenAndGetInvite(customData) :
@@ -380,7 +381,7 @@
                     Name = name,
                     Description = descriptionForTimeBasedEvent,
                     ImageUrl = imageUrl,
-                    CustomData= customData
+                    CustomData = customData
                 });
 
                 sprint.SocialMediaLink = socialLink;
