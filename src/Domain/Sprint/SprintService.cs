@@ -369,14 +369,18 @@
 
             if (draft == 0)
             {
+                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString() , promotionCode = sprint.PromotionCode};
+
                 var socialLink = isSmartInvite ?
-                await this.SocialShareService.updateTokenAndGetInvite(new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString() }) :
+                await this.SocialShareService.updateTokenAndGetInvite(customData) :
                 await this.SocialShareService.GetSmartLink(new SocialLink()
                 {
                     Name = name,
                     Description = descriptionForTimeBasedEvent,
                     ImageUrl = imageUrl,
+                    CustomData= customData
                 });
+
                 sprint.SocialMediaLink = socialLink;
                 await this.SprintRepo.UpdateSprint(sprint);
             }

@@ -19,5 +19,10 @@ namespace SprintCrowd.BackEnd.Web.SocialShare
         /// Social media imag Url
         /// </summary>
         public string ImageUrl { get; set; }
+
+        /// <summary>
+        /// custom data to ridirect correct sprint in the mobile
+        /// </summary>
+        public object CustomData { get; set; }
     }
 }

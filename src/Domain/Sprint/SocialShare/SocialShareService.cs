@@ -28,7 +28,17 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
             RestRequest request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
             request.AddHeader("X-GetSocial-API-Key", GetSocialApiKey);
-            request.AddJsonBody(new { app_id = AppId, name = socialLink.Name, token = strToken, channel = "email", medium = "mail", campaign_name = "testCampaign", image = socialLink.ImageUrl });
+            request.AddJsonBody(new
+            {
+                app_id = AppId,
+                name = socialLink.Name,
+                token = strToken,
+                channel = "email",
+                medium = "mail",
+                campaign_name = "testCampaign",
+                image = socialLink.ImageUrl,
+                custom_data = socialLink.CustomData
+            });
 
             Console.WriteLine("Before GetDeepLink 1 post call ");
             try
