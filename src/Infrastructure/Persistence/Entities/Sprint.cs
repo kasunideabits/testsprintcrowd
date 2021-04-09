@@ -87,6 +87,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public bool InfluencerAvailability { get; set; }
 
         /// <summary>
+        /// select smart link or invite.
+        /// </summary>
+        /// <value>smart link or invite.</value>
+        public bool IsSmartInvite { get; set; }
+
+        /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>Influencer Email.</value>
@@ -115,6 +121,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Description for a time based event
         // </summary>
         public string DescriptionForTimeBasedEvent { get; set; }
+
+        /// <summary>
+        /// Social media shareble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
 
     }
 }
