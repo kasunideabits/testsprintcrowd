@@ -171,6 +171,7 @@
                 sprint.Distance,
                 sprint.StartTime,
                 sprint.NumberOfParticipants,
+                sprint.InfluencerAvailability,
                 sprint.InfluencerEmail,
                 sprint.DraftEvent,
                 sprint.ImageUrl,

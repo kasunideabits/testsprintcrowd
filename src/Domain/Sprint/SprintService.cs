@@ -123,6 +123,7 @@
             int? distance,
             DateTime? startTime,
             int? numberOfParticipants,
+            bool influencerAvailability,
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
@@ -131,13 +132,6 @@
             TimeSpan durationForTimeBasedEvent,
             string descriptionForTimeBasedEvent)
         {
-            if (influencerEmail != null)
-            {
-                var email = influencerEmail;
-                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
-
-                influencerEmail = encryptedEamil;
-            }
 
             if (promotionCode != null && promotionCode != string.Empty)
             {
@@ -184,11 +178,16 @@
             {
                 sprintAavail.NumberOfParticipants = (int)numberOfParticipants;
             }
-            if (influencerEmail != String.Empty)
+
+            sprintAavail.InfluencerAvailability = influencerAvailability;
+
+            if (!string.IsNullOrEmpty(influencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, influencerEmail))
             {
+                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(influencerEmail);
+                sprintAavail.InfluencerEmail = encryptedEamil;
                 sprintAavail.InfluencerAvailability = true;
-                sprintAavail.InfluencerEmail = influencerEmail;
             }
+
             if (draftEvent != null)
             {
                 sprintAavail.DraftEvent = (int)draftEvent;
@@ -299,7 +298,11 @@
             {
                 var email = infulenceEmail;
                 var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+            }
 
+            if (!string.IsNullOrEmpty(infulenceEmail))
+            {
+                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(infulenceEmail);
                 infulenceEmail = encryptedEamil;
             }
             if (promotionCode != null && promotionCode != string.Empty)
@@ -369,7 +372,7 @@
 
             if (draft == 0)
             {
-                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString() , promotionCode = sprint.PromotionCode};
+                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode };
 
                 var socialLink = isSmartInvite ?
                 await this.SocialShareService.updateTokenAndGetInvite(customData) :
@@ -378,7 +381,7 @@
                     Name = name,
                     Description = descriptionForTimeBasedEvent,
                     ImageUrl = imageUrl,
-                    CustomData= customData
+                    CustomData = customData
                 });
 
                 sprint.SocialMediaLink = socialLink;
