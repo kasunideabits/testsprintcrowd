@@ -325,6 +325,7 @@
               sprint.Distance,
               sprint.StartTime,
               sprint.NumberOfParticipants,
+              sprint.InfluencerAvailability,
               sprint.InfluencerEmail,
               sprint.DraftEvent,
               sprint.ImageUrl,
@@ -332,6 +333,8 @@
               sprint.IsTimeBased,
               durationForTimeBasedEvent,
               sprint.DescriptionForTimeBasedEvent);
+
+
 
             ResponseObject response = new ResponseObject()
             {
