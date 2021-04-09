@@ -124,8 +124,8 @@
                 email = sprint.InfluencerEmail;
                 encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
             }
-             userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
-            if(userId == 0)
+            userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
+            if (userId == 0)
             {
                 userId = await this.SprintService.GetInfluencerIdByEmail(email);
             }
@@ -138,6 +138,7 @@
                         user,
                         sprint.Name,
                         sprint.Distance,
+                        sprint.IsSmartInvite,
                         sprint.StartTime,
                         sprint.SprintType,
                         sprint.NumberOfParticipants,
@@ -156,7 +157,7 @@
                         Data = result,
                     };
 
-                    if(response.StatusCode == (int)ApplicationResponseCode.Success)
+                    if (response.StatusCode == (int)ApplicationResponseCode.Success)
                     {
                         var joinResult = await this.SprintParticipantService.JoinSprint(
                                 result.SprintInfo.Id,
@@ -186,7 +187,7 @@
                         StatusCode = (int)ApplicationResponseCode.Success,
                         Data = null,
                     };
-                    
+
                     return this.Ok(response);
                 }
             }
@@ -199,7 +200,7 @@
                 };
                 return this.Ok(response);
             }
-          
+
         }
 
         /// <summary>
@@ -247,6 +248,7 @@
                     user,
                     sprint.Name,
                     sprint.Distance,
+                    sprint.IsSmartInvite,
                     sprint.StartTime,
                     sprint.SprintType,
                     sprint.NumberOfParticipants,
@@ -315,7 +317,7 @@
         {
             User user = await this.User.GetUser(this.UserService);
             TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
-           
+
             var result = await this.SprintService.UpdateSprint(
               user.Id,
               sprintId,

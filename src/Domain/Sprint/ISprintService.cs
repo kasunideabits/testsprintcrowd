@@ -49,6 +49,7 @@
         /// <param name="user">user who creating the sprint</param>
         /// <param name="name"> name for sprint</param>
         /// <param name="distance"> distance in meters for sprint</param>
+        /// <param name="isSmartInvite"> select smart link or smart invite</param>
         /// <param name="startTime"> start time for sprint</param>
         /// <param name="type"><see cref="SprintType">sprint type, public or private</see></param>
         /// <param name="numberOfParticipants">number of pariticipant for sprint</param>
@@ -56,7 +57,7 @@
         /// <param name="draft">sprint draft or publish</param>
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
-        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl,string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
+        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, bool isSmartInvite, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
 
         /// <summary>
         /// Create multiple sprints based on repeat option, TODO : remove user object passing
