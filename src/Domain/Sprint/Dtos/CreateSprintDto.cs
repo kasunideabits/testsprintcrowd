@@ -5,7 +5,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Common;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     public class CreateSprintDto
     {
         public CreateSprintDto(
@@ -26,9 +26,22 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             ParticipantStage stage
         )
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, string.Empty ,string.Empty);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, string.Empty, string.Empty);
             var participant = new List<ParticipantInfoDto>();
             participant.Add(new ParticipantInfoDto(userId, userName, profilePicture, city, country, countryCode, colorCode, creator, stage));
+            this.ParticipantInfo = participant;
+        }
+
+        public CreateSprintDto(
+            Sprint sprint,
+            User user,
+            bool creator,
+            ParticipantStage stage
+        )
+        {
+            this.SprintInfo = new SprintInfoDto(sprint);
+            var participant = new List<ParticipantInfoDto>();
+            participant.Add(new ParticipantInfoDto(user, creator, stage));
             this.ParticipantInfo = participant;
         }
 

@@ -17,6 +17,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string Name { get; set; }
 
         /// <summary>
+        /// smart link or invite
+        /// </summary>
+        public bool IsSmartInvite { get; set; }
+        /// <summary>
         /// Influencer Availability
         /// </summary>
         public bool InfluencerAvailability { get; set; } = false;
@@ -74,5 +78,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// Description for a time based event
         // </summary>
         public string DescriptionForTimeBasedEvent { get; set; }
+
+        /// <summary>
+        /// Social media sharble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
     }
 }

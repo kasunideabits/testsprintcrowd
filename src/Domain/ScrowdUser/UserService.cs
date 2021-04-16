@@ -90,10 +90,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
-           // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
-           
+
             return user;
         }
 
@@ -307,5 +307,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.userRepo.SaveChanges();
         }
 
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserExistInSC(string email)
+        {
+            bool success = await this.userRepo.IsUserExistInSC(email);
+            return success;
+        }
     }
 }

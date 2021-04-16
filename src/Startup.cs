@@ -30,7 +30,7 @@ namespace SprintCrowd.BackEnd
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
-
+    using SprintCrowd.BackEnd.Domain.SocialShare;
     /// <summary>
     /// start class for the dotnet core application.
     /// </summary>
@@ -186,6 +186,7 @@ namespace SprintCrowd.BackEnd
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISprintRepo, SprintRepo>();
             services.AddScoped<ISprintService, SprintService>();
+            services.AddScoped<ISocialShareService, SocialShareService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
@@ -201,7 +202,6 @@ namespace SprintCrowd.BackEnd
             services.AddTransient<IDashboardRepo, DashboardRepo>();
             services.AddTransient<IAchievementService, AchievementService>();
             services.AddTransient<IAchievementRepo, AchievementRepo>();
-
             this.AddAuthorizationDIModules(services);
         }
 

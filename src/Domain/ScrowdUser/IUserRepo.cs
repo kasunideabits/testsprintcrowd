@@ -150,5 +150,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Update user settings for notification reminder
         /// </summary>
         void UpdateUserSettings(UserNotificationReminder notificationReminder);
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> IsUserExistInSC(string email);
+
     }
 }

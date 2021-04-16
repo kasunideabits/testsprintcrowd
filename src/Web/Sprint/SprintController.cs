@@ -18,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-     [Authorize]
+    [Authorize]
     public class SprintController : ControllerBase
     {
         /// <summary>
@@ -53,6 +53,7 @@
                 user,
                 sprint.Name,
                 sprint.Distance,
+                sprint.IsSmartInvite,
                 sprint.StartTime,
                 sprint.SprintType,
                 sprint.NumberOfParticipants,
@@ -90,7 +91,7 @@
         }
 
         /// <summary>
-        /// Get all Paticipants in sprint 
+        /// Get all Paticipants in sprint
         /// </summary>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}")]
@@ -170,6 +171,7 @@
                 sprint.Distance,
                 sprint.StartTime,
                 sprint.NumberOfParticipants,
+                sprint.InfluencerAvailability,
                 sprint.InfluencerEmail,
                 sprint.DraftEvent,
                 sprint.ImageUrl,
@@ -248,6 +250,6 @@
             return this.Ok(result);
         }
 
-        
+
     }
 }
