@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using System;
 
     /// <summary>
@@ -126,6 +127,18 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Social media shareble link
         /// </summary>
         public string SocialMediaLink { get; set; }
+
+        /// <summary>
+        /// Video link type
+        /// </summary>
+        [Column(TypeName = "varchar(20)")]
+        public VideoType VideoType { get; set; }
+
+
+        /// <summary>
+        /// Video Link
+        /// </summary>
+        public string VideoLink { get; set; }
 
     }
 }
