@@ -31,8 +31,6 @@
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.BackEnd.Domain.SocialShare;
-    using SprintCrowd.BackEnd.Domain.Sprint.Video;
-
     /// <summary>
     /// start class for the dotnet core application.
     /// </summary>
@@ -183,7 +181,6 @@
             services.AddScoped<ISprintRepo, SprintRepo>();
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<ISocialShareService, SocialShareService>();
-            services.AddScoped<IVimeoUploadService, VimeoUploadService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
