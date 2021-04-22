@@ -5,6 +5,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
@@ -57,7 +58,8 @@
         /// <param name="draft">sprint draft or publish</param>
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
-        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, bool isSmartInvite, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
+        Task<CreateSprintDto> CreateNewSprint(User user, string name, int distance, bool isSmartInvite, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string imageUrl, VideoType videoType,
+            String videoLink, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
 
         /// <summary>
         /// Create multiple sprints based on repeat option, TODO : remove user object passing
@@ -86,7 +88,8 @@
         /// <summary>
         /// update sprint
         /// </summary>
-        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, bool influencerAvailability, string influencerEmail, int? draftEvent, string imageUrl, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
+        Task<UpdateSprintDto> UpdateSprint(int userId, int sprintId, string name, int? distance, DateTime? startTime, int? numberOfParticipants, bool influencerAvailability, string influencerEmail, int? draftEvent, string imageUrl, VideoType videoType,
+            String videoLink, string promotionCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
 
         /// <summary>
         /// Validate Sprint Edit By SprintId
