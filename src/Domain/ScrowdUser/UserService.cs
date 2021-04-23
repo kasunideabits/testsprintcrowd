@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -80,6 +81,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// user search
+        /// </summary>
+        /// <param name="searchParams">registeration data.</param>
+        public async Task<List<UserSelectDto>> UserSearch(string searchParams)
+        {
+            List<User> users = await this.userRepo.GetUsersBySearch(searchParams);
+            return users.ConvertAll(user => new UserSelectDto()
+            {
+                Name = user.Name,
+                Image = user.ProfilePicture,
+                Email = user.Email,
+            });
+
+        }
+
+        /// <summary>
         /// register a email user
         /// if multiple user types are needed
         /// then heres the place to make the change.
@@ -90,10 +107,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
-           // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
-           
+
             return user;
         }
 
