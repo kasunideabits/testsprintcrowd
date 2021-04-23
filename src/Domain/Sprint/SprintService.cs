@@ -7,6 +7,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
+    using SprintCrowd.BackEnd.Utils;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
@@ -344,7 +345,7 @@
             sprint.InfluencerEmail = infulenceEmail;
             sprint.DraftEvent = draft;
             sprint.ImageUrl = imageUrl;
-            sprint.PromotionCode = promotionCode;
+            sprint.PromotionCode = promotionCode == "PROMO" ? DateUtils.RandomString(2) + DateUtils.getNowShortTimeStamp() : null;
             sprint.IsSmartInvite = isSmartInvite;
             sprint.IsTimeBased = isTimeBased;
             sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
