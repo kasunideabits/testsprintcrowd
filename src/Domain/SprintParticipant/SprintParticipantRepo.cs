@@ -69,11 +69,19 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
+            //get the participant count
+            var participantCount = await this.Context.SprintParticipant.Select(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
+            int numberOfsets = 0;
+            int offSet = 3;//this is used to calculate messages per ably channel from Sprint Manager side.
+            if (participantCount != null)
+                numberOfsets = participantCount.Count / offSet;
+
             SprintParticipant participant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
                 Stage = ParticipantStage.JOINED,
+                UserGroup = sprintId+"G"+numberOfsets,
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
             this.Context.SaveChanges();

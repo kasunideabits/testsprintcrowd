@@ -891,6 +891,7 @@
                         p.User.ColorCode,
                         p.User.Id == sprint.CreatedBy.Id,
                         p.Stage,
+                        p.UserGroup,
                         isInfulencer
                     );
                 });

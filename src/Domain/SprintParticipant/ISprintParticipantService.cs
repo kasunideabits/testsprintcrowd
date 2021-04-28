@@ -113,7 +113,7 @@
         /// </summary>
         /// <param name="userId">user id to get record</param>
         /// <returns><see cref="SprintInfo">class </see></returns>
-        Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
+        Task<SprintInfoUserGroupDto> GetSprintWhichMarkedAttendance(int userId);
 
         /// <summary>
         /// Get statistics for given user id
