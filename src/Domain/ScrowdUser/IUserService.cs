@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
@@ -32,6 +33,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         Task<User> RegisterUser(RegisterModel registerData);
 
         /// <summary>
+        /// user search
+        /// </summary>
+        /// <param name="searchParams">registeration data.</param>
+        Task<List<UserSelectDto>> UserSearch(string searchParams);
+        /// <summary>
         /// Register Email User
         /// </summary>
         /// <param name="registerData"></param>
@@ -42,7 +48,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="registerData"></param>
         /// <returns></returns>
-        /// 
+        ///
         Task<bool> EmailConfirmationByMail(EmailUser registerData);
         /// <summary>
         /// Generate Email User Token For Password Reset
