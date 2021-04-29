@@ -105,12 +105,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public string ColorCode { get; set; }
 
         /// <summary>
-        /// Description for user <see cref="Description"> Description </see>
-        /// </summary>
-        /// <value></value>
-        public string Description { get; set; }
-
-        /// <summary>
         /// Gets or set reference for participates
         /// </summary>
         public List<SprintParticipant> Participates { get; set; }
