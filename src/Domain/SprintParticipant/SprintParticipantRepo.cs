@@ -62,6 +62,31 @@
         }
 
         /// <summary>
+        /// Get User Group Name
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private async Task<string> GetUserGroupName(int sprintId, int userId)
+        {
+            string userGroupName = string.Empty;
+            int numberOfsets = 0;
+            try
+            {
+                //get the participant count
+                var participantCount = await this.Context.SprintParticipant.Select(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
+                int offSet = 5;//this is used to calculate messages per ably channel from Sprint Manager side.
+                if (participantCount != null)
+                numberOfsets = participantCount.Count / offSet;
+                    userGroupName = sprintId + "G" + numberOfsets;
+               
+            } catch(Exception ex)
+            { throw ex; }
+
+            return userGroupName;
+        }
+
+        /// <summary>
         /// User join for an event
         /// </summary>
         /// <param name="sprintId">sprint id for join</param>
@@ -69,19 +94,13 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
-            //get the participant count
-            var participantCount = await this.Context.SprintParticipant.Select(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
-            int numberOfsets = 0;
-            int offSet = 3;//this is used to calculate messages per ably channel from Sprint Manager side.
-            if (participantCount != null)
-                numberOfsets = participantCount.Count / offSet;
-
+           
             SprintParticipant participant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
                 Stage = ParticipantStage.JOINED,
-                UserGroup = sprintId+"G"+numberOfsets,
+                UserGroup = await this.GetUserGroupName(sprintId,userId),
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
             this.Context.SaveChanges();
@@ -270,6 +289,7 @@
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
+                participant.UserGroup = await this.GetUserGroupName(sprintId, userId);
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
             }
