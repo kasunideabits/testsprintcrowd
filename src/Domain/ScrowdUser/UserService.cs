@@ -1,6 +1,8 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Domain.Achievement;
+    using SprintCrowd.BackEnd.Domain.Friend;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -22,13 +24,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="userRepo">instance of userRepo, dependency injected.</param>
 
-        public UserService(IUserRepo userRepo, ISprintParticipantService _sprintParticipantService)
+        public UserService(IUserRepo userRepo, ISprintParticipantService _sprintParticipantService, IFriendService frinedService, ISprintParticipantService sprintParticipantService, IAchievementService serviceAchievement)
         {
             this.userRepo = userRepo;
             this.sprintParticipantService = _sprintParticipantService;
+            this.FriendService = frinedService;
+            this.SprintParticipantService = sprintParticipantService;
+            this.AchievementService = serviceAchievement;
         }
 
+        private IFriendService FriendService { get; }
+
         private ISprintParticipantService sprintParticipantService { get; }
+
+        private ISprintParticipantService SprintParticipantService { get; }
+
+        private IAchievementService AchievementService { get; }
 
         /// <summary>
         /// Gets user info
@@ -40,13 +51,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user.Id, user.Name, user.ProfilePicture, user.Code);
+                return new UserDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.CreatedDate, user.Description, user.CountryCode);
             }
             else
             {
                 throw new Application.ApplicationException("User Not Found");
             }
         }
+
 
         /// <summary>
         /// Get facebook User.
@@ -90,10 +102,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
-           // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
-           
+
             return user;
         }
 
@@ -316,6 +328,36 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             bool success = await this.userRepo.IsUserExistInSC(email);
             return success;
+        }
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfile(int userId)
+        {
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //Get user sprint statstics
+            var userStatistic = this.SprintParticipantService.GetStatistic(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                userStatistic,
+                userAchievement);
+
+            return userProfileDetail;
         }
     }
 }
