@@ -413,9 +413,6 @@ namespace SprintCrowdBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
 
-                    b.Property<string>("Description")
-                        .HasColumnName("description");
-
                     b.Property<string>("Email")
                         .HasColumnName("email");
 

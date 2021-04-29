@@ -134,12 +134,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         Task<bool> IsUserExistInSC(string email);
 
-        /// <summary>
-        /// View User Profile
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<UserProfileDto> ViewUserProfile(int userId);
+
 
     }
 }
