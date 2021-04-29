@@ -485,7 +485,8 @@
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
-                    markedAttendaceDetails.UserGroup);
+                    markedAttendaceDetails.UserGroup,
+                    markedAttendaceDetails.IsIinfluencerEventParticipant);
             }
             else
             {
