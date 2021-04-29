@@ -2,6 +2,7 @@ namespace SprintCrowd.Web.ScrowdUser
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -78,6 +79,19 @@ namespace SprintCrowd.Web.ScrowdUser
             var authorizedUser = await this.User.GetUser(this.UserService);
             var result = await this.UserService.GetUserPreference(authorizedUser.Id);
             return this.Ok(new SuccessResponse<UserPreferenceDto>(result));
+        }
+
+        /// <summary>
+        /// Get uasers by search
+        /// </summary>
+        /// <returns>user peference</returns>
+        [HttpGet("users")]
+        [ProducesResponseType(typeof(SuccessResponse<List<UserSelectDto>>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+        public async Task<IActionResult> UsersSearch([FromQuery(Name = "search")] string searchParams)
+        {
+            var users = await this.UserService.UserSearch(searchParams);
+            return this.Ok(new SuccessResponse<List<UserSelectDto>>(users));
         }
 
         /// <summary>

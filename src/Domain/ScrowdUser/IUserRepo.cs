@@ -35,6 +35,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="registerData">registration data.</param>
         Task<User> RegisterUser(RegisterModel registerData);
+
+        /// <summary>
+        /// search for users.
+        /// </summary>
+        /// <param name="searchParam">Search param.</param>
+        Task<List<User>> GetUsersBySearch(string searchParam);
+
         /// <summary>
         /// Register Email User
         /// </summary>
