@@ -7,9 +7,7 @@
     using System;
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
-    using SprintCrowd.BackEnd.Utils;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
@@ -129,8 +127,6 @@
             string influencerEmail,
             int? draftEvent,
             string imageUrl,
-            VideoType videoType,
-            String videoLink,
             string promotionCode,
             bool isTimeBased,
             TimeSpan durationForTimeBasedEvent,
@@ -206,8 +202,6 @@
                 }
             }
             sprintAavail.ImageUrl = imageUrl;
-            sprintAavail.VideoLink = videoLink;
-            sprintAavail.VideoType = videoType;
             sprintAavail.PromotionCode = promotionCode;
             sprintAavail.IsTimeBased = isTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
@@ -294,8 +288,6 @@
             int draft,
             bool influencerAvailability,
             string imageUrl,
-            VideoType videoType,
-            String videoLink,
             string promotionCode,
             bool isTimeBased,
             TimeSpan durationForTimeBasedEvent,
@@ -345,13 +337,11 @@
             sprint.InfluencerEmail = infulenceEmail;
             sprint.DraftEvent = draft;
             sprint.ImageUrl = imageUrl;
-            sprint.PromotionCode = promotionCode == "PROMO" ? DateUtils.RandomString(2) + DateUtils.getNowShortTimeStamp() : null;
+            sprint.PromotionCode = promotionCode;
             sprint.IsSmartInvite = isSmartInvite;
             sprint.IsTimeBased = isTimeBased;
             sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
-            sprint.VideoLink = videoLink;
-            sprint.VideoType = videoType;
 
             if (draft == 0)
             {

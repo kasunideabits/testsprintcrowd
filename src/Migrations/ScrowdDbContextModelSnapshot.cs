@@ -278,14 +278,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<int>("Type")
                         .HasColumnName("type");
 
-                    b.Property<string>("VideoLink")
-                        .HasColumnName("video_link");
-
-                    b.Property<string>("VideoType")
-                        .IsRequired()
-                        .HasColumnName("video_type")
-                        .HasColumnType("varchar(20)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
@@ -412,9 +404,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
-
-                    b.Property<string>("Description")
-                        .HasColumnName("description");
 
                     b.Property<string>("Email")
                         .HasColumnName("email");

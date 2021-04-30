@@ -1,7 +1,6 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
-    using System.Collections.Generic;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
     using RestSharp;
@@ -69,18 +68,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<User> GetUserById(int userId)
         {
             return await this.dbContext.User.FirstOrDefaultAsync(u => u.Id.Equals(userId));
-        }
-
-        /// <summary>
-        /// search user by string
-        /// </summary>
-        /// <param name="searchParam">part of a name or email</param>
-        /// <returns>user</returns>
-        public async Task<List<User>> GetUsersBySearch(string searchParam)
-        {
-            return await this.dbContext.User.Where(u =>
-                 u.Name.ToUpper().Contains(searchParam.ToUpper()) || u.Email.ToUpper().Contains(searchParam.ToUpper())
-            ).Take(20).ToListAsync();
         }
 
         /// <summary>
