@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
@@ -31,6 +32,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="registerData">register data of the user you want to register.</param>
         Task<User> RegisterUser(RegisterModel registerData);
 
+        /// <summary>
+        /// user search
+        /// </summary>
+        /// <param name="searchParams">registeration data.</param>
+        Task<List<UserSelectDto>> UserSearch(string searchParams);
         /// <summary>
         /// Register Email User
         /// </summary>
@@ -128,7 +134,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         Task<bool> IsUserExistInSC(string email);
 
-
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<UserProfileDto> ViewUserProfile(int userId);
 
     }
 }
