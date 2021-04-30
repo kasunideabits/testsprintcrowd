@@ -43,7 +43,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
         {
             // var afterSevenDays = DateTime.UtcNow.AddDays(7);
             Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
-                s.StartDateTime > DateTime.UtcNow &&
+                s.StartDateTime > DateTime.UtcNow.AddMinutes(15) &&
                 s.Status != (int)SprintStatus.ARCHIVED && s.Status != (int)SprintStatus.NOTPUBLISHEDYET; //added draft sprint exlusion here
             // Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
             //     s.StartDateTime > DateTime.UtcNow && s.StartDateTime < afterSevenDays &&
