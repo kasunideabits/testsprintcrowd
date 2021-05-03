@@ -11,10 +11,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
-    using System.Collections.Generic;
+    using SprintCrowd.BackEnd.Utils;
     using System.Linq;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using System.Text.RegularExpressions;
 
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -382,7 +381,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                         Name = user.Name,
                         Country = user.Country,
                         CountryCode = user.CountryCode,
-                        Email = this.IsBase64String(user.Email)
+                        Email = this.getDecriptedEmail(user.Email)
                     };
                     users.Add(rptItem);
                 }
@@ -394,11 +393,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             }
         }
 
-        public string IsBase64String(string base64)
+        public string getDecriptedEmail(string base64)
         {
             string email = string.Empty;
             base64 = base64.Trim();
-            if ((base64.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(base64, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            if (StringUtils.IsBase64String(base64))
                 email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
             else
                 email = base64;
