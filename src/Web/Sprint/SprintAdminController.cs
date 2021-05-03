@@ -14,9 +14,8 @@
     using SprintCrowd.BackEnd.Domain.Device;
     using OfficeOpenXml;
     using System.IO;
-    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
 
     /// <summary>
     /// event controller
@@ -31,13 +30,15 @@
         /// </summary>
         /// <param name="sprintService">sprint service</param>
         /// <param name="userService">user service</param>
-        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService, ISprintParticipantService sprintParticipantService)
+        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService, ISprintParticipantService sprintParticipantService,
+        IAblyConnectionFactory ablyConnectionFactory)
         {
             this.SprintService = sprintService;
             this.UserService = userService;
             this.DashboardService = dashboardService;
             this.DeviceService = deviceService;
             this.SprintParticipantService = sprintParticipantService;
+            this.AblyConnectionFactory = ablyConnectionFactory;
         }
         private ISprintParticipantService SprintParticipantService { get; }
         private ISprintService SprintService { get; }
@@ -45,6 +46,8 @@
         private IUserService UserService { get; }
 
         private IDeviceService DeviceService { get; }
+
+        private IAblyConnectionFactory AblyConnectionFactory { get; }
 
         private IDashboardService DashboardService { get; }
 
@@ -94,6 +97,7 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetCreatedEventsCount(DateTime from, DateTime? to)
         {
+            string v = this.AblyConnectionFactory.getSubcribeTokenRequest();
             CreatedSprintCount createdSprints = await this.SprintService.GetCreatedEventsCount(from, to);
             ResponseObject response = new ResponseObject()
             {

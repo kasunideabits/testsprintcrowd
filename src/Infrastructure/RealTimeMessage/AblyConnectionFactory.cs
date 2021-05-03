@@ -2,7 +2,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
 {
     using IO.Ably;
     using Microsoft.Extensions.Configuration;
-
     /// <summary>
     /// Implements INotifyFactory interface
     /// </summary>
@@ -31,6 +30,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
         public IChannel CreateChannel(string name)
         {
             return new AblyChannel(this.Connection.Channels.Get(name));
+        }
+
+        public string getSubcribeTokenRequest()
+        {
+            TokenParams tokenParams = new TokenParams();
+            tokenParams.Capability = new Capability("{'*':['subscribe']}");
+            return this.Connection.Auth.CreateTokenRequest(tokenParams, null);
         }
 
         /// <summary>

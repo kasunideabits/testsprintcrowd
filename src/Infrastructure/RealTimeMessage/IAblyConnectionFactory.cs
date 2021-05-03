@@ -11,5 +11,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
         /// <param name="name">channel name</param>
         /// <returns></returns>
         IChannel CreateChannel(string name);
+
+        /// <summary>
+        /// Create New request token
+        /// </summary>
+        string getSubcribeTokenRequest();
     }
 }
