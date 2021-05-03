@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using System;
     using SprintCrowd.BackEnd.Application;
-    using SprintCrowd.BackEnd.Domain.Sprint.Dlos;
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint.Video;
@@ -302,17 +301,14 @@
             string descriptionForTimeBasedEvent)
         {
 
-            if (infulenceEmail != null)
-            {
-                var email = infulenceEmail;
-                var encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
-            }
-
             if (!string.IsNullOrEmpty(infulenceEmail))
             {
-                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(infulenceEmail);
-                infulenceEmail = encryptedEamil;
+                if (!StringUtils.IsBase64String(infulenceEmail))
+                {
+                    infulenceEmail = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(infulenceEmail);
+                }
             }
+
             if (promotionCode != null && promotionCode != string.Empty)
             {
                 Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
