@@ -41,9 +41,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public Expression<Func<Sprint, bool>> BuildOpenEvents(int offset)
         {
+            int intervel = 15;
             // var afterSevenDays = DateTime.UtcNow.AddDays(7);
             Expression<Func<Sprint, bool>> query1 = s => s.Type == (int)SprintType.PublicSprint &&
-                s.StartDateTime > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED && s.Status != (int)SprintStatus.NOTPUBLISHEDYET; //added draft sprint exlusion here
+                s.StartDateTime.AddMinutes(intervel) > DateTime.UtcNow && s.Status != (int)SprintStatus.ARCHIVED && s.Status != (int)SprintStatus.NOTPUBLISHEDYET; //added draft sprint exlusion here
 
             Expression<Func<Sprint, bool>> query2 = this.DayQyery(offset);
             Expression<Func<Sprint, bool>> query3 = this.TimeQuery(offset);
