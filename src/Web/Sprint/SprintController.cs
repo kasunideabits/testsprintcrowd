@@ -179,7 +179,7 @@
                 sprint.ImageUrl,
                 sprint.VideoType,
                 sprint.VideoLink,
-                sprint.promotionCode,
+                sprint.PromotionCode,
                 sprint.IsTimeBased,
                 durationForTimeBasedEvent,
                 sprint.DescriptionForTimeBasedEvent);
