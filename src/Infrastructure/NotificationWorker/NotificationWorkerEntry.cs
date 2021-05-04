@@ -1,11 +1,11 @@
 namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
 {
+    using Hangfire.Dashboard;
     using Hangfire.PostgreSql;
     using Hangfire;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Hangfire.Dashboard;
     /// <summary>
     /// Hangfire configuration class
     /// </summary>
@@ -33,9 +33,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new MyAuthorizationFilter() }
+                Authorization = new [] { new MyAuthorizationFilter() }
             });
-
 
         }
     }

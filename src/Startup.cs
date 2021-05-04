@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd
+﻿namespace SprintCrowd.BackEnd
 {
     using System.Buffers;
     using System.IO;
@@ -31,6 +31,8 @@ namespace SprintCrowd.BackEnd
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.BackEnd.Domain.SocialShare;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
+
     /// <summary>
     /// start class for the dotnet core application.
     /// </summary>
@@ -56,11 +58,10 @@ namespace SprintCrowd.BackEnd
         /// <param name="services">generated automatically</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-
+            // services.AddCors();
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-
 
             var firebaseConfigSection = this.Configuration.GetSection("FirebaseConfig");
             services.Configure<FirebaseConfig>(firebaseConfigSection);
@@ -82,10 +83,7 @@ namespace SprintCrowd.BackEnd
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     }, ArrayPool<char>.Shared));
             });
-
-            // To DO
             this.AddSwagger(services);
-
             this.RegisterDependencyInjection(services);
 
             services.AddCors(options =>
@@ -98,14 +96,13 @@ namespace SprintCrowd.BackEnd
 
             });
 
-
             NotificationWorkerEntry.Initialize(this.Configuration, services);
 
-            
+            //  SetupDefaultPrivateSprintConfiguration();
         }
 
         /// <summary>
-        /// Adds jwt token authentication with idenety server
+        /// Adds jwt token authentication
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSettings"></param>
@@ -145,15 +142,14 @@ namespace SprintCrowd.BackEnd
         /// <param name="app">generated automatically</param>
         public virtual void Configure(IApplicationBuilder app)
         {
-            //NotificationWorkerEntry.EnableWorkerDashboard(app);
+            NotificationWorkerEntry.EnableWorkerDashboard(app);
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); //check https redirection issue not sure
             // global cors policy
-
             app.UseCors("CorsPolicy");
 
-            app.UseAuthentication(); // seems  duplicated
+            app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SprintCrowd API");
@@ -187,6 +183,7 @@ namespace SprintCrowd.BackEnd
             services.AddScoped<ISprintRepo, SprintRepo>();
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<ISocialShareService, SocialShareService>();
+            services.AddScoped<IVimeoUploadService, VimeoUploadService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
@@ -215,13 +212,5 @@ namespace SprintCrowd.BackEnd
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
-        // private void SetupDefaultPrivateSprintConfiguration()
-        // {
-
-        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.PrivateSprintCount = Configuration["PrivateSprint:PrivateSprintCount"] != null ? Configuration["PrivateSprint:PrivateSprintCount"].ToString() : "100";
-        //     Common.PrivateSprint.PrivateSprintDefaultConfigration.LapsTime = Configuration["PrivateSprint:LapsTime"] != null ? Configuration["PrivateSprint:LapsTime"].ToString() : "15";
-
-
-        // }
     }
 }

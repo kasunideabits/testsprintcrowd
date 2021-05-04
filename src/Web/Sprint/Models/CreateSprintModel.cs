@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Web.Event
 {
     using System;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     /// <summary>
     /// model for holding event data
     /// </summary>
@@ -83,5 +84,8 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// Social media sharble link
         /// </summary>
         public string SocialMediaLink { get; set; }
+
+        public VideoType VideoType { get; set; }
+        public string VideoLink { get; set; }
     }
 }

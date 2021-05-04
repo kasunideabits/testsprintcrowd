@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -77,6 +78,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             await this.userRepo.AddDefaultUserSettings(user.Id);
             this.userRepo.SaveChanges();
             return user;
+        }
+
+        /// <summary>
+        /// user search
+        /// </summary>
+        /// <param name="searchParams">registeration data.</param>
+        public async Task<List<UserSelectDto>> UserSearch(string searchParams)
+        {
+            List<User> users = await this.userRepo.GetUsersBySearch(searchParams);
+            return users.ConvertAll(user => new UserSelectDto()
+            {
+                Name = user.Name,
+                Image = user.ProfilePicture,
+                Email = user.Email,
+            });
+
         }
 
         /// <summary>
