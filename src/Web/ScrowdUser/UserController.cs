@@ -161,5 +161,17 @@ namespace SprintCrowd.Web.ScrowdUser
             await this.UserService.AccountLogout(authorizedUser.Id);
             return this.Ok(new SuccessResponse<string>("success"));
         }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpGet("ViewUserProfile")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> ViewUserProfile()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.UserService.ViewUserProfile(user.Id); 
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+        }
     }
 }
