@@ -207,7 +207,7 @@
             sprintAavail.ImageUrl = imageUrl;
             sprintAavail.VideoLink = videoLink;
             sprintAavail.VideoType = videoType;
-            sprintAavail.PromotionCode = promotionCode;
+            // sprintAavail.PromotionCode = promotionCode;
             sprintAavail.IsTimeBased = isTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
@@ -967,9 +967,9 @@
                 }
                 return sprintDto;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             { throw ex; }
-           
+
         }
 
         public async Task<List<ReportItemDto>> GetReport(string timespan)
