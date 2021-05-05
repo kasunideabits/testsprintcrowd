@@ -9,7 +9,8 @@ namespace SprintCrowd.BackEnd.Web
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
+    using System.Collections.Generic;
+    
     /// <summary>
     /// just a test controller used for quick code testing.
     /// </summary>
