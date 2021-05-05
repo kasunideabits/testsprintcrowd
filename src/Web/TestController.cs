@@ -32,11 +32,11 @@ namespace SprintCrowd.BackEnd.Web
         /// <summary>
         /// just a testing endpoint used for quick code testing
         /// </summary>
+        // GET: api/Test
         [HttpGet]
-        public async Task<dynamic> Index(TimeSpan timeOffset)
+        public IEnumerable<string> Get()
         {
-             return new string [] { "value1", "value2", "value3", "value4", "value5", "value6" };
-            //   return await this.User.GetUser(this.userService);
+            return new string[] { "valueA1", "valueB2" };
         }
     }
 }
