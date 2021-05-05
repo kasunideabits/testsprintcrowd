@@ -31,9 +31,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns>user</returns>
         Task<User> GetUserById(int userId);
         /// <summary>
+        /// returns list of users for simulator
+        /// </summary>
+        /// <param name="userCount">return user limit</param>
+        /// <returns>user</returns>
+        Task<List<User>> GetRandomUsers_ForSimulator(int userCount);
+
+        /// <summary>
         /// register a user.
         /// </summary>
         /// <param name="registerData">registration data.</param>
+        /// 
         Task<User> RegisterUser(RegisterModel registerData);
 
         /// <summary>

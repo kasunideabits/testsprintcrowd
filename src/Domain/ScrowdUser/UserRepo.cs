@@ -71,6 +71,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.dbContext.User.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         }
 
+
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+        public async Task<List<User>> GetRandomUsers_ForSimulator(int userCount)
+        {
+            return await this.dbContext.User.Where(u => u.Description == "Simulator").Take(userCount).ToListAsync();
+        }
+
         /// <summary>
         /// search user by string
         /// </summary>
