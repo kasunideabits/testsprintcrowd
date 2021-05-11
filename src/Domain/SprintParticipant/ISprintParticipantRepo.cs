@@ -213,5 +213,13 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<int> GetAllSprintsHistoryCountByUserId(int userId);
+
+        /// <summary>
+        /// Get By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<SprintParticipant> GetByUserIdSprintId(int userId, int sprintId);
     }
 }

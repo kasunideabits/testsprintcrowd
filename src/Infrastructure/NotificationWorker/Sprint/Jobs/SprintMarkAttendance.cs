@@ -48,9 +48,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private async Task AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
-            var user = await this.SprintParticipantRepo.GetByUserId(markAttendance.UserId);
+            var user = await this.SprintParticipantRepo.GetByUserIdSprintId(markAttendance.UserId, markAttendance.SprintId);
 
-            IChannel channel = this.AblyConnectionFactory.CreateChannel(user.UserGroup);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel(user.);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
             //channel.SwitchOffChannel();
         }

@@ -142,6 +142,17 @@
         }
 
         /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipant> GetByUserIdSprintId(int userId , int sprintId )
+        {
+            return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
+        }
+
+        /// <summary>
         /// Filter sprint pariticipant detials with sprint and user details with given query
         /// </summary>
         /// <param name="query">query to filter record</param>
