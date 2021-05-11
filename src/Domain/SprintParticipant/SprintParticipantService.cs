@@ -113,7 +113,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId , sprint.Type);
                     }
                     else
                     {
@@ -141,7 +141,7 @@
                     }
                     else if (inviteUser != null)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
@@ -168,7 +168,7 @@
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,

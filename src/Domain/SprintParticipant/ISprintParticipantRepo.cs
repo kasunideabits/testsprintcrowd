@@ -117,7 +117,8 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        Task JoinSprint(int userId, int sprintId);
+        /// <param name="sprintType">sprint Type to join</param>
+        Task JoinSprint(int userId, int sprintId, int sprintType);
 
         /// <summary>
         /// Delete pariticipant form sprint
