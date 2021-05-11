@@ -5,6 +5,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
     using System;
+    using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// Mark attendance notification handling
@@ -16,12 +18,13 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// </summary>
         /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintMarkAttendance(ScrowdDbContext context, IAblyConnectionFactory ablyFactory)
+        public SprintMarkAttendance(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
-
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
 
@@ -42,10 +45,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             }
         }
 
-        private void AblyMessage(MarkAttendance markAttendance)
+        private async Task AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + markAttendance.SprintId);
+            var user = await this.SprintParticipantRepo.GetByUserId(markAttendance.UserId);
+
+            IChannel channel = this.AblyConnectionFactory.CreateChannel(user.UserGroup);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
             //channel.SwitchOffChannel();
         }
