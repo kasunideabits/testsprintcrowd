@@ -5,8 +5,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
     using System;
-    using System.Threading.Tasks;
-    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     /// Mark attendance notification handling
@@ -18,13 +16,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// </summary>
         /// <param name="context">db context</param>
         /// <param name="ablyFactory">ably connection factory</param>
-        public SprintMarkAttendance(ScrowdDbContext context, IAblyConnectionFactory ablyFactory, ISprintParticipantRepo sprintParticipantRepo)
+        public SprintMarkAttendance(ScrowdDbContext context, IAblyConnectionFactory ablyFactory)
         {
             this.Context = context;
             this.AblyConnectionFactory = ablyFactory;
-            this.SprintParticipantRepo = sprintParticipantRepo;
         }
-        private ISprintParticipantRepo SprintParticipantRepo { get; }
+
         private ScrowdDbContext Context { get; }
         private IAblyConnectionFactory AblyConnectionFactory { get; }
 
@@ -45,12 +42,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             }
         }
 
-        private async Task AblyMessage(MarkAttendance markAttendance)
+        private void AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
-            var user = await this.SprintParticipantRepo.GetByUserIdSprintId(markAttendance.UserId, markAttendance.SprintId);
-
-            IChannel channel = this.AblyConnectionFactory.CreateChannel(user.);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + markAttendance.SprintId);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
             //channel.SwitchOffChannel();
         }
