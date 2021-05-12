@@ -300,7 +300,7 @@
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
-                if(userId != 0 && sprintType != (int)SprintType.PrivateSprint)
+                if(userId != 0)
                 participant.UserGroup = await this.GetUserGroupName(sprintId, userId);
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
