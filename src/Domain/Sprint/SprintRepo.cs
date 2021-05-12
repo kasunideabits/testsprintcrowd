@@ -245,12 +245,13 @@
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
         /// <param name="participantStage">sprint participant stage</param>
-        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage)
+        public async Task AddParticipant(int userId, int sprintId, string userGroup, ParticipantStage participantStage )
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
+                UserGroup = userGroup,
                 Stage = participantStage,
             };
             await this.dbContext.AddAsync(pariticipant);

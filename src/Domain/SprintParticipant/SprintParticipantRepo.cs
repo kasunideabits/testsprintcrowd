@@ -67,7 +67,7 @@
         /// <param name="sprintId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private async Task<string> GetUserGroupName(int sprintId, int userId)
+        public async Task<string> GetUserGroupName(int sprintId, int userId)
         {
             string userGroupName = string.Empty;
             int numberOfsets = 0;
@@ -300,7 +300,7 @@
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
-                if(userId != 0)
+                if(userId != 0 )
                 participant.UserGroup = await this.GetUserGroupName(sprintId, userId);
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
