@@ -659,19 +659,24 @@
         /// sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
+        /// <param name="pageNo">pageNo for pagination</param>
+        /// <param name="limit">limit for the page for pagination</param>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId)
+        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId,int pageNo,int limit)
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
             var expireDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
                 s.SprintId == sprintId &&
-                s.User.UserState == UserState.Active &&
-                s.Sprint.StartDateTime > expireDate &&
-                s.User.Name != string.Empty &&
-                (s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE);
-            var pariticipants = this.SprintRepo.GetParticipants(participantPredicate);
+            s.User.UserState == UserState.Active &&
+            s.Sprint.StartDateTime > expireDate &&
+            s.User.Name != string.Empty &&
+            (s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE);
+
+            var pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList(); ;
+           
+
             User influencer = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
             {
@@ -686,11 +691,24 @@
         /// Get Sprint Paticipants
         /// </summary>
         /// <param name="sprintId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <param name="completed"></param>
         /// <returns></returns>
-        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit)
+        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed)
         {
-            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
-               s.SprintId == sprintId && s.User.Name != string.Empty;
+            Expression<Func<SprintParticipant, bool>> participantPredicate = null;
+
+            if (completed)
+            {
+                participantPredicate = s =>
+                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage == ParticipantStage.COMPLETED;
+            }
+            else
+            {
+                participantPredicate = s =>
+                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage != ParticipantStage.COMPLETED;
+            }
 
             return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
