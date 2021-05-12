@@ -79,7 +79,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns>user</returns>
         public async Task<List<User>> GetRandomUsers_ForSimulator(int userCount)
         {
-            return await this.dbContext.User.Where(u => u.Description == "Simulator").Take(userCount).ToListAsync();
+            return await this.dbContext.User.Where(u => u.Description == "simulator").Take(userCount).ToListAsync();
         }
 
         /// <summary>
