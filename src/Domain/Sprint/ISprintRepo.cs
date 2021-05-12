@@ -37,6 +37,12 @@
         Task<List<Sprint>> GetAllEvents();
 
         /// <summary>
+        /// Get Last sprint that has a promotiona code
+        /// </summary>
+        /// <returns>sprint</returns>
+        Task<Sprint> GetLastSpecialSprint();
+
+        /// <summary>
         /// get all sprint public or private
         /// </summary>
         /// <param name="eventType">public or private</param>
@@ -158,7 +164,7 @@
         /// <returns></returns>
         Task<List<Sprint>> GetAllPrivateSprintsByUser(int userId, int lapsTime);
 
-       
+
 
         /// <summary>
         /// Update Sprint Status By SprintId

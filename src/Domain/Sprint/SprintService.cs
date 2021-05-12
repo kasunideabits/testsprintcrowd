@@ -281,6 +281,21 @@
         /// <summary>
         /// creates a new sprint
         /// </summary>
+
+        public async Task<String> generatePromotionCode()
+        {
+            int x = 0;
+            Sprint lastSpecialSprint = await this.SprintRepo.GetLastSpecialSprint();
+            if (Int32.TryParse(lastSpecialSprint.PromotionCode, out x))
+            {
+                int promocode = Int32.Parse(lastSpecialSprint.PromotionCode) + 1;
+                string strPromocode = promocode.ToString("D6");
+                return strPromocode;
+            }
+            string iniPromoCode = x.ToString("D6");
+            return iniPromoCode;
+        }
+
         public async Task<CreateSprintDto> CreateNewSprint(
             User user,
             string name,
@@ -341,7 +356,7 @@
             sprint.InfluencerEmail = infulenceEmail;
             sprint.DraftEvent = draft;
             sprint.ImageUrl = imageUrl;
-            sprint.PromotionCode = promotionCode == "PROMO" ? DateUtils.RandomString(2) + DateUtils.getNowShortTimeStamp() : null;
+            sprint.PromotionCode = promotionCode == "PROMO" ? await this.generatePromotionCode() : null;
             sprint.IsSmartInvite = isSmartInvite;
             sprint.IsTimeBased = isTimeBased;
             sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
