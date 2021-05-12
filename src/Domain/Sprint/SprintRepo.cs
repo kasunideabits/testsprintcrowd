@@ -189,6 +189,7 @@
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
+            this.dbContext.SaveChanges();
             return result.Entity;
         }
 
