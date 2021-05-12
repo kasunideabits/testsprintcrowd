@@ -38,6 +38,11 @@
             return await this.dbContext.Set<Sprint>().FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<Sprint> GetLastSpecialSprint()
+        {
+            return await this.dbContext.Set<Sprint>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.PromotionCode));
+        }
+
         /// <summary>
         /// Get all sprints with given predicate
         /// </summary>
@@ -416,6 +421,6 @@
             return this.dbContext.SaveChanges();
         }
 
-      
+
     }
 }
