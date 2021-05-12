@@ -74,7 +74,7 @@
             try
             {
                 //get the participant count
-                var participantCount = await this.Context.SprintParticipant.Select(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
+                var participantCount = await this.Context.SprintParticipant.Where(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
                 int offSet = 5;//this is used to calculate messages per ably channel from Sprint Manager side.
                 if (participantCount != null)
                 numberOfsets = participantCount.Count / offSet;
