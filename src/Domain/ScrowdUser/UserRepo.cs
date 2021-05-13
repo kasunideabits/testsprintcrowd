@@ -146,6 +146,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return exist;
         }
 
+
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+
+        public async Task<List<User>> GetRandomUsers_ForSimulator(int userCount)
+        {
+            return await this.dbContext.User.Where(u => u.Description == "simulator").Take(userCount).ToListAsync();
+        }
+
         /// <summary>
         /// register user in identity server and register user in db.
         /// </summary>

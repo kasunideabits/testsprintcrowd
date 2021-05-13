@@ -165,5 +165,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         Task<bool> IsUserExistInSC(string email);
 
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+        Task<List<User>> GetRandomUsers_ForSimulator(int userCount);
+
     }
 }
