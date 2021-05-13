@@ -83,10 +83,7 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetSprintWithPaticipants(int sprintId, int pageNo, int limit)
         {
-            if(limit == 0)
-            {
-                limit = 99999999;
-            }
+           
             var result = await this.SprintService.GetSprintWithPaticipants(sprintId, pageNo, limit);
             ResponseObject response = new ResponseObject()
             {
