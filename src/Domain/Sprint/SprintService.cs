@@ -689,7 +689,18 @@
             s.User.Name != string.Empty &&
             (s.Stage != ParticipantStage.QUIT && s.Stage != ParticipantStage.DECLINE);
 
-            var pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList(); ;
+            List<SprintParticipant> pariticipants = null;
+
+            if (pageNo ==0 && limit == 0)
+            {
+                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
+            }
+            else
+            {
+                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList(); 
+            }
+
+            
            
 
             User influencer = null;
