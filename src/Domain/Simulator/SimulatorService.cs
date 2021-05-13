@@ -29,7 +29,7 @@ namespace SprintCrowdBackEnd.Domain.Simulator
                 foreach (var user in list)
                 {
                     await this.sprintParticipantRepo.AddParticipant(sprintId, user.Id);
-                    await this.sprintParticipantRepo.JoinSprint(user.Id, sprintId);
+                    await this.sprintParticipantRepo.JoinSprint(user.Id, sprintId,0);
                 }
             }
             catch (Exception ex)
