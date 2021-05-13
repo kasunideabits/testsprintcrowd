@@ -73,5 +73,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual Sprint Sprint { get; set; }
 
+        /// <summary>
+        /// UserGroup of the user
+        /// </summary>
+        public string UserGroup { get; set; }
     }
 }

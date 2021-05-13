@@ -163,7 +163,7 @@
                         Data = result,
                     };
 
-                    if (response.StatusCode == (int)ApplicationResponseCode.Success)
+                    if (response.StatusCode == (int)ApplicationResponseCode.Success && userId != 0)
                     {
                         var joinResult = await this.SprintParticipantService.JoinSprint(
                                 result.SprintInfo.Id,
