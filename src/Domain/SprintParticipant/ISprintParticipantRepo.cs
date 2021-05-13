@@ -117,7 +117,8 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        Task JoinSprint(int userId, int sprintId);
+        /// <param name="sprintType">sprint Type to join</param>
+        Task JoinSprint(int userId, int sprintId, int sprintType);
 
         /// <summary>
         /// Delete pariticipant form sprint
@@ -212,5 +213,21 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<int> GetAllSprintsHistoryCountByUserId(int userId);
+
+        /// <summary>
+        /// Get By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<SprintParticipant> GetByUserIdSprintId(int userId, int sprintId);
+
+        /// <summary>
+        /// Get User GroupName
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<string> GetUserGroupName(int sprintId, int userId);
     }
 }

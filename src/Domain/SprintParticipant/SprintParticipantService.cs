@@ -113,7 +113,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId , sprint.Type);
                     }
                     else
                     {
@@ -141,7 +141,7 @@
                     }
                     else if (inviteUser != null)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
@@ -168,7 +168,7 @@
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
@@ -467,8 +467,8 @@
         /// Get sprint details with who marked attendance with given user id
         /// </summary>
         /// <param name="userId">user id to get record</param>
-        /// <returns><see cref=" SprintInfo">class </see></returns>
-        public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
+        /// <returns><see cref=" SprintInfoUserGroupDto">class </see></returns>
+        public async Task<SprintInfoUserGroupDto> GetSprintWhichMarkedAttendance(int userId)
         {
             var expiredDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> query = s =>
@@ -479,12 +479,13 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
-                return new SprintInfo(
+                return new SprintInfoUserGroupDto(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
+                    markedAttendaceDetails.UserGroup,
                     markedAttendaceDetails.IsIinfluencerEventParticipant);
             }
             else
