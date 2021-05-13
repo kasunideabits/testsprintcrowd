@@ -131,7 +131,7 @@
         /// <param name="limit"></param>
         /// <param name="completed">get completed runners</param>
         /// <returns></returns>
-        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed);
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>

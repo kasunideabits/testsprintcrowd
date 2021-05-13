@@ -97,9 +97,9 @@
         /// Get all Paticipants in sprint
         /// </summary>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}/{completed:bool}")]
+        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}/{completed:bool?}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed)
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed)
         {
             var result = await this.SprintService.GetSprintPaticipants(sprintId, pageNo, limit, completed);
             ResponseObject response = new ResponseObject()

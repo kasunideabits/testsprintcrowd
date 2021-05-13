@@ -677,7 +677,7 @@
         /// <param name="pageNo">pageNo for pagination</param>
         /// <param name="limit">limit for the page for pagination</param>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId,int pageNo,int limit)
+        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId, int pageNo, int limit)
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
@@ -691,17 +691,17 @@
 
             List<SprintParticipant> pariticipants = null;
 
-            if (pageNo ==0 && limit == 0)
+            if (pageNo == 0 && limit == 0)
             {
-                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
             }
             else
             {
-                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList(); 
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
             }
 
-            
-           
+
+
 
             User influencer = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
@@ -721,20 +721,30 @@
         /// <param name="limit"></param>
         /// <param name="completed"></param>
         /// <returns></returns>
-        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed)
+        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed)
         {
             Expression<Func<SprintParticipant, bool>> participantPredicate = null;
 
-            if (completed)
+            if (completed == null)
             {
                 participantPredicate = s =>
-                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage == ParticipantStage.COMPLETED;
+                s.SprintId == sprintId && s.User.Name != string.Empty;
             }
             else
             {
-                participantPredicate = s =>
-                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage != ParticipantStage.COMPLETED;
+                if ((bool)completed)
+                {
+                    participantPredicate = s =>
+                      s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage == ParticipantStage.COMPLETED;
+                }
+                else
+                {
+                    participantPredicate = s =>
+                      s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage != ParticipantStage.COMPLETED;
+                }
             }
+
+
 
             return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
