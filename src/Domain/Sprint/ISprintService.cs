@@ -117,15 +117,21 @@
         /// sprint id
         /// </summary>
         /// <param name="sprintId">sprint id to lookup</param>
+        /// <param name="pageNo">current page number for pagination</param>
+        /// <param name="limit">limit for a page</param>
+       
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId);
+        Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId, int pageNo, int limit);
 
         /// <summary>
         /// Get Sprint Paticipants list
         /// </summary>
-        /// <param name="sprintId"></param>
+        /// <param name="sprintId"></param
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <param name="completed">get completed runners</param>
         /// <returns></returns>
-        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit);
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>
