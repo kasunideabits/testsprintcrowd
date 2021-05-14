@@ -999,7 +999,7 @@
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
 
                 IEnumerable<Sprint> openEvents = null;
-                openEvents = this.SprintRepo.GetSprint_Open(query).OrderByDescending(x => x.StartDateTime);
+                openEvents = this.SprintRepo.GetSprint_Open(query).OrderBy(x => x.StartDateTime);
 
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
