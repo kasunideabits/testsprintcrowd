@@ -1007,7 +1007,18 @@
 
                 foreach (var sprint in openEvents)
                 {
-                    if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
+
+                    if ((int)status == (int)OpenEventJoinStatus.NOTJOINED){
+
+                       if(sprint.Participants.Where(s =>
+                                    s.User.UserState == UserState.Active &&
+                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).Any())
+                        {
+                            continue;
+                        }
+                    }
+
+                     if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
                     {
                         List<SprintParticipant> participants = null;
 
@@ -1032,6 +1043,30 @@
                                     participants = sprint.Participants.Where(s =>
                                     s.User.UserState == UserState.Active &&
                                     s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).ToList();
+
+                                    if (participants.Count > 0)
+                                    {
+                                        var resultDto = new PublicSprintWithParticipantsDto(
+                                   sprint.Id, sprint.Name, sprint.Distance,
+                                   sprint.NumberOfParticipants, sprint.StartDateTime,
+                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode);
+                                        foreach (var participant in participants)
+                                        {
+                                            resultDto.AddParticipant(
+                                                participant.User.Id,
+                                                participant.User.Name,
+                                                participant.User.ProfilePicture,
+                                                participant.User.City,
+                                                participant.User.Country,
+                                                participant.User.CountryCode,
+                                                participant.User.ColorCode,
+                                                false,
+                                                ParticipantStage.JOINED,
+                                                friends.Contains(participant.User.Id));
+
+                                        }
+                                        sprintDto.Add(resultDto);
+                                    }
                                 }
                                 if ((int)status == (int)OpenEventJoinStatus.NOTJOINED)
                                 {
@@ -1039,15 +1074,14 @@
                                     s.User.UserState == UserState.Active &&
                                     s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId != userId).ToList();
                                 }
-
                             }
-
                         }
 
 
 
-                        if (!participants.Any(p => p.Id == userId))
+                        if (!participants.Any(p => p.Id == userId) && status != 0)
                         {
+                            
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,
