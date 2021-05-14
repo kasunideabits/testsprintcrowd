@@ -15,12 +15,14 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             string colorCode,
             bool creator,
             ParticipantStage stage,
+            string userGroup = "",
             bool isInflencer = false) : base(id, name, profilePicture, city, country, countryCode)
         {
             this.ColorCode = colorCode;
             this.Creator = creator;
             this.Stage = stage;
             this.IsInfluencer = isInflencer;
+            this.UserGroup = userGroup;
         }
 
         public ParticipantInfoDto(
@@ -39,5 +41,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool Creator { get; }
         public ParticipantStage Stage { get; }
         public bool IsInfluencer { get; set; }
+
+        public string UserGroup { get; set; }
     }
 }

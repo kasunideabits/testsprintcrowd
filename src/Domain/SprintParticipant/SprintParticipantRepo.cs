@@ -62,6 +62,31 @@
         }
 
         /// <summary>
+        /// Get User Group Name
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<string> GetUserGroupName(int sprintId, int userId)
+        {
+            string userGroupName = string.Empty;
+            int numberOfsets = 0;
+            try
+            {
+                //get the participant count
+                var participantCount = await this.Context.SprintParticipant.Where(s => s.UserId == userId && s.SprintId == sprintId).ToListAsync();
+                int offSet = 5;//this is used to calculate messages per ably channel from Sprint Manager side.
+                if (participantCount != null)
+                numberOfsets = participantCount.Count / offSet;
+                    userGroupName = sprintId + "G" + numberOfsets;
+               
+            } catch(Exception ex)
+            { throw ex; }
+
+            return userGroupName;
+        }
+
+        /// <summary>
         /// User join for an event
         /// </summary>
         /// <param name="sprintId">sprint id for join</param>
@@ -69,11 +94,13 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
+           
             SprintParticipant participant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
                 Stage = ParticipantStage.JOINED,
+                UserGroup = await this.GetUserGroupName(sprintId,userId),
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
             this.Context.SaveChanges();
@@ -112,6 +139,17 @@
         public async Task<SprintParticipant> GetByUserId(int userId)
         {
             return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+        }
+
+        /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipant> GetByUserIdSprintId(int userId , int sprintId )
+        {
+            return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
         }
 
         /// <summary>
@@ -256,12 +294,14 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        public async Task JoinSprint(int userId, int sprintId)
+        public async Task JoinSprint(int userId, int sprintId ,int sprintType)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
+                if(userId != 0 )
+                participant.UserGroup = await this.GetUserGroupName(sprintId, userId);
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
             }

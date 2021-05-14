@@ -15,6 +15,8 @@
     using SprintCrowd.BackEnd.Domain.SocialShare;
     using SprintCrowd.BackEnd.Web.SocialShare;
     using SprintCrowdBackEnd.Enums;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
+
 
     /// <summary>
     /// Sprint service
@@ -26,18 +28,21 @@
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
             this.userRepo = _userRepo;
             this.SocialShareService = socialShareService;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
         private readonly IUserRepo userRepo;
 
         private ISocialShareService SocialShareService { get; }
         private ISprintRepo SprintRepo { get; }
         private INotificationClient NotificationClient { get; }
+
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         /// <summary>
         /// Get all events
@@ -378,7 +383,8 @@
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
             if (type == (int)SprintType.PrivateSprint)
             {
-                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
+                string userGroup = await this.SprintParticipantRepo.GetUserGroupName(addedSprint.Id, user.Id);
+                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, userGroup, ParticipantStage.JOINED);
             }
 
             this.SprintRepo.SaveChanges();
@@ -852,7 +858,8 @@
 
         public async Task InviteRequest(int inviterId, int inviteeId, int sprintId)
         {
-            await this.SprintRepo.AddParticipant(inviteeId, sprintId);
+            string userGroup = await this.SprintParticipantRepo.GetUserGroupName(sprintId, inviteeId);
+            await this.SprintRepo.AddParticipant(inviteeId, sprintId , userGroup);
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
@@ -913,6 +920,7 @@
                         p.User.ColorCode,
                         p.User.Id == sprint.CreatedBy.Id,
                         p.Stage,
+                        p.UserGroup,
                         isInfulencer
                     );
                 });

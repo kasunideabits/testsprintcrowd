@@ -78,8 +78,19 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<List<User>> GetUsersBySearch(string searchParam)
         {
             return await this.dbContext.User.Where(u =>
-                 u.Name.ToUpper().Contains(searchParam.ToUpper()) || u.Email.ToUpper().Contains(searchParam.ToUpper())
-            ).Take(20).ToListAsync();
+                 u.Name.ToUpper().Contains(searchParam.ToUpper()) || this.isEmailInclude(u.Email, searchParam)).Take(20).ToListAsync();
+        }
+
+        /// <summary>
+        /// helper fuction for comparing the email
+        /// </summary>
+        public bool isEmailInclude(string email, string searchParam)
+        {
+            if (StringUtils.IsBase64String(email))
+            {
+                return Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email).ToUpper().Contains(searchParam.ToUpper());
+            }
+            return email.ToUpper().Contains(searchParam.ToUpper());
         }
 
         /// <summary>
