@@ -14,6 +14,7 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.SocialShare;
     using SprintCrowd.BackEnd.Web.SocialShare;
+    using SprintCrowdBackEnd.Enums;
 
     /// <summary>
     /// Sprint service
@@ -962,37 +963,81 @@
             return sprintDto;
         }
 
-        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset,int pageNo, int limit)
+
+        private ParticipantStage GetStage(int? status)
+        {
+            ParticipantStage stage = ParticipantStage.JOINED;
+            if (status == null)
+            {
+                stage = ParticipantStage.JOINED;
+            }
+            if (status == 0)
+            {
+                stage = ParticipantStage.JOINED;
+            }
+            if (status == 1)
+            {
+                stage = ParticipantStage.PENDING;
+            }
+            return stage;
+        }
+
+        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status, int userId, int timeOffset, int pageNo, int limit)
         {
 
             try
             {
                 var userPreference = await this.SprintRepo.GetUserPreference(userId);
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
-                
+
                 IEnumerable<Sprint> openEvents = null;
-
-                if (pageNo == 0 && limit == 0)
-                {
-                    openEvents = this.SprintRepo.GetSprint_Open(query).OrderByDescending(x => x.CreatedDate);
-                }
-                else
-                {
-                    openEvents = this.SprintRepo.GetSprint_Open(query).Where((x=> x.PromotionCode == null || x.PromotionCode == string.Empty)).OrderByDescending(x => x.CreatedDate).Skip(pageNo).Take(limit);
-                }
-
+                openEvents = this.SprintRepo.GetSprint_Open(query).OrderByDescending(x => x.CreatedDate);
 
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
                 var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
-                
+
                 foreach (var sprint in openEvents)
                 {
                     if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
                     {
-                        var participants = sprint.Participants.Where(s =>
-                            s.User.UserState == UserState.Active &&
-                            s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
+                        List<SprintParticipant> participants = null;
+
+                        if (!status.HasValue)
+                        {
+                            participants = sprint.Participants.Where(s =>
+                           s.User.UserState == UserState.Active &&
+                           s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT).ToList();
+                        }
+                        else
+                        {
+                            if ((int)status == (int)OpenEventJoinStatus.All)
+                            {
+                                participants = sprint.Participants.Where(s =>
+                                s.User.UserState == UserState.Active &&
+                                s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT).ToList();
+                            }
+                            else
+                            {
+                                if ((int)status == (int)OpenEventJoinStatus.JOINED)
+                                {
+                                    participants = sprint.Participants.Where(s =>
+                                    s.User.UserState == UserState.Active &&
+                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).ToList();
+                                }
+                                if ((int)status == (int)OpenEventJoinStatus.NOTJOINED)
+                                {
+                                    participants = sprint.Participants.Where(s =>
+                                    s.User.UserState == UserState.Active &&
+                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId != userId).ToList();
+                                }
+
+                            }
+
+                        }
+
+
+
                         if (!participants.Any(p => p.Id == userId))
                         {
                             var resultDto = new PublicSprintWithParticipantsDto(
@@ -1018,7 +1063,18 @@
                         }
                     }
                 }
-                return sprintDto;
+
+                List<PublicSprintWithParticipantsDto> result = null;
+                if (pageNo ==0 && limit == 0)
+                {
+                    result = sprintDto;
+                }
+                else
+                {
+                    result = sprintDto.Skip(pageNo).Take(limit).ToList();
+                }
+                
+                return result;
             }
             catch (Exception ex)
             { throw ex; }

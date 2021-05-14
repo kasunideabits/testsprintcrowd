@@ -150,7 +150,7 @@
         /// <param name="pageNo">page number for pagination</param>
         /// <param name="limit">limit for a each page for pagination</param>
         /// <returns>public sprint participants</returns>
-        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset,int pageNo, int limit);
+        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status,int userId, int timeOffset,int pageNo, int limit);
 
         /// <summary>
         /// Duplicate a sprint, TODO : remove user object passing
