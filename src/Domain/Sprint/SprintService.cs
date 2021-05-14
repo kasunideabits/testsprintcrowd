@@ -14,7 +14,9 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Domain.SocialShare;
     using SprintCrowd.BackEnd.Web.SocialShare;
+    using SprintCrowdBackEnd.Enums;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+
 
     /// <summary>
     /// Sprint service
@@ -682,7 +684,7 @@
         /// <param name="pageNo">pageNo for pagination</param>
         /// <param name="limit">limit for the page for pagination</param>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId,int pageNo,int limit)
+        public async Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId, int pageNo, int limit)
         {
             Expression<Func<Sprint, bool>> sprintPredicate = s => s.Id == sprintId;
             var sprint = await this.SprintRepo.GetSprint(sprintPredicate);
@@ -696,17 +698,17 @@
 
             List<SprintParticipant> pariticipants = null;
 
-            if (pageNo ==0 && limit == 0)
+            if (pageNo == 0 && limit == 0)
             {
-                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
             }
             else
             {
-                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList(); 
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
             }
 
-            
-           
+
+
 
             User influencer = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
@@ -726,20 +728,30 @@
         /// <param name="limit"></param>
         /// <param name="completed"></param>
         /// <returns></returns>
-        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed)
+        public async Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed)
         {
             Expression<Func<SprintParticipant, bool>> participantPredicate = null;
 
-            if (completed)
+            if (completed == null)
             {
                 participantPredicate = s =>
-                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage == ParticipantStage.COMPLETED;
+                s.SprintId == sprintId && s.User.Name != string.Empty;
             }
             else
             {
-                participantPredicate = s =>
-                  s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage != ParticipantStage.COMPLETED;
+                if ((bool)completed)
+                {
+                    participantPredicate = s =>
+                      s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage == ParticipantStage.COMPLETED;
+                }
+                else
+                {
+                    participantPredicate = s =>
+                      s.SprintId == sprintId && s.User.Name != string.Empty && s.Stage != ParticipantStage.COMPLETED;
+                }
             }
+
+
 
             return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
         }
@@ -959,24 +971,81 @@
             return sprintDto;
         }
 
-        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset)
+
+        private ParticipantStage GetStage(int? status)
+        {
+            ParticipantStage stage = ParticipantStage.JOINED;
+            if (status == null)
+            {
+                stage = ParticipantStage.JOINED;
+            }
+            if (status == 0)
+            {
+                stage = ParticipantStage.JOINED;
+            }
+            if (status == 1)
+            {
+                stage = ParticipantStage.PENDING;
+            }
+            return stage;
+        }
+
+        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status, int userId, int timeOffset, int pageNo, int limit)
         {
 
             try
             {
                 var userPreference = await this.SprintRepo.GetUserPreference(userId);
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
-                IEnumerable<Sprint> openEvents = await this.SprintRepo.GetSprints(query);
+
+                IEnumerable<Sprint> openEvents = null;
+                openEvents = this.SprintRepo.GetSprint_Open(query).OrderByDescending(x => x.CreatedDate);
+
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
                 var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
+
                 foreach (var sprint in openEvents)
                 {
                     if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
                     {
-                        var participants = sprint.Participants.Where(s =>
-                            s.User.UserState == UserState.Active &&
-                            s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT);
+                        List<SprintParticipant> participants = null;
+
+                        if (!status.HasValue)
+                        {
+                            participants = sprint.Participants.Where(s =>
+                           s.User.UserState == UserState.Active &&
+                           s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT).ToList();
+                        }
+                        else
+                        {
+                            if ((int)status == (int)OpenEventJoinStatus.All)
+                            {
+                                participants = sprint.Participants.Where(s =>
+                                s.User.UserState == UserState.Active &&
+                                s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT).ToList();
+                            }
+                            else
+                            {
+                                if ((int)status == (int)OpenEventJoinStatus.JOINED)
+                                {
+                                    participants = sprint.Participants.Where(s =>
+                                    s.User.UserState == UserState.Active &&
+                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).ToList();
+                                }
+                                if ((int)status == (int)OpenEventJoinStatus.NOTJOINED)
+                                {
+                                    participants = sprint.Participants.Where(s =>
+                                    s.User.UserState == UserState.Active &&
+                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId != userId).ToList();
+                                }
+
+                            }
+
+                        }
+
+
+
                         if (!participants.Any(p => p.Id == userId))
                         {
                             var resultDto = new PublicSprintWithParticipantsDto(
@@ -1002,7 +1071,18 @@
                         }
                     }
                 }
-                return sprintDto;
+
+                List<PublicSprintWithParticipantsDto> result = null;
+                if (pageNo ==0 && limit == 0)
+                {
+                    result = sprintDto;
+                }
+                else
+                {
+                    result = sprintDto.Skip(pageNo).Take(limit).ToList();
+                }
+                
+                return result;
             }
             catch (Exception ex)
             { throw ex; }

@@ -97,9 +97,9 @@
         /// Get all Paticipants in sprint
         /// </summary>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}/{completed:bool}")]
+        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}/{completed:bool?}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed)
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed)
         {
             var result = await this.SprintService.GetSprintPaticipants(sprintId, pageNo, limit, completed);
             ResponseObject response = new ResponseObject()
@@ -226,15 +226,18 @@
         /// <summary>
         /// Query public sprint with  utc offset
         /// </summary>
+        /// <param name="status"></param>
         /// <param name="timeOffset">time offset</param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
-        [HttpGet("public/open-events")]
+        [HttpGet("public/open-events/{status:int?}/{pageNo:int?}/{limit:int?}")]
         [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<dynamic> GetOpenEvents(int timeOffset)
+        public async Task<dynamic> GetOpenEvents(int? status, int timeOffset, int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset);
+            var result = await this.SprintService.GetOpenEvents(status, user.Id, timeOffset, pageNo, limit);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
