@@ -131,7 +131,7 @@
         /// <param name="limit"></param>
         /// <param name="completed">get completed runners</param>
         /// <returns></returns>
-        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool completed);
+        Task<List<SprintParticipant>> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed);
         Task InviteRequest(int inviterId, int inviteeId, int sprintId);
 
         /// <summary>
@@ -142,7 +142,15 @@
         /// <returns>sprint with participant info</returns>
         Task<List<PublicSprintWithParticipantsDto>> GetPublicSprints(int userId, int timeOffset);
 
-        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset);
+        /// <summary>
+        /// Get Open events
+        /// </summary>
+        /// <param name="userId">user id</param>
+        /// <param name="timeOffset">time offset to utc</param>
+        /// <param name="pageNo">page number for pagination</param>
+        /// <param name="limit">limit for a each page for pagination</param>
+        /// <returns>public sprint participants</returns>
+        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status,int userId, int timeOffset,int pageNo, int limit);
 
         /// <summary>
         /// Duplicate a sprint, TODO : remove user object passing

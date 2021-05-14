@@ -54,6 +54,19 @@
             return result;
         }
 
+        /// <summary>
+        /// Get all sprints with given predicate
+        /// </summary>
+        /// <param name="predicate">query </param>
+        /// <returns>all sprints match to predicate</returns>
+        public IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate)
+        {
+            return this.dbContext.Sprint.Include(s => s.Participants).ThenInclude(s => s.User).Where(predicate);
+            
+        }
+
+      
+
         public async Task<List<Sprint>> GetAllEvents()
         {
             return await this.dbContext.Sprint.ToListAsync();
