@@ -962,17 +962,30 @@
             return sprintDto;
         }
 
-        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset)
+        public async Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int userId, int timeOffset,int pageNo, int limit)
         {
 
             try
             {
                 var userPreference = await this.SprintRepo.GetUserPreference(userId);
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
-                IEnumerable<Sprint> openEvents = await this.SprintRepo.GetSprints(query);
+                
+                IEnumerable<Sprint> openEvents = null;
+
+                if (pageNo == 0 && limit == 0)
+                {
+                    openEvents = this.SprintRepo.GetSprint_Open(query).OrderByDescending(x => x.CreatedDate);
+                }
+                else
+                {
+                    openEvents = this.SprintRepo.GetSprint_Open(query).Where((x=> x.PromotionCode == null || x.PromotionCode == string.Empty)).OrderByDescending(x => x.CreatedDate).Skip(pageNo).Take(limit);
+                }
+
+
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
                 var friends = friendsRelations.Select(f => f.AcceptedUserId == userId ? f.SharedUserId : f.AcceptedUserId);
+                
                 foreach (var sprint in openEvents)
                 {
                     if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)

@@ -228,13 +228,13 @@
         /// </summary>
         /// <param name="timeOffset">time offset</param>
         /// <returns></returns>
-        [HttpGet("public/open-events")]
+        [HttpGet("public/open-events/{pageNo:int?}/{limit:int?}")]
         [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<dynamic> GetOpenEvents(int timeOffset)
+        public async Task<dynamic> GetOpenEvents(int timeOffset, int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset);
+            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset, pageNo, limit);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
