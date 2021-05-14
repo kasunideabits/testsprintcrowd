@@ -704,7 +704,7 @@
             }
             else
             {
-                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo).Take(limit).ToList();
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo * limit).Take(limit).ToList();
             }
 
 
@@ -753,7 +753,7 @@
 
 
 
-            return this.SprintRepo.GetParticipants(participantPredicate).OrderByDescending(d => d.FinishTime).Skip(pageNo).Take(limit).ToList();
+            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo * limit).Take(limit).ToList();
         }
 
 
@@ -859,7 +859,7 @@
         public async Task InviteRequest(int inviterId, int inviteeId, int sprintId)
         {
             string userGroup = await this.SprintParticipantRepo.GetUserGroupName(sprintId, inviteeId);
-            await this.SprintRepo.AddParticipant(inviteeId, sprintId , userGroup);
+            await this.SprintRepo.AddParticipant(inviteeId, sprintId, userGroup);
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
@@ -1073,15 +1073,15 @@
                 }
 
                 List<PublicSprintWithParticipantsDto> result = null;
-                if (pageNo ==0 && limit == 0)
+                if (pageNo == 0 && limit == 0)
                 {
                     result = sprintDto;
                 }
                 else
                 {
-                    result = sprintDto.Skip(pageNo).Take(limit).ToList();
+                    result = sprintDto.Skip(pageNo * limit).Take(limit).ToList();
                 }
-                
+
                 return result;
             }
             catch (Exception ex)
