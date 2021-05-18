@@ -157,9 +157,9 @@ namespace SprintCrowd.BackEnd.Web.Account
         /// <param name="userOS"></param>
         /// <param name="userCurrentAppVersion"></param>
         /// <returns></returns>
-        [HttpGet("GetUserAppVersionUpgradeInfo/userOS/userCurrentAppVersion")]
+        [HttpGet("GetUserAppVersionUpgradeInfo/{userOS}/{userCurrentAppVersion}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetUserAppVersionUpgradeInfo(string userOS ,string userCurrentAppVersion)
+        public async Task<IActionResult> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
         {
             var result = await this.UserService.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
             ResponseObject response = new ResponseObject()
