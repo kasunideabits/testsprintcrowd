@@ -150,5 +150,24 @@ namespace SprintCrowd.BackEnd.Web.Account
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        [HttpGet("GetUserAppVersionUpgradeInfo/userOS/userCurrentAppVersion")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetUserAppVersionUpgradeInfo(string userOS ,string userCurrentAppVersion)
+        {
+            var result = await this.UserService.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
