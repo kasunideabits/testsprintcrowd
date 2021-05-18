@@ -10,6 +10,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
+  
 
     /// <summary>
     /// user service used for managing users.
@@ -375,6 +376,25 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 userAchievement);
 
             return userProfileDetail;
+        }
+
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            try 
+            { 
+                return await this.userRepo.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion); 
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }
