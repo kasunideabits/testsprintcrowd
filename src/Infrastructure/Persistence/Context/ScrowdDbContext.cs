@@ -79,6 +79,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         public DbSet<UserAchievement> UserAchivements { get; set; }
 
         /// <summary>
+        /// table for UserAppVersionInfo.
+        /// </summary>
+        public DbSet<UserAppVersionInfo> UserAppVersionInfo { get; set; }
+
+
+        /// <summary>
         /// override save changes to insert last updated value.
         /// </summary>
         public override int SaveChanges()

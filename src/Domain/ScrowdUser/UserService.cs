@@ -376,5 +376,24 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 
             return userProfileDetail;
         }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            try
+            {
+                return await this.userRepo.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }
