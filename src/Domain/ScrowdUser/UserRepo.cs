@@ -509,5 +509,24 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return (user == null) ? false : true;
 
         }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            try
+            {
+                return await this.dbContext.UserAppVersionInfo.FirstOrDefaultAsync(uav => uav.AppOS.Trim() == userOS.Trim() && uav.AppVersion.Trim() == userCurrentAppVersion.Trim());
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }
