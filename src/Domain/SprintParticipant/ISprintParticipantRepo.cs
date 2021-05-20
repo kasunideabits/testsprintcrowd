@@ -229,5 +229,7 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<string> GetUserGroupName(int sprintId, int userId);
+
+        Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId);
     }
 }

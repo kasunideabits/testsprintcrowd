@@ -40,7 +40,13 @@ namespace SprintCrowdBackEnd.Web.Sprint
         public async Task<IActionResult> JoinEventPublic([FromBody] SprintSimulatorParticipants participants)
         {
             var result = await this.SimulatorService.JoinParticipants(participants.UsersCount, participants.SprintId);
-            return this.Ok(result);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
 
         }
 
@@ -60,7 +66,7 @@ namespace SprintCrowdBackEnd.Web.Sprint
                     Thread.Sleep(2000);
                 }
 
-                if(index == 25) { break; }
+                if (index == 25) { break; }
                 index++;
             }
 
