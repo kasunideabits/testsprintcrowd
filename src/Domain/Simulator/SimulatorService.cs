@@ -20,24 +20,29 @@ namespace SprintCrowdBackEnd.Domain.Simulator
         }
 
 
-        public async Task<bool> JoinParticipants(int userCount, int sprintId)
+        public async Task<List<int>> JoinParticipants(int userCount, int sprintId)
         {
+            var list = await this.userRepo.GetRandomUsers_ForSimulator(userCount);
             try
             {
-                var list = await this.userRepo.GetRandomUsers_ForSimulator(userCount);
 
+                int index = 0;
                 foreach (var user in list)
                 {
-                    await this.sprintParticipantRepo.AddParticipant(sprintId, user.Id);
-                    await this.sprintParticipantRepo.JoinSprint(user.Id, sprintId,0);
+                   
+                    await this.sprintParticipantRepo.AddParticipant_ForSimulator(sprintId, user.Id);
+                    index++;
+                    // await this.sprintParticipantRepo.JoinSprint(user.Id, sprintId,0);
                 }
+
+                return (list.Select(x => x.Id).ToList());
             }
             catch (Exception ex)
-            {                
-                return false;
+            {
+                return null;
             }
 
-            return true;
+            return null;
         }
 
 
