@@ -32,6 +32,7 @@
     using Swashbuckle.AspNetCore.Swagger;
     using SprintCrowd.BackEnd.Domain.SocialShare;
     using SprintCrowd.BackEnd.Domain.Sprint.Video;
+    using SprintCrowdBackEnd.Domain.Simulator;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -199,6 +200,7 @@
             services.AddTransient<IDashboardRepo, DashboardRepo>();
             services.AddTransient<IAchievementService, AchievementService>();
             services.AddTransient<IAchievementRepo, AchievementRepo>();
+            services.AddTransient<ISimulatorService, SimulatorService>();
             this.AddAuthorizationDIModules(services);
         }
 

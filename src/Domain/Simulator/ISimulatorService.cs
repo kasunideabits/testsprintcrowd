@@ -9,7 +9,7 @@ namespace SprintCrowdBackEnd.Domain.Simulator
 {
     public interface ISimulatorService
     {
-        Task<bool> JoinParticipants(int userCount, int sprintId);
+        Task<List<int>> JoinParticipants(int userCount, int sprintId);
         Task<List<ParticipantInfoDto>> GetParticipants(int sprintId, ParticipantStage stage);
     }
 }
