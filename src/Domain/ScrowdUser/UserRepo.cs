@@ -516,7 +516,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             User user = null;
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
+            if (user == null && StringUtils.IsBase64String(email))
                 user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
 
             return (user == null) ? false : true;
