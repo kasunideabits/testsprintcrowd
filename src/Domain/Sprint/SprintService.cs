@@ -8,7 +8,6 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
@@ -16,7 +15,7 @@
     using SprintCrowd.BackEnd.Web.SocialShare;
     using SprintCrowdBackEnd.Enums;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
-
+    using SprintCrowd.BackEnd.Web.Event;
 
     /// <summary>
     /// Sprint service
@@ -126,25 +125,14 @@
         public async Task<UpdateSprintDto> UpdateSprint(
             int userId,
             int sprintId,
-            string name,
-            int? distance,
-            DateTime? startTime,
-            int? numberOfParticipants,
-            bool influencerAvailability,
-            string influencerEmail,
-            int? draftEvent,
-            string imageUrl,
-            VideoType videoType,
-            String videoLink,
-            string promotionCode,
-            bool isTimeBased,
+            CreateSprintModel sprintModel,
             TimeSpan durationForTimeBasedEvent,
             string descriptionForTimeBasedEvent)
         {
 
-            if (promotionCode != null && promotionCode != string.Empty)
+            if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
             {
-                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
+                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
                 if (sprintPromoCode != null && sprintPromoCode.Id != sprintId)
                 {
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
@@ -166,42 +154,61 @@
             {
                 throw new Application.ApplicationException((int)SprintErrorCode.CanNotEditSprint, "Can not edit this event");
             }
+
+            if ((!String.Equals(sprintAavail.Name, sprintModel.Name) ||
+                !string.Equals(sprintAavail.DescriptionForTimeBasedEvent, sprintModel.DescriptionForTimeBasedEvent) ||
+                !String.Equals(sprintAavail.ImageUrl, sprintModel.ImageUrl) ||
+                sprintAavail.IsSmartInvite != sprintModel.IsSmartInvite)
+                && !sprintModel.IsSmartInvite)
+            {
+                var customData = new { campaign_name = "sprintshare", sprintId = sprintAavail.Id.ToString(), promotionCode = sprintAavail.PromotionCode };
+                var socialLink = await this.SocialShareService.GetSmartLink(new SocialLink()
+                {
+                    Name = sprintModel.Name,
+                    Description = descriptionForTimeBasedEvent,
+                    ImageUrl = sprintModel.ImageUrl,
+                    CustomData = customData
+                });
+
+                sprintAavail.SocialMediaLink = socialLink;
+            }
+
             string oldName = sprintAavail.Name;
-            if (name != String.Empty)
+            if (sprintModel.Name != String.Empty)
             {
-                sprintAavail.Name = name;
+                sprintAavail.Name = sprintModel.Name;
             }
-            if (distance != null)
+            if (sprintModel.Distance != null)
             {
-                sprintAavail.Distance = (int)distance;
+                sprintAavail.Distance = (int)sprintModel.Distance;
             }
-            if (startTime != null)
+            if (sprintModel.StartTime != null)
             {
-                sprintAavail.StartDateTime = (DateTime)startTime;
+                sprintAavail.StartDateTime = (DateTime)sprintModel.StartTime;
             }
-            if (distance != null)
+            if (sprintModel.Distance != null)
             {
-                sprintAavail.Distance = (int)distance;
+                sprintAavail.Distance = (int)sprintModel.Distance;
             }
-            if (numberOfParticipants != null)
+            if (sprintModel.NumberOfParticipants != null)
             {
-                sprintAavail.NumberOfParticipants = (int)numberOfParticipants;
+                sprintAavail.NumberOfParticipants = (int)sprintModel.NumberOfParticipants;
             }
 
-            sprintAavail.InfluencerAvailability = influencerAvailability;
+            sprintAavail.InfluencerAvailability = sprintModel.InfluencerAvailability;
 
-            if (!string.IsNullOrEmpty(influencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, influencerEmail))
+            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, sprintModel.InfluencerEmail))
             {
-                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(influencerEmail);
+                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail);
                 sprintAavail.InfluencerEmail = encryptedEamil;
                 sprintAavail.InfluencerAvailability = true;
             }
 
-            if (draftEvent != null)
+            if (sprintModel.DraftEvent != null)
             {
-                sprintAavail.DraftEvent = (int)draftEvent;
+                sprintAavail.DraftEvent = (int)sprintModel.DraftEvent;
 
-                if (draftEvent == 0)
+                if (sprintModel.DraftEvent == 0)
                 {
                     sprintAavail.Status = (int)SprintStatus.NOTSTARTEDYET;
                 }
@@ -210,16 +217,19 @@
                     sprintAavail.Status = (int)SprintStatus.NOTPUBLISHEDYET;
                 }
             }
-            sprintAavail.ImageUrl = imageUrl;
-            sprintAavail.VideoLink = videoLink;
-            sprintAavail.VideoType = videoType;
+            sprintAavail.ImageUrl = sprintModel.ImageUrl;
+            sprintAavail.VideoLink = sprintModel.VideoLink;
+            sprintAavail.IsNarrationsOn = sprintModel.IsNarrationsOn;
+            sprintAavail.VideoType = sprintModel.VideoType;
             // sprintAavail.PromotionCode = promotionCode;
-            sprintAavail.IsTimeBased = isTimeBased;
+            sprintAavail.IsTimeBased = sprintModel.IsTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
 
+
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
             this.SprintRepo.SaveChanges();
+
 
             this.NotificationClient.SprintNotificationJobs.SprintUpdate(
                 sprint.Id,
@@ -304,35 +314,24 @@
 
         public async Task<CreateSprintDto> CreateNewSprint(
             User user,
-            string name,
-            int distance,
-            bool isSmartInvite,
-            DateTime startTime,
-            int type,
-            int? numberOfParticipants,
-            string infulenceEmail,
-            int draft,
-            bool influencerAvailability,
-            string imageUrl,
-            VideoType videoType,
-            String videoLink,
-            string promotionCode,
-            bool isTimeBased,
+            CreateSprintModel sprintModel,
             TimeSpan durationForTimeBasedEvent,
             string descriptionForTimeBasedEvent)
         {
 
-            if (!string.IsNullOrEmpty(infulenceEmail))
+            Sprint sprint = new Sprint();
+
+            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
             {
-                if (!StringUtils.IsBase64String(infulenceEmail))
+                if (!StringUtils.IsBase64String(sprintModel.InfluencerEmail))
                 {
-                    infulenceEmail = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(infulenceEmail);
+                    sprint.InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail);
                 }
             }
 
-            if (promotionCode != null && promotionCode != string.Empty)
+            if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
             {
-                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(promotionCode);
+                Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
                 if (sprintPromoCode != null)
                 {
                     throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
@@ -349,28 +348,30 @@
             //     }
             // }
 
-            Sprint sprint = new Sprint();
+
 
             sprint.SocialMediaLink = string.Empty;
-            sprint.Name = name;
-            sprint.Distance = distance;
-            sprint.StartDateTime = startTime;
+            sprint.Name = sprintModel.Name;
+            sprint.Distance = sprintModel.Distance;
+            sprint.StartDateTime = sprintModel.StartTime;
             sprint.CreatedBy = user;
-            sprint.Type = type;
-            sprint.NumberOfParticipants = numberOfParticipants == null ? NumberOfParticipants(type) : (int)numberOfParticipants;
-            sprint.InfluencerAvailability = influencerAvailability;
-            sprint.InfluencerEmail = infulenceEmail;
-            sprint.DraftEvent = draft;
-            sprint.ImageUrl = imageUrl;
-            sprint.PromotionCode = promotionCode == "PROMO" ? await this.generatePromotionCode() : null;
-            sprint.IsSmartInvite = isSmartInvite;
-            sprint.IsTimeBased = isTimeBased;
+            sprint.IsNarrationsOn = sprintModel.IsNarrationsOn;
+            sprint.Type = sprintModel.SprintType;
+            sprint.NumberOfParticipants = sprintModel.NumberOfParticipants == null ? NumberOfParticipants(sprintModel.SprintType) : (int)sprintModel.NumberOfParticipants;
+            sprint.InfluencerAvailability = sprintModel.InfluencerAvailability;
+            sprint.InfluencerEmail = sprintModel.InfluencerEmail;
+            sprint.IsNarrationsOn = sprintModel.IsNarrationsOn;
+            sprint.DraftEvent = sprintModel.DraftEvent;
+            sprint.ImageUrl = sprintModel.ImageUrl;
+            sprint.PromotionCode = sprintModel.promotionCode == "PROMO" ? await this.generatePromotionCode() : null;
+            sprint.IsSmartInvite = sprintModel.IsSmartInvite;
+            sprint.IsTimeBased = sprintModel.IsTimeBased;
             sprint.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
-            sprint.VideoLink = videoLink;
-            sprint.VideoType = videoType;
+            sprint.VideoLink = sprintModel.VideoLink;
+            sprint.VideoType = sprintModel.VideoType;
 
-            if (draft == 0)
+            if (sprintModel.DraftEvent == 0)
             {
                 sprint.Status = (int)SprintStatus.NOTSTARTEDYET;
 
@@ -381,7 +382,7 @@
             }
 
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
-            if (type == (int)SprintType.PrivateSprint)
+            if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
             {
                 string userGroup = await this.SprintParticipantRepo.GetUserGroupName(addedSprint.Id, user.Id);
                 await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, userGroup, ParticipantStage.JOINED);
@@ -398,17 +399,17 @@
                 (SprintType)addedSprint.Type,
                 (SprintStatus)addedSprint.Status);
 
-            if (draft == 0)
+            if (sprintModel.DraftEvent == 0)
             {
                 var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode };
 
-                var socialLink = isSmartInvite ?
+                var socialLink = sprintModel.IsSmartInvite ?
                 await this.SocialShareService.updateTokenAndGetInvite(customData) :
                 await this.SocialShareService.GetSmartLink(new SocialLink()
                 {
-                    Name = name,
+                    Name = sprintModel.Name,
                     Description = descriptionForTimeBasedEvent,
-                    ImageUrl = imageUrl,
+                    ImageUrl = sprintModel.ImageUrl,
                     CustomData = customData
                 });
 
@@ -901,7 +902,8 @@
                 sprint.StartDateTime,
                 (SprintType)sprint.Type,
                 sprint.Location,
-                sprint.PromotionCode);
+                sprint.PromotionCode,
+                sprint.IsNarrationsOn);
             participants
                 .ForEach(p =>
                 {
@@ -1008,17 +1010,18 @@
                 foreach (var sprint in openEvents)
                 {
 
-                    if ((int)status == (int)OpenEventJoinStatus.NOTJOINED){
+                    if ((int)status == (int)OpenEventJoinStatus.NOTJOINED)
+                    {
 
-                       if(sprint.Participants.Where(s =>
-                                    s.User.UserState == UserState.Active &&
-                                    s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).Any())
+                        if (sprint.Participants.Where(s =>
+                                      s.User.UserState == UserState.Active &&
+                                      s.Stage != ParticipantStage.DECLINE && s.Stage != ParticipantStage.QUIT && s.UserId == userId).Any())
                         {
                             continue;
                         }
                     }
 
-                     if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
+                    if (sprint.PromotionCode == null || sprint.PromotionCode == string.Empty)
                     {
                         List<SprintParticipant> participants = null;
 
@@ -1081,7 +1084,7 @@
 
                         if (!participants.Any(p => p.Id == userId) && status != 0)
                         {
-                            
+
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,

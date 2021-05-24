@@ -16,9 +16,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             DateTime startTime,
             SprintType type,
             string sprintLocation,
-            string promoCode)
+            string promoCode,
+            bool isNarrationsOn = false)
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode, null, isNarrationsOn);
             this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
 

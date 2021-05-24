@@ -17,7 +17,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="startTime">start date time</param>
         /// <param name="startTime">user group</param>
         /// <param name="sprintCreator">sprint creator or not</param>
-        public SprintInfoUserGroupDto(int id, string name, int distance, DateTime startTime, int sprintType,string userGroup, bool isInfluencerEventParticipant, bool sprintCreator = false)
+        public SprintInfoUserGroupDto(int id, string name, int distance, DateTime startTime, int sprintType, string userGroup, bool isInfluencerEventParticipant, bool sprintCreator = false, bool isNarrationsOn = false)
         {
             this.Id = id;
             this.Name = name;
@@ -27,6 +27,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.SprintCreator = sprintCreator;
             this.UserGroup = userGroup;
             this.IsInfluencerEventParticipant = isInfluencerEventParticipant;
+            this.IsNarrationsOn = isNarrationsOn;
         }
 
         /// <summary>
@@ -68,5 +69,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// Get Is Influencer Event Participant
         /// </summary>
         public bool IsInfluencerEventParticipant { get; }
+
+        /// <summary>
+        /// Get Is Influencer Event Participant
+        /// </summary>
+        public bool IsNarrationsOn { get; }
     }
 }

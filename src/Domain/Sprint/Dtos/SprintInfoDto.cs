@@ -16,9 +16,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             SprintType type,
             string imageUrl,
             string promoCode,
-            string location = null) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode)
+            string location = null,
+            bool isNarrationsOn = true) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode)
         {
             this.Location = location;
+            this.IsNarrationsOn = isNarrationsOn;
             this.ExtendedTime = startTime.AddMinutes(15);
         }
 
@@ -38,5 +40,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool IsSmartInvite { get; } = false;
         public string SocialMediaLink { get; set; } = string.Empty;
         public DateTime ExtendedTime { get; }
+
+        public bool IsNarrationsOn { get; set; } = true;
     }
 }
