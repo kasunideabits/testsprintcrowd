@@ -113,7 +113,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId , sprint.Type);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                     }
                     else
                     {
@@ -479,6 +479,7 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
+
                 return new SprintInfoUserGroupDto(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
@@ -490,8 +491,10 @@
                     false,
                     markedAttendaceDetails.Sprint.IsTimeBased,
                     markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
-                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent
+                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.IsNarrationsOn
                     );
+
             }
             else
             {

@@ -87,5 +87,7 @@ namespace SprintCrowd.BackEnd.Web.Event
 
         public VideoType VideoType { get; set; }
         public string VideoLink { get; set; }
+
+        public bool IsNarrationsOn { get; set; }
     }
 }

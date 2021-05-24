@@ -17,10 +17,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="startTime">start date time</param>
         /// <param name="startTime">user group</param>
         /// <param name="sprintCreator">sprint creator or not</param>
-        public SprintInfoUserGroupDto(int id, string name, int distance, DateTime startTime, int sprintType,string userGroup, bool isInfluencerEventParticipant, 
+        public SprintInfoUserGroupDto(int id, string name, int distance, DateTime startTime, int sprintType, string userGroup, bool isInfluencerEventParticipant,
                                      bool sprintCreator = false, bool isTimeBased = false,
                                      TimeSpan durationForTimeBasedEvent = default(TimeSpan),
-                                     string descriptionForTimeBasedEvent = null)
+                                     string descriptionForTimeBasedEvent = null, bool isNarrationsOn = false)
+
         {
             this.Id = id;
             this.Name = name;
@@ -33,6 +34,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.IsTimeBased = isTimeBased;
             this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            this.IsNarrationsOn = isNarrationsOn;
+
         }
 
         /// <summary>
@@ -90,6 +93,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// </summary>
         public string DescriptionForTimeBasedEvent { get; }
 
+        /// Get Is Influencer Event Participant
+        /// </summary>
+        public bool IsNarrationsOn { get; }
 
 
 
