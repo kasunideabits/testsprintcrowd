@@ -140,5 +140,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public string VideoLink { get; set; }
 
+
+        /// <summary>
+        /// Mute Narrations
+        /// </summary>
+        public bool IsNarrationsOn { get; set; }
+
     }
 }
