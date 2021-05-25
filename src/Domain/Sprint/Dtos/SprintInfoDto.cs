@@ -20,10 +20,13 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             bool isTimeBased = false,
             TimeSpan durationForTimeBasedEvent = default(TimeSpan),
             string descriptionForTimeBasedEvent = null,
-            bool influencerAvailability = false
+            bool influencerAvailability = false,
+            bool isNarrationsOn = true
             ) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, influencerAvailability)
+
         {
             this.Location = location;
+            this.IsNarrationsOn = isNarrationsOn;
             this.ExtendedTime = startTime.AddMinutes(15);
             this.IsTimeBased = isTimeBased;
             this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
@@ -34,10 +37,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public SprintInfoDto(
             Sprint sprint,
             string location = null//,
-            //bool isTimeBased = false //,
-            //TimeSpan durationForTimeBasedEvent = default(TimeSpan),
-            //string descriptionForTimeBasedEvent = null,
-            //bool InfluencerAvailability = false
+                                  //bool isTimeBased = false //,
+                                  //TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+                                  //string descriptionForTimeBasedEvent = null,
+                                  //bool InfluencerAvailability = false
             ) : base(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, sprint.InfluencerAvailability)
         {
             this.Location = location;
@@ -59,7 +62,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public TimeSpan DurationForTimeBasedEvent { get; }
         public string DescriptionForTimeBasedEvent { get; }
         public bool InfluencerAvailability { get; }
+        public bool IsNarrationsOn { get; set; } = true;
 
-       
     }
 }
