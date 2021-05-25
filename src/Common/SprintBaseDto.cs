@@ -5,7 +5,7 @@
 
     public class SprintBaseDto
     {
-        public SprintBaseDto(int id, string name, int distance, int numberOfParticipants, DateTime startTime, SprintType type,string imageUrl , string promoCode)
+        public SprintBaseDto(int id, string name, int distance, int numberOfParticipants, DateTime startTime, SprintType type,string imageUrl , string promoCode, bool isTimeBased, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent,bool InfluencerAvailability)
         {
             this.Id = id;
             this.Name = name;
@@ -15,6 +15,10 @@
             this.Type = type;
             this.ImageUrl = imageUrl;
             this.PromoCode = promoCode;
+            this.isTimeBased = isTimeBased;
+            this.durationForTimeBasedEvent = durationForTimeBasedEvent;
+            this.descriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            this.InfluencerAvailability = InfluencerAvailability;
         }
 
         public int Id { get; set; }
@@ -25,5 +29,11 @@
         public SprintType Type { get; set; }
         public string ImageUrl { get; set; }
         public string PromoCode { get; set; }
+        bool isTimeBased { get; set; }
+        TimeSpan durationForTimeBasedEvent { get; set; }
+        string descriptionForTimeBasedEvent { get; set; }
+        bool InfluencerAvailability { get; set; }
+
+
     }
 }
