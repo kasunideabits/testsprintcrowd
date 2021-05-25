@@ -24,6 +24,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             string colorCode,
             bool creator,
             ParticipantStage stage
+
         )
         {
             this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, string.Empty, string.Empty);

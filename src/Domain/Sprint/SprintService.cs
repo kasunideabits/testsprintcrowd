@@ -241,7 +241,10 @@
                 (SprintType)sprint.Type,
                 sprint.DraftEvent,
                 sprint.InfluencerAvailability,
-                sprint.InfluencerEmail);
+                sprint.InfluencerEmail,
+                sprint.IsTimeBased,
+                sprint.DurationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent);
             return result;
         }
 
@@ -901,7 +904,12 @@
                 sprint.StartDateTime,
                 (SprintType)sprint.Type,
                 sprint.Location,
-                sprint.PromotionCode);
+                sprint.PromotionCode,
+                sprint.IsTimeBased,
+                sprint.DurationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent,
+                sprint.InfluencerAvailability
+                );
             participants
                 .ForEach(p =>
                 {
@@ -1007,7 +1015,7 @@
 
                 foreach (var sprint in openEvents)
                 {
-
+                    
                     if ((int)status == (int)OpenEventJoinStatus.NOTJOINED){
 
                        if(sprint.Participants.Where(s =>
@@ -1049,7 +1057,7 @@
                                         var resultDto = new PublicSprintWithParticipantsDto(
                                    sprint.Id, sprint.Name, sprint.Distance,
                                    sprint.NumberOfParticipants, sprint.StartDateTime,
-                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode);
+                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode,sprint.IsTimeBased,sprint.DurationForTimeBasedEvent,sprint.DescriptionForTimeBasedEvent);
                                         foreach (var participant in participants)
                                         {
                                             resultDto.AddParticipant(
@@ -1085,7 +1093,7 @@
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,
-                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode);
+                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
                             foreach (var participant in participants)
                             {
                                 resultDto.AddParticipant(
