@@ -486,7 +486,12 @@
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
                     markedAttendaceDetails.UserGroup,
-                    markedAttendaceDetails.IsIinfluencerEventParticipant);
+                    markedAttendaceDetails.IsIinfluencerEventParticipant,
+                    false,
+                    markedAttendaceDetails.Sprint.IsTimeBased,
+                    markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent
+                    );
             }
             else
             {
