@@ -10,7 +10,8 @@ namespace src.Infrastructure.NotificationWorker.Sprint.Models
             string country,
             string countryCode,
             string city,
-            string colorCode)
+            string colorCode,
+            string userGroup)
         {
             this.SprintId = sprintId;
             this.UserId = userId;
@@ -20,6 +21,7 @@ namespace src.Infrastructure.NotificationWorker.Sprint.Models
             this.CountryCode = countryCode;
             this.City = city;
             this.ColorCode = colorCode;
+            this.UserGroup = userGroup;
         }
 
         /// <summary>
@@ -61,5 +63,10 @@ namespace src.Infrastructure.NotificationWorker.Sprint.Models
         /// Gets color code for user
         /// </summary>
         public string ColorCode { get; }
+
+        /// <summary>
+        /// Gets UserGroup for user
+        /// </summary>
+        public string UserGroup { get; }
     }
 }

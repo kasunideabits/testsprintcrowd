@@ -54,7 +54,7 @@
 
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
-
+            var participatInfor = await this.SprintParticipantRepo.GetByUserIdSprintId(userId, sprintId);
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
@@ -63,7 +63,8 @@
                 result.Country,
                 result.CountryCode,
                 result.City,
-                result.ColorCode);
+                result.ColorCode,
+                participatInfor.UserGroup);
             this.SprintParticipantRepo.SaveChanges();
             return;
         }
