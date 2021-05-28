@@ -62,8 +62,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 markAttendance.Country ?? string.Empty,
                 markAttendance.CountryCode ?? string.Empty,
                 markAttendance.City ?? string.Empty,
-                markAttendance.ColorCode ?? new UserColorCode().PickColor(),
-                markAttendance.UserGroup);
+                markAttendance.ColorCode ?? new UserColorCode().PickColor());
         }
     }
 
@@ -91,8 +90,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             string country,
             string countryCode,
             string city,
-            string colorCode,
-            string userGroup)
+            string colorCode)
         {
             this.SprintId = sprintId;
             this.UserId = userId;
@@ -102,7 +100,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.CountryCode = countryCode;
             this.City = city;
             this.ColorCode = colorCode;
-            this.UserGroup = userGroup;
         }
 
         /// <summary>
@@ -144,9 +141,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// Gets color code
         /// </summary>
         public string ColorCode { get; }
-        /// <summary>
-        /// Gets UserGroup
-        /// </summary>
-        public string UserGroup { get; }
+        
     }
 }

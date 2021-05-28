@@ -63,8 +63,7 @@
                 result.Country,
                 result.CountryCode,
                 result.City,
-                result.ColorCode,
-                participatInfor.UserGroup);
+                result.ColorCode);
             this.SprintParticipantRepo.SaveChanges();
             return;
         }
@@ -468,8 +467,8 @@
         /// Get sprint details with who marked attendance with given user id
         /// </summary>
         /// <param name="userId">user id to get record</param>
-        /// <returns><see cref=" SprintInfoUserGroupDto">class </see></returns>
-        public async Task<SprintInfoUserGroupDto> GetSprintWhichMarkedAttendance(int userId)
+        /// <returns><see cref=" SprintInfo">class </see></returns>
+        public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
         {
             var expiredDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> query = s =>
@@ -481,13 +480,12 @@
             if (markedAttendaceDetails != null)
             {
 
-                return new SprintInfoUserGroupDto(
+                return new SprintInfo(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
-                    markedAttendaceDetails.UserGroup,
                     markedAttendaceDetails.IsIinfluencerEventParticipant,
                     false,
                     markedAttendaceDetails.Sprint.IsTimeBased,

@@ -222,14 +222,6 @@
         /// <returns></returns>
         Task<SprintParticipant> GetByUserIdSprintId(int userId, int sprintId);
 
-        /// <summary>
-        /// Get User GroupName
-        /// </summary>
-        /// <param name="sprintId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<string> GetUserGroupName(int sprintId, int userId);
-
         Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId);
     }
 }
