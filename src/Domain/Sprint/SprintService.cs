@@ -199,9 +199,15 @@
 
             if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, sprintModel.InfluencerEmail))
             {
-                string encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail);
-                sprintAavail.InfluencerEmail = encryptedEamil;
+                sprintAavail.InfluencerEmail = !StringUtils.IsBase64String(sprintModel.InfluencerEmail) ?
+                Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail) : sprintModel.InfluencerEmail;
                 sprintAavail.InfluencerAvailability = true;
+            }
+
+            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond) && !string.Equals(sprintAavail.InfluencerEmailSecond, sprintModel.InfluencerEmailSecond))
+            {
+                sprintAavail.InfluencerEmailSecond = !StringUtils.IsBase64String(sprintModel.InfluencerEmailSecond) ?
+                Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmailSecond) : sprintModel.InfluencerEmailSecond;
             }
 
             if (sprintModel.DraftEvent != null)
@@ -330,6 +336,22 @@
                 {
                     sprint.InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail);
                 }
+                else
+                {
+                    sprint.InfluencerEmail = sprintModel.InfluencerEmail;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
+            {
+                if (!StringUtils.IsBase64String(sprintModel.InfluencerEmailSecond))
+                {
+                    sprint.InfluencerEmailSecond = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmailSecond);
+                }
+                else
+                {
+                    sprint.InfluencerEmailSecond = sprintModel.InfluencerEmailSecond;
+                }
             }
 
             if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
@@ -362,7 +384,6 @@
             sprint.Type = sprintModel.SprintType;
             sprint.NumberOfParticipants = sprintModel.NumberOfParticipants == null ? NumberOfParticipants(sprintModel.SprintType) : (int)sprintModel.NumberOfParticipants;
             sprint.InfluencerAvailability = sprintModel.InfluencerAvailability;
-            sprint.InfluencerEmail = sprintModel.InfluencerEmail;
             sprint.IsNarrationsOn = sprintModel.IsNarrationsOn;
             sprint.DraftEvent = sprintModel.DraftEvent;
             sprint.ImageUrl = sprintModel.ImageUrl;

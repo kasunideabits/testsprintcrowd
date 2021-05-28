@@ -31,6 +31,12 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         public string InfluencerEmail { get; set; }
 
+
+        /// <summary>
+        /// Influencer Email second
+        /// </summary>
+        public string InfluencerEmailSecond { get; set; }
+
         /// <summary>
         /// Event distance
         /// </summary>
