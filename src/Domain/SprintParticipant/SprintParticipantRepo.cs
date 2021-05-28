@@ -61,39 +61,13 @@
             }
         }
 
-        /// <summary>
-        /// Get User Group Name
-        /// </summary>
-        /// <param name="sprintId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<string> GetUserGroupName(int sprintId, int userId)
-        {
-            string userGroupName = string.Empty;
-            int numberOfsets = 0;
-            try
-            {
-                //get the participant count
-                var participantCount = await this.Context.SprintParticipant.Where(s => s.SprintId == sprintId).ToListAsync();
-                int offSet = 100;//this is used to calculate messages per ably channel from Sprint Manager side.
-                if (participantCount != null)
-                numberOfsets = participantCount.Count / offSet;
-                    userGroupName = sprintId + "G" + numberOfsets;
-               
-            } catch(Exception ex)
-            { throw ex; }
-
-            return userGroupName;
-        }
-
         public async Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId)
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
-                Stage = ParticipantStage.JOINED,
-                UserGroup = await this.GetUserGroupName(sprintId, userId)
+                Stage = ParticipantStage.JOINED
             };
             var result = await this.Context.AddAsync(pariticipant);
             this.Context.SaveChanges();
@@ -115,7 +89,6 @@
                 UserId = userId,
                 SprintId = sprintId,
                 Stage = ParticipantStage.JOINED,
-                UserGroup = await this.GetUserGroupName(sprintId,userId),
             };
             var result = await this.Context.SprintParticipant.AddAsync(participant);
             this.Context.SaveChanges();
@@ -315,8 +288,6 @@
             if (participant != null)
             {
                 participant.Stage = ParticipantStage.JOINED;
-                if(userId != 0 )
-                participant.UserGroup = await this.GetUserGroupName(sprintId, userId);
                 this.Context.Update(participant);
                 this.Context.SaveChanges();
             }

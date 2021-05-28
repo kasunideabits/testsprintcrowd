@@ -16,7 +16,10 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// <param name="sprintType">sprint type</param>
         /// <param name="startTime">start date time</param>
         /// <param name="sprintCreator">sprint creator or not</param>
-        public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool isInfluencerEventParticipant, bool sprintCreator = false, bool isNarrationsOn = true)
+        public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool isInfluencerEventParticipant,
+                                     bool sprintCreator = false, bool isTimeBased = false,
+                                     TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+                                     string descriptionForTimeBasedEvent = null, bool isNarrationsOn = false)
         {
             this.Id = id;
             this.Name = name;
@@ -24,8 +27,11 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.StartTime = startTime;
             this.SprintType = sprintType;
             this.SprintCreator = sprintCreator;
-            this.ISNarrationsOn = isNarrationsOn;
             this.IsInfluencerEventParticipant = isInfluencerEventParticipant;
+            this.IsTimeBased = isTimeBased;
+            this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            this.IsNarrationsOn = isNarrationsOn;
         }
 
         public SprintInfo(Infrastructure.Persistence.Entities.Sprint sprint, bool sprintCreator = false, bool isInfluencerEventParticipant = false)
@@ -37,7 +43,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.SprintType = sprint.Type;
             this.SprintCreator = sprintCreator;
             this.IsInfluencerEventParticipant = isInfluencerEventParticipant;
-            this.ISNarrationsOn = sprint.IsNarrationsOn;
+           
         }
 
         /// <summary>
@@ -76,8 +82,23 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         public bool IsInfluencerEventParticipant { get; }
 
         /// <summary>
-        /// Mute narrations
+        /// Get if event is timebased or not
         /// </summary>
-        public bool ISNarrationsOn { get; }
+        public bool IsTimeBased { get; }
+
+        /// <summary>
+        /// Get the duration of the timebased event
+        /// </summary>
+        public TimeSpan DurationForTimeBasedEvent { get; }
+
+        /// <summary>
+        /// Get the description of the timebased event
+        /// </summary>
+        public string DescriptionForTimeBasedEvent { get; }
+
+        /// Get Is Influencer Event Participant
+        /// </summary>
+        public bool IsNarrationsOn { get; }
+
     }
 }

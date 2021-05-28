@@ -408,8 +408,7 @@
             Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
             if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
             {
-                string userGroup = await this.SprintParticipantRepo.GetUserGroupName(addedSprint.Id, user.Id);
-                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, userGroup, ParticipantStage.JOINED);
+                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
             }
 
             this.SprintRepo.SaveChanges();
@@ -883,8 +882,7 @@
 
         public async Task InviteRequest(int inviterId, int inviteeId, int sprintId)
         {
-            string userGroup = await this.SprintParticipantRepo.GetUserGroupName(sprintId, inviteeId);
-            await this.SprintRepo.AddParticipant(inviteeId, sprintId, userGroup);
+            await this.SprintRepo.AddParticipant(inviteeId, sprintId);
         }
 
         private List<Sprint> FilterWithDistance(List<Sprint> sprints, int from, int to)
@@ -951,7 +949,6 @@
                         p.User.ColorCode,
                         p.User.Id == sprint.CreatedBy.Id,
                         p.Stage,
-                        p.UserGroup,
                         isInfulencer
                     );
                 });

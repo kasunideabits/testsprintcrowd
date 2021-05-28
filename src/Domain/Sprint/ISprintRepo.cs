@@ -107,7 +107,7 @@
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
         /// <param name="participantStage">sprint participant stage</param>
-        Task AddParticipant(int userId, int sprintId, string userGroup, ParticipantStage participantStage = ParticipantStage.PENDING);
+        Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage = ParticipantStage.PENDING);
 
         /// <summary>
         /// Remove sprint with given id

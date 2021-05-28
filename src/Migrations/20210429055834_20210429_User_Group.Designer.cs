@@ -373,9 +373,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<double>("TotalElevation")
                         .HasColumnName("total_elevation");
 
-                    b.Property<string>("UserGroup")
-                        .HasColumnName("user_group");
-
                     b.Property<int>("UserId")
                         .HasColumnName("user_id");
 
