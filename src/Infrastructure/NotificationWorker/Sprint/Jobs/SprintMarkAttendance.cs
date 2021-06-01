@@ -141,5 +141,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// Gets color code
         /// </summary>
         public string ColorCode { get; }
+        
     }
 }

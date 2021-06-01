@@ -166,12 +166,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         Task<bool> IsUserExistInSC(string email);
 
         /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+        Task<List<User>> GetRandomUsers_ForSimulator(int userCount);
+
+        /// <summary>
         /// Get User App Version Upgrade Info
         /// </summary>
         /// <param name="userOS"></param>
         /// <param name="userCurrentAppVersion"></param>
         /// <returns></returns>
         Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion);
-
     }
 }

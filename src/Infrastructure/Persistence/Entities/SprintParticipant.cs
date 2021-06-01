@@ -73,5 +73,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual Sprint Sprint { get; set; }
 
+       
     }
 }

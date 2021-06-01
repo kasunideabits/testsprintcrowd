@@ -172,5 +172,12 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         int UpdateSprintStatusBySprintId(int sprintId);
+
+        /// <summary>
+        /// Returen open sprints
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate);
     }
 }

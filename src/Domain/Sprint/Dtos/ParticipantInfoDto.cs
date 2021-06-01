@@ -39,5 +39,6 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool Creator { get; }
         public ParticipantStage Stage { get; }
         public bool IsInfluencer { get; set; }
+
     }
 }

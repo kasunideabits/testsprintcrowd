@@ -140,20 +140,7 @@
                 {
                     var result = await this.SprintService.CreateNewSprint(
                         user,
-                        sprint.Name,
-                        sprint.Distance,
-                        sprint.IsSmartInvite,
-                        sprint.StartTime,
-                        sprint.SprintType,
-                        sprint.NumberOfParticipants,
-                        sprint.InfluencerEmail,
-                        sprint.DraftEvent,
-                        sprint.InfluencerAvailability,
-                        sprint.ImageUrl,
-                        sprint.VideoType,
-                        sprint.VideoLink,
-                        sprint.promotionCode,
-                        sprint.IsTimeBased,
+                        sprint,
                         durationForTimeBasedEvent,
                         sprint.DescriptionForTimeBasedEvent
                         );
@@ -163,7 +150,7 @@
                         Data = result,
                     };
 
-                    if (response.StatusCode == (int)ApplicationResponseCode.Success)
+                    if (response.StatusCode == (int)ApplicationResponseCode.Success && userId != 0)
                     {
                         var joinResult = await this.SprintParticipantService.JoinSprint(
                                 result.SprintInfo.Id,
@@ -252,20 +239,7 @@
 
                 var result = await this.SprintService.CreateNewSprint(
                     user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.IsSmartInvite,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
-                    sprint.ImageUrl,
-                    sprint.VideoType,
-                    sprint.VideoLink,
-                    sprint.promotionCode,
-                    sprint.IsTimeBased,
+                    sprint,
                     durationForTimeBasedEvent,
                     sprint.DescriptionForTimeBasedEvent);
                 ResponseObject response = new ResponseObject()
@@ -321,7 +295,7 @@
         /// </summary>
         [HttpPut("update/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
+        public async Task<IActionResult> UpdateEvent([FromBody] CreateSprintModel sprint, int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);
             TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
@@ -329,18 +303,7 @@
             var result = await this.SprintService.UpdateSprint(
               user.Id,
               sprintId,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerAvailability,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent,
-              sprint.ImageUrl,
-              sprint.VideoType,
-              sprint.VideoLink,
-              sprint.PromotionCode,
-              sprint.IsTimeBased,
+              sprint,
               durationForTimeBasedEvent,
               sprint.DescriptionForTimeBasedEvent);
 

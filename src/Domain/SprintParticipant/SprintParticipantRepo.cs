@@ -61,6 +61,20 @@
             }
         }
 
+        public async Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId)
+        {
+            SprintParticipant pariticipant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.JOINED
+            };
+            var result = await this.Context.AddAsync(pariticipant);
+            this.Context.SaveChanges();
+            return result.Entity;
+        }
+
+
         /// <summary>
         /// User join for an event
         /// </summary>
@@ -69,6 +83,7 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
+           
             SprintParticipant participant = new SprintParticipant()
             {
                 UserId = userId,
@@ -112,6 +127,17 @@
         public async Task<SprintParticipant> GetByUserId(int userId)
         {
             return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+        }
+
+        /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipant> GetByUserIdSprintId(int userId , int sprintId )
+        {
+            return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
         }
 
         /// <summary>
@@ -256,7 +282,7 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        public async Task JoinSprint(int userId, int sprintId)
+        public async Task JoinSprint(int userId, int sprintId ,int sprintType)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)

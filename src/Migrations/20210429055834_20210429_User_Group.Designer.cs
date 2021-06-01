@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210429055834_20210429_User_Group")]
+    partial class _20210429_User_Group
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,12 +246,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<string>("InfluencerEmail")
                         .HasColumnName("influencer_email");
 
-                    b.Property<string>("InfluencerEmailSecond")
-                        .HasColumnName("influencer_email_second");
-
-                    b.Property<bool>("IsNarrationsOn")
-                        .HasColumnName("is_narrations_on");
-
                     b.Property<bool>("IsSmartInvite")
                         .HasColumnName("is_smart_invite");
 
@@ -376,7 +372,7 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<double>("TotalElevation")
                         .HasColumnName("total_elevation");
-                  
+
                     b.Property<int>("UserId")
                         .HasColumnName("user_id");
 
@@ -418,9 +414,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
-
-                    b.Property<string>("Description")
-                        .HasColumnName("description");
 
                     b.Property<string>("Email")
                         .HasColumnName("email");
@@ -515,37 +508,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("user_activity");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserAppVersionInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<string>("AppOS")
-                        .HasColumnName("app_os");
-
-                    b.Property<string>("AppVersion")
-                        .HasColumnName("app_version");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("IsForceUpgrade")
-                        .HasColumnName("is_force_upgrade");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("UpgradePriority")
-                        .HasColumnName("upgrade_priority");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("user_app_version_info");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotification", b =>

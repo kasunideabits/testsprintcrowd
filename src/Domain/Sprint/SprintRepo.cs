@@ -54,6 +54,19 @@
             return result;
         }
 
+        /// <summary>
+        /// Get all sprints with given predicate
+        /// </summary>
+        /// <param name="predicate">query </param>
+        /// <returns>all sprints match to predicate</returns>
+        public IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate)
+        {
+            return this.dbContext.Sprint.Include(s => s.Participants).ThenInclude(s => s.User).Where(predicate);
+            
+        }
+
+      
+
         public async Task<List<Sprint>> GetAllEvents()
         {
             return await this.dbContext.Sprint.ToListAsync();
@@ -189,6 +202,7 @@
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
+            this.dbContext.SaveChanges();
             return result.Entity;
         }
 
@@ -245,7 +259,7 @@
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
         /// <param name="participantStage">sprint participant stage</param>
-        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage)
+        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage )
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {

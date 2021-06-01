@@ -35,6 +35,8 @@ namespace SprintCrowd.BackEnd.Domain.SocialShare
                 token = strToken,
                 channel = "email",
                 medium = "mail",
+                title = new { en = socialLink.Name },
+                description = String.IsNullOrEmpty(socialLink.Description) ? null : new { en = socialLink.Description },
                 campaign_name = "testCampaign",
                 image = socialLink.ImageUrl,
                 custom_data = socialLink.CustomData

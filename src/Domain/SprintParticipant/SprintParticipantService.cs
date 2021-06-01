@@ -54,7 +54,7 @@
 
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
-
+            var participatInfor = await this.SprintParticipantRepo.GetByUserIdSprintId(userId, sprintId);
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
@@ -113,7 +113,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                     }
                     else
                     {
@@ -141,7 +141,7 @@
                     }
                     else if (inviteUser != null)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
@@ -168,7 +168,7 @@
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
@@ -479,13 +479,21 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
+
                 return new SprintInfo(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
-                    markedAttendaceDetails.IsIinfluencerEventParticipant);
+                    markedAttendaceDetails.IsIinfluencerEventParticipant,
+                    false,
+                    markedAttendaceDetails.Sprint.IsTimeBased,
+                    markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.IsNarrationsOn
+                    );
+
             }
             else
             {

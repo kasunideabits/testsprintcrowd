@@ -16,21 +16,41 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             SprintType type,
             string imageUrl,
             string promoCode,
-            string location = null) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode)
+            string location = null,
+            bool isTimeBased = false,
+            TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+            string descriptionForTimeBasedEvent = null,
+            bool influencerAvailability = false,
+            bool isNarrationsOn = true
+            ) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, influencerAvailability)
+
         {
             this.Location = location;
+            this.IsNarrationsOn = isNarrationsOn;
             this.ExtendedTime = startTime.AddMinutes(15);
+            this.IsTimeBased = isTimeBased;
+            this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
+            this.InfluencerAvailability = influencerAvailability;
+            this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
         }
 
         public SprintInfoDto(
             Sprint sprint,
-            string location = null
-            ) : base(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.ImageUrl, sprint.PromotionCode)
+            string location = null//,
+                                  //bool isTimeBased = false //,
+                                  //TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+                                  //string descriptionForTimeBasedEvent = null,
+                                  //bool InfluencerAvailability = false
+            ) : base(sprint.Id, sprint.Name, sprint.Distance, sprint.NumberOfParticipants, sprint.StartDateTime, (SprintType)sprint.Type, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, sprint.InfluencerAvailability)
         {
             this.Location = location;
             this.ExtendedTime = sprint.StartDateTime.AddMinutes(15);
             this.IsSmartInvite = sprint.IsSmartInvite;
             this.SocialMediaLink = sprint.SocialMediaLink;
+            this.IsTimeBased = sprint.IsTimeBased;
+            this.DurationForTimeBasedEvent = sprint.DurationForTimeBasedEvent;
+            this.InfluencerAvailability = sprint.InfluencerAvailability;
+
         }
 
 
@@ -38,5 +58,11 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool IsSmartInvite { get; } = false;
         public string SocialMediaLink { get; set; } = string.Empty;
         public DateTime ExtendedTime { get; }
+        public bool IsTimeBased { get; }
+        public TimeSpan DurationForTimeBasedEvent { get; }
+        public string DescriptionForTimeBasedEvent { get; }
+        public bool InfluencerAvailability { get; }
+        public bool IsNarrationsOn { get; set; } = true;
+
     }
 }

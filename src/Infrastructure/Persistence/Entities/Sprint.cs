@@ -103,6 +103,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>draft event status, drafted or not.</value>
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>CoInfluencer Email.</value>
+        public string InfluencerEmailSecond { get; set; }
+
+
         public int DraftEvent { get; set; }
         public string ImageUrl { get; set; }
 
@@ -139,6 +147,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Video Link
         /// </summary>
         public string VideoLink { get; set; }
+
+
+        /// <summary>
+        /// Mute Narrations
+        /// </summary>
+        public bool IsNarrationsOn { get; set; }
 
     }
 }

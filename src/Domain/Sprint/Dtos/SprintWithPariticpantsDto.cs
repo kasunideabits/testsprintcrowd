@@ -16,9 +16,16 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             DateTime startTime,
             SprintType type,
             string sprintLocation,
-            string promoCode)
+            string promoCode,
+
+            bool isTimeBased = false,
+            TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+            string descriptionForTimeBasedEvent = null,
+            bool InfluencerAvailability = false,
+            bool isNarrationsOn = false)
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode, null, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, InfluencerAvailability, isNarrationsOn);
+
             this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
 

@@ -11,6 +11,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
 
+
     /// <summary>
     /// user service used for managing users.
     /// Authorization dosent happen here.
@@ -394,6 +395,5 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw Ex;
             }
         }
-
     }
 }

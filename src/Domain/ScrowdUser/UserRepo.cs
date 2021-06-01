@@ -16,6 +16,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
 
 
+
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
     /// NO DIRECT ACCESS FROM SERVICES OR CONTROLLERS ALLOWED.
     /// <summary>
@@ -155,6 +156,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 
             }
             return exist;
+        }
+
+
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+
+        public async Task<List<User>> GetRandomUsers_ForSimulator(int userCount)
+        {
+            return await this.dbContext.User.Where(u => u.Description == "simulator").Take(userCount).ToListAsync();
         }
 
         /// <summary>
@@ -503,7 +516,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             User user = null;
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
+            if (user == null && StringUtils.IsBase64String(email))
                 user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
 
             return (user == null) ? false : true;
@@ -527,6 +540,5 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw Ex;
             }
         }
-
     }
 }
