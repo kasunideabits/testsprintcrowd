@@ -1,4 +1,4 @@
-namespace SprintCrowd.BackEnd.Web.Friend
+﻿namespace SprintCrowd.BackEnd.Web.Friend
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
