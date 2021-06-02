@@ -19,7 +19,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         public SprintInfo(int id, string name, int distance, DateTime startTime, int sprintType, bool isInfluencerEventParticipant,
                                      bool sprintCreator = false, bool isTimeBased = false,
                                      TimeSpan durationForTimeBasedEvent = default(TimeSpan),
-                                     string descriptionForTimeBasedEvent = null, bool isNarrationsOn = false, string coHost = "") 
+                                     string descriptionForTimeBasedEvent = null, bool isNarrationsOn = false)
         {
             this.Id = id;
             this.Name = name;
@@ -32,7 +32,6 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             this.IsNarrationsOn = isNarrationsOn;
-            this.CoHost = coHost;
         }
 
         public SprintInfo(Infrastructure.Persistence.Entities.Sprint sprint, bool sprintCreator = false, bool isInfluencerEventParticipant = false)
@@ -101,8 +100,5 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         /// </summary>
         public bool IsNarrationsOn { get; }
 
-        /// Get Co Host of Sprint
-        /// </summary>
-        public string CoHost { get; }
     }
 }

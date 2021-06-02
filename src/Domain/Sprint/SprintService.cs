@@ -754,7 +754,7 @@
 
             if (pageNo == 0 && limit == 0)
             {
-                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList();
+                pariticipants = this.SprintRepo.GetParticipants(participantPredicate).ToList(); ;
             }
             else
             {
@@ -946,10 +946,6 @@
 
         public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null)
         {
-            string strCoHost = string.Empty;
-            if (StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
-                strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond);
-
             SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
                 sprint.Id,
                 sprint.Name,
@@ -963,8 +959,7 @@
                 sprint.DurationForTimeBasedEvent,
                 sprint.DescriptionForTimeBasedEvent,
                 sprint.InfluencerAvailability,
-                sprint.IsNarrationsOn,
-                strCoHost);
+                sprint.IsNarrationsOn);
 
             participants
                 .ForEach(p =>
