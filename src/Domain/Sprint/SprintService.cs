@@ -121,6 +121,46 @@
             success = this.SprintRepo.UpdateSprintStatusBySprintId(sprintId) > 0 ? true : false;
             return success;
         }
+
+        /// <summary>
+        /// Join user to a sprint through an email
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> joinUser(int sprintId, string email)
+        {
+            int InfluncerUserId = 0;
+            string encryptedEamil = null;
+            if (email != null)
+            {
+                if (StringUtils.IsBase64String(email))
+                {
+                    encryptedEamil = email;
+                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email);
+                }
+                else
+                {
+                    encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+                }
+            }
+            InfluncerUserId = await this.GetInfluencerIdByEmail(encryptedEamil);
+            if (InfluncerUserId == 0)
+            {
+                InfluncerUserId = await this.GetInfluencerIdByEmail(email);
+            }
+            try
+            {
+                await this.SprintParticipantService.JoinSprint(sprintId, InfluncerUserId, 0, true);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error($"Participant adding errror - {e}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Update instance of SprintService
         /// </summary>
@@ -132,20 +172,6 @@
             string descriptionForTimeBasedEvent)
         {
 
-            int InfluncerUserId = 0;
-            string email = string.Empty;
-
-            string encryptedEamil = null;
-            if (sprintModel.InfluencerEmail != null)
-            {
-                email = sprintModel.InfluencerEmail;
-                encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
-            }
-            InfluncerUserId = await this.GetInfluencerIdByEmail(encryptedEamil);
-            if (InfluncerUserId == 0)
-            {
-                InfluncerUserId = await this.GetInfluencerIdByEmail(email);
-            }
 
 
             if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
@@ -221,23 +247,14 @@
                 sprintAavail.InfluencerEmail = !StringUtils.IsBase64String(sprintModel.InfluencerEmail) ?
                 Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail) : sprintModel.InfluencerEmail;
                 sprintAavail.InfluencerAvailability = true;
-                if (userId != 0)
-                {
-                    try
-                    {
-                        await this.SprintParticipantService.JoinSprint(sprintId, InfluncerUserId, 0, true);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Logger.Error($"Participant adding errror - {e}");
-                    }
-                }
+                await this.joinUser(sprintId, sprintModel.InfluencerEmail);
             }
 
             if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond) && !string.Equals(sprintAavail.InfluencerEmailSecond, sprintModel.InfluencerEmailSecond))
             {
                 sprintAavail.InfluencerEmailSecond = !StringUtils.IsBase64String(sprintModel.InfluencerEmailSecond) ?
                 Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmailSecond) : sprintModel.InfluencerEmailSecond;
+                await this.joinUser(sprintId, sprintModel.InfluencerEmailSecond);
             }
 
             if (sprintModel.DraftEvent != null)
@@ -382,6 +399,7 @@
                 {
                     sprint.InfluencerEmailSecond = sprintModel.InfluencerEmailSecond;
                 }
+
             }
 
             if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
@@ -467,6 +485,14 @@
                 });
 
                 sprint.SocialMediaLink = socialLink;
+                if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
+                {
+                    await this.joinUser(sprint.Id, sprint.InfluencerEmail);
+                }
+                if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
+                {
+                    await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
+                }
                 await this.SprintRepo.UpdateSprint(sprint);
             }
 
