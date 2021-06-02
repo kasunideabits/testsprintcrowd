@@ -21,8 +21,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             TimeSpan durationForTimeBasedEvent = default(TimeSpan),
             string descriptionForTimeBasedEvent = null,
             bool influencerAvailability = false,
-            bool isNarrationsOn = true,
-            string coHost = ""
+            bool isNarrationsOn = true
             ) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, influencerAvailability)
 
         {
@@ -33,7 +32,6 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             this.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             this.InfluencerAvailability = influencerAvailability;
             this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
-            this.CoHost = coHost;
         }
 
         public SprintInfoDto(
@@ -66,6 +64,5 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool InfluencerAvailability { get; }
         public bool IsNarrationsOn { get; set; } = true;
 
-        public string CoHost { get; set; }
     }
 }
