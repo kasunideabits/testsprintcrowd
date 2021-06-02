@@ -765,13 +765,19 @@
 
 
             User influencer = null;
+            User influencerCoHost = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
             {
                 influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
                 if (influencer == null)
                     influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
+
+                influencerCoHost = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmailSecond);
+                if (influencerCoHost == null)
+                    influencerCoHost = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond));
+
             }
-            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer);
+            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer , influencerCoHost);
         }
 
         /// <summary>
@@ -944,7 +950,7 @@
             return result;
         }
 
-        public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null)
+        public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null, User influencerCoHost = null)
         {
             string strCoHost = string.Empty;
             if (StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
@@ -973,6 +979,10 @@
                     if (influencer != null)
                     {
                         isInfulencer = influencer.Id == p.UserId;
+                    }
+                    if (influencerCoHost != null)
+                    {
+                        isInfulencer = influencerCoHost.Id == p.UserId;
                     }
                     result.AddParticipant(
                         p.User.Id,

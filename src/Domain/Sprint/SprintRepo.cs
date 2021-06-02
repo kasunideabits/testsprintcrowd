@@ -294,6 +294,11 @@
             return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
         }
 
+        /// <summary>
+        /// Find Influencer
+        /// </summary>
+        /// <param name="influencerEmail"></param>
+        /// <returns></returns>
         public async Task<User> FindInfluencer(string influencerEmail)
         {
             var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);
