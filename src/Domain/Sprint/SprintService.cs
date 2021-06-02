@@ -16,7 +16,7 @@
     using SprintCrowdBackEnd.Enums;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Web.Event;
-
+    using Serilog;
     /// <summary>
     /// Sprint service
     /// </summary>
@@ -27,16 +27,18 @@
         /// </summary>
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService, ISprintParticipantRepo sprintParticipantRepo)
+        public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService,
+        ISprintParticipantRepo sprintParticipantRepo, ISprintParticipantService sprintParticipantService)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
             this.userRepo = _userRepo;
             this.SocialShareService = socialShareService;
             this.SprintParticipantRepo = sprintParticipantRepo;
+            this.SprintParticipantService = sprintParticipantService;
         }
         private readonly IUserRepo userRepo;
-
+        private ISprintParticipantService SprintParticipantService { get; }
         private ISocialShareService SocialShareService { get; }
         private ISprintRepo SprintRepo { get; }
         private INotificationClient NotificationClient { get; }
@@ -130,6 +132,22 @@
             string descriptionForTimeBasedEvent)
         {
 
+            int InfluncerUserId = 0;
+            string email = string.Empty;
+
+            string encryptedEamil = null;
+            if (sprintModel.InfluencerEmail != null)
+            {
+                email = sprintModel.InfluencerEmail;
+                encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+            }
+            InfluncerUserId = await this.GetInfluencerIdByEmail(encryptedEamil);
+            if (InfluncerUserId == 0)
+            {
+                InfluncerUserId = await this.GetInfluencerIdByEmail(email);
+            }
+
+
             if (sprintModel.promotionCode != null && sprintModel.promotionCode != string.Empty)
             {
                 Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
@@ -197,11 +215,23 @@
 
             sprintAavail.InfluencerAvailability = sprintModel.InfluencerAvailability;
 
-            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, sprintModel.InfluencerEmail))
+            if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail) && !string.Equals(sprintAavail.InfluencerEmail, sprintModel.InfluencerEmail)
+            && !string.Equals(sprintAavail.InfluencerEmail, Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail)))
             {
                 sprintAavail.InfluencerEmail = !StringUtils.IsBase64String(sprintModel.InfluencerEmail) ?
                 Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(sprintModel.InfluencerEmail) : sprintModel.InfluencerEmail;
                 sprintAavail.InfluencerAvailability = true;
+                if (userId != 0)
+                {
+                    try
+                    {
+                        await this.SprintParticipantService.JoinSprint(sprintId, InfluncerUserId, 0, true);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Logger.Error($"Participant adding errror - {e}");
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond) && !string.Equals(sprintAavail.InfluencerEmailSecond, sprintModel.InfluencerEmailSecond))
