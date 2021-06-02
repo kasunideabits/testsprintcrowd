@@ -18,6 +18,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
             this.StartTime = sprint.StartDateTime;
             this.CreatedBy = (sprint.CreatedBy != null) ? sprint.CreatedBy.Id : 0;
             this.PromoCode = sprint.PromotionCode;
+            this.IsTimeBased = sprint.IsTimeBased;
+            this.DescriptionForTimeBasedEvent = sprint.DescriptionForTimeBasedEvent;
+            this.DurationForTimeBasedEvent = sprint.DurationForTimeBasedEvent;
         }
         public int Id { get; }
         public string Name { get; }
@@ -29,6 +32,9 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant
         public int Distance { get; }
         public int CreatedBy { get; }
         public string PromoCode { get; }
+        public bool IsTimeBased { get; }
+        public TimeSpan DurationForTimeBasedEvent { get; }
+        public string DescriptionForTimeBasedEvent { get; }
 
     }
 }
