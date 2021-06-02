@@ -356,7 +356,11 @@
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
                     ImageUrl = s.Sprint.ImageUrl,
-                    PromoCode = s.Sprint.PromotionCode
+                    PromoCode = s.Sprint.PromotionCode,
+                    TimebasedDescription = s.Sprint.DescriptionForTimeBasedEvent,
+                    IsTimebased = s.Sprint.IsTimeBased,
+                    DurationForTimeBasedEvent = s.Sprint.DurationForTimeBasedEvent
+
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()
@@ -367,7 +371,7 @@
                      IsFriend = friendsCommon.Contains(sp.User.Id)
                  }
              ).ToList()
-            });
+            }); ;
 
             return otherCommon.ToList();
             //if (creatorEventCommon != null)

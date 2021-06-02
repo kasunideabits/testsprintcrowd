@@ -50,5 +50,8 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public string ImageUrl { get; set; }
 
         public string PromoCode { get; set; }
+        public string TimebasedDescription { get; set; }
+        public bool IsTimebased { get; set; }
+        public TimeSpan DurationForTimeBasedEvent { get; set; }
     }
 }
