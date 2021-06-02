@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Common;
     using Serilog;
+    using SprintCrowd.BackEnd.Utils;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -483,6 +484,9 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
+                string strCoHost = string.Empty;
+                if (StringUtils.IsBase64String(markedAttendaceDetails.Sprint.InfluencerEmailSecond))
+                    strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(markedAttendaceDetails.Sprint.InfluencerEmailSecond);
 
                 return new SprintInfo(
                     markedAttendaceDetails.Sprint.Id,
@@ -495,7 +499,8 @@
                     markedAttendaceDetails.Sprint.IsTimeBased,
                     markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
-                    markedAttendaceDetails.Sprint.IsNarrationsOn
+                    markedAttendaceDetails.Sprint.IsNarrationsOn ,
+                    strCoHost
                     );
 
             }
