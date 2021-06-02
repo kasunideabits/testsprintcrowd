@@ -22,9 +22,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             TimeSpan durationForTimeBasedEvent = default(TimeSpan),
             string descriptionForTimeBasedEvent = null,
             bool InfluencerAvailability = false,
-            bool isNarrationsOn = false)
+            bool isNarrationsOn = false,
+            string coHost = "")
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode, null, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, InfluencerAvailability, isNarrationsOn);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode, null, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, InfluencerAvailability, isNarrationsOn, coHost);
 
             this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
