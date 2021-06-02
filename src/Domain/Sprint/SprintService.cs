@@ -980,7 +980,7 @@
                     {
                         isInfulencer = influencer.Id == p.UserId;
                     }
-                    if (influencerCoHost != null)
+                    if (influencerCoHost != null && !isInfulencer)
                     {
                         isInfulencer = influencerCoHost.Id == p.UserId;
                     }
