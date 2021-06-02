@@ -34,6 +34,12 @@
         }
 
         private readonly IUserRepo _userRepo;
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
+        {
+            this.SprintParticipantRepo = sprintParticipantRepo;
+            this.NotificationClient = notificationClient;
+
+        }
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         private INotificationClient NotificationClient { get; }
@@ -133,13 +139,13 @@
             }
             else
             {
+                if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                }
                 if (sprint.PromotionCode == string.Empty)
                 {
-                    if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
-                    {
-                        throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
-                    }
-                    else if (inviteUser != null)
+                    if (inviteUser != null)
                     {
                         await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
