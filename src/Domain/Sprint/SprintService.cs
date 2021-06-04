@@ -979,7 +979,7 @@
         public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null, User influencerCoHost = null)
         {
             string strCoHost = string.Empty;
-            if (StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
+            if (sprint.InfluencerEmailSecond!=null && sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
                 strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond);
 
             SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
@@ -1150,7 +1150,7 @@
                                         var resultDto = new PublicSprintWithParticipantsDto(
                                    sprint.Id, sprint.Name, sprint.Distance,
                                    sprint.NumberOfParticipants, sprint.StartDateTime,
-                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
                                         foreach (var participant in participants)
                                         {
                                             resultDto.AddParticipant(
@@ -1186,7 +1186,7 @@
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,
-                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
                             foreach (var participant in participants)
                             {
                                 resultDto.AddParticipant(
