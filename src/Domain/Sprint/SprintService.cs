@@ -979,7 +979,7 @@
         public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null, User influencerCoHost = null)
         {
             string strCoHost = string.Empty;
-            if (StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
+            if (sprint.InfluencerEmailSecond!=null && sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
                 strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond);
 
             SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
