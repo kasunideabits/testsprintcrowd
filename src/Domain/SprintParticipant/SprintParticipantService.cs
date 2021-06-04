@@ -335,8 +335,8 @@
                s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-               ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
-               (s.Sprint.StartDateTime > now);
+               (currentTimeBuff == -15 && s.Sprint.Interval == 15 ? s.Sprint.StartDateTime > now : s.Sprint.StartDateTime > DateTime.UtcNow.AddMinutes(-(s.Sprint.Interval)));
+
 
             var sprintsCommon = this.SprintParticipantRepo.GetAll(creatorQueryCommon).ToList();
             var friendsRelationsCommon = this.SprintParticipantRepo.GetFriends(userId);
