@@ -792,16 +792,18 @@
 
             User influencer = null;
             User influencerCoHost = null;
-            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability )
             {
                 influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
                 if (influencer == null)
                     influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
 
-                influencerCoHost = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmailSecond);
-                if (influencerCoHost == null)
-                    influencerCoHost = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond));
-
+                if (sprint.InfluencerEmailSecond != null)
+                {
+                    influencerCoHost = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmailSecond);
+                    if (influencerCoHost == null)
+                        influencerCoHost = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond));
+                }
             }
             return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer , influencerCoHost);
         }
