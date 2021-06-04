@@ -150,15 +150,15 @@
                         Data = result,
                     };
 
-                    if (response.StatusCode == (int)ApplicationResponseCode.Success && userId != 0)
-                    {
-                        var joinResult = await this.SprintParticipantService.JoinSprint(
-                                result.SprintInfo.Id,
-                                userId,
-                                0,
-                                true
-                            );
-                    }
+                    // if (response.StatusCode == (int)ApplicationResponseCode.Success && userId != 0)
+                    // {
+                    //     var joinResult = await this.SprintParticipantService.JoinSprint(
+                    //             result.SprintInfo.Id,
+                    //             userId,
+                    //             0,
+                    //             true
+                    //         );
+                    // }
                     return this.Ok(response);
                 }
                 else
