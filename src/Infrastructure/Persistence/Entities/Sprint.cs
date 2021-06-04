@@ -154,5 +154,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public bool IsNarrationsOn { get; set; }
 
+        /// <summary>
+        /// Sprint interval
+        /// </summary>
+        public int Interval { get; set; }
+
+
+
     }
 }
