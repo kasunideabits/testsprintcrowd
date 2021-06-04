@@ -89,7 +89,7 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
             }
-            if (sprint != null && sprint.StartDateTime.AddMinutes(15) < DateTime.UtcNow)
+            if (sprint != null && sprint.StartDateTime.AddMinutes(sprint.Interval) < DateTime.UtcNow)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "Sprint Expired");
             }
