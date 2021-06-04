@@ -491,7 +491,7 @@
             if (markedAttendaceDetails != null)
             {
                 string strCoHost = string.Empty;
-                if (StringUtils.IsBase64String(markedAttendaceDetails.Sprint.InfluencerEmailSecond))
+                if (markedAttendaceDetails.Sprint.InfluencerEmailSecond != null && markedAttendaceDetails.Sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(markedAttendaceDetails.Sprint.InfluencerEmailSecond))
                     strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(markedAttendaceDetails.Sprint.InfluencerEmailSecond);
 
                 return new SprintInfo(
