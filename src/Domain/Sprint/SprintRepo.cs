@@ -201,6 +201,11 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
+            if(sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             this.dbContext.SaveChanges();
             return result.Entity;
@@ -212,6 +217,14 @@
         /// <param name="eventsToCreate">list of sprints to be created</param>
         public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
         {
+            foreach(var sprint in eventsToCreate)
+            {
+                if (sprint.Interval == 0)
+                {
+                    sprint.Interval = 15;
+                }
+            }
+
             await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
             this.dbContext.SaveChanges();
         }
@@ -223,6 +236,11 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> DraftSprint(Sprint sprintToAdd)
         {
+            if (sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             return result.Entity;
         }
@@ -233,6 +251,11 @@
         /// <param name="sprintData">sprint repository</param>
         public async Task<Sprint> UpdateSprint(Sprint sprintData)
         {
+            if (sprintData.Interval == 0)
+            {
+                sprintData.Interval = 15;
+            }
+
             var result = this.dbContext.Sprint.Update(sprintData);
             this.dbContext.SaveChanges();
             return result.Entity;
