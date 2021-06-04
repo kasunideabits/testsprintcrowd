@@ -358,7 +358,7 @@
                     Name = s.Sprint.Name,
                     Distance = s.Sprint.Distance,
                     StartTime = s.Sprint.StartDateTime,
-                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(s.Sprint.Interval),
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
