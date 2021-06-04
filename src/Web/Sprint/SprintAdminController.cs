@@ -22,7 +22,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy.ADMIN)]
+    [Authorize]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
