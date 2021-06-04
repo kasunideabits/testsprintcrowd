@@ -1150,7 +1150,7 @@
                                         var resultDto = new PublicSprintWithParticipantsDto(
                                    sprint.Id, sprint.Name, sprint.Distance,
                                    sprint.NumberOfParticipants, sprint.StartDateTime,
-                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
                                         foreach (var participant in participants)
                                         {
                                             resultDto.AddParticipant(
@@ -1186,7 +1186,7 @@
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,
-                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
                             foreach (var participant in participants)
                             {
                                 resultDto.AddParticipant(
