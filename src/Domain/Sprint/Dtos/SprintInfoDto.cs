@@ -35,6 +35,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             this.InfluencerAvailability = influencerAvailability;
             this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             this.CoHost = coHost;
+
         }
 
         public SprintInfoDto(
