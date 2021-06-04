@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Web.Sprint.Models;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Controller for handle sprint participants
@@ -302,6 +303,19 @@
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetStatistic(user.Id);
             return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+        }
+
+
+        /// <summary>
+        /// Get sprint participant details.
+        /// </summary>
+        [HttpGet("sprint/select/{sprintId}")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintParticipantDto>), 200)]
+        public async Task<IActionResult> GetSprintParicipant(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetSprintParticipant(sprintId,user.Id);
+            return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
         }
     }
 }

@@ -8,6 +8,7 @@
     using SprintCrowd.BackEnd.Web.SprintManager;
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -156,5 +157,13 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<int> GetAllSprintsHistoryCountByUserId(int userId);
+       
+        /// <summary>
+        /// Get sprint parcipant details (starttime,finshtime)
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId);
     }
 }

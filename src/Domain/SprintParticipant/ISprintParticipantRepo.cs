@@ -23,6 +23,8 @@
         /// <returns>User details</returns>
         Task<User> MarkAttendence(int sprintId, int userId , bool isIinfluencerEventParticipant);
 
+        Task<List<SprintParticipant>> GetByJoinedUsers(int sprintId);
+
         /// <summary>
         /// User join for an event
         /// </summary>

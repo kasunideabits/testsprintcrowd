@@ -156,6 +156,11 @@
             return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
         }
 
+        public async Task<List<SprintParticipant>> GetByJoinedUsers(int sprintId)
+        {
+            return await this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage == 0).ToListAsync();
+        }
+
         /// <summary>
         /// Get By User Id SprintId
         /// </summary>

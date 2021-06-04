@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Common;
     using Serilog;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -883,6 +884,19 @@
 
         }
 
+        public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId,int userId)
+        {
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, 2953);
+            return new SprintParticipantDto()
+            {
+                DistanceRan = user.DistanceRan,
+                FinishTime = user.FinishTime,
+                StartedTime = user.StartedTime
+            };
+
+        }
+
+        
         public async Task<SprintInfo> GetSprint(int sprintId)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
