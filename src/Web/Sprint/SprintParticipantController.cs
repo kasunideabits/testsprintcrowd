@@ -314,7 +314,7 @@
         public async Task<IActionResult> GetSprintParicipant(int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintParticipantService.GetSprintParticipant(sprintId,user.Id);
+            var result = await this.SprintParticipantService.GetSprintParticipant(sprintId, 2953);
             return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
         }
     }

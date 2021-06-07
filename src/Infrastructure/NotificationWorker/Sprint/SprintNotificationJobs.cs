@@ -23,7 +23,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         /// <summary>
         /// Sprint mark attendance
         /// </summary>
-        public void SprintMarkAttendace(int sprintId, int userId, string name, string profilePicture, string country, string countryCode, string city, string colorCode)
+        public void SprintMarkAttendace(int sprintId, int userId, string name, string profilePicture, string country, string countryCode, string city, string colorCode )
         {
             var message = new MarkAttendance(sprintId, userId, name, profilePicture, country, countryCode, city, colorCode);
             new NotificationWorker<SprintMarkAttendance>().Invoke(message);

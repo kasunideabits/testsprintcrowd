@@ -16,9 +16,17 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             DateTime startTime,
             SprintType type,
             string sprintLocation,
-            string promoCode)
+            string promoCode,
+
+            bool isTimeBased = false,
+            TimeSpan durationForTimeBasedEvent = default(TimeSpan),
+            string descriptionForTimeBasedEvent = null,
+            bool InfluencerAvailability = false,
+            bool isNarrationsOn = false,
+            string coHost = "")
         {
-            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode);
+            this.SprintInfo = new SprintInfoDto(sprintId, sprintName, distance, numberOfParticipants, startTime, type, sprintLocation, promoCode, null, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, InfluencerAvailability, isNarrationsOn, coHost);
+
             this.ParticipantInfo = new List<ParticipantInfoDto>();
         }
 
@@ -26,9 +34,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
 
         public List<ParticipantInfoDto> ParticipantInfo { get; set; }
 
-        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage,string userGroup, bool isInfluencer = false)
+        public void AddParticipant(int id, string name, string profilePicture, string city, string country, string countryCode, string colorCode, bool creator, ParticipantStage stage, bool isInfluencer = false)
         {
-            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage,userGroup, isInfluencer));
+            this.ParticipantInfo.Add(new ParticipantInfoDto(id, name, profilePicture, city, country, countryCode, colorCode, creator, stage, isInfluencer));
         }
     }
 

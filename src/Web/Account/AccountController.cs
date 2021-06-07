@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Web.Account
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -161,6 +162,7 @@ namespace SprintCrowd.BackEnd.Web.Account
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
         {
+            Console.WriteLine("OS:-" + userOS + "---Version:-" + userCurrentAppVersion);
             var result = await this.UserService.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
             ResponseObject response = new ResponseObject()
             {

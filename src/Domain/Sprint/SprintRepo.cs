@@ -201,6 +201,11 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
+            if(sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             this.dbContext.SaveChanges();
             return result.Entity;
@@ -212,6 +217,14 @@
         /// <param name="eventsToCreate">list of sprints to be created</param>
         public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
         {
+            foreach(var sprint in eventsToCreate)
+            {
+                if (sprint.Interval == 0)
+                {
+                    sprint.Interval = 15;
+                }
+            }
+
             await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
             this.dbContext.SaveChanges();
         }
@@ -223,6 +236,11 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> DraftSprint(Sprint sprintToAdd)
         {
+            if (sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             return result.Entity;
         }
@@ -233,6 +251,11 @@
         /// <param name="sprintData">sprint repository</param>
         public async Task<Sprint> UpdateSprint(Sprint sprintData)
         {
+            if (sprintData.Interval == 0)
+            {
+                sprintData.Interval = 15;
+            }
+
             var result = this.dbContext.Sprint.Update(sprintData);
             this.dbContext.SaveChanges();
             return result.Entity;
@@ -259,13 +282,12 @@
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
         /// <param name="participantStage">sprint participant stage</param>
-        public async Task AddParticipant(int userId, int sprintId, string userGroup, ParticipantStage participantStage )
+        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage )
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {
                 UserId = userId,
                 SprintId = sprintId,
-                UserGroup = userGroup,
                 Stage = participantStage,
             };
             await this.dbContext.AddAsync(pariticipant);
@@ -295,6 +317,11 @@
             return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
         }
 
+        /// <summary>
+        /// Find Influencer
+        /// </summary>
+        /// <param name="influencerEmail"></param>
+        /// <returns></returns>
         public async Task<User> FindInfluencer(string influencerEmail)
         {
             var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);

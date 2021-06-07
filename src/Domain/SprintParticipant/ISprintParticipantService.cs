@@ -109,13 +109,7 @@
         /// <param name="notificationId">notificaiton id to remove</param>
         Task RemoveNotification(int notificationId);
 
-        /// <summary>
-        /// Get sprint details with who marked attendance with given user id
-        /// </summary>
-        /// <param name="userId">user id to get record</param>
-        /// <returns><see cref="SprintInfo">class </see></returns>
-        Task<SprintInfoUserGroupDto> GetSprintWhichMarkedAttendance(int userId);
-
+       
         /// <summary>
         /// Get statistics for given user id
         /// </summary>
@@ -165,5 +159,14 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId);
+
+        /// <summary>
+        /// Get sprint details with who marked attendance with given user id
+        /// </summary>
+        /// <param name="userId">user id to get record</param>
+        /// <returns><see cref="SprintInfo">class </see></returns>
+        Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
+
+
     }
 }

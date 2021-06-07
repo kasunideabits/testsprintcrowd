@@ -31,6 +31,12 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         public string InfluencerEmail { get; set; }
 
+
+        /// <summary>
+        /// Influencer Email second
+        /// </summary>
+        public string InfluencerEmailSecond { get; set; }
+
         /// <summary>
         /// Event distance
         /// </summary>
@@ -87,5 +93,7 @@ namespace SprintCrowd.BackEnd.Web.Event
 
         public VideoType VideoType { get; set; }
         public string VideoLink { get; set; }
+
+        public bool IsNarrationsOn { get; set; }
     }
 }

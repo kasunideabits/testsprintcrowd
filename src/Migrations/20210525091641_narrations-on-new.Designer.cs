@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210525091641_narrations-on-new")]
+    partial class narrationsonnew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,12 +245,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("InfluencerEmail")
                         .HasColumnName("influencer_email");
-
-                    b.Property<string>("InfluencerEmailSecond")
-                        .HasColumnName("influencer_email_second");
-
-                    b.Property<int>("Interval")
-                        .HasColumnName("interval");
 
                     b.Property<bool>("IsNarrationsOn")
                         .HasColumnName("is_narrations_on");

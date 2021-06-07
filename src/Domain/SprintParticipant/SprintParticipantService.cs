@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Common;
     using Serilog;
+    using SprintCrowd.BackEnd.Utils;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
@@ -35,6 +36,12 @@
         }
 
         private readonly IUserRepo _userRepo;
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
+        {
+            this.SprintParticipantRepo = sprintParticipantRepo;
+            this.NotificationClient = notificationClient;
+
+        }
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         private INotificationClient NotificationClient { get; }
@@ -55,7 +62,7 @@
 
             var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
             Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
-
+            var participatInfor = await this.SprintParticipantRepo.GetByUserIdSprintId(userId, sprintId);
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
@@ -83,7 +90,7 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
             }
-            if (sprint != null && sprint.StartDateTime.AddMinutes(15) < DateTime.UtcNow)
+            if (sprint != null && sprint.StartDateTime.AddMinutes(sprint.Interval) < DateTime.UtcNow)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "Sprint Expired");
             }
@@ -114,7 +121,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId , sprint.Type);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                     }
                     else
                     {
@@ -134,13 +141,13 @@
             }
             else
             {
+                if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                }
                 if (sprint.PromotionCode == string.Empty)
                 {
-                    if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
-                    {
-                        throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
-                    }
-                    else if (inviteUser != null)
+                    if (inviteUser != null)
                     {
                         await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
@@ -329,8 +336,8 @@
                s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-               ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
-               (s.Sprint.StartDateTime > now);
+               (currentTimeBuff == -15 && s.Sprint.Interval == 15 ? s.Sprint.StartDateTime > now : s.Sprint.StartDateTime > DateTime.UtcNow.AddMinutes(-(s.Sprint.Interval)));
+
 
             var sprintsCommon = this.SprintParticipantRepo.GetAll(creatorQueryCommon).ToList();
             var friendsRelationsCommon = this.SprintParticipantRepo.GetFriends(userId);
@@ -352,12 +359,16 @@
                     Name = s.Sprint.Name,
                     Distance = s.Sprint.Distance,
                     StartTime = s.Sprint.StartDateTime,
-                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(s.Sprint.Interval),
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
                     ImageUrl = s.Sprint.ImageUrl,
-                    PromoCode = s.Sprint.PromotionCode
+                    PromoCode = s.Sprint.PromotionCode,
+                    TimebasedDescription = s.Sprint.DescriptionForTimeBasedEvent,
+                    IsTimebased = s.Sprint.IsTimeBased,
+                    DurationForTimeBasedEvent = s.Sprint.DurationForTimeBasedEvent
+
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()
@@ -368,7 +379,7 @@
                      IsFriend = friendsCommon.Contains(sp.User.Id)
                  }
              ).ToList()
-            });
+            }); ;
 
             return otherCommon.ToList();
             //if (creatorEventCommon != null)
@@ -468,8 +479,8 @@
         /// Get sprint details with who marked attendance with given user id
         /// </summary>
         /// <param name="userId">user id to get record</param>
-        /// <returns><see cref=" SprintInfoUserGroupDto">class </see></returns>
-        public async Task<SprintInfoUserGroupDto> GetSprintWhichMarkedAttendance(int userId)
+        /// <returns><see cref=" SprintInfo">class </see></returns>
+        public async Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId)
         {
             var expiredDate = DateTime.UtcNow.AddHours(-8);
             Expression<Func<SprintParticipant, bool>> query = s =>
@@ -480,14 +491,25 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
-                return new SprintInfoUserGroupDto(
+                string strCoHost = string.Empty;
+                if (markedAttendaceDetails.Sprint.InfluencerEmailSecond != null && markedAttendaceDetails.Sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(markedAttendaceDetails.Sprint.InfluencerEmailSecond))
+                    strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(markedAttendaceDetails.Sprint.InfluencerEmailSecond);
+
+                return new SprintInfo(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
                     markedAttendaceDetails.Sprint.Type,
-                    markedAttendaceDetails.UserGroup,
-                    markedAttendaceDetails.IsIinfluencerEventParticipant);
+                    markedAttendaceDetails.IsIinfluencerEventParticipant,
+                    false,
+                    markedAttendaceDetails.Sprint.IsTimeBased,
+                    markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.IsNarrationsOn ,
+                    strCoHost
+                    );
+
             }
             else
             {
