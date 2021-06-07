@@ -22,14 +22,15 @@ namespace SprintCrowdBackEnd.Domain.Simulator
 
         public async Task<List<int>> JoinParticipants(int userCount, int sprintId)
         {
-            var list = await this.userRepo.GetRandomUsers_ForSimulator(userCount);
+             var list = await this.userRepo.GetRandomUsers_ForSimulator(userCount);
+           // var list = this.sprintParticipantRepo.GetByJoinedUsers(sprintId).Result;
             try
             {
 
                 int index = 0;
                 foreach (var user in list)
                 {
-                   
+
                     await this.sprintParticipantRepo.AddParticipant_ForSimulator(sprintId, user.Id);
                     index++;
                     // await this.sprintParticipantRepo.JoinSprint(user.Id, sprintId,0);
