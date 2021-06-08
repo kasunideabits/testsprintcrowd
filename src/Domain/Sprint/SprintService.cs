@@ -278,6 +278,10 @@
             sprintAavail.IsTimeBased = sprintModel.IsTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            if (sprintAavail.IsTimeBased == true)
+            {
+                sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
+            }
 
 
             Sprint sprint = await this.SprintRepo.UpdateSprint(sprintAavail);
@@ -442,6 +446,12 @@
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
+           
+            if (sprint.IsTimeBased == true)
+            {
+                sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+            }
+            
 
             if (sprintModel.DraftEvent == 0)
             {
@@ -558,6 +568,10 @@
                         sprint.InfluencerAvailability = influencerAvailability;
                         sprint.InfluencerEmail = infulenceEmail;
                         sprint.DraftEvent = draft;
+                        if (sprint.IsTimeBased == true)
+                        {
+                            sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+                        }
                     }
                     recurrentSprints.Add(sprint);
                     incementalSprintNumber++;
@@ -586,6 +600,10 @@
                         sprint.InfluencerAvailability = influencerAvailability;
                         sprint.InfluencerEmail = infulenceEmail;
                         sprint.DraftEvent = draft;
+                        if (sprint.IsTimeBased == true)
+                        {
+                            sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+                        }
                     }
                     else
                     {
@@ -599,6 +617,10 @@
                         sprint.InfluencerAvailability = influencerAvailability;
                         sprint.InfluencerEmail = infulenceEmail;
                         sprint.DraftEvent = draft;
+                        if (sprint.IsTimeBased == true)
+                        {
+                            sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+                        }
                     }
                     recurrentSprints.Add(sprint);
                     incementalSprintNumber++;
@@ -627,6 +649,10 @@
                         sprint.InfluencerAvailability = influencerAvailability;
                         sprint.InfluencerEmail = infulenceEmail;
                         sprint.DraftEvent = draft;
+                        if (sprint.IsTimeBased == true)
+                        {
+                            sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+                        }
                     }
                     else
                     {
@@ -640,6 +666,10 @@
                         sprint.InfluencerAvailability = influencerAvailability;
                         sprint.InfluencerEmail = infulenceEmail;
                         sprint.DraftEvent = draft;
+                        if (sprint.IsTimeBased == true)
+                        {
+                            sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
+                        }
                     }
                     recurrentSprints.Add(sprint);
                     incementalSprintNumber++;
@@ -704,6 +734,10 @@
                     duplicatedSprint.InfluencerAvailability = influencerAvailability;
                     duplicatedSprint.InfluencerEmail = infulenceEmail;
                     duplicatedSprint.DraftEvent = draft;
+                    if (duplicatedSprint.IsTimeBased == true)
+                    {
+                        duplicatedSprint.Interval = (int)duplicatedSprint.DurationForTimeBasedEvent.TotalMinutes;
+                    }
 
                     Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
                 }
@@ -725,6 +759,11 @@
                 duplicatedSprint.InfluencerAvailability = influencerAvailability;
                 duplicatedSprint.InfluencerEmail = infulenceEmail;
                 duplicatedSprint.DraftEvent = draft;
+
+                if (duplicatedSprint.IsTimeBased == true)
+                {
+                    duplicatedSprint.Interval = (int)duplicatedSprint.DurationForTimeBasedEvent.TotalMinutes;
+                }
 
                 Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
 
@@ -998,7 +1037,8 @@
                 sprint.DescriptionForTimeBasedEvent,
                 sprint.InfluencerAvailability,
                 sprint.IsNarrationsOn,
-                strCoHost);
+                strCoHost,
+                sprint.Interval);
 
             participants
                 .ForEach(p =>
