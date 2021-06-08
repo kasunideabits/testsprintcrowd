@@ -10,7 +10,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
-  
+
 
     /// <summary>
     /// user service used for managing users.
@@ -53,7 +53,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user.Id, user.Name, user.ProfilePicture, user.Code, user.CreatedDate, user.Description, user.CountryCode);
+                return new UserDto(user);
             }
             else
             {
@@ -387,9 +387,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
         {
-            try 
-            { 
-                return await this.userRepo.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion); 
+            try
+            {
+                return await this.userRepo.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
             }
             catch (System.Exception Ex)
             {
