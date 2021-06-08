@@ -1,5 +1,5 @@
 using System;
-
+using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     /// <summary>
@@ -14,7 +14,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="name">name for user</param>
         /// <param name="profilePicture">profile picture url for user</param>
         /// <param name="userCode">profile picture url for user</param>
-        public UserDto(int userId, string name, string profilePicture, string userCode  , DateTime joinedDate, string description = "", string countryCode = "")
+        public UserDto(int userId, string name, string profilePicture, string userCode, DateTime joinedDate, string description = "", string countryCode = "")
         {
             this.UserId = userId;
             this.Name = name;
@@ -23,6 +23,19 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.Description = description;
             this.CountryCode = countryCode;
             this.JoinedDate = joinedDate;
+        }
+
+
+        public UserDto(User user)
+        {
+            this.UserId = user.Id;
+            this.Name = user.Name;
+            this.ProfilePicture = user.ProfilePicture;
+            this.Code = user.Code;
+            this.Description = user.Description;
+            this.CountryCode = user.CountryCode;
+            this.JoinedDate = user.CreatedDate;
+            this.Email = user.Email;
         }
 
         /// <summary>
@@ -62,5 +75,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <value></value>
         public DateTime? JoinedDate { get; }
+
+        /// <summary>
+        /// Get user email
+        /// </summary>
+        /// <value></value>
+        public string Email { get; }
     }
 }
