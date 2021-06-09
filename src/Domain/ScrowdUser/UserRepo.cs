@@ -135,7 +135,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user.Email = registerData.Email;
                 user.FacebookUserId = registerResponse.Data.UserId;
                 user.Name = registerResponse.Data.Name;
-                user.UserType = (int)UserType.Facebook;
+                user.UserType = registerData.UserType;
                 user.ProfilePicture = registerResponse.Data.ProfilePicture;
                 user.AccessToken.Token = registerData.AccessToken;
                 user.Country = registerResponse.Data.Country;
