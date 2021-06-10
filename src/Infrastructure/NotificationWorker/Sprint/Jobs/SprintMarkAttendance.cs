@@ -42,6 +42,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             }
         }
 
+        /// <summary>
+        /// Ably Message
+        /// </summary>
+        /// <param name="markAttendance"></param>
         private void AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
@@ -52,6 +56,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendPushNotification(MarkAttendance markAttendance) { System.Console.WriteLine(markAttendance.City); }
 
+        /// <summary>
+        /// Notification Message Mapper
+        /// </summary>
+        /// <param name="markAttendance"></param>
+        /// <returns></returns>
         private static MarkAttandanceAblyMesage NotificationMessageMapper(MarkAttendance markAttendance)
         {
             return new MarkAttandanceAblyMesage(
