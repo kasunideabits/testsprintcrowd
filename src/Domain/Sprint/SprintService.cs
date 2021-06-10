@@ -53,22 +53,28 @@
         /// <param name="sortBy">Sort to filter</param>
         /// <param name="filterBy">Term to filter</param>
         /// <returns>Available all events</returns>
-        public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
+        public async Task<List<SprintReturnDto>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
 
-            // List<Sprint> allSprints = new List<Sprint>();
 
-            //allSprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
-
-            //for (int i = 0; i < allSprints.Count; i++)
-            //{
-            //    if (allSprints[i].InfluencerEmail != null)
-            //    {
-            //        allSprints[i].InfluencerEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(allSprints[i].InfluencerEmail);
-            //    }
-            //}
-
-            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+            var sprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+            List<SprintReturnDto> sprintReturnDtos = new List<SprintReturnDto>();
+            foreach (Sprint sprint in sprints)
+            {
+                SprintReturnDto sprintReturnDto = new SprintReturnDto(sprint);
+                if (!String.IsNullOrEmpty(sprint.InfluencerEmail))
+                {
+                    sprintReturnDto.influencerDetails = await this.getInfluncer(sprint.InfluencerEmail);
+                    sprintReturnDto.influencerDetails.Email = null;
+                }
+                if (!String.IsNullOrEmpty(sprint.InfluencerEmailSecond))
+                {
+                    sprintReturnDto.influencerSecondDetails = await this.getInfluncer(sprint.InfluencerEmailSecond);
+                    sprintReturnDto.influencerSecondDetails.Email = null;
+                }
+                sprintReturnDtos.Add(sprintReturnDto);
+            }
+            return sprintReturnDtos;
         }
 
         /// <summary>
@@ -159,6 +165,36 @@
                 Log.Logger.Error($"Participant adding errror - {e}");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// get influncer details from email
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<UserDto> getInfluncer(string email)
+        {
+            User influncerUser = null;
+            string encryptedEamil = null;
+            if (email != null)
+            {
+                if (StringUtils.IsBase64String(email))
+                {
+                    encryptedEamil = email;
+                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email);
+                }
+                else
+                {
+                    encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+                }
+            }
+            influncerUser = await this.SprintRepo.FindInfluencer(encryptedEamil);
+            if (influncerUser == null)
+            {
+                influncerUser = await this.SprintRepo.FindInfluencer(email);
+            }
+            return new UserDto(influncerUser);
         }
 
         /// <summary>
@@ -354,6 +390,8 @@
             }
             return infulenceId;
         }
+
+
         /// <summary>
         /// creates a new sprint
         /// </summary>
@@ -446,12 +484,12 @@
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
-           
+
             if (sprint.IsTimeBased == true)
             {
                 sprint.Interval = (int)sprint.DurationForTimeBasedEvent.TotalMinutes;
             }
-            
+
 
             if (sprintModel.DraftEvent == 0)
             {
@@ -831,7 +869,7 @@
 
             User influencer = null;
             User influencerCoHost = null;
-            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability )
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
             {
                 influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
                 if (influencer == null)
@@ -844,7 +882,7 @@
                         influencerCoHost = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond));
                 }
             }
-            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer , influencerCoHost);
+            return SprintWithPariticpantsMapper(sprint, pariticipants.ToList(), influencer, influencerCoHost);
         }
 
         /// <summary>
@@ -1020,7 +1058,7 @@
         public static SprintWithPariticpantsDto SprintWithPariticpantsMapper(Sprint sprint, List<SprintParticipant> participants, User influencer = null, User influencerCoHost = null)
         {
             string strCoHost = string.Empty;
-            if (sprint.InfluencerEmailSecond!=null && sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
+            if (sprint.InfluencerEmailSecond != null && sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(sprint.InfluencerEmailSecond))
                 strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond);
 
             SprintWithPariticpantsDto result = new SprintWithPariticpantsDto(
@@ -1192,7 +1230,7 @@
                                         var resultDto = new PublicSprintWithParticipantsDto(
                                    sprint.Id, sprint.Name, sprint.Distance,
                                    sprint.NumberOfParticipants, sprint.StartDateTime,
-                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
+                                   (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, sprint.Interval);
                                         foreach (var participant in participants)
                                         {
                                             resultDto.AddParticipant(
@@ -1228,7 +1266,7 @@
                             var resultDto = new PublicSprintWithParticipantsDto(
                                 sprint.Id, sprint.Name, sprint.Distance,
                                 sprint.NumberOfParticipants, sprint.StartDateTime,
-                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent,sprint.Interval);
+                                (SprintType)sprint.Type, sprint.Location, sprint.ImageUrl, sprint.PromotionCode, sprint.IsTimeBased, sprint.DurationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, sprint.Interval);
                             foreach (var participant in participants)
                             {
                                 resultDto.AddParticipant(
