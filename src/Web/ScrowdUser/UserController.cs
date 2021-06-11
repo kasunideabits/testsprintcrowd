@@ -55,10 +55,10 @@ namespace SprintCrowd.Web.ScrowdUser
         /// <summary>
         /// Get authorized user details
         /// </summary>
-        [HttpGet("getbyEmail")]
-        public async Task<IActionResult> GetUserByEmail([FromQuery(Name = "email")] string email)
+        [HttpPost("getbyEmail")]
+        public async Task<IActionResult> GetUserByEmail([FromBody] UserEmailModel userEmail)
         {
-            var user = await this.UserService.getUserByEmail(email);
+            var user = await this.UserService.getUserByEmail(userEmail.Email);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
