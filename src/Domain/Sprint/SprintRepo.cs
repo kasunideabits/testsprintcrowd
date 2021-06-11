@@ -62,10 +62,10 @@
         public IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate)
         {
             return this.dbContext.Sprint.Include(s => s.Participants).ThenInclude(s => s.User).Where(predicate);
-            
+
         }
 
-      
+
 
         public async Task<List<Sprint>> GetAllEvents()
         {
@@ -201,7 +201,7 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
-            if(sprintToAdd.Interval == 0)
+            if (sprintToAdd.Interval == 0)
             {
                 sprintToAdd.Interval = 15;
             }
@@ -217,7 +217,7 @@
         /// <param name="eventsToCreate">list of sprints to be created</param>
         public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
         {
-            foreach(var sprint in eventsToCreate)
+            foreach (var sprint in eventsToCreate)
             {
                 if (sprint.Interval == 0)
                 {
@@ -282,7 +282,7 @@
         /// <param name="userId">user id for pariticipant</param>
         /// <param name="sprintId">sprint id which going to join</param>
         /// <param name="participantStage">sprint participant stage</param>
-        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage )
+        public async Task AddParticipant(int userId, int sprintId, ParticipantStage participantStage)
         {
             SprintParticipant pariticipant = new SprintParticipant()
             {
@@ -324,7 +324,7 @@
         /// <returns></returns>
         public async Task<User> FindInfluencer(string influencerEmail)
         {
-            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);
+            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Trim() == influencerEmail.Trim());
             return result;
         }
 

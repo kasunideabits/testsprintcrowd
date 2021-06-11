@@ -25,7 +25,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.JoinedDate = joinedDate;
         }
 
+        public UserDto()
+        {
 
+        }
         public UserDto(User user)
         {
             this.UserId = user.Id;
