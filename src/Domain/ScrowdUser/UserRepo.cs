@@ -36,6 +36,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.restClient = new RestClient(this.appSettings.AuthorizationServer);
         }
 
+        /// <summary>
+        /// Find Influencer
+        /// </summary>
+        /// <param name="influencerEmail"></param>
+        /// <returns></returns>
+        public async Task<User> findUserByEmail(string influencerEmail)
+        {
+            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Trim() == influencerEmail.Trim());
+            return result;
+        }
+
         private readonly ScrowdDbContext dbContext;
         private readonly RestClient restClient;
         private readonly AppSettings appSettings;

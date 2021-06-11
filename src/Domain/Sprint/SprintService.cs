@@ -53,41 +53,10 @@
         /// <param name="sortBy">Sort to filter</param>
         /// <param name="filterBy">Term to filter</param>
         /// <returns>Available all events</returns>
-        public async Task<List<SprintReturnDto>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
+        public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
         {
+            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
 
-
-            var sprints = await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
-            List<SprintReturnDto> sprintReturnDtos = new List<SprintReturnDto>();
-            foreach (Sprint sprint in sprints)
-            {
-                try
-                {
-                    SprintReturnDto sprintReturnDto = new SprintReturnDto(sprint);
-                    if (!String.IsNullOrEmpty(sprint.InfluencerEmail))
-                    {
-                        sprintReturnDto.influencerDetails = await this.getInfluncer(sprint.InfluencerEmail);
-                        if (sprintReturnDto.influencerDetails.Email != null)
-                        {
-                            sprintReturnDto.influencerDetails.Email = null;
-                        }
-                    }
-                    if (!String.IsNullOrEmpty(sprint.InfluencerEmailSecond))
-                    {
-                        sprintReturnDto.influencerSecondDetails = await this.getInfluncer(sprint.InfluencerEmailSecond);
-                        if (sprintReturnDto.influencerSecondDetails.Email != null)
-                        {
-                            sprintReturnDto.influencerSecondDetails.Email = null;
-                        }
-                    }
-                    sprintReturnDtos.Add(sprintReturnDto);
-                }
-                catch (Exception e)
-                {
-                    Log.Logger.Error($"Sprint dto mapping error - {e}");
-                }
-            }
-            return sprintReturnDtos;
         }
 
         /// <summary>
@@ -180,35 +149,6 @@
             }
         }
 
-        /// <summary>
-        /// get influncer details from email
-        /// </summary>
-        /// <param name="sprintId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public async Task<UserDto> getInfluncer(string email)
-        {
-            User influncerUser = null;
-            string encryptedEamil = null;
-            if (email != null)
-            {
-                if (StringUtils.IsBase64String(email))
-                {
-                    encryptedEamil = email;
-                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email);
-                }
-                else
-                {
-                    encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
-                }
-            }
-            influncerUser = await this.SprintRepo.FindInfluencer(encryptedEamil);
-            if (influncerUser == null)
-            {
-                influncerUser = await this.SprintRepo.FindInfluencer(email);
-            }
-            return new UserDto(influncerUser != null ? influncerUser : new User());
-        }
 
         /// <summary>
         /// Update instance of SprintService
