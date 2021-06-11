@@ -41,7 +41,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <summary>
         /// Gets user id
         /// </summary>
-        public int UserId { get; }
+        public int UserId { get; set; }
 
         /// <summary>
         /// Gets user name
@@ -80,6 +80,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Get user email
         /// </summary>
         /// <value></value>
-        public string Email { get; }
+        public string Email { get; set; }
     }
 }

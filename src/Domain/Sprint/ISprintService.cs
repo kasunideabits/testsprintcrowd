@@ -7,7 +7,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
-
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
     /// <summary>
     /// ISprintService interface
     /// </summary>
@@ -21,7 +21,7 @@
         /// <param name="sortBy">Sort to filter</param>
         /// <param name="filterBy">Term to filter</param>
         /// <returns>Available events</returns>
-        Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
+        Task<List<SprintReturnDto>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
 
         /// <summary>
         /// Get created sprint count for given date range
@@ -36,6 +36,12 @@
         /// </summary>
         /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
         Task<LiveSprintCount> GetLiveSprintCount();
+
+        /// <summary>
+        /// get user details using encryptred.non encryped email
+        /// </summary>
+        /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
+        Task<UserDto> getInfluncer(string email);
 
         /// <summary>
         /// Get Influencer Id By Email
@@ -117,7 +123,7 @@
         /// <param name="sprintId">sprint id to lookup</param>
         /// <param name="pageNo">current page number for pagination</param>
         /// <param name="limit">limit for a page</param>
-       
+
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
         Task<SprintWithPariticpantsDto> GetSprintWithPaticipants(int sprintId, int pageNo, int limit);
 
@@ -148,7 +154,7 @@
         /// <param name="pageNo">page number for pagination</param>
         /// <param name="limit">limit for a each page for pagination</param>
         /// <returns>public sprint participants</returns>
-        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status,int userId, int timeOffset,int pageNo, int limit);
+        Task<List<PublicSprintWithParticipantsDto>> GetOpenEvents(int? status, int userId, int timeOffset, int pageNo, int limit);
 
         /// <summary>
         /// Duplicate a sprint, TODO : remove user object passing
