@@ -14,6 +14,13 @@ namespace SprintCrowd.BackEnd.Web.ScrowdUser.Models
         public DistanceModel Distance { get; set; }
     }
 
+    public class UserEmailModel
+    {
+        [Required]
+        public string Email { get; set; }
+
+    }
+
     public class DaysModel
     {
         [Required]
