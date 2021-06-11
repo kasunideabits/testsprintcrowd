@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
     using SprintCrowd.BackEnd.Application;
+  
 
     /// <summary>
     /// User model.
@@ -63,10 +64,15 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public UserState UserState { get; set; }
 
         /// <summary>
-        /// gets or set value.
+        /// Share route statistic details with
         /// </summary>
-        /// <value>list of sptints the user has participated and participating on.</value>
-        public List<Sprint> Sprint { get; set; }
+        public UserShareType UserShareType { get; set; }
+
+    /// <summary>
+    /// gets or set value.
+    /// </summary>
+    /// <value>list of sptints the user has participated and participating on.</value>
+    public List<Sprint> Sprint { get; set; }
 
         /// <summary>
         /// gets or set value.
