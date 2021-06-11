@@ -61,18 +61,31 @@
             List<SprintReturnDto> sprintReturnDtos = new List<SprintReturnDto>();
             foreach (Sprint sprint in sprints)
             {
-                SprintReturnDto sprintReturnDto = new SprintReturnDto(sprint);
-                if (!String.IsNullOrEmpty(sprint.InfluencerEmail))
+                try
                 {
-                    sprintReturnDto.influencerDetails = await this.getInfluncer(sprint.InfluencerEmail);
-                    sprintReturnDto.influencerDetails.Email = null;
+                    SprintReturnDto sprintReturnDto = new SprintReturnDto(sprint);
+                    if (!String.IsNullOrEmpty(sprint.InfluencerEmail))
+                    {
+                        sprintReturnDto.influencerDetails = await this.getInfluncer(sprint.InfluencerEmail);
+                        if (sprintReturnDto.influencerDetails.Email != null)
+                        {
+                            sprintReturnDto.influencerDetails.Email = null;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(sprint.InfluencerEmailSecond))
+                    {
+                        sprintReturnDto.influencerSecondDetails = await this.getInfluncer(sprint.InfluencerEmailSecond);
+                        if (sprintReturnDto.influencerSecondDetails.Email != null)
+                        {
+                            sprintReturnDto.influencerSecondDetails.Email = null;
+                        }
+                    }
+                    sprintReturnDtos.Add(sprintReturnDto);
                 }
-                if (!String.IsNullOrEmpty(sprint.InfluencerEmailSecond))
+                catch (Exception e)
                 {
-                    sprintReturnDto.influencerSecondDetails = await this.getInfluncer(sprint.InfluencerEmailSecond);
-                    sprintReturnDto.influencerSecondDetails.Email = null;
+                    Log.Logger.Error($"Sprint dto mapping error - {e}");
                 }
-                sprintReturnDtos.Add(sprintReturnDto);
             }
             return sprintReturnDtos;
         }
@@ -194,7 +207,7 @@
             {
                 influncerUser = await this.SprintRepo.FindInfluencer(email);
             }
-            return new UserDto(influncerUser);
+            return new UserDto(influncerUser != null ? influncerUser : new User());
         }
 
         /// <summary>
