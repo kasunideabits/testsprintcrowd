@@ -21,7 +21,7 @@
         /// <param name="sortBy">Sort to filter</param>
         /// <param name="filterBy">Term to filter</param>
         /// <returns>Available events</returns>
-        Task<List<SprintReturnDto>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
+        Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy);
 
         /// <summary>
         /// Get created sprint count for given date range
@@ -36,12 +36,6 @@
         /// </summary>
         /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
         Task<LiveSprintCount> GetLiveSprintCount();
-
-        /// <summary>
-        /// get user details using encryptred.non encryped email
-        /// </summary>
-        /// <returns>Toatal count of live events, 10-20KM and 21-30km</returns>
-        Task<UserDto> getInfluncer(string email);
 
         /// <summary>
         /// Get Influencer Id By Email

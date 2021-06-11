@@ -24,6 +24,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// retrieve the user by facebook user id.
         /// </summary>
         /// <param name="facebookUserId">facebook user id of the user.</param>
+
+        /// <summary>
+        /// get influncer details from email
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<UserDto> getUserByEmail(string email);
+
         Task<User> GetFacebookUser(string facebookUserId);
 
         /// <summary>
