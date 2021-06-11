@@ -51,6 +51,22 @@ namespace SprintCrowd.Web.ScrowdUser
             return this.Ok(response);
         }
 
+
+        /// <summary>
+        /// Get authorized user details
+        /// </summary>
+        [HttpGet("getbyEmail")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery(Name = "email")] string email)
+        {
+            var user = await this.UserService.getUserByEmail(email);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = user,
+            };
+            return this.Ok(response);
+        }
+
         /// <summary>
         /// Update user activity
         /// </summary>
@@ -170,7 +186,7 @@ namespace SprintCrowd.Web.ScrowdUser
         public async Task<IActionResult> ViewUserProfile()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.UserService.ViewUserProfile(user.Id); 
+            var result = await this.UserService.ViewUserProfile(user.Id);
             return this.Ok(new SuccessResponse<UserProfileDto>(result));
         }
     }

@@ -10,7 +10,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
-
+    using SprintCrowd.BackEnd.Utils;
 
     /// <summary>
     /// user service used for managing users.
@@ -37,6 +37,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 
         private IFriendService FriendService { get; }
 
+
         private ISprintParticipantService sprintParticipantService { get; }
 
         private ISprintParticipantService SprintParticipantService { get; }
@@ -62,6 +63,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
 
+
         /// <summary>
         /// Get facebook User.
         /// </summary>
@@ -76,6 +78,37 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 this.userRepo.SaveChanges();
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// get influncer details from email
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<UserDto> getUserByEmail(string email)
+        {
+            User influncerUser = null;
+            string encryptedEamil = null;
+            if (email != null)
+            {
+                if (StringUtils.IsBase64String(email))
+                {
+                    encryptedEamil = email;
+                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email);
+                }
+                else
+                {
+                    encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+                }
+            }
+            influncerUser = await this.userRepo.findUserByEmail(encryptedEamil);
+            if (influncerUser == null)
+            {
+                influncerUser = await this.userRepo.findUserByEmail(email);
+            }
+            return new UserDto(influncerUser != null ? influncerUser : new User());
         }
 
         /// <summary>
