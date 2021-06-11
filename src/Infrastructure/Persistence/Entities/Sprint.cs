@@ -10,10 +10,42 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// </summary>
     public class Sprint : BaseEntity
     {
+        public Sprint()
+        {
+        }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
+        public Sprint(Sprint sprint)
+        {
+            this.Id = sprint.Id;
+            this.Name = sprint.Name;
+            this.Distance = sprint.Distance;
+            this.CreatedBy = sprint.CreatedBy;
+            this.StartDateTime = sprint.StartDateTime;
+            this.Type = sprint.Type;
+            this.Status = sprint.Status;
+            this.Location = sprint.Location;
+            this.NumberOfParticipants = sprint.NumberOfParticipants;
+            this.InfluencerAvailability = sprint.InfluencerAvailability;
+            this.IsSmartInvite = sprint.IsSmartInvite;
+            this.InfluencerEmail = sprint.InfluencerEmail;
+            this.InfluencerEmailSecond = sprint.InfluencerEmailSecond;
+            this.DraftEvent = sprint.DraftEvent;
+            this.ImageUrl = sprint.ImageUrl;
+            this.PromotionCode = sprint.PromotionCode;
+            this.IsTimeBased = sprint.IsTimeBased;
+            this.DurationForTimeBasedEvent = sprint.DurationForTimeBasedEvent;
+            this.DescriptionForTimeBasedEvent = sprint.DescriptionForTimeBasedEvent;
+            this.SocialMediaLink = sprint.SocialMediaLink;
+            this.VideoType = sprint.VideoType;
+            this.VideoLink = sprint.VideoLink;
+            this.IsNarrationsOn = sprint.IsNarrationsOn;
+            this.Interval = sprint.Interval;
+
+        }
         public int Id { get; set; }
 
         /// <summary>
