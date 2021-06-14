@@ -3,6 +3,7 @@ using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
 using System;
 using SprintCrowd.Domain.Achievement;
 using System.Collections.Generic;
+using SprintCrowd.BackEnd.Application;
 
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
@@ -20,7 +21,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="profilePicture"></param>
         /// <param name="countryCode"></param>
         /// <param name="joinedDate"></param>
-        public UserProfileDto(int userId, string name,string description, string profilePicture, string countryCode , DateTime? joinedDate , List<FriendDto> friendDto , SprintStatisticDto sprintStatisticDto, List<AchievementDto> achievementDto)
+        public UserProfileDto(int userId, string name,string description, string profilePicture, string countryCode , DateTime? joinedDate , List<FriendDto> friendDto , SprintStatisticDto sprintStatisticDto, List<AchievementDto> achievementDto, UserShareType userShareType)
         {
             this.UserId = userId;
             this.Name = name;
@@ -31,6 +32,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.FriendDto = friendDto;
             this.SprintStatisticDto = sprintStatisticDto;
             this.AchievementDto = achievementDto;
+            this.UserShareType = userShareType;
         }
 
         /// <summary>
@@ -79,5 +81,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Get user AchievementDto
         /// </summary>
         public List<AchievementDto> AchievementDto { get; }
+
+        /// <summary>
+        /// Share route statistic details with
+        /// </summary>
+        public UserShareType UserShareType { get; set; }
     }
 }

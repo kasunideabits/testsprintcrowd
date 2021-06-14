@@ -406,7 +406,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 userInfor.JoinedDate,
                 allFriends,
                 userStatistic,
-                userAchievement);
+                userAchievement,
+                userInfor.UserShareType);
 
             return userProfileDetail;
         }

@@ -1,4 +1,5 @@
 using System;
+using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
@@ -39,6 +40,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.CountryCode = user.CountryCode;
             this.JoinedDate = user.CreatedDate;
             this.Email = user.Email;
+            this.UserShareType = user.UserShareType;
         }
 
         /// <summary>
@@ -84,5 +86,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <value></value>
         public string Email { get; set; }
+
+        /// <summary>
+        /// Share route statistic details with
+        /// </summary>
+        public UserShareType UserShareType { get; set; }
     }
 }

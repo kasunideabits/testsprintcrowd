@@ -114,7 +114,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.SharedUser.Country,
                         obj.SharedUser.CountryCode,
                         obj.SharedUser.ColorCode,
-                        obj.CreatedDate));
+                        obj.CreatedDate,
+                        obj.SharedUser.UserShareType));
                 }
 
                 else if (obj.SharedUserId == userId && parts.Find(x => x.Id == obj.AcceptedUser.Id) == null)
@@ -129,7 +130,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.AcceptedUser.Country,
                         obj.AcceptedUser.CountryCode,
                         obj.AcceptedUser.ColorCode,
-                        obj.CreatedDate));
+                        obj.CreatedDate,
+                        obj.AcceptedUser.UserShareType));
                 }
             });
             return parts;
