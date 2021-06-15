@@ -12,6 +12,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     /// </summary>
     public class UserProfileDto
     {
+
+        public UserProfileDto() { }
+
         /// <summary>
         /// Initalize <see cref="UserProfileDto"> class </see>
         /// </summary>
@@ -38,49 +41,55 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <summary>
         /// Gets user id
         /// </summary>
-        public int UserId { get; }
+        public int UserId { get; set; }
 
         /// <summary>
         /// Gets user name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets user description
         /// </summary>
-        public string Description { get; }
+        public string Description { get; set; }
 
         /// <summary>
         /// Gets user profile picture
         /// </summary>
-        public string ProfilePicture { get; }
+        public string ProfilePicture { get; set; }
 
         /// <summary>
         /// Get user country code
         /// </summary>
         /// <value></value>
-        public string CountryCode { get; }
+        public string CountryCode { get; set; }
+
+        /// <summary>
+        /// Get user country 
+        /// </summary>
+        /// <value></value>
+        public string Country { get; set; }
 
         /// <summary>
         /// Get user joined date
         /// </summary>
         /// <value></value>
-        public DateTime? JoinedDate { get; }
+        public DateTime? JoinedDate { get; set; }
 
         /// <summary>
         /// Get user FriendDto
         /// </summary>
-        public List<FriendDto> FriendDto { get; }
+        public List<FriendDto> FriendDto { get; set; }
 
         /// <summary>
         /// Get user SprintStatisticDto
         /// </summary>
-        public SprintStatisticDto SprintStatisticDto { get; }
+        public SprintStatisticDto SprintStatisticDto { get; set; }
 
         /// <summary>
         /// Get user AchievementDto
         /// </summary>
-        public List<AchievementDto> AchievementDto { get; }
+        public List<AchievementDto> AchievementDto { get; set; }
 
         /// <summary>
         /// Share route statistic details with

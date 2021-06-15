@@ -20,7 +20,7 @@ namespace SprintCrowd.Web.ScrowdUser
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class UserController : ControllerBase
     {
         /// <summary>
@@ -187,6 +187,17 @@ namespace SprintCrowd.Web.ScrowdUser
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.UserService.ViewUserProfile(user.Id);
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+        }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpPut("UserProfileEdit")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> UserProfileEdit(UserProfileDto profileData)
+        {
+            var result = await this.UserService.UpdateUserProfile(profileData);
             return this.Ok(new SuccessResponse<UserProfileDto>(result));
         }
     }

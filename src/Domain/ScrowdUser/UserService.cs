@@ -381,6 +381,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return success;
         }
 
+
+
         /// <summary>
         /// View User Profile
         /// </summary>
@@ -430,5 +432,35 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw Ex;
             }
         }
+
+        public async Task<UserProfileDto> UpdateUserProfile(UserProfileDto updateUserProfile)
+        {
+            try
+            {
+                var user = await this.userRepo.GetUser(updateUserProfile.UserId);
+                user.UserShareType = updateUserProfile.UserShareType;
+                user.Country = updateUserProfile.Country;
+                user.Name = updateUserProfile.Name;
+                user.Description = updateUserProfile.Description;
+                var result = this.userRepo.UpdateUserAndReturn(user);
+
+                UserProfileDto userpofileDto = new UserProfileDto()
+                {
+                    UserId = result.Id,
+                    Name = result.Name,
+                    ProfilePicture = result.ProfilePicture,
+                    Description = result.Description,
+                    CountryCode = result.CountryCode,
+                    UserShareType = result.UserShareType
+                };
+
+                return userpofileDto;
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }
