@@ -132,7 +132,7 @@
         /// <param name="sprintId"></param>
         /// <param name="time"></param>
         /// <param name="stage"></param>
-        Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position, string raceCompletedDuration);
+        Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position, string raceCompletedDuration, double distance);
 
         Task<SprintInfo> GetSprint(int sprintId);
 
