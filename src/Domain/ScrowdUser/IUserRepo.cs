@@ -159,6 +159,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         void UpdateUser(User user);
 
         /// <summary>
+        /// Update and return user
+        /// </summary>
+        User UpdateUserAndReturn(User user);
+
+        /// <summary>
         /// Update user settings for notification reminder
         /// </summary>
         void UpdateUserSettings(UserNotificationReminder notificationReminder);

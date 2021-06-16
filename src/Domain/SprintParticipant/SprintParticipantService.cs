@@ -215,14 +215,19 @@
         /// <param name="userId ">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult "> Exist sprint result</see></returns>
         // TODO : notification
-        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId)
+        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance)
         {
             try
             {
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
+
+                 
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
+                    if (participant.Sprint.IsTimeBased)
+                        participant.DistanceRan = distance;
+
                     participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
                 }
@@ -230,7 +235,7 @@
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
-                    participant.Sprint.Distance,
+                    participant.Sprint.IsTimeBased? distance : participant.Sprint.Distance,
                     participant.Sprint.StartDateTime,
                     participant.Sprint.NumberOfParticipants,
                     (SprintStatus)participant.Sprint.Status,

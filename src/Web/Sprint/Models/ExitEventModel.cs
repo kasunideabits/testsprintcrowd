@@ -14,5 +14,11 @@ namespace SprintCrowd.BackEnd.Web.Sprint
         /// Gets or set user id for exiting
         /// </summary>
         public int UserId { get; set; }
+
+        /// <summary>
+        /// Gets or set runner distance
+        /// </summary>
+        public int Distance { get; set; }
+
     }
 }
