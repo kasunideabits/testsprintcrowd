@@ -157,5 +157,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userCurrentAppVersion"></param>
         /// <returns></returns>
         Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion);
+
+        Task<UserProfileDto> UpdateUserProfile(UserProfileDto updateUserProfile);
     }
 }

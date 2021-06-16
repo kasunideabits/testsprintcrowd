@@ -509,6 +509,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.dbContext.SaveChanges();
         }
 
+
+        /// <summary>
+        /// Update user and return
+        /// </summary>
+        public User UpdateUserAndReturn(User user)
+        {
+            var result = this.dbContext.User.Update(user);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+        }
+        
         /// <summary>
         /// Update user settings for notification reminder
         /// </summary>

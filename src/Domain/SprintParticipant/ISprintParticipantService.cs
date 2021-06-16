@@ -37,8 +37,9 @@
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
+        /// <param name="distance">user running distance</param>
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
-        Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
+        Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance);
 
         /// <summary>
         /// Get all pariticipant with given stage <see cref="ParticipantStage"> stage </see>
