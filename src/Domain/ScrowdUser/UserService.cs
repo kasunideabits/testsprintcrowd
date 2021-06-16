@@ -442,6 +442,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user.Country = updateUserProfile.Country;
                 user.Name = updateUserProfile.Name;
                 user.Description = updateUserProfile.Description;
+                user.ProfilePicture = updateUserProfile.ProfilePicture;
                 var result = this.userRepo.UpdateUserAndReturn(user);
 
                 UserProfileDto userpofileDto = new UserProfileDto()
