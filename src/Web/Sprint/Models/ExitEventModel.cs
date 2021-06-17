@@ -20,5 +20,10 @@ namespace SprintCrowd.BackEnd.Web.Sprint
         /// </summary>
         public int Distance { get; set; }
 
+        /// <summary>
+        /// Gets or set race completed duration
+        /// </summary>
+        public string RaceCompletedDuration { get; set; }
+
     }
 }

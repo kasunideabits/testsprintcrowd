@@ -38,8 +38,9 @@
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
         /// <param name="distance">user running distance</param>
+        /// <param name="raceCompletedDuation">user runner race completed duration</param>
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
-        Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance);
+        Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance, string raceCompletedDuation);
 
         /// <summary>
         /// Get all pariticipant with given stage <see cref="ParticipantStage"> stage </see>
