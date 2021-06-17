@@ -2,6 +2,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     using System;
 
     /// <summary>
@@ -9,10 +10,42 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
     /// </summary>
     public class Sprint : BaseEntity
     {
+        public Sprint()
+        {
+        }
+
         /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
+        public Sprint(Sprint sprint)
+        {
+            this.Id = sprint.Id;
+            this.Name = sprint.Name;
+            this.Distance = sprint.Distance;
+            this.CreatedBy = sprint.CreatedBy;
+            this.StartDateTime = sprint.StartDateTime;
+            this.Type = sprint.Type;
+            this.Status = sprint.Status;
+            this.Location = sprint.Location;
+            this.NumberOfParticipants = sprint.NumberOfParticipants;
+            this.InfluencerAvailability = sprint.InfluencerAvailability;
+            this.IsSmartInvite = sprint.IsSmartInvite;
+            this.InfluencerEmail = sprint.InfluencerEmail;
+            this.InfluencerEmailSecond = sprint.InfluencerEmailSecond;
+            this.DraftEvent = sprint.DraftEvent;
+            this.ImageUrl = sprint.ImageUrl;
+            this.PromotionCode = sprint.PromotionCode;
+            this.IsTimeBased = sprint.IsTimeBased;
+            this.DurationForTimeBasedEvent = sprint.DurationForTimeBasedEvent;
+            this.DescriptionForTimeBasedEvent = sprint.DescriptionForTimeBasedEvent;
+            this.SocialMediaLink = sprint.SocialMediaLink;
+            this.VideoType = sprint.VideoType;
+            this.VideoLink = sprint.VideoLink;
+            this.IsNarrationsOn = sprint.IsNarrationsOn;
+            this.Interval = sprint.Interval;
+
+        }
         public int Id { get; set; }
 
         /// <summary>
@@ -87,6 +120,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public bool InfluencerAvailability { get; set; }
 
         /// <summary>
+        /// select smart link or invite.
+        /// </summary>
+        /// <value>smart link or invite.</value>
+        public bool IsSmartInvite { get; set; }
+
+        /// <summary>
         /// gets or sets value.
         /// </summary>
         /// <value>Influencer Email.</value>
@@ -96,10 +135,63 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>draft event status, drafted or not.</value>
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>CoInfluencer Email.</value>
+        public string InfluencerEmailSecond { get; set; }
+
+
         public int DraftEvent { get; set; }
         public string ImageUrl { get; set; }
 
         public string PromotionCode { get; set; }
+
+        /// <summary>
+        /// deternined if the sprint is time based or not
+        /// </summary>
+        public bool IsTimeBased { get; set; }
+
+        // <summary>
+        /// Duration for a time based event
+        // </summary>
+        public TimeSpan DurationForTimeBasedEvent { get; set; }
+
+        // <summary>
+        /// Description for a time based event
+        // </summary>
+        public string DescriptionForTimeBasedEvent { get; set; }
+
+        /// <summary>
+        /// Social media shareble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
+
+        /// <summary>
+        /// Video link type
+        /// </summary>
+        [Column(TypeName = "varchar(20)")]
+        public VideoType VideoType { get; set; }
+
+
+        /// <summary>
+        /// Video Link
+        /// </summary>
+        public string VideoLink { get; set; }
+
+
+        /// <summary>
+        /// Mute Narrations
+        /// </summary>
+        public bool IsNarrationsOn { get; set; }
+
+        /// <summary>
+        /// Sprint interval
+        /// </summary>
+        public int Interval { get; set; }
+
+
 
     }
 }

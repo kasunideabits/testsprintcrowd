@@ -7,6 +7,8 @@
     using SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowd.BackEnd.Web.SprintManager;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -35,8 +37,10 @@
         /// </summary>
         /// <param name="sprintId">exit sprint id</param>
         /// <param name="userId">user id which leaving the event</param>
+        /// <param name="distance">user running distance</param>
+        /// <param name="raceCompletedDuation">user runner race completed duration</param>
         /// <returns><see cref="ExitSprintResult"> Exist sprint result</see></returns>
-        Task<ExitSprintResult> ExitSprint(int sprintId, int userId);
+        Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance, string raceCompletedDuation);
 
         /// <summary>
         /// Get all pariticipant with given stage <see cref="ParticipantStage"> stage </see>
@@ -107,13 +111,7 @@
         /// <param name="notificationId">notificaiton id to remove</param>
         Task RemoveNotification(int notificationId);
 
-        /// <summary>
-        /// Get sprint details with who marked attendance with given user id
-        /// </summary>
-        /// <param name="userId">user id to get record</param>
-        /// <returns><see cref="SprintInfo">class </see></returns>
-        Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
-
+       
         /// <summary>
         /// Get statistics for given user id
         /// </summary>
@@ -136,10 +134,41 @@
         /// <param name="sprintId"></param>
         /// <param name="time"></param>
         /// <param name="stage"></param>
-        Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage);
+        Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position, string raceCompletedDuration, double distance);
 
         Task<SprintInfo> GetSprint(int sprintId);
 
         Task SprintExpired(int sprintId, List<NotCompletedRunners> notCompletedRunners);
+
+        /// <summary>
+        /// Get All Sprints History By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprints History Count By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<int> GetAllSprintsHistoryCountByUserId(int userId);
+       
+        /// <summary>
+        /// Get sprint parcipant details (starttime,finshtime)
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId);
+
+        /// <summary>
+        /// Get sprint details with who marked attendance with given user id
+        /// </summary>
+        /// <param name="userId">user id to get record</param>
+        /// <returns><see cref="SprintInfo">class </see></returns>
+        Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
+
+
     }
 }

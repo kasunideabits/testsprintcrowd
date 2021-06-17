@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Web.Event
 {
     using System;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
     /// <summary>
     /// model for holding event data
     /// </summary>
@@ -17,6 +18,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string Name { get; set; }
 
         /// <summary>
+        /// smart link or invite
+        /// </summary>
+        public bool IsSmartInvite { get; set; }
+        /// <summary>
         /// Influencer Availability
         /// </summary>
         public bool InfluencerAvailability { get; set; } = false;
@@ -25,6 +30,12 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// Influencer Email
         /// </summary>
         public string InfluencerEmail { get; set; }
+
+
+        /// <summary>
+        /// Influencer Email second
+        /// </summary>
+        public string InfluencerEmailSecond { get; set; }
 
         /// <summary>
         /// Event distance
@@ -59,5 +70,30 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// promotion Code
         /// </summary>
         public string promotionCode { get; set; }
+
+        /// <summary>
+        /// deternined if the sprint is time based or not
+        /// </summary>
+        public bool IsTimeBased { get; set; }
+
+        // <summary>
+        /// Duration for a time based event
+        // </summary>
+        public string DurationForTimeBasedEvent { get; set; }
+
+        // <summary>
+        /// Description for a time based event
+        // </summary>
+        public string DescriptionForTimeBasedEvent { get; set; }
+
+        /// <summary>
+        /// Social media sharble link
+        /// </summary>
+        public string SocialMediaLink { get; set; }
+
+        public VideoType VideoType { get; set; }
+        public string VideoLink { get; set; }
+
+        public bool IsNarrationsOn { get; set; }
     }
 }

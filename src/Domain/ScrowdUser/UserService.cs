@@ -1,12 +1,16 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Domain.Achievement;
+    using SprintCrowd.BackEnd.Domain.Friend;
+    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
+    using SprintCrowd.BackEnd.Utils;
 
     /// <summary>
     /// user service used for managing users.
@@ -22,13 +26,23 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="userRepo">instance of userRepo, dependency injected.</param>
 
-        public UserService(IUserRepo userRepo, ISprintParticipantService _sprintParticipantService)
+        public UserService(IUserRepo userRepo, ISprintParticipantService _sprintParticipantService, IFriendService frinedService, ISprintParticipantService sprintParticipantService, IAchievementService serviceAchievement)
         {
             this.userRepo = userRepo;
             this.sprintParticipantService = _sprintParticipantService;
+            this.FriendService = frinedService;
+            this.SprintParticipantService = sprintParticipantService;
+            this.AchievementService = serviceAchievement;
         }
 
+        private IFriendService FriendService { get; }
+
+
         private ISprintParticipantService sprintParticipantService { get; }
+
+        private ISprintParticipantService SprintParticipantService { get; }
+
+        private IAchievementService AchievementService { get; }
 
         /// <summary>
         /// Gets user info
@@ -40,13 +54,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user.Id, user.Name, user.ProfilePicture, user.Code);
+                return new UserDto(user);
             }
             else
             {
                 throw new Application.ApplicationException("User Not Found");
             }
         }
+
+
 
         /// <summary>
         /// Get facebook User.
@@ -62,6 +78,37 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 this.userRepo.SaveChanges();
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// get influncer details from email
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<UserDto> getUserByEmail(string email)
+        {
+            User influncerUser = null;
+            string encryptedEamil = null;
+            if (email != null)
+            {
+                if (StringUtils.IsBase64String(email))
+                {
+                    encryptedEamil = email;
+                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email);
+                }
+                else
+                {
+                    encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
+                }
+            }
+            influncerUser = await this.userRepo.findUserByEmail(encryptedEamil);
+            if (influncerUser == null)
+            {
+                influncerUser = await this.userRepo.findUserByEmail(email);
+            }
+            return new UserDto(influncerUser != null ? influncerUser : new User());
         }
 
         /// <summary>
@@ -80,6 +127,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// user search
+        /// </summary>
+        /// <param name="searchParams">registeration data.</param>
+        public async Task<List<UserSelectDto>> UserSearch(string searchParams)
+        {
+            List<User> users = await this.userRepo.GetUsersBySearch(searchParams);
+            return users.ConvertAll(user => new UserSelectDto()
+            {
+                Name = user.Name,
+                Image = user.ProfilePicture,
+                Email = user.Email,
+            });
+
+        }
+
+        /// <summary>
         /// register a email user
         /// if multiple user types are needed
         /// then heres the place to make the change.
@@ -90,10 +153,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
-           // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
+            // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
-           
+
             return user;
         }
 
@@ -139,6 +202,28 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             //await this.userRepo.AddUserPreference(user.Id);
             //await this.userRepo.AddDefaultUserSettings(user.Id);
             //this.userRepo.SaveChanges();
+            return success;
+        }
+
+        /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData)
+        {
+            bool success = await this.userRepo.GenerateEmailUserTokenForPwReset(registerData);
+            return success;
+        }
+
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(EmailUser registerData)
+        {
+            bool success = await this.userRepo.ResetPassword(registerData);
             return success;
         }
 
@@ -283,6 +368,121 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             user.UserState = Application.UserState.Logout;
             this.userRepo.UpdateUser(user);
             this.userRepo.SaveChanges();
+        }
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserExistInSC(string email)
+        {
+            bool success = await this.userRepo.IsUserExistInSC(email);
+            return success;
+        }
+
+
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfile(int userId)
+        {
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //Get user sprint statstics
+            var userStatistic = this.SprintParticipantService.GetStatistic(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                userStatistic,
+                userAchievement,
+                userInfor.UserShareType);
+
+            return userProfileDetail;
+        }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            try
+            {
+                return await this.userRepo.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public async Task<UserProfileDto> UpdateUserProfile(UserProfileDto updateUserProfile)
+        {
+            try
+            {
+                var user = await this.userRepo.GetUser(updateUserProfile.UserId);
+                user.UserShareType = updateUserProfile.UserShareType;
+                user.Country = updateUserProfile.Country;
+                user.Name = updateUserProfile.Name;
+                user.Description = updateUserProfile.Description;
+                user.ProfilePicture = updateUserProfile.ProfilePicture;
+                var result = this.userRepo.UpdateUserAndReturn(user);
+
+                UserProfileDto userpofileDto = new UserProfileDto()
+                {
+                    UserId = result.Id,
+                    Name = result.Name,
+                    ProfilePicture = result.ProfilePicture,
+                    Description = result.Description,
+                    CountryCode = result.CountryCode,
+                    UserShareType = result.UserShareType
+                };
+
+                return userpofileDto;
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public async Task<bool> DeleteUserProfile(int UserId)
+        {
+            try
+            {
+                var user = await this.userRepo.GetUser(UserId);
+                
+                if(user == null)
+                {
+                    return false;
+                }
+
+                user.UserState = Application.UserState.Deleted;                
+                this.userRepo.UpdateUser(user);
+                return true;
+                
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
         }
 
     }

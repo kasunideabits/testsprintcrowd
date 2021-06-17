@@ -13,6 +13,10 @@
     using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Common;
+    using Serilog;
+    using SprintCrowd.BackEnd.Utils;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -32,6 +36,12 @@
         }
 
         private readonly IUserRepo _userRepo;
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
+        {
+            this.SprintParticipantRepo = sprintParticipantRepo;
+            this.NotificationClient = notificationClient;
+
+        }
         private ISprintParticipantRepo SprintParticipantRepo { get; }
 
         private INotificationClient NotificationClient { get; }
@@ -44,9 +54,15 @@
         /// <param name="userId">user id for for participant</param>
         public async Task MarkAttendence(int sprintId, int userId)
         {
-            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId);
-            Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
+            //Check whether Influencer sprint or not
+            bool IsIinfluencerEventParticipant = false;
+            var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+                IsIinfluencerEventParticipant = true;
 
+            var result = await this.SprintParticipantRepo.MarkAttendence(sprintId, userId, IsIinfluencerEventParticipant);
+            Console.WriteLine("MarkAttendence service Result" + result.Name + "Sprint ID " + sprintId);
+            var participatInfor = await this.SprintParticipantRepo.GetByUserIdSprintId(userId, sprintId);
             this.NotificationClient.SprintNotificationJobs.SprintMarkAttendace(
                 sprintId,
                 userId,
@@ -74,7 +90,7 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Sprint not found");
             }
-            if (sprint != null && sprint.StartDateTime.AddMinutes(15) < DateTime.UtcNow)
+            if (sprint != null && sprint.StartDateTime.AddMinutes(sprint.Interval) < DateTime.UtcNow)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintExpired, "Sprint Expired");
             }
@@ -105,7 +121,7 @@
                 {
                     if (accept)
                     {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                     }
                     else
                     {
@@ -125,15 +141,15 @@
             }
             else
             {
+                if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
+                }
                 if (sprint.PromotionCode == string.Empty)
                 {
-                    if (inviteUser != null && (inviteUser.Stage == ParticipantStage.JOINED || inviteUser.Stage == ParticipantStage.MARKED_ATTENDENCE))
+                    if (inviteUser != null)
                     {
-                        throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
-                    }
-                    else if (inviteUser != null)
-                    {
-                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                        await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
                         this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
                             sprint.Name,
@@ -160,7 +176,7 @@
                 else
                 {
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
-                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId);
+                    await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
 
                     this.NotificationClient.SprintNotificationJobs.SprintJoin(
                             sprint.Id,
@@ -199,22 +215,32 @@
         /// <param name="userId ">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult "> Exist sprint result</see></returns>
         // TODO : notification
-        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId)
+        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance,string raceCompletedDuation)
         {
             try
             {
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
+
+                 
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
+                    if (participant.Sprint.IsTimeBased)
+                    {
+                        participant.DistanceRan = distance;
+                        participant.RaceCompletedDuration = raceCompletedDuation;
+                    }
+                        
+
                     participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
+                    
                 }
                 this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
-                    participant.Sprint.Distance,
+                    participant.Sprint.IsTimeBased? distance : participant.Sprint.Distance,
                     participant.Sprint.StartDateTime,
                     participant.Sprint.NumberOfParticipants,
                     (SprintStatus)participant.Sprint.Status,
@@ -320,8 +346,8 @@
                s.Sprint.Status != (int)SprintStatus.ARCHIVED &&
                (s.Sprint.Distance >= distanceFrom || distanceFrom == 0) &&
                (s.Sprint.Distance <= distanceTo || distanceTo == 0) &&
-               ((s.Sprint.StartDateTime <= time && s.Sprint.StartDateTime > now) || startFrom == 0) &&
-               (s.Sprint.StartDateTime > now);
+               (currentTimeBuff == -15 && s.Sprint.Interval == 15 ? s.Sprint.StartDateTime > now : s.Sprint.StartDateTime > DateTime.UtcNow.AddMinutes(-(s.Sprint.Interval)));
+
 
             var sprintsCommon = this.SprintParticipantRepo.GetAll(creatorQueryCommon).ToList();
             var friendsRelationsCommon = this.SprintParticipantRepo.GetFriends(userId);
@@ -343,11 +369,16 @@
                     Name = s.Sprint.Name,
                     Distance = s.Sprint.Distance,
                     StartTime = s.Sprint.StartDateTime,
-                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(15),
+                    ExtendedTime = s.Sprint.StartDateTime.AddMinutes(s.Sprint.Interval),
                     Type = s.Sprint.Type,
                     Creator = s.Sprint.CreatedBy.Id == s.UserId,
                     NumberOfParticipants = s.Sprint.NumberOfParticipants,
-                    ImageUrl =s.Sprint.ImageUrl
+                    ImageUrl = s.Sprint.ImageUrl,
+                    PromoCode = s.Sprint.PromotionCode,
+                    TimebasedDescription = s.Sprint.DescriptionForTimeBasedEvent,
+                    IsTimebased = s.Sprint.IsTimeBased,
+                    DurationForTimeBasedEvent = s.Sprint.DurationForTimeBasedEvent
+
                 },
                 ParticipantInfo = this.SprintParticipantRepo.GetAllById(s.Sprint.Id, pqueryCommon).Select(
                  sp => new ParticipantInfoDTO()
@@ -358,7 +389,7 @@
                      IsFriend = friendsCommon.Contains(sp.User.Id)
                  }
              ).ToList()
-            });
+            }); ;
 
             return otherCommon.ToList();
             //if (creatorEventCommon != null)
@@ -470,12 +501,25 @@
             var markedAttendaceDetails = await this.SprintParticipantRepo.Get(query);
             if (markedAttendaceDetails != null)
             {
+                string strCoHost = string.Empty;
+                if (markedAttendaceDetails.Sprint.InfluencerEmailSecond != null && markedAttendaceDetails.Sprint.InfluencerEmailSecond.Trim() != string.Empty && StringUtils.IsBase64String(markedAttendaceDetails.Sprint.InfluencerEmailSecond))
+                    strCoHost = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(markedAttendaceDetails.Sprint.InfluencerEmailSecond);
+
                 return new SprintInfo(
                     markedAttendaceDetails.Sprint.Id,
                     markedAttendaceDetails.Sprint.Name,
                     markedAttendaceDetails.Sprint.Distance,
                     markedAttendaceDetails.Sprint.StartDateTime,
-                    markedAttendaceDetails.Sprint.Type);
+                    markedAttendaceDetails.Sprint.Type,
+                    markedAttendaceDetails.IsIinfluencerEventParticipant,
+                    false,
+                    markedAttendaceDetails.Sprint.IsTimeBased,
+                    markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
+                    markedAttendaceDetails.Sprint.IsNarrationsOn ,
+                    strCoHost
+                    );
+
             }
             else
             {
@@ -555,7 +599,7 @@
         /// <returns>all notificaiton related to given userid</returns>
         public Notifications GetNotification(int userId)
         {
-            
+
             var notifications = this.SprintParticipantRepo.GetNotification(userId);
             //var result = new List<object>();
 
@@ -586,7 +630,7 @@
 
                         //notification.Result.Add(notification.ResultNew);
 
-                    } 
+                    }
                     else if (s.BadgeCount != 1 && s.CreatedDate.Date == DateTime.UtcNow.Date)
                     {
                         //Today Notification
@@ -602,7 +646,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultToday);
+                        // notification.Result.Add(notification.ResultToday);
                     }
                     else
                     {
@@ -619,7 +663,7 @@
                                 break;
                         }
 
-                       // notification.Result.Add(notification.ResultOlder);
+                        // notification.Result.Add(notification.ResultOlder);
                     }
 
                 });
@@ -747,6 +791,29 @@
         }
 
         /// <summary>
+        /// Get Participant Sprints History
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
+        {
+
+            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
+
+        }
+
+        /// <summary>
+        /// Get All Sprints History Count By UserId
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public Task<int> GetAllSprintsHistoryCountByUserId(int userId)
+        {
+
+            return this.SprintParticipantRepo.GetAllSprintsHistoryCountByUserId(userId);
+        }
+
+        /// <summary>
         /// Get all joined sprints for given date
         /// </summary>
         /// <param name="userId">user id to fetch</param>
@@ -773,13 +840,43 @@
         /// <param name="sprintId"></param>
         /// <param name="time"></param>
         /// <param name="stage"></param>
-        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage)
+        public async Task UpdateParticipantStatus(int userId, int sprintId, DateTime time, ParticipantStage stage, double position, string raceCompletedDuration, double distance)
         {
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
             var participant = await this.SprintParticipantRepo.Get(query);
             participant.Stage = stage;
-            participant.DistanceRan = participant.Sprint.Distance;
+           
+            if (participant.Sprint.IsTimeBased)
+            {
+                participant.DistanceRan = (int)distance;
+            }
+            else
+            {
+                participant.DistanceRan = participant.Sprint.Distance;
+            }
+
             participant.FinishTime = time;
+            if (position != 0)
+                participant.Position = position;
+            participant.RaceCompletedDuration = raceCompletedDuration;
+
+            try
+            {
+
+                if (stage == ParticipantStage.COMPLETED)
+                {
+                    GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
+                    Log.Logger.Information($" totalElevation - {totalElevation}");
+                    participant.TotalElevation = totalElevation;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Information($" GetTotalElevation - {ex}");
+            }
+
             this.SprintParticipantRepo.UpdateParticipant(participant);
             this.SprintParticipantRepo.SaveChanges();
             return;
@@ -828,6 +925,19 @@
 
         }
 
+        public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId,int userId)
+        {
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, 2953);
+            return new SprintParticipantDto()
+            {
+                DistanceRan = user.DistanceRan,
+                FinishTime = user.FinishTime,
+                StartedTime = user.StartedTime
+            };
+
+        }
+
+        
         public async Task<SprintInfo> GetSprint(int sprintId)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
@@ -848,8 +958,7 @@
             this.ResultNew = new List<object>();
             this.ResultToday = new List<object>();
             this.ResultOlder = new List<object>();
-           // this.Result = new List<object>();
+            // this.Result = new List<object>();
         }
-
     }
 }

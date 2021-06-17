@@ -42,15 +42,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             }
         }
 
+        /// <summary>
+        /// Ably Message
+        /// </summary>
+        /// <param name="markAttendance"></param>
         private void AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
             IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + markAttendance.SprintId);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
+            //channel.SwitchOffChannel();
         }
 
         private void SendPushNotification(MarkAttendance markAttendance) { System.Console.WriteLine(markAttendance.City); }
 
+        /// <summary>
+        /// Notification Message Mapper
+        /// </summary>
+        /// <param name="markAttendance"></param>
+        /// <returns></returns>
         private static MarkAttandanceAblyMesage NotificationMessageMapper(MarkAttendance markAttendance)
         {
             return new MarkAttandanceAblyMesage(
@@ -140,5 +150,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         /// Gets color code
         /// </summary>
         public string ColorCode { get; }
+        
     }
 }

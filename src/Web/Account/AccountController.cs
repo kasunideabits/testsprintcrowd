@@ -1,5 +1,6 @@
 namespace SprintCrowd.BackEnd.Web.Account
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -104,6 +105,71 @@ namespace SprintCrowd.BackEnd.Web.Account
             bool success = await this.UserService.EmailConfirmationByMail(registerData);
             //await this.AchievementService.SignUp(user.Id);
             return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
+        }
+
+        /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        [HttpPost("GenerateEmailUserTokenForPwReset")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GenerateEmailUserTokenForPwReset([FromBody] EmailUser registerData)
+        {
+            bool success = await this.UserService.GenerateEmailUserTokenForPwReset(registerData);
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
+        }
+
+        /// <summary>
+        ///  Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        [HttpPost("ResetPassword")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> ResetPassword([FromBody] EmailUser registerData)
+        {
+            bool success = await this.UserService.ResetPassword(registerData);
+            return this.Ok(new ResponseObject { StatusCode = (int)ApplicationResponseCode.Success, Data = success });
+        }
+
+
+        /// <summary>
+        /// Is User Exist in SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpGet("IsUserExistinSC/{email}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> IsUserExistinSC(string email)
+        {
+            var result = await this.UserService.IsUserExistInSC(email);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        [HttpGet("GetUserAppVersionUpgradeInfo/{userOS}/{userCurrentAppVersion}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            Console.WriteLine("OS:-" + userOS + "---Version:-" + userCurrentAppVersion);
+            var result = await this.UserService.GetUserAppVersionUpgradeInfo(userOS, userCurrentAppVersion);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
     }
 }

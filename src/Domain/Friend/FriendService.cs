@@ -82,8 +82,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             user.CountryCode,
                             user.ColorCode,
                             friend.CreatedDate);
-
-                       
                     }
                     else
                     {
@@ -104,8 +102,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             List<FriendDto> parts = new List<FriendDto>();
             friends.ForEach(obj =>
             {
-                if (obj.AcceptedUserId == userId)
-                {
+                if (obj.AcceptedUserId == userId && parts.Find(x => x.Id == obj.SharedUser.Id) == null) 
+            {
                     parts.Add(new FriendDto(
                         obj.SharedUser.Id,
                         obj.SharedUser.Name,
@@ -116,10 +114,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.SharedUser.Country,
                         obj.SharedUser.CountryCode,
                         obj.SharedUser.ColorCode,
-                        obj.CreatedDate));
+                        obj.CreatedDate,
+                        obj.SharedUser.UserShareType));
                 }
 
-                else if (obj.SharedUserId == userId)
+                else if (obj.SharedUserId == userId && parts.Find(x => x.Id == obj.AcceptedUser.Id) == null)
                 {
                     parts.Add(new FriendDto(
                         obj.AcceptedUser.Id,
@@ -131,7 +130,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                         obj.AcceptedUser.Country,
                         obj.AcceptedUser.CountryCode,
                         obj.AcceptedUser.ColorCode,
-                        obj.CreatedDate));
+                        obj.CreatedDate,
+                        obj.AcceptedUser.UserShareType));
                 }
             });
             return parts;

@@ -38,6 +38,11 @@
             return await this.dbContext.Set<Sprint>().FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<Sprint> GetLastSpecialSprint()
+        {
+            return await this.dbContext.Set<Sprint>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.PromotionCode));
+        }
+
         /// <summary>
         /// Get all sprints with given predicate
         /// </summary>
@@ -48,6 +53,19 @@
             var result = this.dbContext.Sprint.Include(s => s.Participants).ThenInclude(s => s.User).Where(predicate);
             return result;
         }
+
+        /// <summary>
+        /// Get all sprints with given predicate
+        /// </summary>
+        /// <param name="predicate">query </param>
+        /// <returns>all sprints match to predicate</returns>
+        public IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate)
+        {
+            return this.dbContext.Sprint.Include(s => s.Participants).ThenInclude(s => s.User).Where(predicate);
+
+        }
+
+
 
         public async Task<List<Sprint>> GetAllEvents()
         {
@@ -183,7 +201,13 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> AddSprint(Sprint sprintToAdd)
         {
+            if (sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
+            this.dbContext.SaveChanges();
             return result.Entity;
         }
 
@@ -193,6 +217,14 @@
         /// <param name="eventsToCreate">list of sprints to be created</param>
         public async Task AddMultipleSprints(IEnumerable<Sprint> eventsToCreate)
         {
+            foreach (var sprint in eventsToCreate)
+            {
+                if (sprint.Interval == 0)
+                {
+                    sprint.Interval = 15;
+                }
+            }
+
             await this.dbContext.Sprint.AddRangeAsync(eventsToCreate);
             this.dbContext.SaveChanges();
         }
@@ -204,6 +236,11 @@
         /// <returns>added sprint result</returns>
         public async Task<Sprint> DraftSprint(Sprint sprintToAdd)
         {
+            if (sprintToAdd.Interval == 0)
+            {
+                sprintToAdd.Interval = 15;
+            }
+
             var result = await this.dbContext.Sprint.AddAsync(sprintToAdd);
             return result.Entity;
         }
@@ -214,6 +251,11 @@
         /// <param name="sprintData">sprint repository</param>
         public async Task<Sprint> UpdateSprint(Sprint sprintData)
         {
+            if (sprintData.Interval == 0)
+            {
+                sprintData.Interval = 15;
+            }
+
             var result = this.dbContext.Sprint.Update(sprintData);
             this.dbContext.SaveChanges();
             return result.Entity;
@@ -275,9 +317,14 @@
             return this.dbContext.Frineds.Where(f => f.SharedUserId == userId || f.AcceptedUserId == userId);
         }
 
+        /// <summary>
+        /// Find Influencer
+        /// </summary>
+        /// <param name="influencerEmail"></param>
+        /// <returns></returns>
         public async Task<User> FindInfluencer(string influencerEmail)
         {
-            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == influencerEmail);
+            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Trim() == influencerEmail.Trim());
             return result;
         }
 
@@ -410,11 +457,12 @@
         /// <param name="sprintId"></param>
         public int UpdateSprintStatusBySprintId(int sprintId)
         {
-           var userNotification = this.dbContext.Sprint.Where(s => s.Id == sprintId).ToList().FirstOrDefault();
+            var userNotification = this.dbContext.Sprint.Where(s => s.Id == sprintId).ToList().FirstOrDefault();
             userNotification.Status = (int)SprintStatus.INPROGRESS;
             this.dbContext.Sprint.Update(userNotification);
             return this.dbContext.SaveChanges();
         }
+
 
     }
 }

@@ -14,16 +14,15 @@
     using SprintCrowd.BackEnd.Domain.Device;
     using OfficeOpenXml;
     using System.IO;
-    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
-    using System.Collections.Generic;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
 
     /// <summary>
     /// event controller
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy.ADMIN)]
+    [Authorize]
     public class SprintAdminController : ControllerBase
     {
         /// <summary>
@@ -31,13 +30,15 @@
         /// </summary>
         /// <param name="sprintService">sprint service</param>
         /// <param name="userService">user service</param>
-        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService, ISprintParticipantService sprintParticipantService)
+        public SprintAdminController(ISprintService sprintService, IUserService userService, IDashboardService dashboardService, IDeviceService deviceService, ISprintParticipantService sprintParticipantService,
+        IAblyConnectionFactory ablyConnectionFactory)
         {
             this.SprintService = sprintService;
             this.UserService = userService;
             this.DashboardService = dashboardService;
             this.DeviceService = deviceService;
             this.SprintParticipantService = sprintParticipantService;
+            this.AblyConnectionFactory = ablyConnectionFactory;
         }
         private ISprintParticipantService SprintParticipantService { get; }
         private ISprintService SprintService { get; }
@@ -45,6 +46,8 @@
         private IUserService UserService { get; }
 
         private IDeviceService DeviceService { get; }
+
+        private IAblyConnectionFactory AblyConnectionFactory { get; }
 
         private IDashboardService DashboardService { get; }
 
@@ -94,6 +97,7 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> GetCreatedEventsCount(DateTime from, DateTime? to)
         {
+            string v = this.AblyConnectionFactory.getSubcribeTokenRequest();
             CreatedSprintCount createdSprints = await this.SprintService.GetCreatedEventsCount(from, to);
             ResponseObject response = new ResponseObject()
             {
@@ -113,13 +117,22 @@
         public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
+            int userId = 0;
+            string email = string.Empty;
+
             string encryptedEamil = null;
             if (sprint.InfluencerEmail != null)
             {
-                var email = sprint.InfluencerEmail;
+                email = sprint.InfluencerEmail;
                 encryptedEamil = Common.EncryptionDecryptionUsingSymmetricKey.EncryptString(email);
             }
-            int userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
+            userId = await this.SprintService.GetInfluencerIdByEmail(encryptedEamil);
+            if (userId == 0)
+            {
+                userId = await this.SprintService.GetInfluencerIdByEmail(email);
+            }
 
             if (userId != 0 || sprint.InfluencerEmail != null)
             {
@@ -127,16 +140,9 @@
                 {
                     var result = await this.SprintService.CreateNewSprint(
                         user,
-                        sprint.Name,
-                        sprint.Distance,
-                        sprint.StartTime,
-                        sprint.SprintType,
-                        sprint.NumberOfParticipants,
-                        sprint.InfluencerEmail,
-                        sprint.DraftEvent,
-                        sprint.InfluencerAvailability,
-                        sprint.ImageUrl,
-                        sprint.promotionCode
+                        sprint,
+                        durationForTimeBasedEvent,
+                        sprint.DescriptionForTimeBasedEvent
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -144,15 +150,15 @@
                         Data = result,
                     };
 
-                    if(response.StatusCode == (int)ApplicationResponseCode.Success)
-                    {
-                        var joinResult = await this.SprintParticipantService.JoinSprint(
-                                result.SprintInfo.Id,
-                                userId,
-                                0,
-                                true
-                            );
-                    }
+                    // if (response.StatusCode == (int)ApplicationResponseCode.Success && userId != 0)
+                    // {
+                    //     var joinResult = await this.SprintParticipantService.JoinSprint(
+                    //             result.SprintInfo.Id,
+                    //             userId,
+                    //             0,
+                    //             true
+                    //         );
+                    // }
                     return this.Ok(response);
                 }
                 else
@@ -174,7 +180,7 @@
                         StatusCode = (int)ApplicationResponseCode.Success,
                         Data = null,
                     };
-                    
+
                     return this.Ok(response);
                 }
             }
@@ -187,7 +193,7 @@
                 };
                 return this.Ok(response);
             }
-          
+
         }
 
         /// <summary>
@@ -229,18 +235,13 @@
             User user = await this.User.GetUser(this.UserService);
             if (repeatType == "NONE")
             {
+                TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
                 var result = await this.SprintService.CreateNewSprint(
                     user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
-                    sprint.ImageUrl,
-                    sprint.promotionCode);
+                    sprint,
+                    durationForTimeBasedEvent,
+                    sprint.DescriptionForTimeBasedEvent);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
@@ -294,20 +295,19 @@
         /// </summary>
         [HttpPut("update/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
+        public async Task<IActionResult> UpdateEvent([FromBody] CreateSprintModel sprint, int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
             var result = await this.SprintService.UpdateSprint(
               user.Id,
               sprintId,
-              sprint.Name,
-              sprint.Distance,
-              sprint.StartTime,
-              sprint.NumberOfParticipants,
-              sprint.InfluencerEmail,
-              sprint.DraftEvent,
-              sprint.ImageUrl,
-              sprint.promotionCode);
+              sprint,
+              durationForTimeBasedEvent,
+              sprint.DescriptionForTimeBasedEvent);
+
+
 
             ResponseObject response = new ResponseObject()
             {
@@ -402,5 +402,33 @@
             return this.Ok(response);
         }
 
+
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("GetAllUserMails")]
+        public async Task<IActionResult> GetAllUserMails()
+        {
+            var reportData = await this.SprintService.GetAllUserMails();
+            var stream = new MemoryStream();
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var workSheet = package.Workbook.Worksheets.Add("sheetName");
+                workSheet.Cells.LoadFromCollection(reportData, true);
+                workSheet.Column(2).Style.Numberformat.Format = "dd/MM/yyyy hh:mm:ss AM/PM";
+                workSheet.Cells["A1:G1"].Style.Font.Bold = true;
+                package.Encryption.Password = "sc275";
+                package.Save();
+            }
+
+            stream.Position = 0;
+            var contentType = "application/octet-stream";
+            string fileName = $"EmailData-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+            return this.File(stream, contentType, fileName);
+        }
     }
 }

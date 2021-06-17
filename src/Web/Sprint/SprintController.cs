@@ -18,7 +18,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-     [Authorize]
+    [Authorize]
     public class SprintController : ControllerBase
     {
         /// <summary>
@@ -45,18 +45,15 @@
         public async Task<IActionResult> CreateEvent([FromBody] CreateSprintModel sprint)
         {
             User user = await this.User.GetUser(this.UserService);
+
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
+
             var result = await this.SprintService.CreateNewSprint(
                 user,
-                sprint.Name,
-                sprint.Distance,
-                sprint.StartTime,
-                sprint.SprintType,
-                sprint.NumberOfParticipants,
-                sprint.InfluencerEmail,
-                sprint.DraftEvent,
-                sprint.InfluencerAvailability,
-                sprint.ImageUrl,
-                sprint.promotionCode);
+                sprint,
+                durationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -69,11 +66,12 @@
         /// Get sprint details with users who join to sprint
         /// </summary>
         /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
-        [HttpGet("{sprintId:int}")]
+        [HttpGet("{sprintId:int}/{pageNo:int?}/{limit:int?}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> GetSprintWithPaticipants(int sprintId)
+        public async Task<IActionResult> GetSprintWithPaticipants(int sprintId, int pageNo, int limit)
         {
-            var result = await this.SprintService.GetSprintWithPaticipants(sprintId);
+
+            var result = await this.SprintService.GetSprintWithPaticipants(sprintId, pageNo, limit);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -81,6 +79,41 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Get all Paticipants in sprint
+        /// </summary>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
+        [HttpGet("GetSprintPaticipants/{sprintId:int}/{pageNo:int}/{limit:int}/{completed:bool?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId, int pageNo, int limit, bool? completed)
+        {
+            var result = await this.SprintService.GetSprintPaticipants(sprintId, pageNo, limit, completed);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get Sprint Paticipants Counts
+        /// </summary>
+        /// <returns><see cref="SprintWithPariticpantsDto">sprint details</see></returns>
+        [HttpGet("GetSprintPaticipantsCounts/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetSprintPaticipants(int sprintId)
+        {
+            var result = await this.SprintService.GetSprintPaticipantsCounts(sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
 
         /// <summary>
         /// Get created sprint with userId
@@ -116,20 +149,17 @@
         /// </summary>
         [HttpPost("update/{sprintId:int}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<IActionResult> UpdateEvent([FromBody] UpdateSprintModel sprint, int sprintId)
+        public async Task<IActionResult> UpdateEvent([FromBody] CreateSprintModel sprint, int sprintId)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+
             var result = await this.SprintService.UpdateSprint(
                 user.Id,
                 sprintId,
-                sprint.Name,
-                sprint.Distance,
-                sprint.StartTime,
-                sprint.NumberOfParticipants,
-                sprint.InfluencerEmail,
-                sprint.DraftEvent,
-                sprint.ImageUrl,
-                sprint.promotionCode);
+               sprint,
+                durationForTimeBasedEvent,
+                sprint.DescriptionForTimeBasedEvent);
 
             ResponseObject response = new ResponseObject()
             {
@@ -172,17 +202,22 @@
         /// <summary>
         /// Query public sprint with  utc offset
         /// </summary>
+        /// <param name="status"></param>
         /// <param name="timeOffset">time offset</param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
-        [HttpGet("public/open-events")]
+        [HttpGet("public/open-events/{status:int?}/{pageNo:int?}/{limit:int?}")]
         [ProducesResponseType(typeof(SuccessResponse<List<PublicSprintWithParticipantsDto>>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<dynamic> GetOpenEvents(int timeOffset)
+        public async Task<dynamic> GetOpenEvents(int? status, int timeOffset, int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetOpenEvents(user.Id, timeOffset);
+            var result = await this.SprintService.GetOpenEvents(status, user.Id, timeOffset, pageNo, limit);
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
+
+
 
 
         /// <summary>
@@ -201,6 +236,6 @@
             return this.Ok(result);
         }
 
-        
+
     }
 }

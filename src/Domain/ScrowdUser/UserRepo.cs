@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
     using RestSharp;
@@ -10,6 +11,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
+    using SprintCrowd.BackEnd.Utils;
+    using System.Linq;
+    using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+
 
 
     /// ONLY REPOSITORIES WILL ACCESS THE DATABASE
@@ -31,6 +36,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.restClient = new RestClient(this.appSettings.AuthorizationServer);
         }
 
+        /// <summary>
+        /// Find Influencer
+        /// </summary>
+        /// <param name="influencerEmail"></param>
+        /// <returns></returns>
+        public async Task<User> findUserByEmail(string influencerEmail)
+        {
+            var result = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email.Trim() == influencerEmail.Trim());
+            return result;
+        }
+
         private readonly ScrowdDbContext dbContext;
         private readonly RestClient restClient;
         private readonly AppSettings appSettings;
@@ -42,7 +58,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns><see cref="User"> user info details </see></returns>
         public Task<User> GetUser(int userId)
         {
-            return this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
+            return this.dbContext.User.Where(x => x.UserState != UserState.Deleted).FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         /// <summary>
@@ -64,6 +80,29 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<User> GetUserById(int userId)
         {
             return await this.dbContext.User.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        }
+
+        /// <summary>
+        /// search user by string
+        /// </summary>
+        /// <param name="searchParam">part of a name or email</param>
+        /// <returns>user</returns>
+        public async Task<List<User>> GetUsersBySearch(string searchParam)
+        {
+            return await this.dbContext.User.Where(u =>
+                 u.Name.ToUpper().Contains(searchParam.ToUpper()) || this.isEmailInclude(u.Email, searchParam)).Take(20).ToListAsync();
+        }
+
+        /// <summary>
+        /// helper fuction for comparing the email
+        /// </summary>
+        public bool isEmailInclude(string email, string searchParam)
+        {
+            if (StringUtils.IsBase64String(email))
+            {
+                return Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email).ToUpper().Contains(searchParam.ToUpper());
+            }
+            return email.ToUpper().Contains(searchParam.ToUpper());
         }
 
         /// <summary>
@@ -107,7 +146,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 user.Email = registerData.Email;
                 user.FacebookUserId = registerResponse.Data.UserId;
                 user.Name = registerResponse.Data.Name;
-                user.UserType = (int)UserType.Facebook;
+                user.UserType = registerData.UserType;
                 user.ProfilePicture = registerResponse.Data.ProfilePicture;
                 user.AccessToken.Token = registerData.AccessToken;
                 user.Country = registerResponse.Data.Country;
@@ -125,9 +164,21 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 exist.UserState = UserState.Active;
                 this.dbContext.Update(exist);
                 this.dbContext.SaveChanges();
-                
+
             }
             return exist;
+        }
+
+
+        /// <summary>
+        /// get user by user id
+        /// </summary>
+        /// <param name="userId">get list of users for simulator</param>
+        /// <returns>user</returns>
+
+        public async Task<List<User>> GetRandomUsers_ForSimulator(int userCount)
+        {
+            return await this.dbContext.User.Where(u => u.Description == "simulator").Take(userCount).ToListAsync();
         }
 
         /// <summary>
@@ -137,7 +188,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task<User> RegisterEmailUser(EmailUser emailUserData)
         {
             RestRequest request = new RestRequest("Account/RegisterEmailUser", Method.POST);
-            request.AddJsonBody(new { Name = emailUserData.Name, Email = emailUserData.Email ,Password =emailUserData.Password});
+            request.AddJsonBody(new { Name = emailUserData.Name, Email = emailUserData.Email, Password = emailUserData.Password });
 
             // user returned by the identity server
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
@@ -198,7 +249,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             bool isMailSent = false;
             RestRequest request = new RestRequest("Account/EmailConfirmationByMail", Method.POST);
             request.AddJsonBody(new { Email = registerData.Email, Name = registerData.Name, Password = registerData.Password });
-           
+
             // user returned by the identity server
             IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
             if (registerResponse.StatusCode != 200)
@@ -207,6 +258,58 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw new ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to send email confirmation fron identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
+        /// Generate Email User Token For Password Reset
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> GenerateEmailUserTokenForPwReset(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/GenerateEmailUserTokenForPwReset", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to send password verification mail from identity");
+            }
+            else
+                isMailSent = true;
+
+            return isMailSent;
+        }
+
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="registerData"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(EmailUser registerData)
+        {
+            bool isMailSent = false;
+            RestRequest request = new RestRequest("Account/ResetPassword", Method.POST);
+            request.AddJsonBody(new { Email = registerData.Email, VerificationCode = registerData.VerificationCode, Password = registerData.Password });
+
+            // user returned by the identity server
+            IdentityServerRegisterResponse registerResponse = await this.restClient.PostAsync<IdentityServerRegisterResponse>(request);
+            if (registerResponse.StatusCode != 200)
+            {
+                isMailSent = false;
+                throw new ApplicationException(
+                    registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
+                    registerResponse.ErrorDescription ?? "failed to reset password from identity");
             }
             else
                 isMailSent = true;
@@ -238,8 +341,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 // no token yet saved, insert
                 FirebaseMessagingToken newFcmToken = new FirebaseMessagingToken()
                 {
-                User = await this.GetUserById(userId),
-                Token = fcmToken,
+                    User = await this.GetUserById(userId),
+                    Token = fcmToken,
                 };
                 await this.dbContext.FirebaseToken.AddAsync(newFcmToken);
             }
@@ -297,20 +400,59 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.dbContext.Sprint.FirstOrDefaultAsync(u => u.PromotionCode == promoCode);
         }
 
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        public async Task<List<UserMailReportDto>> GetAllEmailUsers()
+        {
+            try
+            {
+                List<UserMailReportDto> users = new List<UserMailReportDto>();
+                var usersList = await this.dbContext.User.Select(u => new { u.Name, u.Country, u.CountryCode, u.Email }).ToListAsync();
+                foreach (var user in usersList)
+                {
+                    var rptItem = new UserMailReportDto()
+                    {
+                        Name = user.Name,
+                        Country = user.Country,
+                        CountryCode = user.CountryCode,
+                        Email = this.getDecriptedEmail(user.Email)
+                    };
+                    users.Add(rptItem);
+                }
+                return users;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string getDecriptedEmail(string base64)
+        {
+            string email = string.Empty;
+            base64 = base64.Trim();
+            if (StringUtils.IsBase64String(base64))
+                email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
+            else
+                email = base64;
+            return email;
+        }
+
         public async Task AddUserPreference(int userId)
         {
             var userPref = this.GetUserPreference(userId);
-            if(userPref.Result ==null )
-            await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
+            if (userPref.Result == null)
+                await this.dbContext.UserPreferences.AddAsync(new UserPreference() { UserId = userId });
             return;
         }
 
 
-        public async Task AddPromocodeUser(int userId , string promoCode,int sprintId )
+        public async Task AddPromocodeUser(int userId, string promoCode, int sprintId)
         {
-            var userPromo = this.GetUserSprintPromotionCode(userId , promoCode , sprintId);
+            var userPromo = this.GetUserSprintPromotionCode(userId, promoCode, sprintId);
             if (userPromo.Result == null)
-                await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId , PromoCode=promoCode,SprintId=sprintId,CreatedDate = System.DateTime.UtcNow });
+                await this.dbContext.PromoCodeUser.AddAsync(new PromoCodeUser() { UserId = userId, PromoCode = promoCode, SprintId = sprintId, CreatedDate = System.DateTime.UtcNow });
             else
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined for an event");
@@ -354,8 +496,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddDefaultUserSettings(int userId)
         {
             var userNotRem = this.GetUserNotificationReminderById(userId);
-            if (userNotRem.Result == null )
-            await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
+            if (userNotRem.Result == null)
+                await this.dbContext.UserNotificationReminders.AddAsync(new UserNotificationReminder() { UserId = userId });
         }
 
         /// <summary>
@@ -367,6 +509,17 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.dbContext.SaveChanges();
         }
 
+
+        /// <summary>
+        /// Update user and return
+        /// </summary>
+        public User UpdateUserAndReturn(User user)
+        {
+            var result = this.dbContext.User.Update(user);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+        }
+        
         /// <summary>
         /// Update user settings for notification reminder
         /// </summary>
@@ -374,6 +527,40 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             this.dbContext.UserNotificationReminders.Update(notificationReminder);
             this.dbContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserExistInSC(string email)
+        {
+            User user = null;
+            user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null && StringUtils.IsBase64String(email))
+                user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
+
+            return (user == null) ? false : true;
+
+        }
+
+        /// <summary>
+        /// Get User App Version Upgrade Info
+        /// </summary>
+        /// <param name="userOS"></param>
+        /// <param name="userCurrentAppVersion"></param>
+        /// <returns></returns>
+        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+        {
+            try
+            {
+                return await this.dbContext.UserAppVersionInfo.FirstOrDefaultAsync(uav => uav.AppOS.Trim() == userOS.Trim() && uav.AppVersion.Trim() == userCurrentAppVersion.Trim());
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

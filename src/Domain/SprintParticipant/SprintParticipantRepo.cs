@@ -33,7 +33,7 @@
         /// <param name="sprintId">sprint id for mark attendance</param>
         /// <param name="userId">user id for mark attendance</param>
         /// <returns>User details</returns>
-        public async Task<User> MarkAttendence(int sprintId, int userId)
+        public async Task<User> MarkAttendence(int sprintId, int userId , bool isIinfluencerEventParticipant)
         {
             SprintParticipant paritipant = await this.Context.SprintParticipant
                 .FirstOrDefaultAsync(s => s.Sprint.Id == sprintId && s.User.Id == userId);
@@ -46,6 +46,7 @@
             {
                 paritipant.Stage = ParticipantStage.MARKED_ATTENDENCE;
                 paritipant.StartedTime = DateTime.UtcNow;
+                paritipant.IsIinfluencerEventParticipant = isIinfluencerEventParticipant;
                 this.Context.SprintParticipant.Update(paritipant);
                 this.Context.SaveChanges();
                 return await this.Context.User.FirstOrDefaultAsync(u => u.Id == userId);
@@ -60,6 +61,20 @@
             }
         }
 
+        public async Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId)
+        {
+            SprintParticipant pariticipant = new SprintParticipant()
+            {
+                UserId = userId,
+                SprintId = sprintId,
+                Stage = ParticipantStage.JOINED
+            };
+            var result = await this.Context.AddAsync(pariticipant);
+            this.Context.SaveChanges();
+            return result.Entity;
+        }
+
+
         /// <summary>
         /// User join for an event
         /// </summary>
@@ -68,6 +83,7 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
+           
             SprintParticipant participant = new SprintParticipant()
             {
                 UserId = userId,
@@ -111,6 +127,22 @@
         public async Task<SprintParticipant> GetByUserId(int userId)
         {
             return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId);
+        }
+
+        public async Task<List<SprintParticipant>> GetByJoinedUsers(int sprintId)
+        {
+            return await this.Context.SprintParticipant.Where(s => s.SprintId == sprintId && s.Stage == 0).ToListAsync();
+        }
+
+        /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipant> GetByUserIdSprintId(int userId , int sprintId )
+        {
+            return await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
         }
 
         /// <summary>
@@ -255,7 +287,7 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        public async Task JoinSprint(int userId, int sprintId)
+        public async Task JoinSprint(int userId, int sprintId ,int sprintType)
         {
             var participant = await this.Context.SprintParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
             if (participant != null)
@@ -443,5 +475,49 @@
                 .Where(query);
         }
 
+
+        /// <summary>
+        /// Get All Sprints History By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
+        {
+            try
+            {
+                return await (from participant in this.Context.SprintParticipant
+                              join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
+                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow )
+                              orderby participant.FinishTime descending
+                              select sprint).Take(60).Include(s => s.Participants).Skip(pageNo).Take(limit).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprints History Count By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<int> GetAllSprintsHistoryCountByUserId(int userId)
+        {
+            try
+            {
+                return await (from participant in this.Context.SprintParticipant
+                              join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
+                              where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow)
+                              select sprint).CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

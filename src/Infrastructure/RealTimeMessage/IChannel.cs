@@ -14,5 +14,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.RealTimeMessage
         /// <param name="message">message to publish</param>
         /// <returns></returns>
         Task Publish(string eventName, dynamic message);
+
+        /// <summary>
+        /// Switch Off The Channel After Work Done
+        /// </summary>
+        void SwitchOffChannel();
     }
 }

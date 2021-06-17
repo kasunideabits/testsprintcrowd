@@ -223,11 +223,17 @@ namespace SprintCrowdBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
 
+                    b.Property<string>("DescriptionForTimeBasedEvent")
+                        .HasColumnName("description_for_time_based_event");
+
                     b.Property<int>("Distance")
                         .HasColumnName("distance");
 
                     b.Property<int>("DraftEvent")
                         .HasColumnName("draft_event");
+
+                    b.Property<TimeSpan>("DurationForTimeBasedEvent")
+                        .HasColumnName("duration_for_time_based_event");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnName("image_url");
@@ -237,6 +243,21 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("InfluencerEmail")
                         .HasColumnName("influencer_email");
+
+                    b.Property<string>("InfluencerEmailSecond")
+                        .HasColumnName("influencer_email_second");
+
+                    b.Property<int>("Interval")
+                        .HasColumnName("interval");
+
+                    b.Property<bool>("IsNarrationsOn")
+                        .HasColumnName("is_narrations_on");
+
+                    b.Property<bool>("IsSmartInvite")
+                        .HasColumnName("is_smart_invite");
+
+                    b.Property<bool>("IsTimeBased")
+                        .HasColumnName("is_time_based");
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
@@ -254,6 +275,9 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<string>("PromotionCode")
                         .HasColumnName("promotion_code");
 
+                    b.Property<string>("SocialMediaLink")
+                        .HasColumnName("social_media_link");
+
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnName("start_date_time");
 
@@ -262,6 +286,14 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnName("type");
+
+                    b.Property<string>("VideoLink")
+                        .HasColumnName("video_link");
+
+                    b.Property<string>("VideoType")
+                        .IsRequired()
+                        .HasColumnName("video_type")
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
@@ -323,9 +355,18 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<DateTime>("FinishTime")
                         .HasColumnName("finish_time");
 
+                    b.Property<bool>("IsIinfluencerEventParticipant")
+                        .HasColumnName("is_iinfluencer_event_participant");
+
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("last_updated");
+
+                    b.Property<double>("Position")
+                        .HasColumnName("position");
+
+                    b.Property<string>("RaceCompletedDuration")
+                        .HasColumnName("race_completed_duration");
 
                     b.Property<int>("SprintId")
                         .HasColumnName("sprint_id");
@@ -335,6 +376,9 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<DateTime>("StartedTime")
                         .HasColumnName("started_time");
+
+                    b.Property<double>("TotalElevation")
+                        .HasColumnName("total_elevation");
 
                     b.Property<int>("UserId")
                         .HasColumnName("user_id");
@@ -378,6 +422,9 @@ namespace SprintCrowdBackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("created_date");
 
+                    b.Property<string>("Description")
+                        .HasColumnName("description");
+
                     b.Property<string>("Email")
                         .HasColumnName("email");
 
@@ -396,6 +443,9 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnName("profile_picture");
+
+                    b.Property<int>("UserShareType")
+                        .HasColumnName("user_share_type");
 
                     b.Property<int>("UserState")
                         .HasColumnName("user_state");
@@ -471,6 +521,37 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("user_activity");
+                });
+
+            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserAppVersionInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
+
+                    b.Property<string>("AppOS")
+                        .HasColumnName("app_os");
+
+                    b.Property<string>("AppVersion")
+                        .HasColumnName("app_version");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("created_date");
+
+                    b.Property<bool>("IsForceUpgrade")
+                        .HasColumnName("is_force_upgrade");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("last_updated");
+
+                    b.Property<int>("UpgradePriority")
+                        .HasColumnName("upgrade_priority");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("user_app_version_info");
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.UserNotification", b =>

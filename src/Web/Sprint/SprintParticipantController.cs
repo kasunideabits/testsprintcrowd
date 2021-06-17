@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Web.Sprint.Models;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
 
     /// <summary>
     /// Controller for handle sprint participants
@@ -143,7 +144,7 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<IActionResult> ExitEvent([FromBody] ExitEventModel exitEvent)
         {
-            ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId);
+            ExitSprintResult result = await this.SprintParticipantService.ExitSprint(exitEvent.SprintId, exitEvent.UserId, exitEvent.Distance,exitEvent.RaceCompletedDuration);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -257,15 +258,27 @@
         }
 
         /// <summary>
-        /// Get sprint statistics
+        /// Get All Sprints History By UserId
         /// </summary>
-        [HttpGet("sprint/statistic")]
+        [HttpGet("GetAllSprintsHistoryByUserId")]
         [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
-        public async Task<IActionResult> GetSprintStatistic()
+        public async Task<IActionResult> GetAllSprintsHistoryByUserId(int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetStatistic(user.Id);
-            return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+            var result = await this.SprintParticipantService.GetAllSprintsHistoryByUserId(user.Id, pageNo, limit);
+            return this.Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Sprints History Count ByUserId
+        /// </summary>
+        [HttpGet("GetAllSprintsHistoryCountByUserId")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> GetAllSprintsHistoryCountByUserId()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetAllSprintsHistoryCountByUserId(user.Id);
+            return this.Ok(result);
         }
 
         /// <summary>
@@ -278,6 +291,31 @@
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetJoinedEvents(user.Id, currentDate);
             return this.Ok(new SuccessResponse<JoinedSprintsDto>(result));
+        }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpGet("sprint/statistic")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> GetSprintStatistic()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetStatistic(user.Id);
+            return this.Ok(new SuccessResponse<SprintStatisticDto>(result));
+        }
+
+
+        /// <summary>
+        /// Get sprint participant details.
+        /// </summary>
+        [HttpGet("sprint/select/{sprintId}")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintParticipantDto>), 200)]
+        public async Task<IActionResult> GetSprintParicipant(int sprintId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.GetSprintParticipant(sprintId, 2953);
+            return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
         }
     }
 }

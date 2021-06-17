@@ -30,6 +30,9 @@ namespace SprintCrowd.BackEnd
     using SprintCrowd.BackEnd.Models;
     using SprintCrowd.BackEnd.Web;
     using Swashbuckle.AspNetCore.Swagger;
+    using SprintCrowd.BackEnd.Domain.SocialShare;
+    using SprintCrowd.BackEnd.Domain.Sprint.Video;
+    using SprintCrowdBackEnd.Domain.Simulator;
 
     /// <summary>
     /// start class for the dotnet core application.
@@ -186,6 +189,8 @@ namespace SprintCrowd.BackEnd
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISprintRepo, SprintRepo>();
             services.AddScoped<ISprintService, SprintService>();
+            services.AddScoped<ISocialShareService, SocialShareService>();
+            services.AddScoped<IVimeoUploadService, VimeoUploadService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<IDeviceRepo, DeviceRepo>();
             services.AddScoped<ISprintParticipantRepo, SprintParticipantRepo>();
@@ -201,7 +206,7 @@ namespace SprintCrowd.BackEnd
             services.AddTransient<IDashboardRepo, DashboardRepo>();
             services.AddTransient<IAchievementService, AchievementService>();
             services.AddTransient<IAchievementRepo, AchievementRepo>();
-
+            services.AddTransient<ISimulatorService, SimulatorService>();
             this.AddAuthorizationDIModules(services);
         }
 

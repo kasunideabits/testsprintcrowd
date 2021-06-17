@@ -2,6 +2,7 @@ namespace SprintCrowd.Web.ScrowdUser
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Application;
@@ -50,6 +51,22 @@ namespace SprintCrowd.Web.ScrowdUser
             return this.Ok(response);
         }
 
+
+        /// <summary>
+        /// Get authorized user details
+        /// </summary>
+        [HttpPost("getbyEmail")]
+        public async Task<IActionResult> GetUserByEmail([FromBody] UserEmailModel userEmail)
+        {
+            var user = await this.UserService.getUserByEmail(userEmail.Email);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = user,
+            };
+            return this.Ok(response);
+        }
+
         /// <summary>
         /// Update user activity
         /// </summary>
@@ -78,6 +95,19 @@ namespace SprintCrowd.Web.ScrowdUser
             var authorizedUser = await this.User.GetUser(this.UserService);
             var result = await this.UserService.GetUserPreference(authorizedUser.Id);
             return this.Ok(new SuccessResponse<UserPreferenceDto>(result));
+        }
+
+        /// <summary>
+        /// Get uasers by search
+        /// </summary>
+        /// <returns>user peference</returns>
+        [HttpGet("users")]
+        [ProducesResponseType(typeof(SuccessResponse<List<UserSelectDto>>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<ErrorResponseObject>), 400)]
+        public async Task<IActionResult> UsersSearch([FromQuery(Name = "search")] string searchParams)
+        {
+            var users = await this.UserService.UserSearch(searchParams);
+            return this.Ok(new SuccessResponse<List<UserSelectDto>>(users));
         }
 
         /// <summary>
@@ -146,6 +176,41 @@ namespace SprintCrowd.Web.ScrowdUser
             var authorizedUser = await this.User.GetUser(this.UserService);
             await this.UserService.AccountLogout(authorizedUser.Id);
             return this.Ok(new SuccessResponse<string>("success"));
+        }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpGet("ViewUserProfile")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> ViewUserProfile()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.UserService.ViewUserProfile(user.Id);
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+        }
+
+        /// <summary>
+        /// Get sprint statistics
+        /// </summary>
+        [HttpPut("UserProfileEdit")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> UserProfileEdit(UserProfileDto profileData)
+        {
+            var result = await this.UserService.UpdateUserProfile(profileData);
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+        }
+
+
+        /// <summary>
+        /// Delete a user profile
+        /// <param name="userId">user id</param>
+        /// </summary>
+        [HttpDelete("UserProfileDelete/{userId}")]       
+        public async Task<IActionResult> UserProfileDelete(int userId)
+        {
+            var result = await this.UserService.DeleteUserProfile(userId);
+            return this.Ok(result);
         }
     }
 }

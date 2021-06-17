@@ -15,7 +15,10 @@ namespace SprintCrowd.BackEnd.Domain.Sprint
             SprintType type,
             int draftEvent,
             bool influencerAvailability,
-            string influencerEmail) : base(id, name, distance, numberOfParticipants, startTime, type,string.Empty,string.Empty)
+            string influencerEmail,
+            bool isTimeBased,
+            TimeSpan durationForTimeBasedEvent,
+            string descriptionForTimeBasedEvent) : base(id, name, distance, numberOfParticipants, startTime, type,string.Empty,string.Empty, isTimeBased , durationForTimeBasedEvent, descriptionForTimeBasedEvent, influencerAvailability)
         {
             this.DraftEvent = draftEvent;
             this.InfluencerAvailability = influencerAvailability;

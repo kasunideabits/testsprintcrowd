@@ -19,8 +19,11 @@
         /// </summary>
         /// <param name="sprintId">sprint id for mark attendance</param>
         /// <param name="userId">user id for mark attendance</param>
+        /// <param name="isIinfluencerEventParticipant">to check influencer user for mark attendance</param>
         /// <returns>User details</returns>
-        Task<User> MarkAttendence(int sprintId, int userId);
+        Task<User> MarkAttendence(int sprintId, int userId , bool isIinfluencerEventParticipant);
+
+        Task<List<SprintParticipant>> GetByJoinedUsers(int sprintId);
 
         /// <summary>
         /// User join for an event
@@ -116,7 +119,8 @@
         /// </summary>
         /// <param name="userId">user id who want to participate</param>
         /// <param name="sprintId">sprint id to join</param>
-        Task JoinSprint(int userId, int sprintId);
+        /// <param name="sprintType">sprint Type to join</param>
+        Task JoinSprint(int userId, int sprintId, int sprintType);
 
         /// <summary>
         /// Delete pariticipant form sprint
@@ -197,5 +201,29 @@
         void SaveChanges();
 
         IEnumerable<SprintParticipant> GetAllById(int sprintId, Expression<Func<SprintParticipant, bool>> query);
+
+        /// <summary>
+        /// Get All Sprints History By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprints History Count By User Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<int> GetAllSprintsHistoryCountByUserId(int userId);
+
+        /// <summary>
+        /// Get By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<SprintParticipant> GetByUserIdSprintId(int userId, int sprintId);
+
+        Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId);
     }
 }

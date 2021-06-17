@@ -61,5 +61,7 @@ namespace src.Infrastructure.NotificationWorker.Sprint.Models
         /// Gets color code for user
         /// </summary>
         public string ColorCode { get; }
+
+        
     }
 }

@@ -37,6 +37,12 @@
         Task<List<Sprint>> GetAllEvents();
 
         /// <summary>
+        /// Get Last sprint that has a promotiona code
+        /// </summary>
+        /// <returns>sprint</returns>
+        Task<Sprint> GetLastSpecialSprint();
+
+        /// <summary>
         /// get all sprint public or private
         /// </summary>
         /// <param name="eventType">public or private</param>
@@ -123,6 +129,7 @@
         /// <returns>User</returns>
         Task<User> FindInfluencer(string influencerEmail);
 
+        
         /// <summary>
         /// saves changed to db
         /// </summary>
@@ -158,11 +165,20 @@
         /// <returns></returns>
         Task<List<Sprint>> GetAllPrivateSprintsByUser(int userId, int lapsTime);
 
+
+
         /// <summary>
         /// Update Sprint Status By SprintId
         /// </summary>
         /// <param name="sprintId"></param>
         /// <returns></returns>
         int UpdateSprintStatusBySprintId(int sprintId);
+
+        /// <summary>
+        /// Returen open sprints
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate);
     }
 }
