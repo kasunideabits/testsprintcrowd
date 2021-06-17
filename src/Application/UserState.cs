@@ -5,5 +5,6 @@ namespace SprintCrowd.BackEnd.Application
         Active,
         Logout,
         Deactivate,
+        Deleted,
     }
 }

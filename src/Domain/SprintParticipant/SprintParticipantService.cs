@@ -215,7 +215,7 @@
         /// <param name="userId ">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult "> Exist sprint result</see></returns>
         // TODO : notification
-        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance)
+        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance,string raceCompletedDuation)
         {
             try
             {
@@ -226,10 +226,15 @@
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
                     if (participant.Sprint.IsTimeBased)
+                    {
                         participant.DistanceRan = distance;
+                        participant.RaceCompletedDuration = raceCompletedDuation;
+                    }
+                        
 
                     participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
+                    
                 }
                 this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
