@@ -58,7 +58,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns><see cref="User"> user info details </see></returns>
         public Task<User> GetUser(int userId)
         {
-            return this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
+            return this.dbContext.User.Where(x => x.UserState != UserState.Deleted).FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         /// <summary>
