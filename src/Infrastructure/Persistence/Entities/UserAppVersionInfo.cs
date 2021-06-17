@@ -19,7 +19,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public string AppOS { get; set; }
 
-        
+
         /// <summary>
         /// Gets or set App Version for user app
         /// </summary>
