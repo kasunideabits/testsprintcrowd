@@ -20,7 +20,7 @@ namespace SprintCrowd.Web.ScrowdUser
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class UserController : ControllerBase
     {
         /// <summary>
