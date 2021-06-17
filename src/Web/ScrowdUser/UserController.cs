@@ -200,5 +200,17 @@ namespace SprintCrowd.Web.ScrowdUser
             var result = await this.UserService.UpdateUserProfile(profileData);
             return this.Ok(new SuccessResponse<UserProfileDto>(result));
         }
+
+
+        /// <summary>
+        /// Delete a user profile
+        /// <param name="userId">user id</param>
+        /// </summary>
+        [HttpDelete("UserProfileDelete/{userId}")]       
+        public async Task<IActionResult> UserProfileDelete(int userId)
+        {
+            var result = await this.UserService.DeleteUserProfile(userId);
+            return this.Ok(result);
+        }
     }
 }

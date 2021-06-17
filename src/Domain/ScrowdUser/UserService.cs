@@ -463,5 +463,28 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             }
         }
 
+
+        public async Task<bool> DeleteUserProfile(int UserId)
+        {
+            try
+            {
+                var user = await this.userRepo.GetUser(UserId);
+                
+                if(user == null)
+                {
+                    return false;
+                }
+
+                user.UserState = Application.UserState.Deleted;                
+                this.userRepo.UpdateUser(user);
+                return true;
+                
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

@@ -158,6 +158,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion);
 
+        /// <summary>
+        /// Update User profile
+        /// </summary>
+        /// <param name="updateUserProfile"></param>
+        /// <returns></returns>
         Task<UserProfileDto> UpdateUserProfile(UserProfileDto updateUserProfile);
+
+        /// <summary>
+        /// Delete (soft) User profile
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<bool> DeleteUserProfile(int UserId);
     }
 }
