@@ -165,14 +165,8 @@
                 {
                     await this.SprintService.CreateMultipleSprints(
                         user,
-                        sprint.Name,
-                        sprint.Distance,
-                        sprint.StartTime,
-                        sprint.SprintType,
-                        sprint.NumberOfParticipants,
-                        sprint.InfluencerEmail,
-                        sprint.DraftEvent,
-                        sprint.InfluencerAvailability,
+                        sprint,
+                        durationForTimeBasedEvent,
                         repeatType
                         );
                     ResponseObject response = new ResponseObject()
@@ -233,9 +227,9 @@
         public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
             if (repeatType == "NONE")
             {
-                TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
 
                 var result = await this.SprintService.CreateNewSprint(
                     user,
@@ -253,14 +247,8 @@
             {
                 await this.SprintService.CreateMultipleSprints(
                     user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
+                    sprint,
+                    durationForTimeBasedEvent,
                     repeatType
                     );
                 ResponseObject response = new ResponseObject()
