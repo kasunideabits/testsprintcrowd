@@ -74,7 +74,7 @@
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <param name="repeatType">repeat options</param>
         /// <returns>created sprints</returns>
-        Task CreateMultipleSprints(User user, string name, int distance, DateTime startTime, int type, int? numberOfParticipants, string infulenceEmail, int draft, bool influencerAvailability, string repeatType);
+        Task CreateMultipleSprints(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string repeatType);
 
         /// <summary>
         /// Get sprint with pariticipants by creator id
