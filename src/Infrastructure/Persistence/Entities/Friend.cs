@@ -1,6 +1,7 @@
 ﻿namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Class which indicates sprint crowd frineds
@@ -8,6 +9,7 @@
 
     public class Friend : BaseEntity
     {
+       
         /// <summary>
         /// Gets or set unique id
         /// </summary>
