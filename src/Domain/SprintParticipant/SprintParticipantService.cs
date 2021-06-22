@@ -849,6 +849,7 @@
             if (participant.Sprint.IsTimeBased)
             {
                 participant.DistanceRan = (int)distance;
+                participant.RaceCompletedDuration = DateTime.UtcNow.Subtract(participant.StartedTime).ToString();
             }
             else
             {
@@ -858,7 +859,7 @@
             participant.FinishTime = time;
             if (position != 0)
                 participant.Position = position;
-            participant.RaceCompletedDuration = raceCompletedDuration;
+           
 
             try
             {
