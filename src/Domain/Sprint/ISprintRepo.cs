@@ -49,8 +49,10 @@
         /// <param name="searchTerm">Search term to filter</param>
         /// <param name="sortBy">Sort by option</param>
         /// <param name="filterBy">Filter by option</param>
+        /// <param name="pageNo">No of the page</param>
+        /// <param name="limit">No of items per page</param>
         /// <returns>all events with given type</returns>
-        Task<List<Sprint>> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy);
+        Task<SprintsPageDto> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit);
 
         /// <summary>
         /// Get all events with given date range
@@ -129,7 +131,7 @@
         /// <returns>User</returns>
         Task<User> FindInfluencer(string influencerEmail);
 
-        
+
         /// <summary>
         /// saves changed to db
         /// </summary>
