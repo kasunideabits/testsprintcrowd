@@ -52,10 +52,14 @@
         /// <param name="searchTerm">Search term to filter</param>
         /// <param name="sortBy">Sort to filter</param>
         /// <param name="filterBy">Term to filter</param>
+        /// <param name="pageNo">No of the page</param>
+        /// <param name="limit">No of items per page</param>
         /// <returns>Available all events</returns>
-        public async Task<List<Sprint>> GetAll(int eventType, string searchTerm, string sortBy, string filterBy)
+        public async Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit)
         {
-            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy);
+
+            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy, pageNo, limit);
+
 
         }
 
