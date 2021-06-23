@@ -116,7 +116,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void SendAblyMessage(UpdatedSprintInfo message)
         {
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + message.Id);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + message.Id);
             channel.Publish("Edit", message);
             //channel.SwitchOffChannel();
         }
