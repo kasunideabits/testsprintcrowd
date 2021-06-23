@@ -74,7 +74,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 Country = participant.Country ?? String.Empty,
                 CountryCode = participant.CountryCode ?? String.Empty,
             };
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + this._joinSprint.SprintId);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + this._joinSprint.SprintId);
             channel.Publish("Join", message);
            // channel.SwitchOffChannel();
         }
