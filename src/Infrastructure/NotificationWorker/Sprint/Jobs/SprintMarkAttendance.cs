@@ -49,7 +49,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void AblyMessage(MarkAttendance markAttendance)
         {
             var ablyNotificationMsg = NotificationMessageMapper(markAttendance);
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + markAttendance.SprintId);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + markAttendance.SprintId);
             channel.Publish("MarkedAttendece", ablyNotificationMsg);
             //channel.SwitchOffChannel();
         }
