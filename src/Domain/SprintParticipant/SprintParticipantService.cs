@@ -230,8 +230,8 @@
                         participant.DistanceRan = distance;
                         participant.RaceCompletedDuration = raceCompletedDuation;
                     }
-                        
-
+                    //Mark Attendance users only can exit
+                    if(participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
                     participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
                     

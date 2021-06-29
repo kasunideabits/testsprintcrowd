@@ -689,9 +689,6 @@
                 pariticipants = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo * limit).Take(limit).ToList();
             }
 
-
-
-
             User influencer = null;
             User influencerCoHost = null;
             if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
