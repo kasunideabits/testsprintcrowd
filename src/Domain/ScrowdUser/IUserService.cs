@@ -147,6 +147,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// View User Profile
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="loggedUserId"></param>
+        /// <returns></returns>
+        Task<UserProfileDto> ViewUserProfile(int userId, int loggedUserId);
+
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>      
         /// <returns></returns>
         Task<UserProfileDto> ViewUserProfile(int userId);
 

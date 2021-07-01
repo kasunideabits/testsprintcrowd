@@ -11,6 +11,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
     using SprintCrowd.BackEnd.Utils;
+    using System.Linq;
 
     /// <summary>
     /// user service used for managing users.
@@ -387,6 +388,50 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// View User Profile
         /// </summary>
         /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfile(int userId, int loggedUserId)
+        {
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //logged users friends
+            var myFriends = await this.FriendService.AllFriends(loggedUserId);
+
+            //check users freind is friend of mine
+            foreach(var friend in allFriends)
+            {
+                if(myFriends.Where(x=>x.Id == friend.Id).Any())
+                {
+                    friend.IsFriendOfMine = true;
+                }                 
+            }           
+
+            //Get user sprint statstics
+            var userStatistic = this.SprintParticipantService.GetStatistic(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                userStatistic,
+                userAchievement,
+                userInfor.UserShareType);
+
+            return userProfileDetail;
+        }
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+
         /// <returns></returns>
         public async Task<UserProfileDto> ViewUserProfile(int userId)
         {

@@ -30,5 +30,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         public string Email { get; }
         public DateTime CreatedDate { get; set; }
         public UserShareType UserShareType { get; set; }
+        public bool IsFriendOfMine { get; set; }
     }
 }
