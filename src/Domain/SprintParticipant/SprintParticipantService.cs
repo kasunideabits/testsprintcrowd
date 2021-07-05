@@ -215,14 +215,14 @@
         /// <param name="userId ">user id which leaving the event</param>
         /// <returns><see cref="ExitSprintResult "> Exist sprint result</see></returns>
         // TODO : notification
-        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance,string raceCompletedDuation)
+        public async Task<ExitSprintResult> ExitSprint(int sprintId, int userId, int distance, string raceCompletedDuation)
         {
             try
             {
                 Expression<Func<SprintParticipant, bool>> participantQuery = p => p.UserId == userId && p.SprintId == sprintId && p.User.UserState == UserState.Active;
                 var participant = await this.SprintParticipantRepo.Get(participantQuery);
 
-                 
+
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
                     if (participant.Sprint.IsTimeBased)
@@ -231,16 +231,16 @@
                         participant.RaceCompletedDuration = raceCompletedDuation;
                     }
                     //Mark Attendance users only can exit
-                    if(participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
-                    participant.Stage = ParticipantStage.QUIT;
+                    if (participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
+                        participant.Stage = ParticipantStage.QUIT;
                     participant.FinishTime = DateTime.UtcNow;
-                    
+
                 }
                 this.SprintParticipantRepo.SaveChanges();
                 this.NotificationClient.SprintNotificationJobs.SprintExit(
                     participant.SprintId,
                     participant.Sprint.Name,
-                    participant.Sprint.IsTimeBased? distance : participant.Sprint.Distance,
+                    participant.Sprint.IsTimeBased ? distance : participant.Sprint.Distance,
                     participant.Sprint.StartDateTime,
                     participant.Sprint.NumberOfParticipants,
                     (SprintStatus)participant.Sprint.Status,
@@ -516,7 +516,7 @@
                     markedAttendaceDetails.Sprint.IsTimeBased,
                     markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
-                    markedAttendaceDetails.Sprint.IsNarrationsOn ,
+                    markedAttendaceDetails.Sprint.IsNarrationsOn,
                     strCoHost
                     );
 
@@ -800,11 +800,14 @@
 
             var result = await this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
 
-            foreach(Sprint sprint in result)
+            foreach (Sprint sprint in result)
             {
-                foreach(SprintParticipant participant in sprint.Participants)
+                foreach (SprintParticipant participant in sprint.Participants)
                 {
-                    participant.RaceCompletedDuration = TimeSpan.Parse(participant.RaceCompletedDuration).ToString(@"hh\:mm\:ss");
+                    if (!string.IsNullOrEmpty(participant.RaceCompletedDuration))
+                    {
+                        participant.RaceCompletedDuration = TimeSpan.Parse(participant.RaceCompletedDuration).ToString(@"hh\:mm\:ss");
+                    }
                 }
             }
 
@@ -855,7 +858,7 @@
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId;
             var participant = await this.SprintParticipantRepo.Get(query);
             participant.Stage = stage;
-           
+
             if (participant.Sprint.IsTimeBased)
             {
                 participant.DistanceRan = (int)distance;
@@ -869,7 +872,7 @@
             participant.FinishTime = time;
             if (position != 0)
                 participant.Position = position;
-           
+
 
             try
             {
@@ -936,7 +939,7 @@
 
         }
 
-        public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId,int userId)
+        public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId)
         {
             var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, 2953);
             return new SprintParticipantDto()
@@ -948,7 +951,7 @@
 
         }
 
-        
+
         public async Task<SprintInfo> GetSprint(int sprintId)
         {
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
