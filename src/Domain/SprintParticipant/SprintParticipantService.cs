@@ -795,10 +795,20 @@
         /// </summary>
         /// <param name = "userId" ></ param >
         /// < returns ></ returns >
-        public Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
+        public async Task<List<Sprint>> GetAllSprintsHistoryByUserId(int userId, int pageNo, int limit)
         {
 
-            return this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
+            var result = await this.SprintParticipantRepo.GetAllSprintsHistoryByUserId(userId, pageNo, limit);
+
+            foreach(Sprint sprint in result)
+            {
+                foreach(SprintParticipant participant in sprint.Participants)
+                {
+                    participant.RaceCompletedDuration = TimeSpan.Parse(participant.RaceCompletedDuration).ToString(@"hh\:mm\:ss");
+                }
+            }
+
+            return result;
 
         }
 
