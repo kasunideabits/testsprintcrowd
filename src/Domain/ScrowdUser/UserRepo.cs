@@ -14,6 +14,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Utils;
     using System.Linq;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using System.Linq.Expressions;
+    using System;
 
 
 
@@ -124,7 +126,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 // Oh ohh, error occured during registeration in identity server
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
             }
@@ -195,7 +197,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 // Oh ohh, error occured during registeration in identity server
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user");
             }
@@ -255,7 +257,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to send email confirmation fron identity");
             }
@@ -281,7 +283,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to send password verification mail from identity");
             }
@@ -307,7 +309,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to reset password from identity");
             }
@@ -561,6 +563,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             {
                 throw Ex;
             }
+        }
+
+
+        public async Task<List<User>> GetCommunity(Expression<Func<User, bool>> predicate)
+        {
+            var result = this.dbContext.User.Include(s => s.friendsAccepted).Where(predicate).ToList();
+            return result;
         }
     }
 }
