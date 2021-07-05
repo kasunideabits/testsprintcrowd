@@ -35,4 +35,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         public UserShareType UserShareType { get; set; }
         public bool? IsFreindOfMine { get; set; }
 }
+
+     
+
 }
