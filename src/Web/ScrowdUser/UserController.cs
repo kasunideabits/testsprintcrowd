@@ -14,6 +14,7 @@ namespace SprintCrowd.Web.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
     using SprintCrowd.BackEnd.Web.ScrowdUser;
+      using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
     /// <summary>
     /// User controller.
@@ -220,6 +221,21 @@ namespace SprintCrowd.Web.ScrowdUser
         {
             var result = await this.UserService.DeleteUserProfile(userId);
             return this.Ok(result);
+        }
+
+
+        /// <summary>
+        /// Return Sprint crowd community by name
+        /// </summary>
+        /// <param name="keyword">user name</param>
+        /// <returns>Users list</returns>
+        [HttpGet("CommunitySearch/{keyword}")]
+        [ProducesResponseType(typeof(SuccessResponse<List<CommunityDto>>), 200)]
+        public async Task<IActionResult> CommunitySearch(string keyword)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.UserService.SearchCommunity(keyword, user.Id);//3048
+            return this.Ok(new SuccessResponse<List<CommunityDto>>(result));
         }
     }
 }

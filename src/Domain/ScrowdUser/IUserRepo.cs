@@ -1,6 +1,8 @@
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
@@ -189,5 +191,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userCurrentAppVersion"></param>
         /// <returns></returns>
         Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion);
+
+
+        /// <summary>
+        /// Community search
+        /// </summary>
+        /// <param name="predicate">user name</param>
+        /// <returns></returns>
+        Task<List<User>> GetCommunity(Expression<Func<User, bool>> predicate);
     }
 }
