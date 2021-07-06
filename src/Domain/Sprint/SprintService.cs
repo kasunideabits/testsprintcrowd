@@ -740,7 +740,18 @@
 
 
 
-            return this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo * limit).Take(limit).ToList();
+           var participantList = this.SprintRepo.GetParticipants(participantPredicate).Skip(pageNo * limit).Take(limit).ToList();
+
+            foreach (SprintParticipant participant in participantList)
+            {
+                if (!string.IsNullOrEmpty(participant.RaceCompletedDuration))
+                {
+                    participant.RaceCompletedDuration = TimeSpan.Parse(participant.RaceCompletedDuration).ToString(@"hh\:mm\:ss");
+                }
+            }
+
+            return participantList;
+
         }
 
 
