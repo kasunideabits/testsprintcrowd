@@ -4,6 +4,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
@@ -175,7 +176,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        Task<bool> IsUserExistInSC(string email);
+        Task<UserExistDto> IsUserExistInSC(string email);
 
         /// <summary>
         /// get user by user id
