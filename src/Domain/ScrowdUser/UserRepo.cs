@@ -16,6 +16,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using System.Linq.Expressions;
     using System;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
 
 
 
@@ -536,15 +537,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsUserExistInSC(string email)
+        public async Task<UserExistDto> IsUserExistInSC(string email)
         {
             User user = null;
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null && StringUtils.IsBase64String(email))
                 user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
 
-            return (user == null) ? false : true;
-
+            return user != null ? new UserExistDto { IsUserExist = true, UserType = user.UserType } : new UserExistDto { IsUserExist = false, UserType = 1000 };
+                
         }
 
         /// <summary>
