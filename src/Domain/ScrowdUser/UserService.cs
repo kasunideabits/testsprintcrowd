@@ -380,10 +380,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsUserExistInSC(string email)
+        public async Task<UserExistDto> IsUserExistInSC(string email)
         {
-            bool success = await this.userRepo.IsUserExistInSC(email);
-            return success;
+            return await this.userRepo.IsUserExistInSC(email);
         }
 
 
