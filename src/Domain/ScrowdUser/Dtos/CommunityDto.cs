@@ -23,6 +23,14 @@ namespace SprintCrowdBackEnd.Domain.ScrowdUser.Dtos
         /// </summary>
         public List<FriendDto> FriendDto { get; set; }
 
+        /// <summary>
+        /// Profile picture
+        /// </summary>
+        public string ProfilePicture { get; set; }
 
+        /// <summary>
+        /// Useris friend of mine
+        /// </summary>
+        public bool IsFriendOfMine { get; set; }
     }
 }

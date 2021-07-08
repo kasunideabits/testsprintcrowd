@@ -537,38 +537,48 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             try
             {
-                Expression<Func<User, bool>> query = s => s.Name.Contains(searchKey) && s.UserState != Application.UserState.Deleted; //added draft sprint exlusion here;
+                Expression<Func<User, bool>> query = s => s.Name.Contains(searchKey,StringComparison.OrdinalIgnoreCase) && s.UserState != Application.UserState.Deleted; //added draft sprint exlusion here;
 
                 List<User> userList = await this.userRepo.GetCommunity(query);
+                
+                User currentUser = await this.userRepo.GetUserById(loggedUser);
 
-                List<CommunityDto> communityList = new List<CommunityDto>();
+                List <CommunityDto> communityList = new List<CommunityDto>();
 
                 foreach (User user in userList)
                 {
                     CommunityDto community = new CommunityDto();
                     community.UserId = user.Id;
                     community.Name = user.Name;
+                    community.ProfilePicture = user.ProfilePicture;
+                                      
+                    var friends = await this.FriendService.AllFriends(user.Id);
+                    community.IsFriendOfMine = friends != null && friends.Count > 0;
+                    
+                    #region commented
 
-                    community.FriendDto = new List<FriendDto>();
+                    // community.FriendDto = new List<FriendDto>();
 
-                    foreach (var friend in user.friendsAccepted)
-                    {
-                        community.FriendDto.Add(new FriendDto(
-                        friend.AcceptedUser.Id,
-                        friend.AcceptedUser.Name,
-                        friend.AcceptedUser.ProfilePicture,
-                        friend.AcceptedUser.Code,
-                        friend.AcceptedUser.Email,
-                        friend.AcceptedUser.City,
-                        friend.AcceptedUser.Country,
-                        friend.AcceptedUser.CountryCode,
-                        friend.AcceptedUser.ColorCode,
-                        friend.CreatedDate,
-                        friend.AcceptedUser.UserShareType,
-                        friend.AcceptedUser.Id == loggedUser
-                        ));
 
-                    }
+                    //foreach (var friend in user.friendsAccepted)
+                    //{
+                    //    community.FriendDto.Add(new FriendDto(
+                    //    friend.AcceptedUser.Id,
+                    //    friend.AcceptedUser.Name,
+                    //    friend.AcceptedUser.ProfilePicture,
+                    //    friend.AcceptedUser.Code,
+                    //    friend.AcceptedUser.Email,
+                    //    friend.AcceptedUser.City,
+                    //    friend.AcceptedUser.Country,
+                    //    friend.AcceptedUser.CountryCode,
+                    //    friend.AcceptedUser.ColorCode,
+                    //    friend.CreatedDate,
+                    //    friend.AcceptedUser.UserShareType,
+                    //    friend.AcceptedUser.Id == loggedUser
+                    //    ));
+
+                    //} 
+                    #endregion
 
                     communityList.Add(community);
                 }
