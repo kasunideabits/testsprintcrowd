@@ -38,5 +38,20 @@
         /// </summary>
         /// <param name="userId">user id of the user to be retrieved</param>
         Task<FriendDto> GetFriend(int userId);
+
+        /// <summary>
+        /// Friend invite send through the app
+        /// </summary>
+        /// <param name="FromUserId"></param>
+        /// <param name="ToUserId"></param>
+        /// <returns></returns>
+        Task<FriendInviteDto> InviteFriend(int FromUserId, int ToUserId);
+
+        /// <summary>
+        /// List invites for logged user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<InviteDto> InviteList(int userId);
     }
 }

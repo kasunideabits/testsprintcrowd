@@ -67,5 +67,27 @@
         /// <param name="userId">friend user id</param>
         /// <returns></returns>
         Task<Friend> GetFriendship(int userId);
+
+        /// <summary>
+        /// Send friend invite from internal app
+        /// </summary>
+        /// <param name="invite">FriendInvite db entity object</param>
+        /// <returns></returns>
+        Task<FriendInvite> InviteFriend(FriendInvite invite);
+
+        /// <summary>
+        /// List invites for logged user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        Task<List<FriendInvite>> InvitationsListRecievedByUser(int userId);
+
+        /// <summary>
+        /// Invitations list sent by user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        /// 
+        Task<List<FriendInvite>> InvitationsListSentByUser(int userId);
     }
 }

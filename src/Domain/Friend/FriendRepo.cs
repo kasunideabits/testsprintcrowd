@@ -128,5 +128,44 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .Include(f => f.SharedUser)
                 .FirstOrDefaultAsync(f => f.AcceptedUserId == userId || f.SharedUserId == userId);
         }
+
+
+        /// <summary>
+        /// Send invite from the internal app
+        /// </summary>
+        /// <param name="invite"></param>
+        /// <returns></returns>
+        public async Task<FriendInvite> InviteFriend(FriendInvite invite)
+        {
+            var result = await this.dbContext.FriendInvite.AddAsync(invite);
+            return result.Entity;
+        }
+
+
+        /// <summary>
+        /// List invites for logged user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        /// 
+        public async Task<List<FriendInvite>> InvitationsListRecievedByUser(int userId)
+        {
+            var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
+                .Include(f => f.ToUser).Where(x => !x.Accepted && x.ToUserId == userId).ToListAsync();
+            return result;
+        }
+
+        /// <summary>
+        /// Invitations list sent by user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        /// 
+        public async Task<List<FriendInvite>> InvitationsListSentByUser(int userId)
+        {
+            var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
+                .Include(f => f.ToUser).Where(x => !x.Accepted && x.FromUserId == userId).ToListAsync();
+            return result;
+        }
     }
 }

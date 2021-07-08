@@ -204,5 +204,75 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 }
             }
         }
+
+        /// <summary>
+        /// Friend invite send from internal app
+        /// </summary>
+        /// <param name="FromUserId">Logged user id</param>
+        /// <param name="ToUserId">Invite reciever</param>
+        /// <returns>FriendInviteDto</returns>
+        public async Task<FriendInviteDto> InviteFriend(int fromUserId, int toUserId)
+        {
+            FriendInvite invite = new FriendInvite();
+            invite.ToUserId = toUserId;
+            invite.FromUserId = fromUserId;
+            var result = await this.FriendRepo.InviteFriend(invite);
+            this.FriendRepo.SaveChanges();
+
+            FriendInviteDto inviteModel = new FriendInviteDto()
+            {
+                ToUserId = result.ToUserId,
+                FromUserId = result.FromUserId,
+                Id = result.Id
+            };
+            return inviteModel;
+        }
+
+        /// <summary>
+        /// List invites for logged user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+
+        public async Task<InviteDto> InviteList(int userId)
+        {
+            InviteDto inviteDto = new InviteDto(); 
+
+            var recievedList = await this.FriendRepo.InvitationsListRecievedByUser(userId);
+            
+            inviteDto.InviteRecievedList = new List<InviteRecieved>();
+
+            foreach(var invite in recievedList)
+            {
+                inviteDto.InviteRecievedList.Add(new InviteRecieved()
+                {
+                    Name = invite.FromUser.Name,
+                    ProfilePicture = invite.FromUser.ProfilePicture,
+                    UserId =  invite.FromUserId,
+
+                });
+            }
+
+            inviteDto.InviteSendList = new List<InviteSend>();
+
+            var sendList = await this.FriendRepo.InvitationsListSentByUser(userId);
+
+            foreach (var invite in sendList)
+            {
+                inviteDto.InviteSendList.Add(new InviteSend()
+                {
+                    Name = invite.ToUser.Name,
+                    ProfilePicture = invite.ToUser.ProfilePicture,
+                    UserId = invite.ToUserId,
+
+                });
+            }
+
+            return inviteDto;
+           
+        }
+
+
+
     }
 }
