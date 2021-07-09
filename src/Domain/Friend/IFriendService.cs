@@ -53,5 +53,21 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<InviteDto> InviteList(int userId);
+
+
+        /// <summary>
+        /// Friend invite accept
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns>Successfull updated record</returns>
+        Task<FriendInviteDto> InviteAccept(int id);
+
+
+
+        /// <summary>
+        /// Remove an invitation
+        /// </summary>
+        /// <param name="id">friend to be removed</param>
+        Task<bool> RemoveInvitation(int id);
     }
 }

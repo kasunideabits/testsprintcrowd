@@ -167,5 +167,49 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 .Include(f => f.ToUser).Where(x => !x.Accepted && x.FromUserId == userId).ToListAsync();
             return result;
         }
+
+
+        /// <summary>
+        /// Get invite by id
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns></returns>
+        public async Task<FriendInvite> GetInvite(int id)
+        {
+            var result = await this.dbContext.FriendInvite.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return result;
+        }
+
+        /// <summary>
+        /// Update an invite
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<FriendInvite> UpdateInvite(FriendInvite invite)
+        {
+            var result =  this.dbContext.FriendInvite.Update(invite);
+            return result.Entity;
+        }
+
+
+        /// <summary>
+        /// Remove an invitation
+        /// </summary>
+        /// <param name="id">friend to be removed</param>
+        public async Task<bool> RemoveInvitation(int id)
+        {
+            try
+            {
+                FriendInvite invite = await this.dbContext.FriendInvite.FindAsync(id);
+                this.dbContext.Remove(invite);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }            
+        }
+
+
     }
 }
