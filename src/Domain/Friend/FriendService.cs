@@ -246,6 +246,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             {
                 inviteDto.InviteRecievedList.Add(new InviteRecieved()
                 {
+                    Id = invite.Id,
                     Name = invite.FromUser.Name,
                     ProfilePicture = invite.FromUser.ProfilePicture,
                     UserId = invite.FromUserId,
@@ -261,6 +262,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             {
                 inviteDto.InviteSendList.Add(new InviteSend()
                 {
+                    Id = invite.Id,
                     Name = invite.ToUser.Name,
                     ProfilePicture = invite.ToUser.ProfilePicture,
                     UserId = invite.ToUserId,
