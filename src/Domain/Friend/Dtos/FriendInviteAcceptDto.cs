@@ -5,11 +5,8 @@ using System.Threading.Tasks;
 
 namespace SprintCrowd.BackEnd.Domain.Friend
 {
-    public class FriendInviteDto
+    public class FriendInviteAcceptDto
     {
         public int Id { get; set; }
-        public int ToUserId { get; set; }
-        public int FromUserId { get; internal set; }
-        public bool Accepted { get; set; }
     }
 }

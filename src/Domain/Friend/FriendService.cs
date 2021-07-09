@@ -102,8 +102,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             List<FriendDto> parts = new List<FriendDto>();
             friends.ForEach(obj =>
             {
-                if (obj.AcceptedUserId == userId && parts.Find(x => x.Id == obj.SharedUser.Id) == null) 
-            {
+                if (obj.AcceptedUserId == userId && parts.Find(x => x.Id == obj.SharedUser.Id) == null)
+                {
                     parts.Add(new FriendDto(
                         obj.SharedUser.Id,
                         obj.SharedUser.Name,
@@ -236,19 +236,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
         public async Task<InviteDto> InviteList(int userId)
         {
-            InviteDto inviteDto = new InviteDto(); 
+            InviteDto inviteDto = new InviteDto();
 
             var recievedList = await this.FriendRepo.InvitationsListRecievedByUser(userId);
-            
+
             inviteDto.InviteRecievedList = new List<InviteRecieved>();
 
-            foreach(var invite in recievedList)
+            foreach (var invite in recievedList)
             {
                 inviteDto.InviteRecievedList.Add(new InviteRecieved()
                 {
                     Name = invite.FromUser.Name,
                     ProfilePicture = invite.FromUser.ProfilePicture,
-                    UserId =  invite.FromUserId,
+                    UserId = invite.FromUserId,
 
                 });
             }
@@ -269,7 +269,62 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             }
 
             return inviteDto;
-           
+        }
+
+
+
+        /// <summary>
+        /// Friend invite accept
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns>Successfull updated record</returns>
+        public async Task<FriendInviteDto> InviteAccept(int id)
+        {
+            //Get invitation from the database.
+            var invite = await this.FriendRepo.GetInvite(id);
+
+            invite.Accepted = true;
+
+            // Accept the invitation.
+            var updatedInvite = await this.FriendRepo.UpdateInvite(invite);
+            this.FriendRepo.SaveChanges();
+            FriendInviteDto inviteDto = new FriendInviteDto()
+            {
+                FromUserId = updatedInvite.FromUserId,
+                ToUserId = updatedInvite.ToUserId,
+                Accepted = updatedInvite.Accepted,
+                Id = updatedInvite.Id,
+            };
+
+            //Adding a friend in database.
+            Friend friend = new Friend();
+            friend.AcceptedUserId = updatedInvite.ToUserId;
+            friend.SharedUserId = updatedInvite.FromUserId;
+            friend.CreatedDate = DateTime.Now;
+            friend.UpdatedTime = DateTime.Now;
+            await this.FriendRepo.PlusFriend(friend);
+            this.FriendRepo.SaveChanges();
+
+            return inviteDto;
+        }
+
+
+        /// <summary>
+        /// Remove an invitation
+        /// </summary>
+        /// <param name="id">friend to be removed</param>
+        public async Task<bool> RemoveInvitation(int id)
+        {
+            try
+            {
+                await this.FriendRepo.RemoveInvitation(id);
+                this.FriendRepo.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
 
