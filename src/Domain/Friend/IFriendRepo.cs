@@ -89,5 +89,27 @@
         /// <returns></returns>
         /// 
         Task<List<FriendInvite>> InvitationsListSentByUser(int userId);
+
+        /// <summary>
+        /// Get invite by id
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns></returns>
+        Task<FriendInvite> GetInvite(int id);
+
+
+        /// <summary>
+        /// Update an invite
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<FriendInvite> UpdateInvite(FriendInvite invite);
+
+        /// <summary>
+        /// Remove an invitation
+        /// </summary>
+        /// <param name="id">friend to be removed</param>
+        Task<bool> RemoveInvitation(int id);
+
     }
 }

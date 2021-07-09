@@ -17,7 +17,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
@@ -99,7 +99,6 @@
         [HttpPost("InviteSend")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-
         public async Task<IActionResult> InviteSend([FromBody] FriendInviteDto request)
         {
             User user = await this.User.GetUser(this.UserService);
@@ -111,12 +110,29 @@
         [HttpGet("InviteList")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-
         public async Task<IActionResult> InviteList()
         {
             User user = await this.User.GetUser(this.UserService);
             var invites = await this.FriendService.InviteList(user.Id);
             return this.Ok(new SuccessResponse<InviteDto>(invites));
+        }
+
+
+        [HttpPost("InviteAccept")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteAccept(FriendInviteAcceptDto inviteAccept)
+        {
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id);
+            return this.Ok(new SuccessResponse<FriendInviteDto>(result));
+        }
+
+
+        [HttpDelete("InviteDelete/{Id}")]
+        public async Task<IActionResult> InviteDelete(int Id)
+        {
+            var result = await this.FriendService.RemoveInvitation(Id);
+            return this.Ok(result);
         }
     }
 }
