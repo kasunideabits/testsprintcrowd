@@ -15,6 +15,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
     public class InviteRecieved
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
         public string ProfilePicture { get; internal set; }
@@ -22,6 +23,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
     public class InviteSend
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
         public string ProfilePicture { get; internal set; }
