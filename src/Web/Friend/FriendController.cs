@@ -17,7 +17,7 @@
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
