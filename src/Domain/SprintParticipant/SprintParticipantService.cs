@@ -866,6 +866,7 @@
             }
             else
             {
+                participant.RaceCompletedDuration = raceCompletedDuration;
                 participant.DistanceRan = participant.Sprint.Distance;
             }
 
