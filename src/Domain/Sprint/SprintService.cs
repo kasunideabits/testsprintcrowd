@@ -475,28 +475,44 @@
 
             if (sprintModel.DraftEvent == 0)
             {
-                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode,sprintInfor = addedSprint };
+                SprintInfoGsDto sprintInfor = new SprintInfoGsDto(
+                    addedSprint.Id,
+                    addedSprint.Name,
+                    addedSprint.Distance,
+                    addedSprint.PromotionCode,
+                    addedSprint.StartDateTime,
+                    addedSprint.Type,
+                    addedSprint.Interval,
+                    addedSprint.DescriptionForTimeBasedEvent);
+                     var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode,sprintInfor  };
+                try
+                {
+                    var socialLink = sprintModel.IsSmartInvite ?
+                    await this.SocialShareService.updateTokenAndGetInvite(customData) :
+                    await this.SocialShareService.GetSmartLink(new SocialLink()
+                    {
+                        Name = sprintModel.Name,
+                        Description = descriptionForTimeBasedEvent,
+                        ImageUrl = sprintModel.ImageUrl,
+                        CustomData = customData
+                    });
 
-                var socialLink = sprintModel.IsSmartInvite ?
-                await this.SocialShareService.updateTokenAndGetInvite(customData) :
-                await this.SocialShareService.GetSmartLink(new SocialLink()
-                {
-                    Name = sprintModel.Name,
-                    Description = descriptionForTimeBasedEvent,
-                    ImageUrl = sprintModel.ImageUrl,
-                    CustomData = customData
-                });
+                    sprint.SocialMediaLink = socialLink;
+                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
+                    {
+                        await this.joinUser(sprint.Id, sprint.InfluencerEmail);
+                    }
+                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
+                    {
+                        await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
+                    }
+                    await this.SprintRepo.UpdateSprint(sprint);
+                }
 
-                sprint.SocialMediaLink = socialLink;
-                if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
+                catch(Exception ex)
                 {
-                    await this.joinUser(sprint.Id, sprint.InfluencerEmail);
+                    throw ex;
                 }
-                if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
-                {
-                    await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
-                }
-                await this.SprintRepo.UpdateSprint(sprint);
             }
 
             return CreateSprintDtoMapper(sprint, user);
