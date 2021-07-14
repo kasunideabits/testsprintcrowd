@@ -218,6 +218,18 @@
             return this.Ok(new SuccessResponse<List<ParticipantInfoDto>>(result));
         }
 
+        ///// <summary>
+        ///// Invite friend to a sprint
+        ///// </summary>
+        ///// <param name="invite">invite request body <see cref="SprintInvitationModel"> reqeust </see></param>
+        //[HttpPost("acceptSprint")]
+        //[ProducesResponseType(typeof(SuccessResponse<List<ParticipantInfoDto>>), 200)]
+        //public async Task<IActionResult> AcceptSprint([FromBody] SprintInvitationModel invite)
+        //{
+        //    var result = await this.SprintParticipantService.SprintInvite(invite.SprintId, invite.InviterId, invite.InviteeIds);
+        //    return this.Ok(new SuccessResponse<List<ParticipantInfoDto>>(result));
+        //}
+
         /// <summary>
         /// Get all notificaiton for user
         /// </summary>
