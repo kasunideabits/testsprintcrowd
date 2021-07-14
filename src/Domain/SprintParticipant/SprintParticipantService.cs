@@ -137,6 +137,15 @@
                         inviteUser.User.Name,
                         inviteUser.User.ProfilePicture,
                         accept);
+                    //send notification to Sprint Creator after sending join request accept or delete
+                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                       sprint.Id,
+                       sprint.Name,
+                       (SprintType)sprint.Type,
+                       creator.Id,
+                       creator.Name,
+                       creator.ProfilePicture,
+                       accept);
                 }
             }
             else
