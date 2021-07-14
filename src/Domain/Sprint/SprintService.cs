@@ -475,7 +475,7 @@
 
             if (sprintModel.DraftEvent == 0)
             {
-                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode };
+                var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode,sprintInfor = addedSprint };
 
                 var socialLink = sprintModel.IsSmartInvite ?
                 await this.SocialShareService.updateTokenAndGetInvite(customData) :
