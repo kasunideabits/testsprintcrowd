@@ -474,17 +474,19 @@
                 (SprintStatus)addedSprint.Status);
 
             if (sprintModel.DraftEvent == 0)
-            {
-                SprintInfoGsDto sprintInfor = new SprintInfoGsDto(
-                    addedSprint.Id,
-                    addedSprint.Name,
-                    addedSprint.Distance,
-                    addedSprint.PromotionCode,
-                    addedSprint.StartDateTime,
-                    addedSprint.Type,
-                    addedSprint.Interval,
-                    addedSprint.DescriptionForTimeBasedEvent);
-                     var customData = new { campaign_name = "sprintshare", sprintId = sprint.Id.ToString(), promotionCode = sprint.PromotionCode,sprintInfor  };
+            {              
+                     var customData = new
+                     {
+                         campaign_name = "sprintshare",
+                         sprintId = sprint.Id.ToString(),
+                         promotionCode = sprint.PromotionCode,
+                         name = addedSprint.Name,
+                         distance = addedSprint.Distance.ToString(),
+                         startDateTime = addedSprint.StartDateTime.ToString(),
+                         type = addedSprint.Type.ToString(),
+                         interval = addedSprint.Interval.ToString(),
+                         descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
+                     };
                 try
                 {
                     var socialLink = sprintModel.IsSmartInvite ?
