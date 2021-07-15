@@ -484,7 +484,7 @@
                          distance = addedSprint.Distance.ToString(),
                          startDateTime = addedSprint.StartDateTime.ToString(),
                          type = addedSprint.Type.ToString(),
-                         interval = addedSprint.Interval.ToString(),
+                         extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
                          descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
                      };
                 try
