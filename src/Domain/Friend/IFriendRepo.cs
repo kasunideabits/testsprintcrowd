@@ -67,5 +67,49 @@
         /// <param name="userId">friend user id</param>
         /// <returns></returns>
         Task<Friend> GetFriendship(int userId);
+
+        /// <summary>
+        /// Send friend invite from internal app
+        /// </summary>
+        /// <param name="invite">FriendInvite db entity object</param>
+        /// <returns></returns>
+        Task<FriendInvite> InviteFriend(FriendInvite invite);
+
+        /// <summary>
+        /// List invites for logged user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        Task<List<FriendInvite>> InvitationsListRecievedByUser(int userId);
+
+        /// <summary>
+        /// Invitations list sent by user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        /// 
+        Task<List<FriendInvite>> InvitationsListSentByUser(int userId);
+
+        /// <summary>
+        /// Get invite by id
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns></returns>
+        Task<FriendInvite> GetInvite(int id);
+
+
+        /// <summary>
+        /// Update an invite
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<FriendInvite> UpdateInvite(FriendInvite invite);
+
+        /// <summary>
+        /// Remove an invitation
+        /// </summary>
+        /// <param name="id">friend to be removed</param>
+        Task<bool> RemoveInvitation(int id);
+
     }
 }

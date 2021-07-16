@@ -14,6 +14,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Utils;
     using System.Linq;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using System.Linq.Expressions;
+    using System;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
 
 
 
@@ -124,7 +127,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 // Oh ohh, error occured during registeration in identity server
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user in identity server");
             }
@@ -195,7 +198,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 // Oh ohh, error occured during registeration in identity server
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "Failed to register user");
             }
@@ -255,7 +258,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to send email confirmation fron identity");
             }
@@ -281,7 +284,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to send password verification mail from identity");
             }
@@ -307,7 +310,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (registerResponse.StatusCode != 200)
             {
                 isMailSent = false;
-                throw new ApplicationException(
+                throw new Application.ApplicationException(
                     registerResponse.StatusCode ?? (int)ApplicationErrorCode.UnknownError,
                     registerResponse.ErrorDescription ?? "failed to reset password from identity");
             }
@@ -534,15 +537,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsUserExistInSC(string email)
+        public async Task<UserExistDto> IsUserExistInSC(string email)
         {
             User user = null;
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null && StringUtils.IsBase64String(email))
                 user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Email == Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(email));
 
-            return (user == null) ? false : true;
-
+            return user != null ? new UserExistDto { IsUserExist = true, UserType = user.UserType } : new UserExistDto { IsUserExist = false, UserType = 1000 };
+                
         }
 
         /// <summary>
@@ -561,6 +564,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             {
                 throw Ex;
             }
+        }
+
+
+        public async Task<List<User>> GetCommunity(Expression<Func<User, bool>> predicate)
+        {
+            var result = this.dbContext.User.Include(s => s.friendsAccepted).Where(predicate).ToList();
+            return result;
         }
     }
 }

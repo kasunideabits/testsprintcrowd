@@ -7,6 +7,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
     /// <summary>
     /// interface for UserService.
@@ -141,12 +142,21 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        Task<bool> IsUserExistInSC(string email);
+        Task<UserExistDto> IsUserExistInSC(string email);
 
         /// <summary>
         /// View User Profile
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="loggedUserId"></param>
+        /// <returns></returns>
+        Task<UserProfileDto> ViewUserProfile(int userId, int loggedUserId);
+
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>      
         /// <returns></returns>
         Task<UserProfileDto> ViewUserProfile(int userId);
 
@@ -171,5 +181,13 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="UserId"></param>
         /// <returns></returns>
         Task<bool> DeleteUserProfile(int UserId);
+
+        /// <summary>
+        /// Return the Sprintcrowd users
+        /// </summary>
+        /// <param name="searchKey">search by name</param>
+        /// <param name="loggedUser">logged user id</param>
+        /// <returns>Sprintcrowd users list</returns>
+        Task<List<CommunityDto>> SearchCommunity(string searchKey, int loggedUser);
     }
 }

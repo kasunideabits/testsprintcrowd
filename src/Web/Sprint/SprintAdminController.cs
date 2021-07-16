@@ -60,12 +60,14 @@
         /// <returns>All public events available in database</returns>
         [HttpGet("get-public/{searchTerm}/{sortBy}/{filterBy}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
-        public async Task<ResponseObject> GetAllPublicEvents(string searchTerm, string sortBy, string filterBy)
+        public async Task<ResponseObject> GetAllPublicEvents(string searchTerm, string sortBy, string filterBy, [FromQuery(Name = "pageNo")] int pageNo = 0, [FromQuery(Name = "limit")] int limit = 0)
         {
+            Domain.Sprint.Dtos.SprintsPageDto sprintsPageDto = await this.SprintService.GetAll((int)SprintType.PublicSprint, searchTerm, sortBy, filterBy, pageNo, limit);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = await this.SprintService.GetAll((int)SprintType.PublicSprint, searchTerm, sortBy, filterBy),
+                Data = sprintsPageDto.sprints,
+                totalItems = sprintsPageDto.totalItems
             };
             return response;
         }
@@ -165,14 +167,8 @@
                 {
                     await this.SprintService.CreateMultipleSprints(
                         user,
-                        sprint.Name,
-                        sprint.Distance,
-                        sprint.StartTime,
-                        sprint.SprintType,
-                        sprint.NumberOfParticipants,
-                        sprint.InfluencerEmail,
-                        sprint.DraftEvent,
-                        sprint.InfluencerAvailability,
+                        sprint,
+                        durationForTimeBasedEvent,
                         repeatType
                         );
                     ResponseObject response = new ResponseObject()
@@ -233,9 +229,9 @@
         public async Task<IActionResult> DraftEvent([FromBody] CreateSprintModel sprint, string repeatType)
         {
             User user = await this.User.GetUser(this.UserService);
+            TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
             if (repeatType == "NONE")
             {
-                TimeSpan durationForTimeBasedEvent = string.IsNullOrEmpty(sprint.DurationForTimeBasedEvent) ? default(TimeSpan) : TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
 
                 var result = await this.SprintService.CreateNewSprint(
                     user,
@@ -253,14 +249,8 @@
             {
                 await this.SprintService.CreateMultipleSprints(
                     user,
-                    sprint.Name,
-                    sprint.Distance,
-                    sprint.StartTime,
-                    sprint.SprintType,
-                    sprint.NumberOfParticipants,
-                    sprint.InfluencerEmail,
-                    sprint.DraftEvent,
-                    sprint.InfluencerAvailability,
+                    sprint,
+                    durationForTimeBasedEvent,
                     repeatType
                     );
                 ResponseObject response = new ResponseObject()

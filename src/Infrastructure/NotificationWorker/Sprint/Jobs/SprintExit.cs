@@ -57,7 +57,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void AblyMessage(ExitSprint exitSprint)
         {
             var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(exitSprint);
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprint" + exitSprint.SprintId);
+            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + exitSprint.SprintId);
             channel.Publish("Exit", notificaitonMsg);
            // channel.SwitchOffChannel();
            

@@ -1,4 +1,4 @@
-﻿namespace SprintCrowd.BackEnd.Web.Friend
+namespace SprintCrowd.BackEnd.Web.Friend
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -88,6 +88,51 @@
         {
             var allFriends = await this.FriendService.GetFriend(userId);
             return this.Ok(new SuccessResponse<FriendDto>(allFriends));
+        }
+
+
+        /// <summary>
+        /// Get friends for given user
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
+
+        [HttpPost("InviteSend")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteSend([FromBody] FriendInviteDto request)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId);
+            return this.Ok(new SuccessResponse<FriendInviteDto>(addedFriend));
+        }
+
+
+        [HttpGet("InviteList")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteList()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var invites = await this.FriendService.InviteList(user.Id);
+            return this.Ok(new SuccessResponse<InviteDto>(invites));
+        }
+
+
+        [HttpPost("InviteAccept")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteAccept(FriendInviteAcceptDto inviteAccept)
+        {
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id);
+            return this.Ok(new SuccessResponse<FriendInviteDto>(result));
+        }
+
+
+        [HttpDelete("InviteDelete/{Id}")]
+        public async Task<IActionResult> InviteDelete(int Id)
+        {
+            var result = await this.FriendService.RemoveInvitation(Id);
+            return this.Ok(result);
         }
     }
 }

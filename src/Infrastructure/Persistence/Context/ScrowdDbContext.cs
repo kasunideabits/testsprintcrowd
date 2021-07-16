@@ -82,6 +82,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// table for UserAppVersionInfo.
         /// </summary>
         public DbSet<UserAppVersionInfo> UserAppVersionInfo { get; set; }
+       
+        /// <summary>
+        /// table for friend invite list sent by internal app
+        /// </summary>
+        public DbSet<FriendInvite> FriendInvite { get; set; }
 
         /// <summary>
         /// override save changes to insert last updated value.

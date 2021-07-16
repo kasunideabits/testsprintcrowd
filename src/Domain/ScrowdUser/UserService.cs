@@ -11,6 +11,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Web.PushNotification;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
     using SprintCrowd.BackEnd.Utils;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
+    using System.Linq.Expressions;
+    using System;
+    using System.Linq;
+
 
     /// <summary>
     /// user service used for managing users.
@@ -375,10 +380,9 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsUserExistInSC(string email)
+        public async Task<UserExistDto> IsUserExistInSC(string email)
         {
-            bool success = await this.userRepo.IsUserExistInSC(email);
-            return success;
+            return await this.userRepo.IsUserExistInSC(email);
         }
 
 
@@ -387,6 +391,50 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// View User Profile
         /// </summary>
         /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfile(int userId, int loggedUserId)
+        {
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //logged users friends
+            var myFriends = await this.FriendService.AllFriends(loggedUserId);
+
+            //check users freind is friend of mine
+            foreach(var friend in allFriends)
+            {
+                if(myFriends.Where(x=>x.Id == friend.Id).Any())
+                {
+                    friend.IsFreindOfMine = true;
+                }                 
+            }           
+
+            //Get user sprint statstics
+            var userStatistic = this.SprintParticipantService.GetStatistic(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                userStatistic,
+                userAchievement,
+                userInfor.UserShareType);
+
+            return userProfileDetail;
+        }
+
+        /// <summary>
+        /// View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+
         /// <returns></returns>
         public async Task<UserProfileDto> ViewUserProfile(int userId)
         {
@@ -482,6 +530,64 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             catch (System.Exception)
             {
                 return false;
+            }
+        }
+
+        public async Task<List<CommunityDto>> SearchCommunity(string searchKey, int loggedUser)
+        {
+            try
+            {
+                Expression<Func<User, bool>> query = s => s.Name.Contains(searchKey,StringComparison.OrdinalIgnoreCase) && s.UserState != Application.UserState.Deleted; //added draft sprint exlusion here;
+
+                List<User> userList = await this.userRepo.GetCommunity(query);
+                
+                User currentUser = await this.userRepo.GetUserById(loggedUser);
+
+                List <CommunityDto> communityList = new List<CommunityDto>();
+
+                foreach (User user in userList)
+                {
+                    CommunityDto community = new CommunityDto();
+                    community.UserId = user.Id;
+                    community.Name = user.Name;
+                    community.ProfilePicture = user.ProfilePicture;
+                                      
+                    var friends = await this.FriendService.AllFriends(user.Id);
+                    community.IsFriendOfMine = friends != null && friends.Count > 0;
+                    
+                    #region commented
+
+                    // community.FriendDto = new List<FriendDto>();
+
+
+                    //foreach (var friend in user.friendsAccepted)
+                    //{
+                    //    community.FriendDto.Add(new FriendDto(
+                    //    friend.AcceptedUser.Id,
+                    //    friend.AcceptedUser.Name,
+                    //    friend.AcceptedUser.ProfilePicture,
+                    //    friend.AcceptedUser.Code,
+                    //    friend.AcceptedUser.Email,
+                    //    friend.AcceptedUser.City,
+                    //    friend.AcceptedUser.Country,
+                    //    friend.AcceptedUser.CountryCode,
+                    //    friend.AcceptedUser.ColorCode,
+                    //    friend.CreatedDate,
+                    //    friend.AcceptedUser.UserShareType,
+                    //    friend.AcceptedUser.Id == loggedUser
+                    //    ));
+
+                    //} 
+                    #endregion
+
+                    communityList.Add(community);
+                }
+
+                return communityList;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
             }
         }
 
