@@ -9,6 +9,7 @@
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -168,6 +169,13 @@
         /// <param name="userId">user id to get record</param>
         /// <returns><see cref="SprintInfo">class </see></returns>
         Task<SprintInfo> GetSprintWhichMarkedAttendance(int userId);
+
+        /// <summary>
+        /// Get sprint details with participant's profiles.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        List<SprintWithParticipantProfile> GetSprintWithParticipantProfile(int userId);
 
 
     }

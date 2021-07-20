@@ -430,6 +430,51 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return userProfileDetail;
         }
 
+
+        /// <summary>
+        /// View User Profile with sprint details
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfileWithSprints(int userId, int loggedUserId)
+        {
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //logged users friends
+            var myFriends = await this.FriendService.AllFriends(loggedUserId);
+
+            //check users freind is friend of mine
+            foreach (var friend in allFriends)
+            {
+                if (myFriends.Where(x => x.Id == friend.Id).Any())
+                {
+                    friend.IsFreindOfMine = true;
+                }
+            }
+
+            //Get user sprint statstics
+            var sprintData = this.SprintParticipantService.GetSprintWithParticipantProfile(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                null,
+                userAchievement,
+                userInfor.UserShareType,
+                sprintData);
+
+            return userProfileDetail;
+        }
+
         /// <summary>
         /// View User Profile
         /// </summary>
