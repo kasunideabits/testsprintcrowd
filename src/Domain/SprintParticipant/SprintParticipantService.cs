@@ -17,6 +17,7 @@
     using Serilog;
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -798,6 +799,65 @@
             });
             return statistics;
         }
+
+
+        public List<SprintWithParticipantProfile> GetSprintWithParticipantProfile(int userId)
+        {
+            
+            List<SprintWithParticipantProfile> oDetails = new List<SprintWithParticipantProfile>();
+
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                (s.Stage == ParticipantStage.COMPLETED);             
+              
+
+            var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();          
+
+            foreach (var participant in allCompletedEvents)
+            {
+                SprintWithParticipantProfile sprintDto = new SprintWithParticipantProfile();
+                sprintDto.Id = participant.Sprint.Id;
+
+                sprintDto.Name = participant.Sprint.Name;
+                sprintDto.Distance = participant.Sprint.Distance;                   
+                sprintDto.StartTime = participant.Sprint.StartDateTime;
+                sprintDto.Type = (SprintType)participant.Sprint.Type;                   
+                sprintDto.IsTimeBased = participant.Sprint.IsTimeBased;
+                sprintDto.durationForTimeBasedEvent = participant.Sprint.DurationForTimeBasedEvent;
+
+
+                Expression<Func<SprintParticipant, bool>> runnersQuery = s =>
+                 s.SprintId == participant.Sprint.Id &&
+                 (s.Stage == ParticipantStage.COMPLETED) &&
+                 s.User.UserState == UserState.Active;
+
+                var allRunners = this.SprintParticipantRepo.GetAll(runnersQuery).ToList();
+
+                sprintDto.Participants = new List<ParticipantProfile>();
+
+                foreach(var runner in allRunners)
+                {
+                    if (userId == runner.UserId)
+                        continue;
+
+                    ParticipantProfile profile = new ParticipantProfile();
+                    profile.UserName = runner.User.Name;
+                    profile.Distance = runner.DistanceRan;
+                    profile.Position = (int)runner.Position;
+                    profile.ProfilePicture = runner.User.ProfilePicture;
+                    profile.RaceCompletedDuration = runner.RaceCompletedDuration;
+                    profile.UserId = runner.UserId;
+                    sprintDto.Participants.Add(profile);
+                }
+
+                oDetails.Add(sprintDto);
+
+            }
+
+            return oDetails;
+          
+        }
+
 
         /// <summary>
         /// Get Participant Sprints History
