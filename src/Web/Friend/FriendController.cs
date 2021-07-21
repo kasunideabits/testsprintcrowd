@@ -1,4 +1,4 @@
-﻿namespace SprintCrowd.BackEnd.Web.Friend
+namespace SprintCrowd.BackEnd.Web.Friend
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -95,7 +95,7 @@
         /// Get friends for given user
         /// </summary>
         /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
-       
+
         [HttpPost("InviteSend")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]

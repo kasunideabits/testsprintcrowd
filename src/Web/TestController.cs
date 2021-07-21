@@ -9,7 +9,8 @@ namespace SprintCrowd.BackEnd.Web
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
-
+    using System.Collections.Generic;
+    
     /// <summary>
     /// just a test controller used for quick code testing.
     /// </summary>
@@ -32,13 +33,11 @@ namespace SprintCrowd.BackEnd.Web
         /// <summary>
         /// just a testing endpoint used for quick code testing
         /// </summary>
+        // GET: api/Test
         [HttpGet]
-        public async Task<dynamic> Index(TimeSpan timeOffset)
+        public IEnumerable<string> Get()
         {
-            Console.WriteLine(timeOffset.Days);
-            var a = await this.sprintService.GetPublicSprints(3, -530);
-            return a;
-            //   return await this.User.GetUser(this.userService);
+            return new string[] { "valueA1", "valueB2" };
         }
     }
 }

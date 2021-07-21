@@ -507,7 +507,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return userProfileDetail;
         }
 
-
         /// <summary>
         /// Get User App Version Upgrade Info
         /// </summary>
