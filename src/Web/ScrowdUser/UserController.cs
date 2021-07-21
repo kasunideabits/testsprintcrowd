@@ -180,7 +180,7 @@ namespace SprintCrowd.Web.ScrowdUser
         }
 
         /// <summary>
-        /// Get sprint statistics
+        /// Get user profile data
         /// </summary>
         [HttpGet("ViewUserProfile/{userId}")]
         [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
@@ -191,6 +191,28 @@ namespace SprintCrowd.Web.ScrowdUser
             if (userId > 0)
             {
                 var result = await this.UserService.ViewUserProfile(userId, user.Id);
+                return this.Ok(new SuccessResponse<UserProfileDto>(result));
+            }
+            else
+            {
+                var result = await this.UserService.ViewUserProfile(user.Id);
+                return this.Ok(new SuccessResponse<UserProfileDto>(result));
+            }
+        }
+
+
+        /// <summary>
+        /// Get user profile data with sprints
+        /// </summary>
+        [HttpGet("ViewUserProfileWithSprints/{userId}")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> ViewUserProfileWithSprints(int userId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+
+            if (userId > 0)
+            {
+                var result = await this.UserService.ViewUserProfileWithSprints(userId, user.Id);
                 return this.Ok(new SuccessResponse<UserProfileDto>(result));
             }
             else
