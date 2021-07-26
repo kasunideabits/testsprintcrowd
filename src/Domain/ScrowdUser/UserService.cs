@@ -15,6 +15,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using System.Linq.Expressions;
     using System;
     using System.Linq;
+    using SprintCrowd.BackEnd.Enums;
 
 
     /// <summary>
@@ -59,7 +60,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user);
+                var userRoles = await this.GetUserRoleInfo((int)userId);
+                return new UserDto(user, userRoles);
             }
             else
             {
@@ -127,6 +129,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
+            await this.userRepo.AddUserRole(user.Id, Policy.USER);
             this.userRepo.SaveChanges();
             return user;
         }
@@ -646,6 +649,25 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Get User Role Info
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public async Task<List<RolesDto>> GetUserRoleInfo(int userID)
+        {
+            try
+            {
+               return await this.userRepo.GetUserRoleInfo(userID);
+                
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
 
     }
 }

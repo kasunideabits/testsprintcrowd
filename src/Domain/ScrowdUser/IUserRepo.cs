@@ -200,5 +200,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="predicate">user name</param>
         /// <returns></returns>
         Task<List<User>> GetCommunity(Expression<Func<User, bool>> predicate);
+
+        /// <summary>
+        /// Get User Role Info
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        Task<List<RolesDto>> GetUserRoleInfo(int userID);
+
+        /// <summary>
+        /// Add User Role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        Task AddUserRole(int userId, string role);
     }
 }
