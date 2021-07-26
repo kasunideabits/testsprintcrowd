@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SprintCrowd.BackEnd.Application;
 using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowd.BackEnd.Domain.ScrowdUser
@@ -24,13 +25,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.Description = description;
             this.CountryCode = countryCode;
             this.JoinedDate = joinedDate;
+           
         }
 
         public UserDto()
         {
 
         }
-        public UserDto(User user)
+        public UserDto(User user, List<RolesDto> userRoles = null)
         {
             this.UserId = user.Id;
             this.Name = user.Name;
@@ -41,6 +43,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.JoinedDate = user.CreatedDate;
             this.Email = user.Email;
             this.UserShareType = user.UserShareType;
+            this.UserRoles = userRoles;
         }
 
         /// <summary>
@@ -91,5 +94,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Share route statistic details with
         /// </summary>
         public UserShareType UserShareType { get; set; }
+
+        /// <summary>
+        /// Share route statistic details with
+        /// </summary>
+        public List<RolesDto> UserRoles { get; set; }
     }
 }

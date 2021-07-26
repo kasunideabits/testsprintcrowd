@@ -252,5 +252,19 @@ namespace SprintCrowd.Web.ScrowdUser
             var result = await this.UserService.SearchCommunity(keyword, user.Id);//3048
             return this.Ok(new SuccessResponse<List<CommunityDto>>(result));
         }
+
+
+        /// <summary>
+        /// Get User Roles
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetUserRoles")]
+        [ProducesResponseType(typeof(SuccessResponse<List<RolesDto>>), 200)]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.UserService.GetUserRoleInfo(user.Id);
+            return this.Ok(new SuccessResponse<List<RolesDto>>(result));
+        }
     }
 }
