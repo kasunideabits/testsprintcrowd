@@ -275,6 +275,15 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
 
 
+        public async Task<List<FriendInvite>> InvitationsListSentByUser(int userId)
+        {
+            var sendList = await this.FriendRepo.InvitationsListSentByUser(userId);
+            return sendList;
+        }
+       
+
+
+
         /// <summary>
         /// Friend invite accept
         /// </summary>

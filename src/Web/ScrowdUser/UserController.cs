@@ -14,7 +14,7 @@ namespace SprintCrowd.Web.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
     using SprintCrowd.BackEnd.Web.ScrowdUser;
-      using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
     /// <summary>
     /// User controller.
@@ -210,16 +210,9 @@ namespace SprintCrowd.Web.ScrowdUser
         {
             User user = await this.User.GetUser(this.UserService);
 
-            if (userId > 0)
-            {
-                var result = await this.UserService.ViewUserProfileWithSprints(userId, user.Id);
-                return this.Ok(new SuccessResponse<UserProfileDto>(result));
-            }
-            else
-            {
-                var result = await this.UserService.ViewUserProfile(user.Id);
-                return this.Ok(new SuccessResponse<UserProfileDto>(result));
-            }
+            var result = await this.UserService.ViewUserProfileWithSprints(userId, user.Id);
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+
         }
 
         /// <summary>
@@ -238,7 +231,7 @@ namespace SprintCrowd.Web.ScrowdUser
         /// Delete a user profile
         /// <param name="userId">user id</param>
         /// </summary>
-        [HttpDelete("UserProfileDelete/{userId}")]       
+        [HttpDelete("UserProfileDelete/{userId}")]
         public async Task<IActionResult> UserProfileDelete(int userId)
         {
             var result = await this.UserService.DeleteUserProfile(userId);

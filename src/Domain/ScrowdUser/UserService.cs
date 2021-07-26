@@ -438,12 +438,22 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         public async Task<UserProfileDto> ViewUserProfileWithSprints(int userId, int loggedUserId)
         {
+            int inviteId = 0;
             //Get user profile detail
             var userInfor = await this.GetUser(userId);
             //Get user related friends
             var allFriends = await this.FriendService.AllFriends(userId);
             //logged users friends
             var myFriends = await this.FriendService.AllFriends(loggedUserId);
+
+            var invites = await this.FriendService.InvitationsListSentByUser(loggedUserId);
+
+            var invite = invites.Where(x => x.ToUserId == userId).FirstOrDefault();
+
+            if(invite != null)
+            {
+                inviteId = invite.Id;
+            }
 
             //check users freind is friend of mine
             foreach (var friend in allFriends)
@@ -470,7 +480,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 null,
                 userAchievement,
                 userInfor.UserShareType,
-                sprintData);
+                sprintData,
+                inviteId);
 
             return userProfileDetail;
         }
