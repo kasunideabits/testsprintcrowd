@@ -88,6 +88,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// </summary>
         public DbSet<FriendInvite> FriendInvite { get; set; }
 
+        public DbSet<Roles> Roles { get; set; }
+
+        public DbSet<UserRoles> UserRoles { get; set; }
+
         /// <summary>
         /// override save changes to insert last updated value.
         /// </summary>
