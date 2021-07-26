@@ -69,5 +69,12 @@
         /// </summary>
         /// <param name="id">friend to be removed</param>
         Task<bool> RemoveInvitation(int id);
-    }
+
+        /// <summary>
+        /// Friend invitation list sent by user
+        /// </summary>
+        /// <param name="userId">logged user id</param>
+        /// <returns></returns>
+        Task<List<FriendInvite>> InvitationsListSentByUser(int userId);
+       }
 }
