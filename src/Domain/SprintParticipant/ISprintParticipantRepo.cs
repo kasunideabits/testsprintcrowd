@@ -8,6 +8,7 @@
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     /// Interface for sprint participant repository
@@ -223,7 +224,20 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         Task<SprintParticipant> GetByUserIdSprintId(int userId, int sprintId);
-
+        /// <summary>
+        /// Add Participant For Simulator
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<SprintParticipant> AddParticipant_ForSimulator(int sprintId, int userId);
+
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userRoles"></param>
+        /// <returns></returns>
+        Task<bool> IsAllowUserToCreateSprints(int userId, List<RolesDto> userRoles);
     }
 }
