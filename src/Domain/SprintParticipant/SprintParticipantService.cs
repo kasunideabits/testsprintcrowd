@@ -896,6 +896,18 @@
         }
 
         /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public async Task<bool> IsAllowUserToCreateSprints(int userId)
+        {
+            var result =  await this._userRepo.GetUserRoleInfo(userId);
+            return await this.SprintParticipantRepo.IsAllowUserToCreateSprints(userId , result);
+        }
+
+
+        /// <summary>
         /// Get all joined sprints for given date
         /// </summary>
         /// <param name="userId">user id to fetch</param>
