@@ -329,5 +329,17 @@
             var result = await this.SprintParticipantService.GetSprintParticipant(sprintId, 2953);
             return this.Ok(new SuccessResponse<SprintParticipantDto>(result));
         }
+
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        [HttpGet("IsAllowUserToCreateSprints")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintStatisticDto>), 200)]
+        public async Task<IActionResult> IsAllowUserToCreateSprints()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintParticipantService.IsAllowUserToCreateSprints(user.Id);
+            return this.Ok(result);
+        }
     }
 }

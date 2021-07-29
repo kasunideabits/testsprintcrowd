@@ -8,4 +8,10 @@ namespace SprintCrowd.BackEnd.Enums
         public const string USER = "USER";
         public const string HOST = "HOST";
     }
+
+    public enum AllowCrowdSprints
+    {
+        HostAllowCount = 50,
+        UserAllowCount = 3,
+    }
 }

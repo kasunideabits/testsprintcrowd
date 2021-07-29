@@ -176,7 +176,11 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         List<SprintWithParticipantProfile> GetSprintWithParticipantProfile(int userId);
-
-
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<bool> IsAllowUserToCreateSprints(int userId);
     }
 }

@@ -10,6 +10,8 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Enums;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -518,6 +520,36 @@
             {
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userRoles"></param>
+        /// <returns></returns>
+        public async Task<bool> IsAllowUserToCreateSprints(int userId, List<RolesDto> userRoles)
+        {
+            try
+            {
+                var userSprintCount = await (from sprint in this.Context.Sprint
+                                             where sprint.CreatedBy.Id == userId
+                                             select sprint).CountAsync();
+                if (userRoles != null)
+                {
+                    if (userRoles.Any(item => item.RoleName == Policy.ADMIN))
+                        return true;
+                    if (userRoles.Any(item => item.RoleName == Policy.HOST) && userSprintCount < (int)AllowCrowdSprints.HostAllowCount)
+                        return true;
+                    if (userRoles.Any(item => item.RoleName == Policy.USER) && userSprintCount < (int)AllowCrowdSprints.UserAllowCount)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return false;
         }
     }
 }
