@@ -803,15 +803,15 @@
 
         public List<SprintWithParticipantProfile> GetSprintWithParticipantProfile(int userId)
         {
-            
+
             List<SprintWithParticipantProfile> oDetails = new List<SprintWithParticipantProfile>();
 
             Expression<Func<SprintParticipant, bool>> query = s =>
                 s.UserId == userId &&
-                (s.Stage == ParticipantStage.COMPLETED);             
-              
+                (s.Stage == ParticipantStage.COMPLETED);
 
-            var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();          
+
+            var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
 
             foreach (var participant in allCompletedEvents)
             {
@@ -819,9 +819,9 @@
                 sprintDto.Id = participant.Sprint.Id;
 
                 sprintDto.Name = participant.Sprint.Name;
-                sprintDto.Distance = participant.Sprint.Distance;                   
+                sprintDto.Distance = participant.Sprint.Distance;
                 sprintDto.StartTime = participant.Sprint.StartDateTime;
-                sprintDto.Type = (SprintType)participant.Sprint.Type;                   
+                sprintDto.Type = (SprintType)participant.Sprint.Type;
                 sprintDto.IsTimeBased = participant.Sprint.IsTimeBased;
                 sprintDto.durationForTimeBasedEvent = participant.Sprint.DurationForTimeBasedEvent;
 
@@ -835,11 +835,8 @@
 
                 sprintDto.Participants = new List<ParticipantProfile>();
 
-                foreach(var runner in allRunners)
+                foreach (var runner in allRunners)
                 {
-                    if (userId == runner.UserId)
-                        continue;
-
                     ParticipantProfile profile = new ParticipantProfile();
                     profile.UserName = runner.User.Name;
                     profile.Distance = runner.DistanceRan;
@@ -855,7 +852,7 @@
             }
 
             return oDetails;
-          
+
         }
 
 
