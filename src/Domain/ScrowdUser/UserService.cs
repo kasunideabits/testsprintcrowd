@@ -129,7 +129,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
-            await this.userRepo.AddUserRole(user.Id, Policy.USER);
+            await this.userRepo.AddUserRole(user.Id, Enums.UserRoles.User);
             this.userRepo.SaveChanges();
             return user;
         }
@@ -161,6 +161,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
+            await this.userRepo.AddUserRole(user.Id, Enums.UserRoles.User);
             // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
