@@ -511,8 +511,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public async Task AddUserRole(int userId , string role)
         {
             var roleInfo = this.GetRoleIdByName(role);
-            if (roleInfo.Result == null)
-                await this.dbContext.UserRoles.AddAsync(new UserRoles() { UserId = userId ,RoleId = roleInfo.Id });
+            if (roleInfo.Result != null)
+                await this.dbContext.UserRoles.AddAsync(new UserRoles() { UserId = userId ,RoleId = roleInfo.Result.Id });
         }
 
         /// <summary>
@@ -522,7 +522,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <returns></returns>
         public async Task<Roles> GetRoleIdByName(string role)
         {
-            return await this.dbContext.Roles.FirstOrDefaultAsync(u => u.Role.Equals(role));
+            try
+            {
+                return await this.dbContext.Roles.FirstOrDefaultAsync(u => u.Role.Equals(role));
+              
+            }
+            catch(Exception ex)
+            { throw ex; }
+            
         }
 
         /// <summary>
