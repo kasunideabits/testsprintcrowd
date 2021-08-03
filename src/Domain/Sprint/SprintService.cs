@@ -274,6 +274,7 @@
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
+                sprintAavail.Distance = 1000;
             }
 
 
@@ -422,7 +423,16 @@
 
             sprint.SocialMediaLink = string.Empty;
             sprint.Name = sprintModel.Name;
-            sprint.Distance = sprintModel.Distance;
+            
+            if (sprintModel.IsTimeBased)
+            {
+                sprint.Distance = 1000;
+            }
+            else
+            {
+                sprint.Distance = sprintModel.Distance;
+            }
+           
             sprint.StartDateTime = sprintModel.StartTime;
             sprint.CreatedBy = user;
             sprint.IsNarrationsOn = sprintModel.IsNarrationsOn;
@@ -618,6 +628,7 @@
                     if (duplicatedSprint.IsTimeBased == true)
                     {
                         duplicatedSprint.Interval = (int)duplicatedSprint.DurationForTimeBasedEvent.TotalMinutes;
+                        duplicatedSprint.Distance = 1000;
                     }
 
                     Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
