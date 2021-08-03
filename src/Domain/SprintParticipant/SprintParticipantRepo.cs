@@ -537,11 +537,11 @@
                                              select sprint).CountAsync();
                 if (userRoles != null)
                 {
-                    if (userRoles.Any(item => item.RoleName == Policy.ADMIN))
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.Admin || item.RoleName == Enums.UserRoles.UnlimitedUser))
                         return true;
-                    if (userRoles.Any(item => item.RoleName == Policy.HOST) && userSprintCount < (int)AllowCrowdSprints.HostAllowCount)
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.Host) && userSprintCount < (int)AllowCrowdSprints.HostAllowCount)
                         return true;
-                    if (userRoles.Any(item => item.RoleName == Policy.USER) && userSprintCount < (int)AllowCrowdSprints.UserAllowCount)
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.User) && userSprintCount < (int)AllowCrowdSprints.UserAllowCount)
                         return true;
                 }
             }
