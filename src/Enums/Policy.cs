@@ -11,7 +11,15 @@ namespace SprintCrowd.BackEnd.Enums
 
     public enum AllowCrowdSprints
     {
-        HostAllowCount = 50,
+        HostAllowCount = 500,
         UserAllowCount = 3,
+    }
+
+    public static class UserRoles
+    {
+        public const string Admin = "Admin";
+        public const string User = "User";
+        public const string Host = "Host";
+        public const string UnlimitedUser = "UnlimitedUser";
     }
 }
