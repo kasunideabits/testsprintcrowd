@@ -25,7 +25,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="profilePicture"></param>
         /// <param name="countryCode"></param>
         /// <param name="joinedDate"></param>
-        public UserProfileDto(int userId, string name,string description, string profilePicture, string countryCode , DateTime? joinedDate , List<FriendDto> friendDto , SprintStatisticDto sprintStatisticDto, List<AchievementDto> achievementDto, UserShareType userShareType, List<SprintWithParticipantProfile> participants = null, int inviteId = 0)
+        public UserProfileDto(int userId, string name,string description, string profilePicture, string countryCode , DateTime? joinedDate , List<FriendDto> friendDto , SprintStatisticDto sprintStatisticDto, List<AchievementDto> achievementDto, UserShareType userShareType, List<SprintWithParticipantProfile> participants = null, int inviteId = 0,bool isFriendOfMine = false)
         {
             this.UserId = userId;
             this.Name = name;
@@ -39,6 +39,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             this.UserShareType = userShareType;
             this.SprintWithParticipantProfiles = participants;
             this.InviteId = inviteId;
+            this.IsFreindOfMine = isFriendOfMine;
         }
 
         /// <summary>
@@ -108,5 +109,10 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// Invite Id
         /// </summary>
         public int InviteId { get; set; }
+
+        /// <summary>
+        /// Friend of logged user
+        /// </summary>
+        public bool IsFreindOfMine { get; set; }
     }
 }
