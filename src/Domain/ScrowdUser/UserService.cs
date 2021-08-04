@@ -454,7 +454,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
 
             var invite = invites.Where(x => x.ToUserId == userId).FirstOrDefault();
 
-            if(invite != null)
+            bool isMyFriend = false;
+
+            if (myFriends != null)
+            {
+                isMyFriend = myFriends.Where(x => x.Id == userId).Any();
+            }
+
+            if (invite != null)
             {
                 inviteId = invite.Id;
             }
@@ -485,7 +492,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 userAchievement,
                 userInfor.UserShareType,
                 sprintData,
-                inviteId);
+                inviteId,
+                isMyFriend);
 
             return userProfileDetail;
         }
