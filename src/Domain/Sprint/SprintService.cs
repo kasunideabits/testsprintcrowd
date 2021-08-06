@@ -449,6 +449,7 @@
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
+            sprint.IsSoloRun = sprintModel.IsSoloRun;
 
             if (sprint.IsTimeBased == true)
             {
