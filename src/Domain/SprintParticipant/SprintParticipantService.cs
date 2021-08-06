@@ -527,7 +527,8 @@
                     markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.IsNarrationsOn,
-                    strCoHost
+                    strCoHost,
+                    markedAttendaceDetails.Sprint.IsSoloRun
                     );
 
             }

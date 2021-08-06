@@ -95,5 +95,11 @@ namespace SprintCrowd.BackEnd.Web.Event
         public string VideoLink { get; set; }
 
         public bool IsNarrationsOn { get; set; }
+
+        /// <summary>
+        /// Identified as a solo run
+        /// </summary>
+        public bool IsSoloRun { get; set; }
+
     }
 }
