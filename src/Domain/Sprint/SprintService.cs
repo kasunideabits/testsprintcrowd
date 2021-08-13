@@ -459,7 +459,6 @@
                 {
                     userEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(user.Email);
                 }
-                userEmail = "gamithcsi@gmail.com";
 
                 Console.WriteLine("start SendEmail");
                 var fromAddress = new MailAddress("verify@sprintcrowd.com", "SprintCrowd");
