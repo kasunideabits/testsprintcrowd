@@ -239,5 +239,12 @@
         /// <param name="userRoles"></param>
         /// <returns></returns>
         Task<bool> IsAllowUserToCreateSprints(int userId, List<RolesDto> userRoles);
+
+        /// <summary>
+        /// Get User Sprint Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<int> GetUserSprintCount(int userId);
     }
 }

@@ -23,7 +23,7 @@
         /// <param name="pageNo">No of the page</param>
         /// <param name="limit">No of items per page</param>
         /// <returns>Available events</returns>
-        Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit);
+        Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit, int userId);
 
         /// <summary>
         /// Get created sprint count for given date range
