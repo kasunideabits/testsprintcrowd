@@ -551,5 +551,24 @@
             }
             return false;
         }
+
+        /// <summary>
+        /// Get User Sprint Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<int> GetUserSprintCount(int userId)
+        {
+            try
+            {
+                return await(from sprint in this.Context.Sprint
+                                             where sprint.CreatedBy.Id == userId
+                                             select sprint).CountAsync();              
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
