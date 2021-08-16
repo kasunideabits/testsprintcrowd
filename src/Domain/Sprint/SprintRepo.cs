@@ -147,31 +147,37 @@
             }
 
             IQueryable<Sprint> allEventsFilter = null;
+            try
+            {
+                if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin) && allEvents != null && allEvents.Count() != 0)
+                {
+                    allEventsFilter = allEvents.Where(spr => spr.CreatedBy.Id==userId);
+                    noOfItems = allEventsFilter.Count();
+                }
+                else
+                {
+                    noOfItems = allEvents.Count();
+                    allEventsFilter = allEvents;
+                }
+                if (limit > 0)
+                {
+                    sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
+                }
+                else
+                {
+                    sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).ToListAsync();
+                }
 
-            if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin))
-            {
-                allEventsFilter = allEvents.Where(spr => spr.CreatedBy.Id.Equals(userId));
-                noOfItems = allEventsFilter.Count();
+                return new SprintsPageDto()
+                {
+                    sprints = sprints,
+                    totalItems = noOfItems
+                };
             }
-            else
+            catch (Exception ex)
             {
-                noOfItems = allEvents.Count();
-                allEventsFilter = allEvents;
+                throw ex;
             }
-            if (limit > 0)
-            {
-                sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
-            }
-            else
-            {
-                sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).ToListAsync();
-            }
-
-            return new SprintsPageDto()
-            {
-                sprints = sprints,
-                totalItems = noOfItems
-            };
         }
 
         /// <summary>
