@@ -240,9 +240,13 @@
                         participant.DistanceRan = distance;
                         participant.RaceCompletedDuration = raceCompletedDuation;
                     }
-                    //Mark Attendance users only can exit
+
+                    //Mark Attendance users only can exit others will remove from sprint
                     if (participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
                         participant.Stage = ParticipantStage.QUIT;
+                    else
+                        await this.SprintParticipantRepo.DeleteParticipant(userId, sprintId);
+
                     participant.FinishTime = DateTime.UtcNow;
 
                 }
