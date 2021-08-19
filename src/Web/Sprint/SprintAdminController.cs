@@ -145,7 +145,9 @@
                         user,
                         sprint,
                         durationForTimeBasedEvent,
-                        sprint.DescriptionForTimeBasedEvent
+                        sprint.DescriptionForTimeBasedEvent,
+                        repeatType,
+                        true
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -170,7 +172,8 @@
                         user,
                         sprint,
                         durationForTimeBasedEvent,
-                        repeatType
+                        repeatType,
+                        true
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -238,7 +241,7 @@
                     user,
                     sprint,
                     durationForTimeBasedEvent,
-                    sprint.DescriptionForTimeBasedEvent);
+                    sprint.DescriptionForTimeBasedEvent,repeatType);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,
