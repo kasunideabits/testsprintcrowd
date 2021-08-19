@@ -60,7 +60,7 @@
         /// <param name="draft">sprint draft or publish</param>
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
-        Task<CreateSprintDto> CreateNewSprint(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
+        Task<CreateSprintDto> CreateNewSprint(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent, string repeatType, bool isCrowdRun = false);
 
         /// <summary>
         /// Create multiple sprints based on repeat option, TODO : remove user object passing
@@ -76,7 +76,7 @@
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <param name="repeatType">repeat options</param>
         /// <returns>created sprints</returns>
-        Task CreateMultipleSprints(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string repeatType);
+        Task CreateMultipleSprints(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string repeatType, bool isCrowdRun = false);
 
         /// <summary>
         /// Get sprint with pariticipants by creator id

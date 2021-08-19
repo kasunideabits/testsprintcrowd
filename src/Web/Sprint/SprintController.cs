@@ -53,7 +53,7 @@
                 user,
                 sprint,
                 durationForTimeBasedEvent,
-                sprint.DescriptionForTimeBasedEvent);
+                sprint.DescriptionForTimeBasedEvent,"NONE");
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
