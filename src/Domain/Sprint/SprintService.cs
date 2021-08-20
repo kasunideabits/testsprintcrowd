@@ -652,7 +652,7 @@
                     {
                         await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
                     }
-                    if(isCrowdRun && repeatType!= "NONE")
+                    if(isCrowdRun && repeatType == "NONE")
                     await this.SendEmail(user, sprint, string.Empty);
                     await this.SprintRepo.UpdateSprint(sprint);
 
