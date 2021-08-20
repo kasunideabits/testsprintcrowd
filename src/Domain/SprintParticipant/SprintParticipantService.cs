@@ -1025,7 +1025,7 @@
 
         public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId)
         {
-            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, 2953);
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
             return new SprintParticipantDto()
             {
                 DistanceRan = user.DistanceRan,
