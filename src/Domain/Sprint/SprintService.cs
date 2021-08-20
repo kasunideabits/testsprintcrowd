@@ -278,7 +278,7 @@
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
-                sprintAavail.Distance = 1000;
+                sprintAavail.Distance = 41000;
             }
 
 
@@ -559,7 +559,7 @@
 
             if (sprintModel.IsTimeBased)
             {
-                sprint.Distance = 1000;
+                sprint.Distance = 41000;
             }
             else
             {
@@ -779,7 +779,7 @@
                     if (duplicatedSprint.IsTimeBased == true)
                     {
                         duplicatedSprint.Interval = (int)duplicatedSprint.DurationForTimeBasedEvent.TotalMinutes;
-                        duplicatedSprint.Distance = 1000;
+                        duplicatedSprint.Distance = 41000;
                     }
 
                     Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);
