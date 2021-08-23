@@ -17,6 +17,7 @@
     using Serilog;
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -239,9 +240,13 @@
                         participant.DistanceRan = distance;
                         participant.RaceCompletedDuration = raceCompletedDuation;
                     }
-                    //Mark Attendance users only can exit
+
+                    //Mark Attendance users only can exit others will remove from sprint
                     if (participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
                         participant.Stage = ParticipantStage.QUIT;
+                    else
+                        await this.SprintParticipantRepo.DeleteParticipant(userId, sprintId);
+
                     participant.FinishTime = DateTime.UtcNow;
 
                 }
@@ -526,7 +531,8 @@
                     markedAttendaceDetails.Sprint.DurationForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.DescriptionForTimeBasedEvent,
                     markedAttendaceDetails.Sprint.IsNarrationsOn,
-                    strCoHost
+                    strCoHost,
+                    markedAttendaceDetails.Sprint.IsSoloRun
                     );
 
             }
@@ -799,6 +805,62 @@
             return statistics;
         }
 
+
+        public List<SprintWithParticipantProfile> GetSprintWithParticipantProfile(int userId)
+        {
+
+            List<SprintWithParticipantProfile> oDetails = new List<SprintWithParticipantProfile>();
+
+            Expression<Func<SprintParticipant, bool>> query = s =>
+                s.UserId == userId &&
+                (s.Stage == ParticipantStage.COMPLETED);
+
+
+            var allCompletedEvents = this.SprintParticipantRepo.GetAll(query).ToList();
+
+            foreach (var participant in allCompletedEvents)
+            {
+                SprintWithParticipantProfile sprintDto = new SprintWithParticipantProfile();
+                sprintDto.Id = participant.Sprint.Id;
+
+                sprintDto.Name = participant.Sprint.Name;
+                sprintDto.Distance = participant.Sprint.Distance;
+                sprintDto.StartTime = participant.Sprint.StartDateTime;
+                sprintDto.Type = (SprintType)participant.Sprint.Type;
+                sprintDto.IsTimeBased = participant.Sprint.IsTimeBased;
+                sprintDto.durationForTimeBasedEvent = participant.Sprint.DurationForTimeBasedEvent;
+
+
+                Expression<Func<SprintParticipant, bool>> runnersQuery = s =>
+                 s.SprintId == participant.Sprint.Id &&
+                 (s.Stage == ParticipantStage.COMPLETED) &&
+                 s.User.UserState == UserState.Active;
+
+                var allRunners = this.SprintParticipantRepo.GetAll(runnersQuery).ToList();
+
+                sprintDto.Participants = new List<ParticipantProfile>();
+
+                foreach (var runner in allRunners)
+                {
+                    ParticipantProfile profile = new ParticipantProfile();
+                    profile.UserName = runner.User.Name;
+                    profile.Distance = runner.DistanceRan;
+                    profile.Position = (int)runner.Position;
+                    profile.ProfilePicture = runner.User.ProfilePicture;
+                    profile.RaceCompletedDuration = runner.RaceCompletedDuration;
+                    profile.UserId = runner.UserId;
+                    sprintDto.Participants.Add(profile);
+                }
+
+                oDetails.Add(sprintDto);
+
+            }
+
+            return oDetails;
+
+        }
+
+
         /// <summary>
         /// Get Participant Sprints History
         /// </summary>
@@ -834,6 +896,18 @@
 
             return this.SprintParticipantRepo.GetAllSprintsHistoryCountByUserId(userId);
         }
+
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name = "userId" ></ param >
+        /// < returns ></ returns >
+        public async Task<bool> IsAllowUserToCreateSprints(int userId)
+        {
+            var result =  await this._userRepo.GetUserRoleInfo(userId);
+            return await this.SprintParticipantRepo.IsAllowUserToCreateSprints(userId , result);
+        }
+
 
         /// <summary>
         /// Get all joined sprints for given date
@@ -951,7 +1025,7 @@
 
         public async Task<SprintParticipantDto> GetSprintParticipant(int sprintId, int userId)
         {
-            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, 2953);
+            var user = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
             return new SprintParticipantDto()
             {
                 DistanceRan = user.DistanceRan,

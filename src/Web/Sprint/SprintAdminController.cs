@@ -62,7 +62,8 @@
         [ProducesResponseType(typeof(ResponseObject), 200)]
         public async Task<ResponseObject> GetAllPublicEvents(string searchTerm, string sortBy, string filterBy, [FromQuery(Name = "pageNo")] int pageNo = 0, [FromQuery(Name = "limit")] int limit = 0)
         {
-            Domain.Sprint.Dtos.SprintsPageDto sprintsPageDto = await this.SprintService.GetAll((int)SprintType.PublicSprint, searchTerm, sortBy, filterBy, pageNo, limit);
+            User user = await this.User.GetUser(this.UserService);
+            Domain.Sprint.Dtos.SprintsPageDto sprintsPageDto = await this.SprintService.GetAll((int)SprintType.PublicSprint, searchTerm, sortBy, filterBy, pageNo, limit , user.Id);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
@@ -144,7 +145,9 @@
                         user,
                         sprint,
                         durationForTimeBasedEvent,
-                        sprint.DescriptionForTimeBasedEvent
+                        sprint.DescriptionForTimeBasedEvent,
+                        repeatType,
+                        true
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -169,7 +172,8 @@
                         user,
                         sprint,
                         durationForTimeBasedEvent,
-                        repeatType
+                        repeatType,
+                        true
                         );
                     ResponseObject response = new ResponseObject()
                     {
@@ -237,7 +241,7 @@
                     user,
                     sprint,
                     durationForTimeBasedEvent,
-                    sprint.DescriptionForTimeBasedEvent);
+                    sprint.DescriptionForTimeBasedEvent,repeatType);
                 ResponseObject response = new ResponseObject()
                 {
                     StatusCode = (int)ApplicationResponseCode.Success,

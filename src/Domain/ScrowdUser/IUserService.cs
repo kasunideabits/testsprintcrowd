@@ -189,5 +189,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="loggedUser">logged user id</param>
         /// <returns>Sprintcrowd users list</returns>
         Task<List<CommunityDto>> SearchCommunity(string searchKey, int loggedUser);
+
+        /// <summary>
+        /// View User Profile with sprint details
+        /// </summary>
+        /// <param name="userId">user id of a participant</param>
+        /// <param name="loggedUserId">logged user id</param>
+        /// <returns>View User Profile with sprint details</returns>
+        Task<UserProfileDto> ViewUserProfileWithSprints(int userId, int loggedUserId);
+
+        /// <summary>
+        /// Get User Role Info
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        Task<List<RolesDto>> GetUserRoleInfo(int userID);
     }
 }

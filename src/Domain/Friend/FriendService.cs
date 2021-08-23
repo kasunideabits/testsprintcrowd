@@ -8,6 +8,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using SprintCrowd.BackEnd.Application;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -219,6 +220,20 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             var result = await this.FriendRepo.InviteFriend(invite);
             this.FriendRepo.SaveChanges();
 
+            var user = await this.FriendRepo.GetInvite(result.Id);
+
+            if (user != null)
+            {
+
+                this.NotificationClient.SprintNotificationJobs.InviteRequest(
+                               toUserId,
+                               user.ToUser.Name,
+                               user.ToUser.ProfilePicture,                              
+                               DateTime.Now,
+                               user.Id,
+                               user.ToUser.Name +" has sent you a friend request.");
+            }
+
             FriendInviteDto inviteModel = new FriendInviteDto()
             {
                 ToUserId = result.ToUserId,
@@ -275,6 +290,15 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
 
 
+        public async Task<List<FriendInvite>> InvitationsListSentByUser(int userId)
+        {
+            var sendList = await this.FriendRepo.InvitationsListSentByUser(userId);
+            return sendList;
+        }
+       
+
+
+
         /// <summary>
         /// Friend invite accept
         /// </summary>
@@ -307,6 +331,19 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             await this.FriendRepo.PlusFriend(friend);
             this.FriendRepo.SaveChanges();
 
+            this.NotificationClient.SprintNotificationJobs.AcceptRequest(
+                            friend.SharedUserId,
+                            friend.AcceptedUser.Name,
+                            friend.AcceptedUser.ProfilePicture,
+                            friend.AcceptedUser.Code,
+                            friend.AcceptedUser.Email,
+                            friend.AcceptedUser.City,
+                            friend.AcceptedUser.Country,
+                            friend.AcceptedUser.CountryCode,
+                            friend.AcceptedUser.ColorCode,
+                            friend.AcceptedUser.CreatedDate,
+                            friend.AcceptedUserId);
+
             return inviteDto;
         }
 
@@ -319,7 +356,18 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         {
             try
             {
+                var invite = await this.FriendRepo.GetInvite(id);
+
                 await this.FriendRepo.RemoveInvitation(id);
+                
+                this.NotificationClient.SprintNotificationJobs.DeclineRequest(
+                              invite.FromUserId,
+                              invite.ToUser.Name,
+                              invite.ToUser.ProfilePicture,
+                              DateTime.Now,
+                              invite.ToUser.Id,
+                              invite.ToUser.Name + " has declined the friend request.");
+
                 this.FriendRepo.SaveChanges();
                 return true;
             }

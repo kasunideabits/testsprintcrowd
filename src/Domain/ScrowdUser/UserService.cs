@@ -15,6 +15,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using System.Linq.Expressions;
     using System;
     using System.Linq;
+    using SprintCrowd.BackEnd.Enums;
 
 
     /// <summary>
@@ -59,7 +60,8 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             if (userId != null)
             {
                 var user = await this.userRepo.GetUser((int)userId);
-                return new UserDto(user);
+                var userRoles = await this.GetUserRoleInfo((int)userId);
+                return new UserDto(user, userRoles);
             }
             else
             {
@@ -127,6 +129,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
+            await this.userRepo.AddUserRole(user.Id, Enums.UserRoles.User);
             this.userRepo.SaveChanges();
             return user;
         }
@@ -158,6 +161,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             User user = await this.userRepo.RegisterEmailUser(registerData);
             await this.userRepo.AddUserPreference(user.Id);
             await this.userRepo.AddDefaultUserSettings(user.Id);
+            await this.userRepo.AddUserRole(user.Id, Enums.UserRoles.User);
             // await this.userRepo.AddPromocodeUser(user.Id, registerData.PromotionCode, registerData.SprintId);
             this.userRepo.SaveChanges();
             //Promocode User join to the sprint
@@ -430,6 +434,70 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return userProfileDetail;
         }
 
+
+        /// <summary>
+        /// View User Profile with sprint details
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserProfileDto> ViewUserProfileWithSprints(int userId, int loggedUserId)
+        {
+            int inviteId = 0;
+            //Get user profile detail
+            var userInfor = await this.GetUser(userId);
+            //Get user related friends
+            var allFriends = await this.FriendService.AllFriends(userId);
+            //logged users friends
+            var myFriends = await this.FriendService.AllFriends(loggedUserId);
+
+            var invites = await this.FriendService.InvitationsListSentByUser(loggedUserId);
+
+            var invite = invites.Where(x => x.ToUserId == userId).FirstOrDefault();
+
+            bool isMyFriend = false;
+
+            if (myFriends != null)
+            {
+                isMyFriend = myFriends.Where(x => x.Id == userId).Any();
+            }
+
+            if (invite != null)
+            {
+                inviteId = invite.Id;
+            }
+
+            //check users freind is friend of mine
+            foreach (var friend in allFriends)
+            {
+                if (myFriends.Where(x => x.Id == friend.Id).Any())
+                {
+                    friend.IsFreindOfMine = true;
+                }
+            }
+
+            //Get user sprint statstics
+            var sprintData = this.SprintParticipantService.GetSprintWithParticipantProfile(userId);
+            //Get user achievement
+            var userAchievement = this.AchievementService.Get(userId);
+
+            UserProfileDto userProfileDetail = new UserProfileDto(
+                userInfor.UserId,
+                userInfor.Name,
+                userInfor.Description,
+                userInfor.ProfilePicture,
+                userInfor.CountryCode,
+                userInfor.JoinedDate,
+                allFriends,
+                null,
+                userAchievement,
+                userInfor.UserShareType,
+                sprintData,
+                inviteId,
+                isMyFriend);
+
+            return userProfileDetail;
+        }
+
         /// <summary>
         /// View User Profile
         /// </summary>
@@ -590,6 +658,25 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Get User Role Info
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public async Task<List<RolesDto>> GetUserRoleInfo(int userID)
+        {
+            try
+            {
+               return await this.userRepo.GetUserRoleInfo(userID);
+                
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
 
     }
 }

@@ -17,6 +17,10 @@
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Web.Event;
     using Serilog;
+    using System.IO;
+    using System.Net.Mail;
+    using System.Net;
+
     /// <summary>
     /// Sprint service
     /// </summary>
@@ -55,10 +59,10 @@
         /// <param name="pageNo">No of the page</param>
         /// <param name="limit">No of items per page</param>
         /// <returns>Available all events</returns>
-        public async Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit)
+        public async Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit, int userId)
         {
-
-            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy, pageNo, limit);
+            var result = await this.userRepo.GetUserRoleInfo(userId);
+            return await this.SprintRepo.GetAllEvents(eventType, searchTerm, sortBy, filterBy, pageNo, limit, result , userId);
 
 
         }
@@ -274,6 +278,7 @@
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
+                sprintAavail.Distance = 41000;
             }
 
 
@@ -367,11 +372,140 @@
             return iniPromoCode;
         }
 
+        /// <summary>
+        /// Get Hosts Names
+        /// </summary>
+        /// <param name="sprint"></param>
+        /// <returns></returns>
+        private async Task<string> GetHostsNames(Sprint sprint)
+        {
+           string hosts = string.Empty;
+            User influencer = null;
+            User influencerCoHost = null;
+            if (sprint.Type == (int)SprintType.PublicSprint && sprint.InfluencerAvailability)
+            {
+                influencer = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmail);
+                if (influencer == null)
+                    influencer = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmail));
+
+                hosts = influencer.Name;
+
+                if (sprint.InfluencerEmailSecond != null)
+                {
+                    influencerCoHost = await this.SprintRepo.FindInfluencer(sprint.InfluencerEmailSecond);
+                    if (influencerCoHost == null)
+                        influencerCoHost = await this.SprintRepo.FindInfluencer(Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(sprint.InfluencerEmailSecond));
+
+                    hosts = hosts != string.Empty ? hosts + "," + influencerCoHost.Name : influencerCoHost.Name;
+                }
+
+            }
+            return hosts;
+        }
+        /// <summary>
+        /// Populate Email Body
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="url"></param>
+        /// <param name="isEmail"></param>
+        /// <returns></returns>
+        private async Task<string> PopulateEmailBody(Sprint sprint , string repeatType )
+        {
+            string body = string.Empty;
+            string leaderBoarLink = string.Empty;
+            string editLink = string.Empty;
+            //DO NOT REMOVE THIS-----Using following code generate the body HTML and assign to body
+            //using (StreamReader reader = new StreamReader(Path.Combine("Domain\\Sprint", "EmailCrowd.html")))
+            //{
+            //    body = await reader.ReadToEndAsync();
+            //}
+            //Using above code generate the body HTML and assign to body
+
+            body = "<!DOCTYPE html>\r\n<html>\r\n<table>\r\n<dev>\r\n<tbody>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse\">\r\n\r\n<tr>\r\n<td valign=\"top\" style=\"background:white;padding:0in 0in 0in 0in;background-size:cover;background-repeat:no-repeat;background:cover;background-size:cover\" id=\"m_-1894980969379046070templateHeader\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;background-size:cover;background-repeat:no-repeat;background:#transparent none no-repeat center/cover;background-color:#transparent;background-size:cover\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 0in 0in 0in;max-width:600px!important\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 6.75pt 6.75pt 6.75pt;min-width:100%\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 6.75pt 0in 6.75pt\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><img border=\"0\" width=\"287\" height=\"60\" style=\"width:2.9916in;height:.625in\" id=\"m_-1894980969379046070_x0000_i1028\" src=\"https://ci3.googleusercontent.com/proxy/jfOgoB-5mmJ6oQEXERu9HW8pIO8_1vAFJf3zFjJoZ4waMcRctlGNDqonrFK5Gn3iaqs9wancXSj5Kxq3XyUrqELkMkDhPHNJG4fLM3S9eY9cPErdG5TlrU8-t3Af9YE1Oj3klxKHikvN9PrnhPwOSgAtSZm4_w=s0-d-e1-ft#https://mcusercontent.com/51383202b4da2473e413e6f18/images/20fa3b70-4592-42b1-ac16-b96e3d5c0aa6.png\" class=\"CToWUd\"><u></u><u></u></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td valign=\"top\" style=\"background:white;padding:20.25pt 0in 40.5pt 0in;background-size:cover;background-repeat:no-repeat;background:cover;background-size:cover\" id=\"m_-1894980969379046070templateBody\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:600px!important\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 0in 0in 0in;max-width:600px!important\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;background-size:cover;background-repeat:no-repeat;background:cover;background-size:cover\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 0in 0in 0in;min-width:100%\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:100%;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 13.5pt 6.75pt 13.5pt\">\r\n<p class=\"MsoNormal\" style=\"line-height:150%\"><strong><span style=\"font-size:18.0pt;line-height:150%;font-family:Roboto;color:black\">Event details for {SprintName}&nbsp;with SprintCrowd</span></strong><span style=\"font-size:12.0pt;line-height:150%;font-family:&quot;Helvetica&quot;,sans-serif;color:#757575\"><u></u><u></u></span></p>\r\n<h3 style=\"margin:0in\">\r\n    <span style=\"font-size:12.0pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        <br>\r\n    </span><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        As a host you will be able to broadcast&nbsp;to all participants&nbsp;as well as a allowing others to talk by inviting them to the conversation while they run. View the LIVE statistics on the leaderboard&nbsp;to provide&nbsp;a more engaging&nbsp;experience&nbsp;for your runners or spectators.&nbsp;<br>\r\n        <br>\r\n        Below are&nbsp;the details of your event:\r\n    </span><span style=\"font-size:12.0pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        <br>\r\n        <br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Name</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {SprintName}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Description</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {Description}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Type</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {SprintType}, {TimeorKm}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Hosts</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {Hosts}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Accessbility</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {Accessbility}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Start Time</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : {StartTime} &nbsp; &nbsp; &nbsp;: {WeeklyorOneTime}<br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Direct link to event for participants to join</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">\r\n        : <a class=\"MsoNormal\" href=\"{GetSocialLink}\"> {GetSocialLink}</a> <br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Link to web leaderboard for spectators</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">: <a class=\"MsoNormal\" href=\"{LeaderBoarLink}\"> Click here</a> </span><span style=\"font-size:12.0pt;font-family:Roboto;color:#444444;font-weight:normal\"><u></u><u></u></span><br>\r\n    </span><strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444\">Link to portal to manage your events</span></strong><span style=\"font-size:10.5pt;font-family:Roboto;color:#444444;font-weight:normal\">: <a class=\"MsoNormal\" href=\"{EditLink}\"> {EditLink}</a> </span><span style=\"font-size:12.0pt;font-family:Roboto;color:#444444;font-weight:normal\"><u></u><u></u></span>\r\n</h3>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 0in 0in 0in;word-break:break-word;word-break:break-word\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:100%;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 13.5pt 6.75pt 13.5pt\"></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 0in 0in 0in;word-break:break-word;word-break:break-word\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:100%;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 13.5pt 6.75pt 13.5pt\"></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 0in 0in 0in;word-break:break-word;word-break:break-word\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:100%;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 13.5pt 6.75pt 13.5pt\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center;line-height:150%\"><span style=\"font-size:10.0pt;line-height:150%;font-family:&quot;Helvetica&quot;,sans-serif;color:black\">For support contact us on:<br>\r\n<a href=\"mailto:hello@sprintcrowd.com\" target=\"_blank\">hello@sprintcrowd.com</a> or&nbsp;+46 (0) 8 599 05 900</span><span style=\"font-size:12.0pt;line-height:150%;font-family:&quot;Helvetica&quot;,sans-serif;color:#757575\"><u></u><u></u></span></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td valign=\"top\" style=\"background:#333333;padding:0in 0in 0in 0in;background-size:cover;background-repeat:no-repeat;background:cover;background-size:cover\" id=\"m_-1894980969379046070templateFooter\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:600px!important\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 0in 0in 0in;max-width:600px!important\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;background-size:cover;background-repeat:no-repeat;background:#transparent none no-repeat center/cover;background-color:#transparent;background-size:cover\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 6.75pt 6.75pt 6.75pt;min-width:100%\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding:0in 6.75pt 0in 6.75pt\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 6.75pt 0in 6.75pt\">\r\n<div align=\"center\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 0in 0in 0in\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" style=\"border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 7.5pt 6.75pt 0in\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding:3.75pt 7.5pt 3.75pt 6.75pt\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"0\" style=\"width:0in;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td width=\"24\" style=\"width:.25in;padding:0in 0in 0in 0in\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><a href=\"https://www.facebook.com/virtualrunninglive/\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.facebook.com/virtualrunninglive/&amp;source=gmail&amp;ust=1628244582783000&amp;usg=AFQjCNGVn8JOHEz0KPf9nBhUxXRpSucR1Q\"><span style=\"text-decoration:none\"><img border=\"0\" width=\"24\" height=\"24\" style=\"width:.25in;height:.25in\" id=\"m_-1894980969379046070_x0000_i1027\" src=\"https://ci6.googleusercontent.com/proxy/iZE-48sXvszGHh6MUoqCYHnlP8ohfGJI6V1fj23YRaJHEaKjOb2V7stez03tl97kcCY9ebD52HlFfqGKcTQbPlQaysAL26ZKjUSa5NGX7CU3WUodCbzb-vFMkIXxvIREY4PT879oIw=s0-d-e1-ft#https://cdn-images.mailchimp.com/icons/social-block-v2/outline-light-facebook-48.png\" alt=\"Facebook\" class=\"CToWUd\"></span></a><u></u><u></u></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" style=\"border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 7.5pt 6.75pt 0in\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding:3.75pt 7.5pt 3.75pt 6.75pt\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"0\" style=\"width:0in;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td width=\"24\" style=\"width:.25in;padding:0in 0in 0in 0in\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><a href=\"http://www.instagram.com/sprintcrowd\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=http://www.instagram.com/sprintcrowd&amp;source=gmail&amp;ust=1628244582783000&amp;usg=AFQjCNEk8gvXY_fm63KVwdmFHoi0CRL7UA\"><span style=\"text-decoration:none\"><img border=\"0\" width=\"24\" height=\"24\" style=\"width:.25in;height:.25in\" id=\"m_-1894980969379046070_x0000_i1026\" src=\"https://ci5.googleusercontent.com/proxy/Ihh9hEwk_36d3lzL_tLmGaqmGhc-dLqZP-II9LpKgUDCh37Kvw1N4-DJsrxuyAA9V1NNx3975BQO5w7DNVWvFHpPM4gkDm8eMVCLYy_PtGWEZAxMuaULgOR-6W0K_1sgXOcwNMtgGVE=s0-d-e1-ft#https://cdn-images.mailchimp.com/icons/social-block-v2/outline-light-instagram-48.png\" alt=\"Link\" class=\"CToWUd\"></span></a><u></u><u></u></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" style=\"border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 0in 6.75pt 0in\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding:3.75pt 7.5pt 3.75pt 6.75pt\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"0\" style=\"width:0in;border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td width=\"24\" style=\"width:.25in;padding:0in 0in 0in 0in\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center\"><a href=\"http://www.sprintcrowd.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=http://www.sprintcrowd.com&amp;source=gmail&amp;ust=1628244582783000&amp;usg=AFQjCNH5aquG8N_19K-Cv0DJgVXr5E8WCg\"><span style=\"text-decoration:none\"><img border=\"0\" width=\"24\" height=\"24\" style=\"width:.25in;height:.25in\" id=\"m_-1894980969379046070_x0000_i1025\" src=\"https://ci6.googleusercontent.com/proxy/uZ0yuxmORppOSAVlAI9An9dTGgd5WLSQ0CBL7MLu_J4uk8Z1QO7RWFmdlkUYkmd_GLhwph5RoVCp9eKrXzEQnDQ91cNlGygasb_4p2fT-TnBvWoJAX8mqJXeyuG36Kto6QrY=s0-d-e1-ft#https://cdn-images.mailchimp.com/icons/social-block-v2/outline-light-link-48.png\" alt=\"Run connected\" class=\"CToWUd\"></span></a><u></u><u></u></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\"><span style=\"display:none\"><u></u>&nbsp;<u></u></span></p>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:6.75pt 0in 0in 0in;word-break:break-word;word-break:break-word\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\" style=\"width:100.0%;border-collapse:collapse;max-width:100%;min-width:100%\">\r\n<tbody>\r\n<tr>\r\n<td valign=\"top\" style=\"padding:0in 13.5pt 6.75pt 13.5pt\">\r\n<p class=\"MsoNormal\" align=\"center\" style=\"text-align:center;line-height:150%\"><span style=\"font-size:9.0pt;line-height:150%;font-family:&quot;Helvetica&quot;,sans-serif;color:white\"><br>\r\n<em><span style=\"font-family:&quot;Helvetica&quot;,sans-serif\">Copyright © 2020&nbsp;SPRINTCROWD AB. All rights reserved.</span></em><br>\r\n<br>\r\nWant to change how you receive these emails?<br>\r\nYou can <a href=\"https://sprintcrowd.us2.list-manage.com/profile?u=51383202b4da2473e413e6f18&amp;id=ccf8427935&amp;e=__test_email__&amp;c=f2d7791bdf\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://sprintcrowd.us2.list-manage.com/profile?u%3D51383202b4da2473e413e6f18%26id%3Dccf8427935%26e%3D__test_email__%26c%3Df2d7791bdf&amp;source=gmail&amp;ust=1628244582783000&amp;usg=AFQjCNElsfcKH9RbiP1FRIh2TMpRaAs2KA\">\r\n<span style=\"color:white\">update your preferences</span></a> or <a href=\"https://sprintcrowd.us2.list-manage.com/unsubscribe?u=51383202b4da2473e413e6f18&amp;id=ccf8427935&amp;e=__test_email__&amp;c=f2d7791bdf\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://sprintcrowd.us2.list-manage.com/unsubscribe?u%3D51383202b4da2473e413e6f18%26id%3Dccf8427935%26e%3D__test_email__%26c%3Df2d7791bdf&amp;source=gmail&amp;ust=1628244582783000&amp;usg=AFQjCNGTu0pdXr7an5Cu6mNhGVFZIc2aFQ\">\r\n<span style=\"color:white\">unsubscribe from this list</span></a>.<br>\r\n&nbsp; </span><span style=\"font-size:9.0pt;line-height:150%;font-family:&quot;Helvetica&quot;,sans-serif;color:white\"><u></u><u></u></span></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</html>";
+
+            leaderBoarLink = "https://qa-admin.sprintcrowd.com/control-panel/dashboard/leader_board?id=" + sprint.Id + "&name=" +sprint.Name+ "&stratTime="+ sprint.StartDateTime+ "&token=share";
+            editLink = "http://qa-admin.sprintcrowd.com";
+
+            body = body.Replace("{SprintName}", sprint.Name);
+            body = body.Replace("{Description}", sprint.IsTimeBased ? sprint.DescriptionForTimeBasedEvent : sprint.Name);
+            body = body.Replace("{SprintType}", sprint.IsTimeBased ? "Time Based" : "Distance Based");
+            body = body.Replace("{TimeorKm}", sprint.IsTimeBased ? sprint.DurationForTimeBasedEvent.ToString() : (sprint.Distance/1000).ToString() +"km");
+            body = body.Replace("{Hosts}", await this.GetHostsNames(sprint));
+            body = body.Replace("{Accessbility}",  string.IsNullOrEmpty(sprint.PromotionCode) ? "PUBLIC (Anyone can join)" : "Only Promo Code Users");
+
+            body = body.Replace("{StartTime}", TimeZoneInfo.ConvertTimeFromUtc(sprint.StartDateTime, TimeZoneInfo.Local).ToString("MMMM dd, yyyy hh:mm tt"));
+            body = body.Replace("{WeeklyorOneTime}", string.IsNullOrEmpty(repeatType) ? string.Empty : ": " + repeatType);
+            body = body.Replace("{GetSocialLink}", sprint.SocialMediaLink);
+            body = body.Replace("{LeaderBoarLink}", leaderBoarLink);
+            body = body.Replace("{EditLink}", editLink);
+
+            return body;
+        }
+
+        /// <summary>
+        /// Send verification email
+        /// </summary>
+        /// <param name="appUser"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task<bool> SendEmail(User user, Sprint sprint, string repeatType)
+        {
+            bool success = false;
+            try
+            {
+
+                string userEmail = user.Email;
+                if (StringUtils.IsBase64String(user.Email))
+                {
+                    userEmail = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(user.Email);
+                }
+                //userEmail = "gamithcsi@gmail.com";
+                Console.WriteLine("start SendEmail");
+                var fromAddress = new MailAddress("verify@sprintcrowd.com", "SprintCrowd");
+                var toAddress = new MailAddress(userEmail, user.Name);
+                const string fromPassword = "x&7/3uUvXXzz#";
+
+                string subject = await this.SprintParticipantRepo.GetUserSprintCount(user.Id) < 1 ? " Welcome to SprintCrowd!" : "SprintCrowd Team"; ;
+
+                string body = await this.PopulateEmailBody(sprint, repeatType);
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword),
+                    TargetName = "STARTTLS/smtp.office365.com"
+                };
+                smtp.Timeout = 30000;
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    BodyEncoding = System.Text.Encoding.UTF8,
+                    SubjectEncoding = System.Text.Encoding.Default,
+                    IsBodyHtml = true
+                })
+
+                {
+                    smtp.Send(message);
+                    success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                throw ex;
+            }
+            return success;
+        }
+
         public async Task<CreateSprintDto> CreateNewSprint(
             User user,
             CreateSprintModel sprintModel,
             TimeSpan durationForTimeBasedEvent,
-            string descriptionForTimeBasedEvent)
+            string descriptionForTimeBasedEvent,string repeatType ,bool isCrowdRun = false)
         {
 
             Sprint sprint = new Sprint();
@@ -422,7 +556,16 @@
 
             sprint.SocialMediaLink = string.Empty;
             sprint.Name = sprintModel.Name;
-            sprint.Distance = sprintModel.Distance;
+
+            if (sprintModel.IsTimeBased)
+            {
+                sprint.Distance = 41000;
+            }
+            else
+            {
+                sprint.Distance = sprintModel.Distance;
+            }
+
             sprint.StartDateTime = sprintModel.StartTime;
             sprint.CreatedBy = user;
             sprint.IsNarrationsOn = sprintModel.IsNarrationsOn;
@@ -439,6 +582,7 @@
             sprint.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
+            sprint.IsSoloRun = sprintModel.IsSoloRun;
 
             if (sprint.IsTimeBased == true)
             {
@@ -474,7 +618,7 @@
                 (SprintStatus)addedSprint.Status);
 
             if (sprintModel.DraftEvent == 0)
-            {              
+            {
                      var customData = new
                      {
                          campaign_name = "sprintshare",
@@ -508,7 +652,11 @@
                     {
                         await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
                     }
+                    if(isCrowdRun && repeatType == "NONE")
+                    await this.SendEmail(user, sprint, string.Empty);
                     await this.SprintRepo.UpdateSprint(sprint);
+
+
                 }
 
                 catch(Exception ex)
@@ -527,8 +675,9 @@
             User user,
             CreateSprintModel sprint,
             TimeSpan durationForTimeBasedEvent,
-            String repeatType)
+            String repeatType, bool isCrowdRun = false)
         {
+            Sprint sprintInfo = new Sprint();
             int incementalSprintNumber = 0;
             string sprintName = sprint.Name;
             if (repeatType == "DAILY")
@@ -538,7 +687,7 @@
                 {
                     incementalSprintNumber++;
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
-                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(1);
                 }
             }
@@ -549,7 +698,7 @@
                 {
                     incementalSprintNumber++;
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
-                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(7);
                 }
             }
@@ -560,10 +709,22 @@
                 {
                     incementalSprintNumber++;
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
-                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent);
+                    await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddMonths(1);
                 }
             }
+
+            sprintInfo.Name = sprint.Name;
+            sprintInfo.IsTimeBased = sprint.IsTimeBased;
+            sprintInfo.DescriptionForTimeBasedEvent = sprint.DescriptionForTimeBasedEvent;
+            sprintInfo.DurationForTimeBasedEvent = TimeSpan.Parse(sprint.DurationForTimeBasedEvent);
+            sprintInfo.Distance = sprint.Distance;
+            sprintInfo.PromotionCode = sprint.promotionCode;
+            sprintInfo.StartDateTime = sprint.StartTime;
+            sprintInfo.SocialMediaLink = sprint.SocialMediaLink;
+
+            if(isCrowdRun)
+            await this.SendEmail(user, sprintInfo, repeatType);
         }
 
         /// <summary>
@@ -618,6 +779,7 @@
                     if (duplicatedSprint.IsTimeBased == true)
                     {
                         duplicatedSprint.Interval = (int)duplicatedSprint.DurationForTimeBasedEvent.TotalMinutes;
+                        duplicatedSprint.Distance = 41000;
                     }
 
                     Sprint addedSprint = await this.SprintRepo.AddSprint(duplicatedSprint);

@@ -14,7 +14,7 @@ namespace SprintCrowd.Web.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Web.ScrowdUser.Models;
     using SprintCrowd.BackEnd.Web.ScrowdUser;
-      using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
     /// <summary>
     /// User controller.
@@ -180,7 +180,7 @@ namespace SprintCrowd.Web.ScrowdUser
         }
 
         /// <summary>
-        /// Get sprint statistics
+        /// Get user profile data
         /// </summary>
         [HttpGet("ViewUserProfile/{userId}")]
         [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
@@ -200,6 +200,21 @@ namespace SprintCrowd.Web.ScrowdUser
             }
         }
 
+
+        /// <summary>
+        /// Get user profile data with sprints
+        /// </summary>
+        [HttpGet("ViewUserProfileWithSprints/{userId}")]
+        [ProducesResponseType(typeof(SuccessResponse<UserProfileDto>), 200)]
+        public async Task<IActionResult> ViewUserProfileWithSprints(int userId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+
+            var result = await this.UserService.ViewUserProfileWithSprints(userId, user.Id);
+            return this.Ok(new SuccessResponse<UserProfileDto>(result));
+
+        }
+
         /// <summary>
         /// Get sprint statistics
         /// </summary>
@@ -216,7 +231,7 @@ namespace SprintCrowd.Web.ScrowdUser
         /// Delete a user profile
         /// <param name="userId">user id</param>
         /// </summary>
-        [HttpDelete("UserProfileDelete/{userId}")]       
+        [HttpDelete("UserProfileDelete/{userId}")]
         public async Task<IActionResult> UserProfileDelete(int userId)
         {
             var result = await this.UserService.DeleteUserProfile(userId);
@@ -236,6 +251,20 @@ namespace SprintCrowd.Web.ScrowdUser
             User user = await this.User.GetUser(this.UserService);
             var result = await this.UserService.SearchCommunity(keyword, user.Id);//3048
             return this.Ok(new SuccessResponse<List<CommunityDto>>(result));
+        }
+
+
+        /// <summary>
+        /// Get User Roles
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetUserRoles")]
+        [ProducesResponseType(typeof(SuccessResponse<List<RolesDto>>), 200)]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.UserService.GetUserRoleInfo(user.Id);
+            return this.Ok(new SuccessResponse<List<RolesDto>>(result));
         }
     }
 }

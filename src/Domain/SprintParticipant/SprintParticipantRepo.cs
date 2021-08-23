@@ -10,6 +10,8 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowdBackEnd.Web.Sprint.Models;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Enums;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -513,6 +515,55 @@
                               join sprint in this.Context.Sprint on participant.SprintId equals sprint.Id
                               where (participant.UserId == userId && sprint.StartDateTime < DateTime.UtcNow)
                               select sprint).CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Is Allow User To Create Sprints
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userRoles"></param>
+        /// <returns></returns>
+        public async Task<bool> IsAllowUserToCreateSprints(int userId, List<RolesDto> userRoles)
+        {
+            try
+            {
+                var userSprintCount = await (from sprint in this.Context.Sprint
+                                             where sprint.CreatedBy.Id == userId
+                                             select sprint).CountAsync();
+                if (userRoles != null)
+                {
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.Admin || item.RoleName == Enums.UserRoles.UnlimitedUser))
+                        return true;
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.Host) && userSprintCount < (int)AllowCrowdSprints.HostAllowCount)
+                        return true;
+                    if (userRoles.Any(item => item.RoleName == Enums.UserRoles.User) && userSprintCount < (int)AllowCrowdSprints.UserAllowCount)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Get User Sprint Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<int> GetUserSprintCount(int userId)
+        {
+            try
+            {
+                return await(from sprint in this.Context.Sprint
+                                             where sprint.CreatedBy.Id == userId
+                                             select sprint).CountAsync();              
             }
             catch (Exception ex)
             {

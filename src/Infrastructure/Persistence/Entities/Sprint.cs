@@ -44,6 +44,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
             this.VideoLink = sprint.VideoLink;
             this.IsNarrationsOn = sprint.IsNarrationsOn;
             this.Interval = sprint.Interval;
+            this.IsSoloRun = sprint.IsSoloRun;
 
         }
         public int Id { get; set; }
@@ -191,6 +192,10 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public int Interval { get; set; }
 
+        /// <summary>
+        /// Identified as a solo run
+        /// </summary>
+        public bool IsSoloRun { get; set; }
 
 
     }

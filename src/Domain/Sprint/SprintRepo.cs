@@ -13,6 +13,7 @@
     using System.Text.RegularExpressions;
     using System.Globalization;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+    using SprintCrowd.BackEnd.Domain.ScrowdUser;
 
     /// <summary>
     /// Event repositiory
@@ -82,7 +83,7 @@
         /// <param name="pageNo">No of the page</param>
         /// <param name="limit">No of items per page</param>
         /// <returns>all events with given type</returns>
-        public async Task<SprintsPageDto> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit)
+        public async Task<SprintsPageDto> GetAllEvents(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit , List<RolesDto> userRoles, int userId)
         {
 
             IQueryable<Sprint> allEvents = null;
@@ -144,21 +145,39 @@
 
                 // return allEvents;
             }
-            noOfItems = allEvents.Count();
-            if (limit > 0)
-            {
-                sprints = await allEvents.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
-            }
-            else
-            {
-                sprints = await allEvents.OrderByDescending(x => x.CreatedDate).ToListAsync();
-            }
 
-            return new SprintsPageDto()
+            IQueryable<Sprint> allEventsFilter = null;
+            try
             {
-                sprints = sprints,
-                totalItems = noOfItems
-            };
+                if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin) && allEvents != null && allEvents.Count() != 0)
+                {
+                    allEventsFilter = allEvents.Where(spr => spr.CreatedBy.Id==userId);
+                    noOfItems = allEventsFilter.Count();
+                }
+                else
+                {
+                    noOfItems = allEvents.Count();
+                    allEventsFilter = allEvents;
+                }
+                if (limit > 0)
+                {
+                    sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
+                }
+                else
+                {
+                    sprints = await allEventsFilter.OrderByDescending(x => x.CreatedDate).ToListAsync();
+                }
+
+                return new SprintsPageDto()
+                {
+                    sprints = sprints,
+                    totalItems = noOfItems
+                };
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>

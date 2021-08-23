@@ -23,7 +23,7 @@
         /// <param name="pageNo">No of the page</param>
         /// <param name="limit">No of items per page</param>
         /// <returns>Available events</returns>
-        Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit);
+        Task<SprintsPageDto> GetAll(int eventType, string searchTerm, string sortBy, string filterBy, int pageNo, int limit, int userId);
 
         /// <summary>
         /// Get created sprint count for given date range
@@ -60,7 +60,7 @@
         /// <param name="draft">sprint draft or publish</param>
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <returns>cereated sprint</returns>
-        Task<CreateSprintDto> CreateNewSprint(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent);
+        Task<CreateSprintDto> CreateNewSprint(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string descriptionForTimeBasedEvent, string repeatType, bool isCrowdRun = false);
 
         /// <summary>
         /// Create multiple sprints based on repeat option, TODO : remove user object passing
@@ -76,7 +76,7 @@
         /// <param name="influencerAvailability">influencer available or not</param>
         /// <param name="repeatType">repeat options</param>
         /// <returns>created sprints</returns>
-        Task CreateMultipleSprints(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string repeatType);
+        Task CreateMultipleSprints(User user, CreateSprintModel sprint, TimeSpan durationForTimeBasedEvent, string repeatType, bool isCrowdRun = false);
 
         /// <summary>
         /// Get sprint with pariticipants by creator id

@@ -176,7 +176,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <returns></returns>
         public async Task<FriendInvite> GetInvite(int id)
         {
-            var result = await this.dbContext.FriendInvite.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
+                .Include(f => f.ToUser).Where(x => x.Id == id).FirstOrDefaultAsync();
             return result;
         }
 

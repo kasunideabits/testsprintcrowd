@@ -504,6 +504,35 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// Add User Role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task AddUserRole(int userId , string role)
+        {
+            var roleInfo = this.GetRoleIdByName(role);
+            if (roleInfo.Result != null)
+                await this.dbContext.UserRoles.AddAsync(new UserRoles() { UserId = userId ,RoleId = roleInfo.Result.Id });
+        }
+
+        /// <summary>
+        /// Get RoleId By Name
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public async Task<Roles> GetRoleIdByName(string role)
+        {
+            try
+            {
+                return await this.dbContext.Roles.FirstOrDefaultAsync(u => u.Role.Equals(role));
+              
+            }
+            catch(Exception ex)
+            { throw ex; }
+            
+        }
+
+        /// <summary>
         /// Update user
         /// </summary>
         public void UpdateUser(User user)
@@ -571,6 +600,27 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         {
             var result = this.dbContext.User.Include(s => s.friendsAccepted).Where(predicate).ToList();
             return result;
+        }
+
+        /// <summary>
+        /// Get User Role Info
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public async Task<List<RolesDto>> GetUserRoleInfo(int userID)
+        {
+          var userRoleList = await (from userRole in this.dbContext.UserRoles
+                   join role in this.dbContext.Roles on userRole.RoleId equals role.Id
+                   where (userRole.UserId == userID)
+                   select role).ToListAsync();
+
+            return userRoleList != null ?
+            userRoleList.Select(items => 
+            new RolesDto
+            {
+               RoleId = items.Id,
+               RoleName = items.Role,
+            }).ToList() : null;
         }
     }
 }
