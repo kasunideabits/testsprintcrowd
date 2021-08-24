@@ -12,23 +12,25 @@ namespace SprintCrowdBackEnd.Common
     public class GpsLogApiConsumer
     {
         static HttpClient client = new HttpClient();
+        public static string GpsUrl {get;set;}
 
         public GpsLogApiConsumer() { }
 
-        private static string GetApiUrl()
-        {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-            return configuration.GetValue<string>("GpsLogApi:Url");
-        }
+        //private static string GetApiUrl()
+        //{
+        //    IConfigurationRoot configuration = new ConfigurationBuilder()
+        //        .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+        //        .AddJsonFile("appsettings.json")
+        //        .AddEnvironmentVariables()
+        //        .Build();
+        //    return configuration.GetValue<string>("GpsLogApi:Url");
+        //}
 
 
         public async Task<int> GetTotalElevation(int sprintId, int userId)
         {
-            string path =  "https://gpsapi.sprintcrowd.com/elevation/getusertotalelevation/" + sprintId+"/"+ userId;
+           
+            string path = GpsUrl + "/elevation/getusertotalelevation/" + sprintId+"/"+ userId;
 
             var result = await this.ConsumeApi(path);
 
