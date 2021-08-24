@@ -533,7 +533,7 @@
             try
             {
                 var userSprintCount = await (from sprint in this.Context.Sprint
-                                             where sprint.CreatedBy.Id == userId
+                                             where sprint.CreatedBy.Id == userId && sprint.Type == (int)SprintType.PublicSprint
                                              select sprint).CountAsync();
                 if (userRoles != null)
                 {
