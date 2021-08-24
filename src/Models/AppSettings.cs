@@ -30,7 +30,11 @@ namespace SprintCrowd.BackEnd.Models
     /// </summary>
     /// <value>config for logging.</value>
     public LoggingConfig Logging { get; set; }
-  }
+     /// <summary>
+     /// Gps log api url
+     /// </summary>
+    public string GpsLogApi { get; set; }
+    }
 
   /// <summary>
   /// config for facebook.

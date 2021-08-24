@@ -14,6 +14,7 @@
     using Serilog;
     using SprintCrowd.BackEnd.Infrastructure.Persistence;
     using SprintCrowd.BackEnd.Models;
+    using SprintCrowdBackEnd.Common;
 
     /// <summary>
     /// entry class for dotnet core application.
@@ -88,6 +89,7 @@
             {
                 var client = new RestClient(appSettings.AuthorizationServer);
                 var request = new RestRequest(appSettings.OpenidConfigurationEndPoint, Method.GET);
+                GpsLogApiConsumer.GpsUrl = appSettings.GpsLogApi;
                 IRestResponse response = client.Get(request);
                 if (response.IsSuccessful)
                 {
