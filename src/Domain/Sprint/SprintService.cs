@@ -625,7 +625,7 @@
                          sprintId = sprint.Id.ToString(),
                          promotionCode = sprint.PromotionCode,
                          name = addedSprint.Name,
-                         distance = addedSprint.Distance.ToString(),
+                         distance = addedSprint.Distance > 0 ? (addedSprint.Distance/1000).ToString() : addedSprint.Distance.ToString(),
                          startDateTime = addedSprint.StartDateTime.ToString(),
                          type = addedSprint.Type.ToString(),
                          extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
