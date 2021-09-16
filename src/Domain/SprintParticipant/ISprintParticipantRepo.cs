@@ -136,7 +136,7 @@
         /// <param name="userId"></param>
         /// <param name="sprintId"></param>
         /// <returns></returns>
-        Task DeletePromoCodeUser(int userId, int sprintId)
+        Task DeletePromoCodeUser(int userId, int sprintId);
 
         // <summary>
         /// Get pariticipant count in given sprint id
