@@ -316,6 +316,22 @@
             return;
         }
 
+        /// <summary>
+        /// Delete Promo Code User
+        /// </summary>
+        /// <param name="userId">user id for delete</param>
+        /// <param name="sprintId">sprint id for delete</param>
+        public async Task DeletePromoCodeUser(int userId, int sprintId)
+        {
+            var promoUser = await this.Context.PromoCodeUser.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintId == sprintId);
+            if (promoUser != null)
+            {
+                this.Context.Remove(promoUser);
+                this.Context.SaveChanges();
+            }
+            return;
+        }
+
         // <summary>
         /// Get pariticipant count in given sprint id
         /// </summary>

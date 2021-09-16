@@ -245,7 +245,10 @@
                     if (participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
                         participant.Stage = ParticipantStage.QUIT;
                     else
+                    {
                         await this.SprintParticipantRepo.DeleteParticipant(userId, sprintId);
+                        await this.SprintParticipantRepo.DeletePromoCodeUser(userId, sprintId);
+                    }
 
                     participant.FinishTime = DateTime.UtcNow;
 
