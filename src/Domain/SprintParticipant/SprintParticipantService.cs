@@ -18,6 +18,7 @@
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -1044,6 +1045,20 @@
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             return new SprintInfo(sprint);
         }
+
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId)
+        {
+           return await this.SprintParticipantRepo.AddSprintParticipantMembers(userId, sprintId, memberId);
+        }
+
     }
 
     public class Notifications //<T> where T : class, new()

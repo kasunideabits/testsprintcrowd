@@ -9,6 +9,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Interface for sprint participant repository
@@ -254,5 +255,14 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<int> GetUserSprintCount(int userId);
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId);
     }
 }
