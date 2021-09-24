@@ -12,6 +12,7 @@
     using SprintCrowdBackEnd.Web.Sprint.Models;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowd.BackEnd.Enums;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Implements ISprintParticipantRepo interface for hanle sprint participants
@@ -584,6 +585,41 @@
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Sprint Participan tMember By Ids
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipantMembers> GetSprintParticipantMemberByIds(int userId, int sprintId, string memberId)
+        {
+            return await this.Context.SprintParticipantMembers.FirstOrDefaultAsync(u => u.UserId == userId && u.SprintId == sprintId && u.MemberId == memberId);
+        }
+
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId,int sprintId , string memberId)
+        {
+            var sprintMember = this.GetSprintParticipantMemberByIds(userId, sprintId , memberId);
+            if (sprintMember.Result == null)
+            {
+                var result = await this.Context.SprintParticipantMembers.AddAsync(new SprintParticipantMembers() { UserId = userId, SprintId = sprintId, MemberId = memberId });
+                this.Context.SaveChanges();
+                return result.Entity;
+            }
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already member for an event");
             }
         }
     }

@@ -10,6 +10,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Interface for sprint participant service
@@ -182,5 +183,14 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<bool> IsAllowUserToCreateSprints(int userId);
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId);
     }
 }
