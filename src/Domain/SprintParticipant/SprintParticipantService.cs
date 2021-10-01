@@ -106,6 +106,12 @@
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
                 }
+
+                var sprintParticipant = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
+                if (sprintParticipant != null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "User already joined");
+                }
             }
 
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId && s.User.UserState == UserState.Active;
