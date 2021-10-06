@@ -140,14 +140,14 @@
                         inviteUser.User.ProfilePicture,
                         accept);
                     //send notification to Sprint Creator after sending join request accept or delete
-                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                       sprint.Id,
-                       sprint.Name,
-                       (SprintType)sprint.Type,
-                       creator.Id,
-                       creator.Name,
-                       creator.ProfilePicture,
-                       accept);
+                    //this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                    //   sprint.Id,
+                    //   sprint.Name,
+                    //   (SprintType)sprint.Type,
+                    //   creator.Id,
+                    //   creator.Name,
+                    //   creator.ProfilePicture,
+                    //   accept);
                 }
             }
             else
@@ -972,7 +972,6 @@
                     Log.Logger.Information($" totalElevation - {totalElevation}");
                     participant.TotalElevation = totalElevation;
                 }
-
             }
             catch (Exception ex)
             {
