@@ -19,6 +19,8 @@
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowdBackEnd.Domain.Sprint.Dtos;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using Microsoft.Extensions.Options;
+    using SprintCrowd.BackEnd.Models;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -30,13 +32,14 @@
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient, IUserRepo userRepo)
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient, IUserRepo userRepo , IOptions<AppSettings> appSettings)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.NotificationClient = notificationClient;
             this._userRepo = userRepo;
+            this.GpsApi = appSettings.Value.GpsLogApi;
         }
-
+        private string GpsApi { get; }
         private readonly IUserRepo _userRepo;
         public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
         {
@@ -964,11 +967,10 @@
 
             try
             {
-
                 if (stage == ParticipantStage.COMPLETED)
                 {
                     GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
+                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
                     Log.Logger.Information($" totalElevation - {totalElevation}");
                     participant.TotalElevation = totalElevation;
                 }
