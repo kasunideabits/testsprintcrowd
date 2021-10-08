@@ -930,7 +930,7 @@
                 }
             }
 
-            return participantList;
+            return participantList.OrderBy(participants => participants.Position).ToList();
 
         }
 
