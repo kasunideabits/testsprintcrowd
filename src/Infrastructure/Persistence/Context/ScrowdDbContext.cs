@@ -5,6 +5,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
     using Npgsql.NameTranslation;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Configuration;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// db context for sprintcrowdbackend.
@@ -91,6 +92,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         public DbSet<Roles> Roles { get; set; }
 
         public DbSet<UserRoles> UserRoles { get; set; }
+
+        public DbSet<SprintParticipantMembers> SprintParticipantMembers { get; set; }
+
 
         /// <summary>
         /// override save changes to insert last updated value.

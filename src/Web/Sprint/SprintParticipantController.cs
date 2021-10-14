@@ -341,5 +341,25 @@
             var result = await this.SprintParticipantService.IsAllowUserToCreateSprints(user.Id);
             return this.Ok(result);
         }
+
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="registerDatal"></param>
+        /// <returns></returns>
+        [HttpPost("AddSprintParticipantMembers")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> AddSprintParticipantMembers([FromBody] SprintParticipantMembersModel memberDatal)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var sprintMember = await this.SprintParticipantService.AddSprintParticipantMembers(user.Id, memberDatal.SprintId , memberDatal.MemberId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = sprintMember,
+            };
+            return this.Ok(response);
+        }
     }
 }

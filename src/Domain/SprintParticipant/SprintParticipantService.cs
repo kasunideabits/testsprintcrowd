@@ -18,6 +18,9 @@
     using SprintCrowd.BackEnd.Utils;
     using SprintCrowdBackEnd.Domain.SprintParticipant.Dtos;
     using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using Microsoft.Extensions.Options;
+    using SprintCrowd.BackEnd.Models;
 
     /// <summary>
     /// Implements ISprintParticipantService interface for hanle sprint participants
@@ -29,13 +32,14 @@
         /// </summary>
         /// <param name="sprintParticipantRepo">sprint participant repository</param>
         /// <param name="notificationClient">notification client</param>
-        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient, IUserRepo userRepo)
+        public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient, IUserRepo userRepo , IOptions<AppSettings> appSettings)
         {
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.NotificationClient = notificationClient;
             this._userRepo = userRepo;
+            this.GpsApi = appSettings.Value.GpsLogApi;
         }
-
+        private string GpsApi { get; }
         private readonly IUserRepo _userRepo;
         public SprintParticipantService(ISprintParticipantRepo sprintParticipantRepo, INotificationClient notificationClient)
         {
@@ -139,14 +143,14 @@
                         inviteUser.User.ProfilePicture,
                         accept);
                     //send notification to Sprint Creator after sending join request accept or delete
-                    this.NotificationClient.SprintNotificationJobs.SprintJoin(
-                       sprint.Id,
-                       sprint.Name,
-                       (SprintType)sprint.Type,
-                       creator.Id,
-                       creator.Name,
-                       creator.ProfilePicture,
-                       accept);
+                    //this.NotificationClient.SprintNotificationJobs.SprintJoin(
+                    //   sprint.Id,
+                    //   sprint.Name,
+                    //   (SprintType)sprint.Type,
+                    //   creator.Id,
+                    //   creator.Name,
+                    //   creator.ProfilePicture,
+                    //   accept);
                 }
             }
             else
@@ -963,15 +967,13 @@
 
             try
             {
-
                 if (stage == ParticipantStage.COMPLETED)
                 {
                     GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId);
+                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
                     Log.Logger.Information($" totalElevation - {totalElevation}");
                     participant.TotalElevation = totalElevation;
                 }
-
             }
             catch (Exception ex)
             {
@@ -1044,6 +1046,20 @@
             var sprint = await this.SprintParticipantRepo.GetSprint(sprintId);
             return new SprintInfo(sprint);
         }
+
+
+        /// <summary>
+        /// Add Sprint Participant Members
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public async Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId)
+        {
+           return await this.SprintParticipantRepo.AddSprintParticipantMembers(userId, sprintId, memberId);
+        }
+
     }
 
     public class Notifications //<T> where T : class, new()
