@@ -622,5 +622,17 @@
                 throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already member for an event");
             }
         }
+
+
+        /// <summary>
+        /// Get Sprint Completed Participants Count By SprintId
+        /// </summary>
+        /// <param name="predicate">predicate for lookup</param>
+        /// <returns><see cref="SprintParticipant">sprint pariticipants</see></returns>
+        public IEnumerable<SprintParticipant> GetSprintCompletedParticipantsCountBySprintId(Expression<Func<SprintParticipant, bool>> predicate)
+        {
+            return this.Context.SprintParticipant
+                .Where(predicate);
+        }
     }
 }
