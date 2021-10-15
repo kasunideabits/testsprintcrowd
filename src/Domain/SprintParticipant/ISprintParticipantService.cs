@@ -192,5 +192,12 @@
         /// <param name="memberId"></param>
         /// <returns></returns>
         Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId);
+
+        /// <summary>
+        /// Get Sprint Completed Participants Count By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        Task<int> GetSprintCompletedParticipantsCountBySprintId(int sprintId);
     }
 }
