@@ -106,6 +106,12 @@
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "Maximum user exceeded");
                 }
+
+                var sprintParticipant = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
+                if (sprintParticipant != null)
+                {
+                    throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "User already joined");
+                }
             }
 
             Expression<Func<SprintParticipant, bool>> query = s => s.UserId == userId && s.SprintId == sprintId && s.User.UserState == UserState.Active;
@@ -836,7 +842,7 @@
                 sprintDto.Type = (SprintType)participant.Sprint.Type;
                 sprintDto.IsTimeBased = participant.Sprint.IsTimeBased;
                 sprintDto.durationForTimeBasedEvent = participant.Sprint.DurationForTimeBasedEvent;
-
+                sprintDto.ImageUrl = participant.Sprint.ImageUrl;
 
                 Expression<Func<SprintParticipant, bool>> runnersQuery = s =>
                  s.SprintId == participant.Sprint.Id &&
@@ -1058,6 +1064,19 @@
         public async Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId)
         {
            return await this.SprintParticipantRepo.AddSprintParticipantMembers(userId, sprintId, memberId);
+        }
+
+        /// <summary>
+        /// Get Sprint Completed Participants Count By SprintId
+        /// </summary>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<int> GetSprintCompletedParticipantsCountBySprintId(int sprintId)
+        {
+            Expression<Func<SprintParticipant, bool>> participantPredicate = s =>
+               s.SprintId == sprintId && s.Stage == ParticipantStage.COMPLETED;
+
+            return this.SprintParticipantRepo.GetSprintCompletedParticipantsCountBySprintId(participantPredicate).ToList().Count;
         }
 
     }

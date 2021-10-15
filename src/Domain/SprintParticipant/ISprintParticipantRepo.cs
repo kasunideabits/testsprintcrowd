@@ -264,5 +264,12 @@
         /// <param name="memberId"></param>
         /// <returns></returns>
         Task<SprintParticipantMembers> AddSprintParticipantMembers(int userId, int sprintId, string memberId);
+
+        /// <summary>
+        /// Get Sprint Completed Participants Count By SprintId
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        IEnumerable<SprintParticipant> GetSprintCompletedParticipantsCountBySprintId(Expression<Func<SprintParticipant, bool>> predicate);
     }
 }

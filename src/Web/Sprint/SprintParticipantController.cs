@@ -361,5 +361,21 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Get Sprint completed participants count by Sprint Id
+        /// </summary>
+        [HttpGet("GetSprintCompletedParticipantsCountBySprintId/{sprintId:int}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetSprintCompletedParticipantsCountBySprintId(int sprintId)
+        {
+            var result = await this.SprintParticipantService.GetSprintCompletedParticipantsCountBySprintId(sprintId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }     
     }
 }
