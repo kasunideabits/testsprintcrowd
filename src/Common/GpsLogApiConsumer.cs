@@ -29,7 +29,7 @@ namespace SprintCrowdBackEnd.Common
 
         public async Task<int> GetTotalElevation(int sprintId, int userId , string gpsApi)
         {
-           
+            string TODO = gpsApi;
             string path = "https://gpsapi.sprintcrowd.com/elevation/getusertotalelevation/" + sprintId+"/"+ userId;
 
             var result = await this.ConsumeApi(path);
