@@ -48,7 +48,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public void Run(object message = null)
         {
             JoinSprint joinSprint = null;
-            if (message != null)
+            if (joinSprint != null)
                 joinSprint = message as JoinSprint;
             if (joinSprint != null)
             {
