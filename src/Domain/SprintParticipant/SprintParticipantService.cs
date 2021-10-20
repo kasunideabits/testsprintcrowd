@@ -108,7 +108,7 @@
                 }
 
                 var sprintParticipant = await this.SprintParticipantRepo.CheckSprintParticipant(sprintId, userId);
-                if (sprintParticipant != null)
+                if (sprintParticipant != null && sprintParticipant.Stage != ParticipantStage.PENDING)
                 {
                     throw new Application.SCApplicationException((int)ErrorCodes.MaxUserExceeded, "User already joined");
                 }
