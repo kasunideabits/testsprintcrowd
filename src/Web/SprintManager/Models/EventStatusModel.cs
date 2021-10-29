@@ -11,4 +11,11 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         public double Position { get; set; }
         public string RaceCompletedDuration { get; set; }
     }
+
+    public class RaceCompleted
+    {
+        public int UserId { get; set; }
+        public int SprintId { get; set; }
+        public double Elevation { get; set; }
+    }
 }

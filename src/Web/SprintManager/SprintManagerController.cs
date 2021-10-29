@@ -56,6 +56,18 @@ namespace SprintCrowd.BackEnd.SprintManager.Web
         }
 
         /// <summary>
+        /// Update Elevation 
+        /// </summary>
+        /// <param name="race">event details</param>
+        [HttpPost]
+        [Route("sprint/updateElevation")]
+        public async Task<IActionResult> UpdateElevation([FromBody] RaceCompleted race)
+        {
+            await this.SprintParticipantService.UpdateSprintElevationByUserId(race.UserId, race.SprintId, race.Elevation);
+            return this.Ok();
+        }
+
+        /// <summary>
         /// Sprint expired handler
         /// </summary>
         [HttpPost("sprint/expired")]
