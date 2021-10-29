@@ -199,5 +199,13 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         Task<int> GetSprintCompletedParticipantsCountBySprintId(int sprintId);
+
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
     }
 }

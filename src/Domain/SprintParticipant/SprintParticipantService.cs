@@ -975,10 +975,10 @@
             {
                 if (stage == ParticipantStage.COMPLETED)
                 {
-                    GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
-                    Log.Logger.Information($" totalElevation - {totalElevation}");
-                    participant.TotalElevation = totalElevation;
+                    //GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                    //int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
+                    //Log.Logger.Information($" totalElevation - {totalElevation}");
+                    //participant.TotalElevation = totalElevation;
                 }
             }
             catch (Exception ex)
@@ -1077,6 +1077,19 @@
                s.SprintId == sprintId && s.Stage == ParticipantStage.COMPLETED;
 
             return this.SprintParticipantRepo.GetSprintCompletedParticipantsCountBySprintId(participantPredicate).ToList().Count;
+        }
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSprintElevationByUserId(int userId , int sprintId , double totalElevation)
+        {
+
+            return await  this.SprintParticipantRepo.UpdateSprintElevationByUserId(userId,sprintId,totalElevation);
         }
 
     }

@@ -274,6 +274,23 @@
             this.Context.User.Update(userInfo);
             return this.Context.SaveChanges();
         }
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and Sprint Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSprintElevationByUserId(int userId , int sprintId , double totalElevation)
+        {
+            var participantInfo = this.Context.SprintParticipant.Where(s => s.UserId == userId && s.SprintId == sprintId).ToList().FirstOrDefault();
+            
+            participantInfo.TotalElevation = totalElevation;
+            this.Context.SprintParticipant.Update(participantInfo);
+            return await this.Context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Get Unread Participant Notification Count
         /// </summary>
