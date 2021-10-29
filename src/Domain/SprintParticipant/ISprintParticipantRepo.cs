@@ -271,5 +271,14 @@
         /// <param name="predicate"></param>
         /// <returns></returns>
         IEnumerable<SprintParticipant> GetSprintCompletedParticipantsCountBySprintId(Expression<Func<SprintParticipant, bool>> predicate);
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
     }
 }
