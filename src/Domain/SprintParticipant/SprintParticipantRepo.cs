@@ -86,16 +86,21 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
-           
-            SprintParticipant participant = new SprintParticipant()
-            {
-                UserId = userId,
-                SprintId = sprintId,
-                Stage = ParticipantStage.JOINED,
-            };
-            var result = await this.Context.SprintParticipant.AddAsync(participant);
-            this.Context.SaveChanges();
-            return result.Entity;
+            var participatInfor = await this.GetByUserIdSprintId(userId, sprintId);
+
+            if (participatInfor == null)
+                {
+                SprintParticipant participant = new SprintParticipant()
+                {
+                    UserId = userId,
+                    SprintId = sprintId,
+                    Stage = ParticipantStage.JOINED,
+                };
+                var result = await this.Context.SprintParticipant.AddAsync(participant);
+                this.Context.SaveChanges();
+                return result.Entity;
+            }else
+                return participatInfor;
         }
 
         /// <summary>
