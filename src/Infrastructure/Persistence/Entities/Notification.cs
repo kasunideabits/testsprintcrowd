@@ -80,6 +80,7 @@
         TimeReminderOneHourBefore, // 1 hour before call
         RemoveParticipsnt,
         FriendRequestAccept,
+        CommunityInvitationRequest, // for community notification request
 
     }
 

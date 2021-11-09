@@ -44,8 +44,9 @@
         /// </summary>
         /// <param name="FromUserId"></param>
         /// <param name="ToUserId"></param>
+        /// <param name="isCommunity"></param>
         /// <returns></returns>
-        Task<FriendInviteDto> InviteFriend(int FromUserId, int ToUserId);
+        Task<FriendInviteDto> InviteFriend(int FromUserId, int ToUserId, bool isCommunity);
 
         /// <summary>
         /// List invites for logged user

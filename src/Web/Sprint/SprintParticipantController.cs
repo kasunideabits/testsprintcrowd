@@ -239,10 +239,23 @@
         public async Task<IActionResult> GetNotification()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetNotification(user.Id);
+            var result = this.SprintParticipantService.GetNotification(user.Id,false);
             return this.Ok(new SuccessResponse<Notifications> (result));
         }
 
+
+        /// <summary>
+        /// Get all community notificaiton for user
+        /// </summary>
+        /// <returns>all notifications</returns>
+        [HttpGet("communityNotification")]
+        [ProducesResponseType(typeof(SuccessResponse<>), 200)]
+        public async Task<IActionResult> GetCommunityNotification()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetNotification(user.Id, true);
+            return this.Ok(new SuccessResponse<Notifications>(result));
+        }
         /// <summary>
         /// Archived sprint
         /// </summary>

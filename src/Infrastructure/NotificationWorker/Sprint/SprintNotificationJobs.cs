@@ -114,9 +114,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             new NotificationWorker<UserAcceptRequest>().Invoke(message);
         }
 
-        public void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId,string text)
+        public void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId,string text , bool isCommunity)
         {
-            var message = new InviteFriend(id,  profilePicture, name,  createdDate, requestSenderId, text);
+            var message = new InviteFriend(id,  profilePicture, name,  createdDate, requestSenderId, text, isCommunity);
             new NotificationWorker<UserInviteRequest>().Invoke(message);
         }
 

@@ -212,7 +212,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="FromUserId">Logged user id</param>
         /// <param name="ToUserId">Invite reciever</param>
         /// <returns>FriendInviteDto</returns>
-        public async Task<FriendInviteDto> InviteFriend(int fromUserId, int toUserId)
+        public async Task<FriendInviteDto> InviteFriend(int fromUserId, int toUserId , bool isCommunity)
         {
             FriendInvite invite = new FriendInvite();
             invite.ToUserId = toUserId;
@@ -231,7 +231,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                                user.ToUser.ProfilePicture,                              
                                DateTime.Now,
                                user.Id,
-                               user.ToUser.Name +" has sent you a friend request.");
+                               user.ToUser.Name +" has sent you a friend request.",
+                               isCommunity);
             }
 
             FriendInviteDto inviteModel = new FriendInviteDto()
