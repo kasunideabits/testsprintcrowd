@@ -625,16 +625,11 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>all notificaiton related to given userid</returns>
-        public Notifications GetNotification(int userId)
+        public Notifications GetNotification(int userId , bool isCommunity)
         {
 
-            var notifications = this.SprintParticipantRepo.GetNotification(userId);
-            //var result = new List<object>();
-
-            //var resultNew = new List<object>();
-            //var resultToday = new List<object>();
-            //var resultOlder = new List<object>();
-
+            var notifications = this.SprintParticipantRepo.GetNotification(userId , isCommunity);
+            
             Notifications notification = new Notifications();
 
             notifications
@@ -696,7 +691,7 @@
 
                 });
             // set badge cout to "0" for the requested user
-            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId, isCommunity);
             return notification;
         }
 

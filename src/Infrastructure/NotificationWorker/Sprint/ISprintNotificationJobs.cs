@@ -71,6 +71,6 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
                                 string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
                                 string name, string profilePicture, string code, string country, string countryCode, string city);
 
-        void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text);
+        void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text, bool isCommunity);
     }
 }

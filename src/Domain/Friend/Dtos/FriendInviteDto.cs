@@ -11,5 +11,6 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         public int ToUserId { get; set; }
         public int FromUserId { get; internal set; }
         public bool Accepted { get; set; }
+        public bool IsCommunity { get; set; }
     }
 }

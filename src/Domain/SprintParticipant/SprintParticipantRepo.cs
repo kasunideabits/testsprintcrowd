@@ -240,11 +240,11 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>notificaitons</returns>
-        public IQueryable<NotificationInfo> GetNotification(int userId)
+        public IQueryable<NotificationInfo> GetNotification(int userId , bool isComunity)
         {
             var dateCriteria = DateTime.Now.Date.AddDays(-14);
             return this.Context.UserNotification
-                .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active)
+                .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active && u.IsCommunity == isComunity)
                 .Join(this.Context.Notification,
                     u => u.NotificationId,
                     n => n.Id,
@@ -255,9 +255,9 @@
         /// Update BadgeCount By UserId
         /// </summary>
         /// <param name="userId"></param>
-        public void UpdateBadgeCountByUserId(int userId)
+        public void UpdateBadgeCountByUserId(int userId , bool isCommunity)
         {
-            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId).ToList();
+            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.IsCommunity == isCommunity).ToList();
             userNotification.ForEach(n =>
             {
                 n.BadgeValue = 0;

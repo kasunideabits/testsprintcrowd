@@ -102,7 +102,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         public async Task<IActionResult> InviteSend([FromBody] FriendInviteDto request)
         {
             User user = await this.User.GetUser(this.UserService);
-            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId);
+            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId , request.IsCommunity);
             return this.Ok(new SuccessResponse<FriendInviteDto>(addedFriend));
         }
 
