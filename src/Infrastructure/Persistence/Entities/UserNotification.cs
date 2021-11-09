@@ -13,6 +13,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         public virtual Notification Notification { get; set; }
         
         [DefaultValue(1)]
-        public int BadgeValue { get; set; }       
+        public int BadgeValue { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsCommunity { get; set; }
     }
 }

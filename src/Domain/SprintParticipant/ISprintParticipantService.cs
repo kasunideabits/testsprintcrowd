@@ -80,9 +80,10 @@
         /// <summary>
         /// Get all notificaitons
         /// </summary>
-        /// <param name="userId">user id to fetch</param>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
         /// <returns>all notificaiton related to given userid</returns>
-        Notifications GetNotification(int userId);
+        Notifications GetNotification(int userId, bool isCommunity);
        
         /// <summary>
         /// Remove sprint participant form  sprint
