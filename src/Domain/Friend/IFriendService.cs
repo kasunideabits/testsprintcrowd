@@ -60,8 +60,9 @@
         /// Friend invite accept
         /// </summary>
         /// <param name="id">id of the invite</param>
+        /// <param name="isCommunity">isCommunity or general notification</param>
         /// <returns>Successfull updated record</returns>
-        Task<FriendInviteDto> InviteAccept(int id);
+        Task<FriendInviteDto> InviteAccept(int id, bool isCommunity);
 
 
 
@@ -69,7 +70,8 @@
         /// Remove an invitation
         /// </summary>
         /// <param name="id">friend to be removed</param>
-        Task<bool> RemoveInvitation(int id);
+        /// <param name="isCommunity">General notification or community</param>
+        Task<bool> RemoveInvitation(int id, bool isCommunity);
 
         /// <summary>
         /// Friend invitation list sent by user

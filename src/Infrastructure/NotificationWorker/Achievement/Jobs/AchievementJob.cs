@@ -58,7 +58,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Achievement.Jobs
             data.Add("SubType", ((int)notificationData.Type).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(this.ParticipantUserId, false) : 0;
             data.Add("Count", badge.ToString());
 
 
