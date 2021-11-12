@@ -7,7 +7,7 @@ namespace SprintCrowdBackEnd.Infrastructure.NotificationWorker.Sprint.Models
 {
     public class DeclineFriend
     {
-        public DeclineFriend(int userId, string profilePicture, string userName, DateTime createdDate, int requestSenderId, string text)
+        public DeclineFriend(int userId, string profilePicture, string userName, DateTime createdDate, int requestSenderId, string text, bool isCommunity)
         {
             this.UserId = userId;
             this.ProfilePicture = profilePicture;
@@ -15,6 +15,7 @@ namespace SprintCrowdBackEnd.Infrastructure.NotificationWorker.Sprint.Models
             this.CreatedDate = createdDate;
             this.RequestSenderId = requestSenderId;
             this.Text = text;
+            this.IsCommunity = isCommunity;
         }
 
         public int UserId { get; set; }
@@ -23,5 +24,6 @@ namespace SprintCrowdBackEnd.Infrastructure.NotificationWorker.Sprint.Models
         public DateTime CreatedDate { get; }
         public int RequestSenderId { get; }
         public string Text { get; set; }
+        public bool IsCommunity { get; set; }
     }
 }

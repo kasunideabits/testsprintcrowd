@@ -92,7 +92,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
 
 
         /// <summary>
-        /// Get friends for given user
+        /// Invite Send
         /// </summary>
         /// <param name="request"><see cref="FriendRequestActionModel">firend request</see></param>
 
@@ -102,10 +102,24 @@ namespace SprintCrowd.BackEnd.Web.Friend
         public async Task<IActionResult> InviteSend([FromBody] FriendInviteDto request)
         {
             User user = await this.User.GetUser(this.UserService);
-            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId , request.IsCommunity);
+            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId , false);
             return this.Ok(new SuccessResponse<FriendInviteDto>(addedFriend));
         }
 
+        /// <summary>
+        /// Invite Send Community
+        /// </summary>
+        /// <param name="request"><see cref="FriendRequestActionModel">Community firend request</see></param>
+
+        [HttpPost("InviteSendCommunity")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteSendCommunity([FromBody] FriendInviteDto request)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var addedFriend = await this.FriendService.InviteFriend(user.Id, request.ToUserId, true);
+            return this.Ok(new SuccessResponse<FriendInviteDto>(addedFriend));
+        }
 
         [HttpGet("InviteList")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
@@ -117,21 +131,55 @@ namespace SprintCrowd.BackEnd.Web.Friend
             return this.Ok(new SuccessResponse<InviteDto>(invites));
         }
 
-
+        /// <summary>
+        /// Invite Accept
+        /// </summary>
+        /// <param name="inviteAccept"></param>
+        /// <returns></returns>
         [HttpPost("InviteAccept")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> InviteAccept(FriendInviteAcceptDto inviteAccept)
         {
-            var result = await this.FriendService.InviteAccept(inviteAccept.Id);
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id,false);
             return this.Ok(new SuccessResponse<FriendInviteDto>(result));
         }
 
+        /// <summary>
+        /// Invite Accept Community
+        /// </summary>
+        /// <param name="inviteAccept"></param>
+        /// <returns></returns>
+        [HttpPost("InviteAcceptCommunity")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> InviteAcceptCommunity(FriendInviteAcceptDto inviteAccept)
+        {
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id, true);
+            return this.Ok(new SuccessResponse<FriendInviteDto>(result));
+        }
 
+        /// <summary>
+        /// Invite Delete by User
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpDelete("InviteDelete/{Id}")]
         public async Task<IActionResult> InviteDelete(int Id)
         {
-            var result = await this.FriendService.RemoveInvitation(Id);
+            var result = await this.FriendService.RemoveInvitation(Id, false);
+            return this.Ok(result);
+        }
+
+        /// <summary>
+        /// Community Invite Delete by User
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("InviteDeleteCommunity/{Id}")]
+        public async Task<IActionResult> InviteDeleteCommunity(int Id)
+        {
+            var result = await this.FriendService.RemoveInvitation(Id ,true);
             return this.Ok(result);
         }
     }

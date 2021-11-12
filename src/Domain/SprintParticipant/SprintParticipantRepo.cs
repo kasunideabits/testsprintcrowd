@@ -308,6 +308,18 @@
         }
 
         /// <summary>
+        /// Get Unread Participant Notification Count by user Id and notification type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        public int GetParticipantUnreadNotificationSubCount(int userId , bool isCommunity)
+        {
+            var result = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.BadgeValue == 1 && s.IsCommunity == isCommunity).Count();
+            return result;
+        }
+
+        /// <summary>
         /// Join participant to given sprint
         /// </summary>
         /// <param name="userId">user id who want to participate</param>

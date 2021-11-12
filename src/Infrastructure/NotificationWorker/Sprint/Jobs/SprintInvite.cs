@@ -120,7 +120,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("CreateDate", string.Format("{0:yyyy-MM-ddTHH:mm:ss.FFFZ}", DateTime.UtcNow));
             data.Add("Data", JsonConvert.SerializeObject(payload));
 
-            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(this.ParticipantUserId, false) : 0;
             data.Add("Count", badge.ToString());
 
             var user = this.GetUser(this._inviteeId);
