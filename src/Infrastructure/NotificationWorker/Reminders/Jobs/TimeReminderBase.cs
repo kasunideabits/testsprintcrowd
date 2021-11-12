@@ -79,7 +79,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
 
-            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(participantUserId) : 0;
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(participantUserId, false) : 0;
             data.Add("Count", badge.ToString());
 
             this.MessageBuilder.Message(data);
@@ -95,7 +95,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Reminders
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
 
-            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(participantUserId) : 0;
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(participantUserId, false) : 0;
             data.Add("Count", badge.ToString());
 
             var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, participantUserId)

@@ -81,6 +81,8 @@
         RemoveParticipsnt,
         FriendRequestAccept,
         CommunityInvitationRequest, // for community notification request
+        CommunityFriendRequestAccept,// for community notification request
+        CommunityInvitationDecline,// for community notification request
 
     }
 

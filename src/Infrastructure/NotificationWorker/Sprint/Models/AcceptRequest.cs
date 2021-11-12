@@ -18,7 +18,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         /// <param name="countryCode"></param>
         /// <param name="colorCode"></param>
         /// <param name="createdDate"></param>
-        public AcceptRequest(int id, string name, string profilePicture, string code, string email, string city,  string country ,string countryCode ,string colorCode ,DateTime createdDate,int requestSenderId)
+        public AcceptRequest(int id, string name, string profilePicture, string code, string email, string city,  string country ,string countryCode ,string colorCode ,DateTime createdDate,int requestSenderId, bool isCommunity)
         {
             this.Id = id;
             this.Name = name;
@@ -31,6 +31,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
             this.ColorCode = colorCode;
             this.CreatedDate = createdDate;
             this.RequestSenderId = requestSenderId;
+            this.IsCommunity = isCommunity;
         }
         /// <summary>
         /// Id
@@ -86,5 +87,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Models
         /// Request Sender UserId
         /// </summary>
         public int RequestSenderId { get; }
+
+        public bool IsCommunity { get; }
     }
 }

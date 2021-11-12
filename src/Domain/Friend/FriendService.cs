@@ -70,7 +70,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             userAccept.CountryCode,
                             userAccept.ColorCode,
                             userAccept.CreatedDate,
-                            user.Id);
+                            user.Id,
+                            false);
 
                         return new FriendDto(
                             user.Id,
@@ -305,7 +306,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="id">id of the invite</param>
         /// <returns>Successfull updated record</returns>
-        public async Task<FriendInviteDto> InviteAccept(int id)
+        public async Task<FriendInviteDto> InviteAccept(int id , bool isCommunity)
         {
             //Get invitation from the database.
             var invite = await this.FriendRepo.GetInvite(id);
@@ -343,7 +344,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             friend.AcceptedUser.CountryCode,
                             friend.AcceptedUser.ColorCode,
                             friend.AcceptedUser.CreatedDate,
-                            friend.AcceptedUserId);
+                            friend.AcceptedUserId,
+                            isCommunity);
 
             return inviteDto;
         }
@@ -353,7 +355,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Remove an invitation
         /// </summary>
         /// <param name="id">friend to be removed</param>
-        public async Task<bool> RemoveInvitation(int id)
+        public async Task<bool> RemoveInvitation(int id , bool isCommunity)
         {
             try
             {
@@ -367,7 +369,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                               invite.ToUser.ProfilePicture,
                               DateTime.Now,
                               invite.ToUser.Id,
-                              invite.ToUser.Name + " has declined the friend request.");
+                              invite.ToUser.Name + " has declined the friend request.",
+                              isCommunity);
 
                 this.FriendRepo.SaveChanges();
                 return true;

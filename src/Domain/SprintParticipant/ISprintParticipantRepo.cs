@@ -281,5 +281,13 @@
         /// <param name="totalElevation"></param>
         /// <returns></returns>
         Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
+
+        /// <summary>
+        /// Get Participant Unread Notification Sub Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        int GetParticipantUnreadNotificationSubCount(int userId, bool isCommunity);
     }
 }
