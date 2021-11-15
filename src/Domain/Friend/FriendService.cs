@@ -231,7 +231,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                                user.ToUser.Name,
                                user.ToUser.ProfilePicture,                              
                                DateTime.Now,
-                               user.Id,
+                               user.FromUserId,
                                user.ToUser.Name +" has sent you a friend request.",
                                isCommunity);
             }
