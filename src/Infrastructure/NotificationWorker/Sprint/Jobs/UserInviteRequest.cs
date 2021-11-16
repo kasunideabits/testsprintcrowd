@@ -36,7 +36,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public void Run(object message = null)
         {
             {
-                InviteFriend userInvite = message as InviteFriend;
+               InviteFriend userInvite = null;
+                if (message != null)
+                    userInvite = message as InviteFriend;
                 if (userInvite != null)
                 {
                     this.SendPushNotification(userInvite);
@@ -48,9 +50,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(InviteFriend acceptRequest)
         {
             var notificationId = this.AddToDb(acceptRequest);
-            var token = this.GetToken(acceptRequest.RequestSenderId);
-            var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.RequestSenderId));
-           // this.ParticipantUserId = acceptRequest.RequestSenderId;
+            var token = this.GetToken(acceptRequest.UserId);
+            var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.UserId));
+            this.ParticipantUserId = acceptRequest.UserId;
             var notificationBody = String.Format(notification.Body, acceptRequest.UserName);
             var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, acceptRequest);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
@@ -100,8 +102,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.Context.SaveChanges();
             var userNotification = new UserNotification
             {
-                SenderId = accRequest.UserId,
-                ReceiverId = accRequest.RequestSenderId,
+                SenderId = accRequest.RequestSenderId,
+                ReceiverId = accRequest.UserId,
                 NotificationId = notification.Entity.Id,
                 BadgeValue = 1,
                 IsCommunity = accRequest.IsCommunity,
@@ -135,7 +137,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
             }
-            var section = translation["friendAccept"];
+            var section = translation["friendRequest"];
             return new SCFireBaseNotificationMessage(section);
         }
 
