@@ -228,11 +228,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
                 this.NotificationClient.SprintNotificationJobs.InviteRequest(
                                toUserId,
-                               user.ToUser.Name,
+                               user.FromUser.Name,
                                user.ToUser.ProfilePicture,                              
                                DateTime.Now,
                                user.FromUserId,
-                               user.ToUser.Name +" has sent you a friend request.",
+                               user.FromUser.Name +" has sent you a friend request.",
                                isCommunity);
             }
 
