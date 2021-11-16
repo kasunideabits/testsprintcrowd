@@ -130,6 +130,11 @@
     "title": "Friend Accepted",
     "body": "You are now friends with {0}"
   },
+  "friendRequest": {
+    "_comment": "0 = requested user name",
+    "title": "Friend Request",
+    "body": "{0} has sent you a friend request!"
+  },
   "sprintEdit": {
     "_comment": "0 = sprint name, 1 = updater name",
     "title": "Sprint Updated",
