@@ -196,19 +196,16 @@ namespace SprintCrowd.BackEnd.Web.Friend
             return this.Ok(result);
         }
 
-        [HttpGet("GetNotificationCount/{isCommunity:bool}")]
+        [HttpGet("GetNotificationCount")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<IActionResult> GetNotificationCount(bool isCommunity)
+        public async Task<IActionResult> GetNotificationCount()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetNotification(user.Id, isCommunity);
+            var result = this.SprintParticipantService.GetNotificationCounts(user.Id);
 
-            int count = result != null?result.ResultNew.Count : 0;
-            return this.Ok(new SuccessResponse<int>(count));
+            return this.Ok(new SuccessResponse<NotificationCount>(result));
         }
-
-
 
     }
 }

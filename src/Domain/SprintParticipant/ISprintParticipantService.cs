@@ -208,5 +208,12 @@
         /// <param name="totalElevation"></param>
         /// <returns></returns>
         Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
+
+        /// <summary>
+        /// Get General and Community Notification Counts
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        NotificationCount GetNotificationCounts(int userId);
     }
 }
