@@ -9,6 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -19,14 +20,16 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Initialize <see cref="FriendService"> class </see>
         /// </summary>
         /// <param name="friendRepo">friend repository</param>
-        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient)
+        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.FriendRepo = friendRepo;
             this.NotificationClient = notificationClient;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private IFriendRepo FriendRepo { get; }
         private INotificationClient NotificationClient { get; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         /// <summary>
         /// Add given user with matching friend code
         /// </summary>
@@ -251,7 +254,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="userId"></param>
         /// <returns></returns>
 
-        public async Task<InviteDto> InviteList(int userId)
+        public async Task<InviteDto> InviteList(int userId , bool isCommunity)
         {
             InviteDto inviteDto = new InviteDto();
 
@@ -286,6 +289,9 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
                 });
             }
+
+            // set badge cout to "0" for the requested user
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId, isCommunity);
 
             return inviteDto;
         }
