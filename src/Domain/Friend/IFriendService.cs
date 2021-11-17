@@ -44,23 +44,25 @@
         /// </summary>
         /// <param name="FromUserId"></param>
         /// <param name="ToUserId"></param>
+        /// <param name="isCommunity"></param>
         /// <returns></returns>
-        Task<FriendInviteDto> InviteFriend(int FromUserId, int ToUserId);
+        Task<FriendInviteDto> InviteFriend(int FromUserId, int ToUserId, bool isCommunity);
 
         /// <summary>
         /// List invites for logged user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<InviteDto> InviteList(int userId);
+        Task<InviteDto> InviteList(int userId, bool isCommunity);
 
 
         /// <summary>
         /// Friend invite accept
         /// </summary>
         /// <param name="id">id of the invite</param>
+        /// <param name="isCommunity">isCommunity or general notification</param>
         /// <returns>Successfull updated record</returns>
-        Task<FriendInviteDto> InviteAccept(int id);
+        Task<FriendInviteDto> InviteAccept(int id, bool isCommunity);
 
 
 
@@ -68,7 +70,8 @@
         /// Remove an invitation
         /// </summary>
         /// <param name="id">friend to be removed</param>
-        Task<bool> RemoveInvitation(int id);
+        /// <param name="isCommunity">General notification or community</param>
+        Task<bool> RemoveInvitation(int id, bool isCommunity);
 
         /// <summary>
         /// Friend invitation list sent by user

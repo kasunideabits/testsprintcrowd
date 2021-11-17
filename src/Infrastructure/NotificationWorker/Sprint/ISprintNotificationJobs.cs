@@ -63,14 +63,14 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
         );
 
         void SprintUpdate(int sprintId, string oldSprintName, string newSprintName, int distance, DateTime startTime, int numberOfParticipant, SprintStatus sprintStatus, SprintType sprintType, int creatorId);
-        void AcceptRequest(int id, string name, string profilePicture, string code, string email, string city, string country, string countryCode, string colorCode, DateTime createdDate, int requestSenderId);
+        void AcceptRequest(int id, string name, string profilePicture, string code, string email, string city, string country, string countryCode, string colorCode, DateTime createdDate, int requestSenderId, bool isCommunity);
 
-        void DeclineRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text);
+        void DeclineRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text, bool isCommunity);
 
         void SprintParticipantRemove(int sprintId, SprintType sprintType, SprintStatus sprintStatus, int creatorId, int userId,
                                 string creatorName, string sprintName, DateTime startTime, int numOfparticipant, int distance,
                                 string name, string profilePicture, string code, string country, string countryCode, string city);
 
-        void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text);
+        void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text, bool isCommunity);
     }
 }

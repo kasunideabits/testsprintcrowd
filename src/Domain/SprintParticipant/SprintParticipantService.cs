@@ -625,16 +625,11 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>all notificaiton related to given userid</returns>
-        public Notifications GetNotification(int userId)
+        public Notifications GetNotification(int userId , bool isCommunity)
         {
 
-            var notifications = this.SprintParticipantRepo.GetNotification(userId);
-            //var result = new List<object>();
-
-            //var resultNew = new List<object>();
-            //var resultToday = new List<object>();
-            //var resultOlder = new List<object>();
-
+            var notifications = this.SprintParticipantRepo.GetNotification(userId , isCommunity);
+            
             Notifications notification = new Notifications();
 
             notifications
@@ -696,7 +691,7 @@
 
                 });
             // set badge cout to "0" for the requested user
-            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId);
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId, isCommunity);
             return notification;
         }
 
@@ -975,10 +970,10 @@
             {
                 if (stage == ParticipantStage.COMPLETED)
                 {
-                    GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
-                    int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
-                    Log.Logger.Information($" totalElevation - {totalElevation}");
-                    participant.TotalElevation = totalElevation;
+                    //GpsLogApiConsumer gpsApi = new GpsLogApiConsumer();
+                    //int totalElevation = await gpsApi.GetTotalElevation(sprintId, userId ,this.GpsApi);
+                    //Log.Logger.Information($" totalElevation - {totalElevation}");
+                    //participant.TotalElevation = totalElevation;
                 }
             }
             catch (Exception ex)
@@ -1077,6 +1072,19 @@
                s.SprintId == sprintId && s.Stage == ParticipantStage.COMPLETED;
 
             return this.SprintParticipantRepo.GetSprintCompletedParticipantsCountBySprintId(participantPredicate).ToList().Count;
+        }
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSprintElevationByUserId(int userId , int sprintId , double totalElevation)
+        {
+
+            return await  this.SprintParticipantRepo.UpdateSprintElevationByUserId(userId,sprintId,totalElevation);
         }
 
     }

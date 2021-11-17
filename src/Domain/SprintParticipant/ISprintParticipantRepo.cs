@@ -63,7 +63,7 @@
         /// Update Badge Count By UserId
         /// </summary>
         /// <param name="userId"></param>
-        void UpdateBadgeCountByUserId(int userId);
+        void UpdateBadgeCountByUserId(int userId, bool isCommunity);
 
         /// <summary>
         /// Update Country Detail By UserId
@@ -110,11 +110,12 @@
         int GetParticipantUnreadNotificationCount(int userId);
 
         /// <summary>
-        /// Get notifications for given user id
+        /// Get Notification
         /// </summary>
-        /// <param name="userId">user id to fetch</param>
-        /// <returns>notificaitons</returns>
-        IQueryable<NotificationInfo> GetNotification(int userId);
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        IQueryable<NotificationInfo> GetNotification(int userId , bool isCommunity);
 
         /// <summary>
         /// Join participant to given sprint
@@ -271,5 +272,22 @@
         /// <param name="predicate"></param>
         /// <returns></returns>
         IEnumerable<SprintParticipant> GetSprintCompletedParticipantsCountBySprintId(Expression<Func<SprintParticipant, bool>> predicate);
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
+
+        /// <summary>
+        /// Get Participant Unread Notification Sub Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        int GetParticipantUnreadNotificationSubCount(int userId, bool isCommunity);
     }
 }

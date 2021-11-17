@@ -9,6 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Infrastructure.NotificationWorker;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
 
     /// <summary>
     ///  Implement <see cref="IFriendService" > interface </see>
@@ -19,14 +20,16 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Initialize <see cref="FriendService"> class </see>
         /// </summary>
         /// <param name="friendRepo">friend repository</param>
-        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient)
+        public FriendService(IFriendRepo friendRepo, INotificationClient notificationClient, ISprintParticipantRepo sprintParticipantRepo)
         {
             this.FriendRepo = friendRepo;
             this.NotificationClient = notificationClient;
+            this.SprintParticipantRepo = sprintParticipantRepo;
         }
 
         private IFriendRepo FriendRepo { get; }
         private INotificationClient NotificationClient { get; }
+        private ISprintParticipantRepo SprintParticipantRepo { get; }
         /// <summary>
         /// Add given user with matching friend code
         /// </summary>
@@ -70,7 +73,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             userAccept.CountryCode,
                             userAccept.ColorCode,
                             userAccept.CreatedDate,
-                            user.Id);
+                            user.Id,
+                            false);
 
                         return new FriendDto(
                             user.Id,
@@ -212,7 +216,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="FromUserId">Logged user id</param>
         /// <param name="ToUserId">Invite reciever</param>
         /// <returns>FriendInviteDto</returns>
-        public async Task<FriendInviteDto> InviteFriend(int fromUserId, int toUserId)
+        public async Task<FriendInviteDto> InviteFriend(int fromUserId, int toUserId , bool isCommunity)
         {
             FriendInvite invite = new FriendInvite();
             invite.ToUserId = toUserId;
@@ -227,11 +231,12 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
                 this.NotificationClient.SprintNotificationJobs.InviteRequest(
                                toUserId,
-                               user.ToUser.Name,
+                               user.FromUser.Name,
                                user.ToUser.ProfilePicture,                              
                                DateTime.Now,
-                               user.Id,
-                               user.ToUser.Name +" has sent you a friend request.");
+                               user.FromUserId,
+                               user.FromUser.Name +" has sent you a friend request.",
+                               isCommunity);
             }
 
             FriendInviteDto inviteModel = new FriendInviteDto()
@@ -249,7 +254,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="userId"></param>
         /// <returns></returns>
 
-        public async Task<InviteDto> InviteList(int userId)
+        public async Task<InviteDto> InviteList(int userId , bool isCommunity)
         {
             InviteDto inviteDto = new InviteDto();
 
@@ -285,6 +290,9 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                 });
             }
 
+            // set badge cout to "0" for the requested user
+            this.SprintParticipantRepo.UpdateBadgeCountByUserId(userId, isCommunity);
+
             return inviteDto;
         }
 
@@ -304,7 +312,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="id">id of the invite</param>
         /// <returns>Successfull updated record</returns>
-        public async Task<FriendInviteDto> InviteAccept(int id)
+        public async Task<FriendInviteDto> InviteAccept(int id , bool isCommunity)
         {
             //Get invitation from the database.
             var invite = await this.FriendRepo.GetInvite(id);
@@ -342,7 +350,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             friend.AcceptedUser.CountryCode,
                             friend.AcceptedUser.ColorCode,
                             friend.AcceptedUser.CreatedDate,
-                            friend.AcceptedUserId);
+                            friend.AcceptedUserId,
+                            isCommunity);
 
             return inviteDto;
         }
@@ -352,7 +361,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// Remove an invitation
         /// </summary>
         /// <param name="id">friend to be removed</param>
-        public async Task<bool> RemoveInvitation(int id)
+        public async Task<bool> RemoveInvitation(int id , bool isCommunity)
         {
             try
             {
@@ -366,7 +375,8 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                               invite.ToUser.ProfilePicture,
                               DateTime.Now,
                               invite.ToUser.Id,
-                              invite.ToUser.Name + " has declined the friend request.");
+                              invite.ToUser.Name + " has declined the friend request.",
+                              isCommunity);
 
                 this.FriendRepo.SaveChanges();
                 return true;

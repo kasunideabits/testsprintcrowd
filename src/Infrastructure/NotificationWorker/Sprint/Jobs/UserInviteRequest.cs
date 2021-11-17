@@ -36,7 +36,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         public void Run(object message = null)
         {
             {
-                InviteFriend userInvite = message as InviteFriend;
+               InviteFriend userInvite = null;
+                if (message != null)
+                    userInvite = message as InviteFriend;
                 if (userInvite != null)
                 {
                     this.SendPushNotification(userInvite);
@@ -48,9 +50,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
         private void SendPushNotification(InviteFriend acceptRequest)
         {
             var notificationId = this.AddToDb(acceptRequest);
-            var token = this.GetToken(acceptRequest.RequestSenderId);
-            var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.RequestSenderId));
-           // this.ParticipantUserId = acceptRequest.RequestSenderId;
+            var token = this.GetToken(acceptRequest.UserId);
+            var notification = this.GetNotification(this.UserLanguagePreference(acceptRequest.UserId));
+            this.ParticipantUserId = acceptRequest.UserId;
             var notificationBody = String.Format(notification.Body, acceptRequest.UserName);
             var notificationMsg = this.BuildNotificationMessage(notificationId, notification.Title, notificationBody, token, acceptRequest);
             this.PushNotificationClient.SendMulticaseMessage(notificationMsg);
@@ -65,12 +67,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var payload = notificationData;
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "FriendType");
-            data.Add("SubType", ((int)SprintNotificaitonType.InvitationRequest).ToString());
+            
+            data.Add("SubType", notificationData.IsCommunity == true ? ((int)SprintNotificaitonType.CommunityInvitationRequest).ToString() : ((int)SprintNotificaitonType.InvitationRequest).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
 
-            //int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
-            //data.Add("Count", badge.ToString());
+            int badgeTotal = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("TotalCount", badgeTotal.ToString());
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(this.ParticipantUserId , notificationData.IsCommunity) : 0;
+            data.Add("Count", badge.ToString());
 
             var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
@@ -96,10 +102,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             this.Context.SaveChanges();
             var userNotification = new UserNotification
             {
-                SenderId = accRequest.UserId,
-                ReceiverId = accRequest.RequestSenderId,
+                SenderId = accRequest.RequestSenderId,
+                ReceiverId = accRequest.UserId,
                 NotificationId = notification.Entity.Id,
                 BadgeValue = 1,
+                IsCommunity = accRequest.IsCommunity,
             };
             this.Context.UserNotification.Add(userNotification);
             this.Context.SaveChanges();
@@ -130,7 +137,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                     translation = JObject.Parse(File.ReadAllText(@"Translation/en.json"));
                     break;
             }
-            var section = translation["friendAccept"];
+            var section = translation["friendRequest"];
             return new SCFireBaseNotificationMessage(section);
         }
 

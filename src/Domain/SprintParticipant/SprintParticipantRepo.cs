@@ -86,16 +86,21 @@
         /// <returns>joined user details</returns>
         public async Task<SprintParticipant> AddSprintParticipant(int sprintId, int userId)
         {
-           
-            SprintParticipant participant = new SprintParticipant()
-            {
-                UserId = userId,
-                SprintId = sprintId,
-                Stage = ParticipantStage.JOINED,
-            };
-            var result = await this.Context.SprintParticipant.AddAsync(participant);
-            this.Context.SaveChanges();
-            return result.Entity;
+            var participatInfor = await this.GetByUserIdSprintId(userId, sprintId);
+
+            if (participatInfor == null)
+                {
+                SprintParticipant participant = new SprintParticipant()
+                {
+                    UserId = userId,
+                    SprintId = sprintId,
+                    Stage = ParticipantStage.JOINED,
+                };
+                var result = await this.Context.SprintParticipant.AddAsync(participant);
+                this.Context.SaveChanges();
+                return result.Entity;
+            }else
+                return participatInfor;
         }
 
         /// <summary>
@@ -235,11 +240,11 @@
         /// </summary>
         /// <param name="userId">user id to fetch</param>
         /// <returns>notificaitons</returns>
-        public IQueryable<NotificationInfo> GetNotification(int userId)
+        public IQueryable<NotificationInfo> GetNotification(int userId , bool isComunity)
         {
             var dateCriteria = DateTime.Now.Date.AddDays(-14);
             return this.Context.UserNotification
-                .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active)
+                .Where(u => u.ReceiverId == userId && u.Receiver.UserState == UserState.Active && u.IsCommunity == isComunity)
                 .Join(this.Context.Notification,
                     u => u.NotificationId,
                     n => n.Id,
@@ -250,9 +255,9 @@
         /// Update BadgeCount By UserId
         /// </summary>
         /// <param name="userId"></param>
-        public void UpdateBadgeCountByUserId(int userId)
+        public void UpdateBadgeCountByUserId(int userId , bool isCommunity)
         {
-            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId).ToList();
+            List<UserNotification> userNotification = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.IsCommunity == isCommunity).ToList();
             userNotification.ForEach(n =>
             {
                 n.BadgeValue = 0;
@@ -274,6 +279,23 @@
             this.Context.User.Update(userInfo);
             return this.Context.SaveChanges();
         }
+
+        /// <summary>
+        /// Update Sprint Elevation By UserId and Sprint Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSprintElevationByUserId(int userId , int sprintId , double totalElevation)
+        {
+            var participantInfo = this.Context.SprintParticipant.Where(s => s.UserId == userId && s.SprintId == sprintId).ToList().FirstOrDefault();
+            
+            participantInfo.TotalElevation = totalElevation;
+            this.Context.SprintParticipant.Update(participantInfo);
+            return await this.Context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Get Unread Participant Notification Count
         /// </summary>
@@ -282,6 +304,18 @@
         public int GetParticipantUnreadNotificationCount(int userId)
         {
             var result = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.BadgeValue == 1).Count();
+            return result;
+        }
+
+        /// <summary>
+        /// Get Unread Participant Notification Count by user Id and notification type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        public int GetParticipantUnreadNotificationSubCount(int userId , bool isCommunity)
+        {
+            var result = this.Context.UserNotification.Where(s => s.ReceiverId == userId && s.BadgeValue == 1 && s.IsCommunity == isCommunity).Count();
             return result;
         }
 

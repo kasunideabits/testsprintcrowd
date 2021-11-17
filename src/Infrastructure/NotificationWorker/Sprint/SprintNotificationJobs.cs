@@ -108,21 +108,21 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint
             new NotificationWorker<SprintUpdate>().Invoke(message);
         }
 
-        public void AcceptRequest(int id, string name, string profilePicture, string code, string email, string city, string country, string countryCode, string colorCode, DateTime createdDate ,int requestSenderId)
+        public void AcceptRequest(int id, string name, string profilePicture, string code, string email, string city, string country, string countryCode, string colorCode, DateTime createdDate ,int requestSenderId ,bool isCommunity)
         {
-            var message = new AcceptRequest(id, name, profilePicture, code, email, city, country, countryCode, colorCode,  createdDate , requestSenderId);
+            var message = new AcceptRequest(id, name, profilePicture, code, email, city, country, countryCode, colorCode,  createdDate , requestSenderId , isCommunity);
             new NotificationWorker<UserAcceptRequest>().Invoke(message);
         }
 
-        public void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId,string text)
+        public void InviteRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId,string text , bool isCommunity)
         {
-            var message = new InviteFriend(id,  profilePicture, name,  createdDate, requestSenderId, text);
+            var message = new InviteFriend(id,  profilePicture, name,  createdDate, requestSenderId, text, isCommunity);
             new NotificationWorker<UserInviteRequest>().Invoke(message);
         }
 
-        public void DeclineRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text)
+        public void DeclineRequest(int id, string name, string profilePicture, DateTime createdDate, int requestSenderId, string text , bool isCommunity)
         {
-            var message = new DeclineFriend(id, profilePicture, name, createdDate, requestSenderId, text);
+            var message = new DeclineFriend(id, profilePicture, name, createdDate, requestSenderId, text, isCommunity);
             new NotificationWorker<UserDeclinedRequest>().Invoke(message);
         }
 

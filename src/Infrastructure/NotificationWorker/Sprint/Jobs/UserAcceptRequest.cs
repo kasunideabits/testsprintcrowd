@@ -67,12 +67,16 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             var payload = notificationData;
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "FriendType");
-            data.Add("SubType", ((int)SprintNotificaitonType.FriendRequestAccept).ToString());
+            data.Add("SubType",notificationData.IsCommunity == true? ((int)SprintNotificaitonType.CommunityFriendRequestAccept).ToString() : ((int)SprintNotificaitonType.FriendRequestAccept).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
-            
-            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+
+            int badge = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationSubCount(this.ParticipantUserId, notificationData.IsCommunity) : 0;
             data.Add("Count", badge.ToString());
+
+            int badgeTotal = this.SprintParticipantRepo != null ? this.SprintParticipantRepo.GetParticipantUnreadNotificationCount(this.ParticipantUserId) : 0;
+            data.Add("TotalCount", badgeTotal.ToString());
+
 
             var message = new PushNotification.PushNotificationMulticastMessageBuilder(this.SprintParticipantRepo, this.ParticipantUserId)
                 .Notification(title, body)
@@ -102,6 +106,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
                 ReceiverId = accRequest.RequestSenderId,
                 NotificationId = notification.Entity.Id,
                 BadgeValue = 1,
+                IsCommunity = accRequest.IsCommunity,
             };
             this.Context.UserNotification.Add(userNotification);
             this.Context.SaveChanges();

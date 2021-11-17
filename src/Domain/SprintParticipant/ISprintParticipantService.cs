@@ -80,9 +80,10 @@
         /// <summary>
         /// Get all notificaitons
         /// </summary>
-        /// <param name="userId">user id to fetch</param>
+        /// <param name="userId"></param>
+        /// <param name="isCommunity"></param>
         /// <returns>all notificaiton related to given userid</returns>
-        Notifications GetNotification(int userId);
+        Notifications GetNotification(int userId, bool isCommunity);
        
         /// <summary>
         /// Remove sprint participant form  sprint
@@ -199,5 +200,13 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         Task<int> GetSprintCompletedParticipantsCountBySprintId(int sprintId);
+
+        /// Update Sprint Elevation By UserId and SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <param name="totalElevation"></param>
+        /// <returns></returns>
+        Task<int> UpdateSprintElevationByUserId(int userId, int sprintId, double totalElevation);
     }
 }
