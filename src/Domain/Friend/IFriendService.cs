@@ -53,7 +53,7 @@
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<InviteDto> InviteList(int userId);
+        Task<InviteDto> InviteList(int userId, bool isCommunity);
 
 
         /// <summary>

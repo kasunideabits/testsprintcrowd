@@ -9,6 +9,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
     using SprintCrowd.BackEnd.Domain.Crons;
     using SprintCrowd.BackEnd.Domain.Friend;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 
@@ -26,16 +27,18 @@ namespace SprintCrowd.BackEnd.Web.Friend
         /// <param name="userService">user service</param>
         /// <param name="resetUserCodeService">resetUserCodeService service</param>
         /// <param name="frinedService"><see cref="IFriendService"> friend service </see></param>
-        public FriendController(IFriendService frinedService, IUserService userService, IResetUserCodeService resetUserCodeService)
+        public FriendController(IFriendService frinedService, IUserService userService, IResetUserCodeService resetUserCodeService, ISprintParticipantService sprintParticipantService)
         {
             this.FriendService = frinedService;
             this.UserService = userService;
             this.ResetUserCodeService = resetUserCodeService;
+            this.SprintParticipantService = sprintParticipantService;
         }
 
         private IFriendService FriendService { get; }
         private IUserService UserService { get; }
         private IResetUserCodeService ResetUserCodeService { get; }
+        private ISprintParticipantService SprintParticipantService { get; }
 
         /// <summary>
         /// Get friends for given user
@@ -127,7 +130,17 @@ namespace SprintCrowd.BackEnd.Web.Friend
         public async Task<IActionResult> InviteList()
         {
             User user = await this.User.GetUser(this.UserService);
-            var invites = await this.FriendService.InviteList(user.Id);
+            var invites = await this.FriendService.InviteList(user.Id , false);
+            return this.Ok(new SuccessResponse<InviteDto>(invites));
+        }
+
+        [HttpGet("CommunityInviteList")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> CommunityInviteList()
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var invites = await this.FriendService.InviteList(user.Id , true);
             return this.Ok(new SuccessResponse<InviteDto>(invites));
         }
 
@@ -182,5 +195,20 @@ namespace SprintCrowd.BackEnd.Web.Friend
             var result = await this.FriendService.RemoveInvitation(Id ,true);
             return this.Ok(result);
         }
+
+        [HttpGet("GetNotificationCount/{isCommunity:bool}")]
+        [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetNotificationCount(bool isCommunity)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = this.SprintParticipantService.GetNotification(2677, isCommunity);
+
+            int count = result != null?result.ResultNew.Count + result.ResultOlder.Count + result.ResultToday.Count : 0;
+            return this.Ok(new SuccessResponse<int>(count));
+        }
+
+
+
     }
 }
