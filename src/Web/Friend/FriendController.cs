@@ -204,7 +204,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
             User user = await this.User.GetUser(this.UserService);
             var result = this.SprintParticipantService.GetNotification(user.Id, isCommunity);
 
-            int count = result != null?result.ResultNew.Count + result.ResultOlder.Count + result.ResultToday.Count : 0;
+            int count = result != null?result.ResultNew.Count : 0;
             return this.Ok(new SuccessResponse<int>(count));
         }
 
