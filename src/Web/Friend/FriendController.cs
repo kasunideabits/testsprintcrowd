@@ -202,7 +202,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         public async Task<IActionResult> GetNotificationCount(bool isCommunity)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetNotification(2677, isCommunity);
+            var result = this.SprintParticipantService.GetNotification(user.Id, isCommunity);
 
             int count = result != null?result.ResultNew.Count + result.ResultOlder.Count + result.ResultToday.Count : 0;
             return this.Ok(new SuccessResponse<int>(count));
