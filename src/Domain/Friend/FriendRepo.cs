@@ -174,10 +174,12 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="id">id of the invite</param>
         /// <returns></returns>
-        public async Task<FriendInvite> GetInvite(int id)
+        public async Task<FriendInvite> GetInvite(int inviteFromId, int inviteToId)
         {
             var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
-                .Include(f => f.ToUser).Where(x => x.Id == id).FirstOrDefaultAsync();
+                .Include(f => f.ToUser).Where(x => x.FromUserId == inviteFromId && x.ToUserId == inviteToId).FirstOrDefaultAsync();
+
+          
             return result;
         }
 
@@ -194,15 +196,21 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
 
         /// <summary>
-        /// Remove an invitation
+        /// Remove Invitation
         /// </summary>
-        /// <param name="id">friend to be removed</param>
-        public async Task<bool> RemoveInvitation(int id)
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <returns></returns>
+        public async Task<bool> RemoveInvitation(int inviteFromId, int inviteToId)
         {
             try
             {
-                FriendInvite invite = await this.dbContext.FriendInvite.FindAsync(id);
-                this.dbContext.Remove(invite);
+                var invite = await this.dbContext.FriendInvite.Where(n => n.FromUserId == inviteFromId && n.ToUserId == inviteToId).FirstOrDefaultAsync();
+                if (invite != null)
+                {
+                    this.dbContext.Remove(invite);
+                    this.dbContext.SaveChanges();
+                }
                 return true;
             }
             catch (Exception ex)
