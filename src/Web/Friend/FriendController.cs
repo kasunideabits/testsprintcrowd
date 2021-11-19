@@ -18,7 +18,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
