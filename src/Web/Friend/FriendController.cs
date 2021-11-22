@@ -18,7 +18,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
@@ -154,8 +154,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> InviteAccept(FriendInviteAcceptDto inviteAccept)
         {
-            User user = await this.User.GetUser(this.UserService);
-            var result = await this.FriendService.InviteAccept(inviteAccept.Id, user.Id,false);
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id,false);
             return this.Ok(new SuccessResponse<FriendInviteDto>(result));
         }
 
@@ -169,8 +168,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> InviteAcceptCommunity(FriendInviteAcceptDto inviteAccept)
         {
-            User user = await this.User.GetUser(this.UserService);
-            var result = await this.FriendService.InviteAccept(inviteAccept.Id, user.Id, true);
+            var result = await this.FriendService.InviteAccept(inviteAccept.Id, true);
             return this.Ok(new SuccessResponse<FriendInviteDto>(result));
         }
 
@@ -182,8 +180,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         [HttpDelete("InviteDelete/{Id}")]
         public async Task<IActionResult> InviteDelete(int Id)
         {
-            User user = await this.User.GetUser(this.UserService);
-            var result = await this.FriendService.RemoveInvitation(Id, user.Id, false);
+            var result = await this.FriendService.RemoveInvitation(Id, false);
             return this.Ok(result);
         }
 
@@ -195,8 +192,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
         [HttpDelete("InviteDeleteCommunity/{Id}")]
         public async Task<IActionResult> InviteDeleteCommunity(int Id)
         {
-            User user = await this.User.GetUser(this.UserService);
-            var result = await this.FriendService.RemoveInvitation(Id, user.Id, true);
+            var result = await this.FriendService.RemoveInvitation(Id, true);
             return this.Ok(result);
         }
 
