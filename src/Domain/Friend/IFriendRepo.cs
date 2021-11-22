@@ -97,7 +97,7 @@
         /// <param name="inviteToId"></param>
         /// <param name=""></param>
         /// <returns></returns>
-        Task<FriendInvite> GetInvite(int inviteFromId, int inviteToId);
+        Task<FriendInvite> GetInvite(int notificationId);
 
 
         /// <summary>
@@ -113,7 +113,14 @@
         /// <param name="inviteFromId"></param>
         /// <param name="inviteToId"></param>
         /// <returns></returns>
-        Task<bool> RemoveInvitation(int inviteFromId, int inviteToId);
+        Task<bool> RemoveInvitation(int notificationId);
+
+        /// <summary>
+        /// Get Invite By User        /// </summary>
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <returns></returns>
+        Task<FriendInvite> GetInviteByUser(int inviteFromId, int inviteToId);
 
     }
 }
