@@ -68,7 +68,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
             data.Add("NotificationId", notificationId.ToString());
             data.Add("MainType", "FriendType");
             
-            data.Add("SubType", notificationData.IsCommunity == true ? ((int)SprintNotificaitonType.CommunityInvitationRequest).ToString() : ((int)SprintNotificaitonType.InvitationRequest).ToString());
+            data.Add("SubType", notificationData.IsCommunity == true ? ((int)SprintNotificaitonType.CommunityFriendRequestAccept).ToString() : ((int)SprintNotificaitonType.CommunityFriendRequestAccept).ToString());
             data.Add("CreateDate", DateTime.UtcNow.ToString());
             data.Add("Data", JsonConvert.SerializeObject(payload));
 
