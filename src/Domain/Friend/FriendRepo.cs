@@ -174,14 +174,30 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="id">id of the invite</param>
         /// <returns></returns>
-        public async Task<FriendInvite> GetInvite(int inviteFromId, int inviteToId)
+        public async Task<FriendInvite> GetInvite(int notificationId)
         {
             var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
-                .Include(f => f.ToUser).Where(x => x.FromUserId == inviteFromId && x.ToUserId == inviteToId).FirstOrDefaultAsync();
+                .Include(f => f.ToUser).Where(x => x.Id == notificationId).FirstOrDefaultAsync();
 
           
             return result;
         }
+
+        /// <summary>
+        /// Get invite by id
+        /// </summary>
+        /// <param name="id">id of the invite</param>
+        /// <returns></returns>
+        public async Task<FriendInvite> GetInviteByUser(int inviteFromId, int inviteToId)
+        {
+            var result = await this.dbContext.FriendInvite.Include(f => f.FromUser)
+                 .Include(f => f.ToUser).Where(x => x.FromUserId == inviteFromId && x.ToUserId == inviteToId).FirstOrDefaultAsync();
+
+
+
+            return result;
+        }
+
 
         /// <summary>
         /// Update an invite
@@ -201,11 +217,11 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// <param name="inviteFromId"></param>
         /// <param name="inviteToId"></param>
         /// <returns></returns>
-        public async Task<bool> RemoveInvitation(int inviteFromId, int inviteToId)
+        public async Task<bool> RemoveInvitation(int notificationId)
         {
             try
             {
-                var invite = await this.dbContext.FriendInvite.Where(n => n.FromUserId == inviteFromId && n.ToUserId == inviteToId).FirstOrDefaultAsync();
+                var invite = await this.dbContext.FriendInvite.Where(n => n.Id == notificationId).FirstOrDefaultAsync();
                 if (invite != null)
                 {
                     this.dbContext.Remove(invite);

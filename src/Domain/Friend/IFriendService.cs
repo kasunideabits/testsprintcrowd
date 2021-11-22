@@ -59,22 +59,20 @@
         /// <summary>
         /// Invite Accept
         /// </summary>
-        /// <param name="inviteFromId"></param>
-        /// <param name="inviteToId"></param>
+        /// <param name="notificationId"></param>
         /// <param name="isCommunity"></param>
         /// <returns></returns>
-        Task<FriendInviteDto> InviteAccept(int inviteFromId, int inviteToId, bool isCommunity);
+        Task<FriendInviteDto> InviteAccept(int notificationId, bool isCommunity);
 
 
 
         /// <summary>
         /// Remove Invitation
         /// </summary>
-        /// <param name="inviteFromId"></param>
-        /// <param name="inviteToId"></param>
+        /// <param name="notificationId"></param>
         /// <param name="isCommunity"></param>
         /// <returns></returns>
-        Task<bool> RemoveInvitation(int inviteFromId, int inviteToId, bool isCommunity);
+        Task<bool> RemoveInvitation(int notificationId, bool isCommunity);
 
         /// <summary>
         /// Friend invitation list sent by user
