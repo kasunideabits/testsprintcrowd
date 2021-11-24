@@ -578,6 +578,21 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         }
 
         /// <summary>
+        /// Is View User Profile
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsViewUserProfile(int userId)
+        {
+            User user = null;
+            bool viewUser = true;
+            user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null && user.UserShareType == UserShareType.Private)
+                viewUser = false;
+            return viewUser;
+        }
+
+        /// <summary>
         /// Get User App Version Upgrade Info
         /// </summary>
         /// <param name="userOS"></param>

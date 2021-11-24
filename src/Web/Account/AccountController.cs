@@ -171,5 +171,24 @@ namespace SprintCrowd.BackEnd.Web.Account
             };
             return this.Ok(response);
         }
+
+
+        /// <summary>
+        /// Is View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("IsViewUserProfile/{userId}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> IsViewUserProfile(int userId)
+        {
+            var result = await this.UserService.IsViewUserProfile(userId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
