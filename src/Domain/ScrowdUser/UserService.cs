@@ -389,6 +389,15 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.userRepo.IsUserExistInSC(email);
         }
 
+        /// <summary>
+        /// Is User Exist In SC
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<bool> IsViewUserProfile(int userId)
+        {
+            return await this.userRepo.IsViewUserProfile(userId);
+        }
 
 
         /// <summary>
