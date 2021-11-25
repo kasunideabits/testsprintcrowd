@@ -582,14 +582,18 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsViewUserProfile(int userId)
+        public async Task<bool> IsViewUserProfile(int userId , bool isFriend)
         {
             User user = null;
-            bool viewUser = true;
+            bool viewMap = true;
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
             if (user != null && user.UserShareType == UserShareType.Private)
-                viewUser = false;
-            return viewUser;
+                viewMap = false;
+            else if (user != null && user.UserShareType == UserShareType.FreindsOnly && isFriend == false)
+                viewMap = false;
+
+            
+            return viewMap;
         }
 
         /// <summary>

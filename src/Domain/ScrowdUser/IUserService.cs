@@ -206,10 +206,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         Task<List<RolesDto>> GetUserRoleInfo(int userID);
 
         /// <summary>
-        /// Is View User Profile
+        ///  Is View User Profile
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="logUserId"></param>
         /// <returns></returns>
-        Task<bool> IsViewUserProfile(int userId);
+        Task<bool> IsViewUserProfile(int userId, int logUserId);
     }
 }
