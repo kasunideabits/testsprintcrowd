@@ -17,6 +17,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using System.Linq.Expressions;
     using System;
     using SprintCrowd.BackEnd.Domain.ScrowdUser.Dtos;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
 
 
@@ -582,27 +583,30 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsViewUserProfile(int userId , bool isFriend)
+        /// 
+        public async Task<ViewUserProfileDto> IsViewUserProfile(int userId , bool isFriend)
         {
             User user = null;
             bool viewMap = true;
+            ViewUserProfileDto objView =  new ViewUserProfileDto();
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
             if (user != null && user.UserShareType == UserShareType.Private)
-                viewMap = false;
+                objView.IsViewMap = false;
             else if (user != null && user.UserShareType == UserShareType.FreindsOnly && isFriend == false)
-                viewMap = false;
+                objView.IsViewMap = false;
 
-            
-            return viewMap;
+            objView.UserShareType = (int)user.UserShareType;
+
+            return objView;
         }
-
-        /// <summary>
-        /// Get User App Version Upgrade Info
-        /// </summary>
-        /// <param name="userOS"></param>
-        /// <param name="userCurrentAppVersion"></param>
-        /// <returns></returns>
-        public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
+       
+    /// <summary>
+    /// Get User App Version Upgrade Info
+    /// </summary>
+    /// <param name="userOS"></param>
+    /// <param name="userCurrentAppVersion"></param>
+    /// <returns></returns>
+    public async Task<UserAppVersionInfo> GetUserAppVersionUpgradeInfo(string userOS, string userCurrentAppVersion)
         {
             try
             {
