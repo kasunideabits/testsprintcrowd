@@ -395,7 +395,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId"></param>
         /// <param name="logUserId"></param>
         /// <returns></returns>
-        public async Task<bool> IsViewUserProfile(int userId , int logUserId)
+        public async Task<ViewUserProfileDto> IsViewUserProfile(int userId , int logUserId)
         {
             var friends = await this.FriendService.AllFriends(logUserId);
             bool isFriend = false;

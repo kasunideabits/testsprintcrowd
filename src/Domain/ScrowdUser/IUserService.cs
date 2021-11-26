@@ -211,6 +211,6 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId"></param>
         /// <param name="logUserId"></param>
         /// <returns></returns>
-        Task<bool> IsViewUserProfile(int userId, int logUserId);
+        Task<ViewUserProfileDto> IsViewUserProfile(int userId, int logUserId);
     }
 }
