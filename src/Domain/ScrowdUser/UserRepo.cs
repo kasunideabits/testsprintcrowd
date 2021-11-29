@@ -591,10 +591,11 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             ViewUserProfileDto objView =  new ViewUserProfileDto();
             user = await this.dbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
             if (user != null && user.UserShareType == UserShareType.Private)
-                objView.IsViewMap = false;
+                viewMap = false;
             else if (user != null && user.UserShareType == UserShareType.FreindsOnly && isFriend == false)
-                objView.IsViewMap = false;
+                viewMap = false;
 
+            objView.IsViewMap = viewMap;
             objView.UserShareType = (int)user.UserShareType;
 
             return objView;
