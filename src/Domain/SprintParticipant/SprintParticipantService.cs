@@ -413,10 +413,11 @@
                      Id = sp.User.Id,
                      Name = sp.User.Name,
                      ColorCode = sp.User.ColorCode,
-                     IsFriend = friendsCommon.Contains(sp.User.Id)
+                     IsFriend = friendsCommon.Contains(sp.User.Id),
+                     ProfilePic = sp.User.ProfilePicture
                  }
              ).ToList()
-            }); ;
+            });
 
             return otherCommon.ToList();
             //if (creatorEventCommon != null)

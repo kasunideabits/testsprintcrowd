@@ -1,6 +1,7 @@
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using SprintCrowd.BackEnd.Application;
   
 
@@ -66,6 +67,8 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// Share route statistic details with
         /// </summary>
+        /// 
+        [DefaultValue(1)]
         public UserShareType UserShareType { get; set; }
 
     /// <summary>
