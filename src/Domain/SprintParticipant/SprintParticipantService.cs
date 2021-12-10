@@ -414,7 +414,7 @@
                      Name = sp.User.Name,
                      ColorCode = sp.User.ColorCode,
                      IsFriend = friendsCommon.Contains(sp.User.Id),
-                     ProfilePic = sp.User.ProfilePicture
+                     ProfilePicture = sp.User.ProfilePicture
                  }
              ).ToList()
             });
