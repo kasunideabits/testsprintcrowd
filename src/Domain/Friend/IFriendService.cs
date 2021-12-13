@@ -57,21 +57,22 @@
 
 
         /// <summary>
-        /// Friend invite accept
+        /// Invite Accept
         /// </summary>
-        /// <param name="id">id of the invite</param>
-        /// <param name="isCommunity">isCommunity or general notification</param>
-        /// <returns>Successfull updated record</returns>
-        Task<FriendInviteDto> InviteAccept(int id, bool isCommunity);
+        /// <param name="notificationId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        Task<FriendInviteDto> InviteAccept(int notificationId, bool isCommunity);
 
 
 
         /// <summary>
-        /// Remove an invitation
+        /// Remove Invitation
         /// </summary>
-        /// <param name="id">friend to be removed</param>
-        /// <param name="isCommunity">General notification or community</param>
-        Task<bool> RemoveInvitation(int id, bool isCommunity);
+        /// <param name="notificationId"></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        Task<bool> RemoveInvitation(int notificationId, bool isCommunity);
 
         /// <summary>
         /// Friend invitation list sent by user

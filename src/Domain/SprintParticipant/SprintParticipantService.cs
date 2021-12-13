@@ -413,10 +413,11 @@
                      Id = sp.User.Id,
                      Name = sp.User.Name,
                      ColorCode = sp.User.ColorCode,
-                     IsFriend = friendsCommon.Contains(sp.User.Id)
+                     IsFriend = friendsCommon.Contains(sp.User.Id),
+                     ProfilePicture = sp.User.ProfilePicture
                  }
              ).ToList()
-            }); ;
+            });
 
             return otherCommon.ToList();
             //if (creatorEventCommon != null)
@@ -619,6 +620,34 @@
             }
             return participantInfoDtos;
         }
+
+        /// <summary>
+        /// Get Notification Counts
+        /// </summary>
+        /// <param name="userId">user id to fetch</param>
+        /// <returns>General notification and Community notification count</returns>
+        public NotificationCount GetNotificationCounts(int userId)
+        {
+            //Get general notifications
+            var genNotifications = this.SprintParticipantRepo.GetNotification(userId, false);
+            // Get Community notifications
+            var comNotifications = this.SprintParticipantRepo.GetNotification(userId, true);
+
+            NotificationCount notCount = new NotificationCount
+            {
+                GeneralNotificationCount = genNotifications
+                .Where(x => x.BadgeCount == 1)
+                .OrderByDescending(n => n.Notification.CreatedDate)
+                .ToList().Count(),
+                CommunityNotificationCount = comNotifications
+                .Where(x => x.BadgeCount == 1)
+                .OrderByDescending(n => n.Notification.CreatedDate)
+                .ToList().Count()
+            };
+
+            return notCount;
+        }
+
 
         /// <summary>
         /// Get all notificaitons
@@ -1089,20 +1118,24 @@
 
     }
 
-    public class Notifications //<T> where T : class, new()
+    public class Notifications
     {
         public List<object> ResultNew { get; set; }
         public List<object> ResultToday { get; set; }
         public List<object> ResultOlder { get; set; }
 
-        //public List<object> Result { get; set; }
-
         public Notifications()
         {
             this.ResultNew = new List<object>();
             this.ResultToday = new List<object>();
-            this.ResultOlder = new List<object>();
-            // this.Result = new List<object>();
+            this.ResultOlder = new List<object>();          
         }
+    }
+
+    public class NotificationCount
+    {
+        public int GeneralNotificationCount { get; set; }
+        public int CommunityNotificationCount { get; set; }
+      
     }
 }

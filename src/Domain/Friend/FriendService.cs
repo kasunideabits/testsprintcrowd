@@ -224,7 +224,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             var result = await this.FriendRepo.InviteFriend(invite);
             this.FriendRepo.SaveChanges();
 
-            var user = await this.FriendRepo.GetInvite(result.Id);
+            var user = await this.FriendRepo.GetInviteByUser(result.FromUserId, result.ToUserId);
 
             if (user != null)
             {
@@ -312,10 +312,10 @@ namespace SprintCrowd.BackEnd.Domain.Friend
         /// </summary>
         /// <param name="id">id of the invite</param>
         /// <returns>Successfull updated record</returns>
-        public async Task<FriendInviteDto> InviteAccept(int id , bool isCommunity)
+        public async Task<FriendInviteDto> InviteAccept(int notificationId, bool isCommunity)
         {
             //Get invitation from the database.
-            var invite = await this.FriendRepo.GetInvite(id);
+            var invite = await this.FriendRepo.GetInvite(notificationId);
 
             invite.Accepted = true;
 
@@ -340,7 +340,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
             this.FriendRepo.SaveChanges();
 
             this.NotificationClient.SprintNotificationJobs.AcceptRequest(
-                            friend.SharedUserId,
+                            friend.AcceptedUserId,
                             friend.AcceptedUser.Name,
                             friend.AcceptedUser.ProfilePicture,
                             friend.AcceptedUser.Code,
@@ -350,7 +350,7 @@ namespace SprintCrowd.BackEnd.Domain.Friend
                             friend.AcceptedUser.CountryCode,
                             friend.AcceptedUser.ColorCode,
                             friend.AcceptedUser.CreatedDate,
-                            friend.AcceptedUserId,
+                            friend.SharedUserId,
                             isCommunity);
 
             return inviteDto;
@@ -358,23 +358,27 @@ namespace SprintCrowd.BackEnd.Domain.Friend
 
 
         /// <summary>
-        /// Remove an invitation
+        /// Remove Invitation
         /// </summary>
-        /// <param name="id">friend to be removed</param>
-        public async Task<bool> RemoveInvitation(int id , bool isCommunity)
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <param name=""></param>
+        /// <param name="isCommunity"></param>
+        /// <returns></returns>
+        public async Task<bool> RemoveInvitation(int notificationId, bool isCommunity)
         {
             try
             {
-                var invite = await this.FriendRepo.GetInvite(id);
+                var invite = await this.FriendRepo.GetInvite(notificationId);
 
-                await this.FriendRepo.RemoveInvitation(id);
+                await this.FriendRepo.RemoveInvitation(notificationId);
                 
                 this.NotificationClient.SprintNotificationJobs.DeclineRequest(
-                              invite.FromUserId,
+                              invite.ToUser.Id,
                               invite.ToUser.Name,
                               invite.ToUser.ProfilePicture,
                               DateTime.Now,
-                              invite.ToUser.Id,
+                              invite.FromUserId,
                               invite.ToUser.Name + " has declined the friend request.",
                               isCommunity);
 

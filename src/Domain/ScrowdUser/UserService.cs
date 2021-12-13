@@ -389,6 +389,20 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
             return await this.userRepo.IsUserExistInSC(email);
         }
 
+        /// <summary>
+        /// Is View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logUserId"></param>
+        /// <returns></returns>
+        public async Task<ViewUserProfileDto> IsViewUserProfile(int userId , int logUserId)
+        {
+            var friends = await this.FriendService.AllFriends(logUserId);
+            bool isFriend = false;
+            if (friends != null && friends.Count > 0 && friends.Where(x => x.Id == userId).ToList().Count > 0)
+                isFriend = true;
+            return await this.userRepo.IsViewUserProfile(userId , isFriend);
+        }
 
 
         /// <summary>

@@ -30,6 +30,7 @@ namespace SprintCrowd.BackEnd.Domain.SprintParticipant.Dtos
         public string ColorCode { get; set; }
 
         public bool IsFriend { get; set; }
+        public string ProfilePicture { get; set; }
     }
 
     public class SprintInfoDTO

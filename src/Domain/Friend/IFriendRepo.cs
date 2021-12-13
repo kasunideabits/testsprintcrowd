@@ -91,11 +91,13 @@
         Task<List<FriendInvite>> InvitationsListSentByUser(int userId);
 
         /// <summary>
-        /// Get invite by id
+        /// Get Invite by from & to user id
         /// </summary>
-        /// <param name="id">id of the invite</param>
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <param name=""></param>
         /// <returns></returns>
-        Task<FriendInvite> GetInvite(int id);
+        Task<FriendInvite> GetInvite(int notificationId);
 
 
         /// <summary>
@@ -106,10 +108,19 @@
         Task<FriendInvite> UpdateInvite(FriendInvite invite);
 
         /// <summary>
-        /// Remove an invitation
+        /// Remove Invitation
         /// </summary>
-        /// <param name="id">friend to be removed</param>
-        Task<bool> RemoveInvitation(int id);
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <returns></returns>
+        Task<bool> RemoveInvitation(int notificationId);
+
+        /// <summary>
+        /// Get Invite By User        /// </summary>
+        /// <param name="inviteFromId"></param>
+        /// <param name="inviteToId"></param>
+        /// <returns></returns>
+        Task<FriendInvite> GetInviteByUser(int inviteFromId, int inviteToId);
 
     }
 }

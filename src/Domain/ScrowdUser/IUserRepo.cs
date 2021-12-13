@@ -9,6 +9,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Account;
     using SprintCrowd.BackEnd.Web.PushNotification;
+    using SprintCrowdBackEnd.Domain.ScrowdUser.Dtos;
 
     /// <summary>
     /// interface for UserRepo.
@@ -215,5 +216,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="role"></param>
         /// <returns></returns>
         Task AddUserRole(int userId, string role);
+
+        /// <summary>
+        /// Is View User Profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ViewUserProfileDto> IsViewUserProfile(int userId, bool isFriend);
     }
 }

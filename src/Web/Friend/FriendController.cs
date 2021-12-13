@@ -18,7 +18,7 @@ namespace SprintCrowd.BackEnd.Web.Friend
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FriendController : ControllerBase
     {
         /// <summary>
@@ -192,23 +192,20 @@ namespace SprintCrowd.BackEnd.Web.Friend
         [HttpDelete("InviteDeleteCommunity/{Id}")]
         public async Task<IActionResult> InviteDeleteCommunity(int Id)
         {
-            var result = await this.FriendService.RemoveInvitation(Id ,true);
+            var result = await this.FriendService.RemoveInvitation(Id, true);
             return this.Ok(result);
         }
 
-        [HttpGet("GetNotificationCount/{isCommunity:bool}")]
+        [HttpGet("GetNotificationCount")]
         [ProducesResponseType(typeof(SuccessResponse<FriendInviteDto>), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<IActionResult> GetNotificationCount(bool isCommunity)
+        public async Task<IActionResult> GetNotificationCount()
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = this.SprintParticipantService.GetNotification(user.Id, isCommunity);
+            var result = this.SprintParticipantService.GetNotificationCounts(user.Id);
 
-            int count = result != null?result.ResultNew.Count + result.ResultOlder.Count + result.ResultToday.Count : 0;
-            return this.Ok(new SuccessResponse<int>(count));
+            return this.Ok(new SuccessResponse<NotificationCount>(result));
         }
-
-
 
     }
 }
