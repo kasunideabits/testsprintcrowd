@@ -360,13 +360,13 @@
         /// creates a new sprint
         /// </summary>
 
-        public async Task<String> generatePromotionCode()
+        public async Task<String> generatePromotionCode(bool isProgramCode = false)
         {
             int x = 0;
-            Sprint lastSpecialSprint = await this.SprintRepo.GetLastSpecialSprint();
-            if (Int32.TryParse(lastSpecialSprint.PromotionCode, out x))
+            string pCode = isProgramCode ? (await this.SprintRepo.GetLastSpecialSprintProgram()).ProgramCode : (await this.SprintRepo.GetLastSpecialSprint()).PromotionCode;
+            if (Int32.TryParse(pCode, out x))
             {
-                int promocode = Int32.Parse(lastSpecialSprint.PromotionCode) + 1;
+                int promocode = Int32.Parse(pCode) + 1;
                 string strPromocode = promocode.ToString("D6");
                 return strPromocode;
             }
@@ -1423,7 +1423,7 @@
             sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
             sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
             sprintProgram.GetSocialLink = string.Empty;
-            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode() : null;
+            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode(true) : null;
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
 
@@ -1488,6 +1488,76 @@
             {
                 throw ex;
             }
+        }
+
+
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto)
+        {
+
+            SprintProgram sprintProgram = await this.SprintRepo.GetSprintProgramDetailsByUser(user.Id, sprintProgramDto.Id);
+
+            //if (sprintProgramDto.ProgramCode != null && sprintModel.promotionCode != string.Empty)
+            //{
+            //    Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
+            //    if (sprintPromoCode != null)
+            //    {
+            //        throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+            //    }
+            //}
+
+            
+            sprintProgram.Name = sprintProgramDto.Name;
+            sprintProgram.Description = sprintProgramDto.Description;
+            sprintProgram.Duration = sprintProgramDto.Duration;
+            sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
+            sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
+            sprintProgram.GetSocialLink = string.Empty;
+            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode(true) : null;
+            sprintProgram.StartDate = sprintProgramDto.StartDate;
+            sprintProgram.CreatedBy = user;
+
+            //SprintProgram addedSprintProgram = await this.SprintRepo.UpdateSprintProgram(sprintProgram);
+
+            var customData = new
+            {
+                campaign_name = "programshare",
+                programId = sprintProgram.Id.ToString(),
+                programnCode = sprintProgram.ProgramCode,
+                name = sprintProgram.Name,
+                duration = sprintProgram.Duration.ToString(),
+                startDateTime = sprintProgram.StartDate.ToString(),
+                description = sprintProgram.Description
+            };
+            try
+            {
+                var socialLink = sprintProgram.IsPrivate ?
+                await this.SocialShareService.updateTokenAndGetInvite(customData) : string.Empty;
+                //await this.SocialShareService.GetSmartLink(new SocialLink()
+                //{
+                //    Name = addedSprintProgram.Name,
+                //    Description = addedSprintProgram.Description,
+                //    ImageUrl = addedSprintProgram.ImageUrl,
+                //    CustomData = customData
+                //});
+
+                sprintProgram.GetSocialLink = socialLink;
+                // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(sprintProgram));
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
     }

@@ -470,5 +470,26 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="sprint"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateSprintProgram")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> UpdateSprintProgram([FromBody] SprintProgramDto sprintProgram)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.UpdateSprintProgram(
+                user,
+                sprintProgram);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
+        }
     }
 }
