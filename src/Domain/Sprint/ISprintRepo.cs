@@ -206,5 +206,11 @@
         /// <param name="sprintProgramId"></param>
         /// <returns></returns>
         Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
+
+        /// <summary>
+        /// Get Last Special Sprint Program
+        /// </summary>
+        /// <returns></returns>
+        Task<SprintProgram> GetLastSpecialSprintProgram();
     }
 }

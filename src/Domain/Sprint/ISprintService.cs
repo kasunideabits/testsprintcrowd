@@ -224,5 +224,13 @@
         /// <param name="sprintProgramId"></param>
         /// <returns></returns>
         Task<SprintProgramDto> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto);
     }
 }

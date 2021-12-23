@@ -40,11 +40,23 @@
             return await this.dbContext.Set<Sprint>().FirstOrDefaultAsync(predicate);
         }
 
+        /// <summary>
+        /// Get Last Special Sprint
+        /// </summary>
+        /// <returns></returns>
         public async Task<Sprint> GetLastSpecialSprint()
         {
             return await this.dbContext.Set<Sprint>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.PromotionCode));
         }
 
+        /// <summary>
+        /// Get Last Special Sprint Program
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetLastSpecialSprintProgram()
+        {
+            return await this.dbContext.Set<SprintProgram>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.ProgramCode));
+        }
         /// <summary>
         /// Get all sprints with given predicate
         /// </summary>
@@ -283,6 +295,7 @@
             var result = this.dbContext.Sprint.Update(sprintData);
             this.dbContext.SaveChanges();
             return result.Entity;
+
         }
 
         /// <summary>
@@ -508,10 +521,16 @@
         /// <returns></returns>
         public async Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData)
         {
-
-            var result = this.dbContext.SprintProgram.Update(sprintProgramData);
-            this.dbContext.SaveChanges();
-            return result.Entity;
+            try
+            {
+                var result = this.dbContext.SprintProgram.Update(sprintProgramData);
+                this.dbContext.SaveChanges();
+                return result.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
