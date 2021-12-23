@@ -8,6 +8,8 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+
     /// <summary>
     /// ISprintService interface
     /// </summary>
@@ -206,5 +208,21 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         Task<int> GetSprintPaticipantsCounts(int sprintId);
+
+        /// <summary>
+        /// Create New Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> CreateNewSprintProgram(User user, SprintProgramDto sprintProgramDto);
+
+        /// <summary>
+        /// GetSprintProgramDetailsByUser
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
     }
 }

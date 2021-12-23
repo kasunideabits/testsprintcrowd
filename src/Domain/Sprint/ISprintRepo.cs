@@ -11,6 +11,7 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// inerface for event repo
@@ -183,5 +184,27 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate);
+
+        /// <summary>
+        /// Add Sprint Program
+        /// </summary>
+        /// <param name="sprintProgram"></param>
+        /// <returns></returns>
+        Task<SprintProgram> AddSprintProgram(SprintProgram sprintProgram);
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="sprintProgramData"></param>
+        /// <returns></returns>
+        Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData);
+
+        /// <summary>
+        /// Get Sprint Program Details By User
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
     }
 }
