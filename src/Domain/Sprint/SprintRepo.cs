@@ -14,6 +14,7 @@
     using System.Globalization;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// Event repositiory
@@ -486,6 +487,47 @@
             return this.dbContext.SaveChanges();
         }
 
+        /// <summary>
+        /// creates event
+        /// </summary>
+        /// <param name="sprintToAdd">event model</param>
+        /// <returns>add sprint Program</returns>
+        public async Task<SprintProgram> AddSprintProgram(SprintProgram sprintProgram)
+        {
+            
+            var result = await this.dbContext.SprintProgram.AddAsync(sprintProgram);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+        }
 
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="sprintProgramData"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData)
+        {
+
+            var result = this.dbContext.SprintProgram.Update(sprintProgramData);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+        }
+
+        /// <summary>
+        /// Get All User Mails
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.FirstOrDefaultAsync(sp => sp.Id == sprintProgramId);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@
     using System.IO;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// event controller
@@ -424,5 +425,50 @@
 
             return this.File(stream, contentType, fileName);
         }
+
+
+        /// <summary>
+        /// Create Sprint Program
+        /// </summary>
+        /// <param name="sprint"></param>
+        /// <returns></returns>
+        [HttpPost("CreateSprintProgram")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateSprintProgram([FromBody] SprintProgramDto sprintProgram)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.CreateNewSprintProgram(
+                user,
+                sprintProgram);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
+        }
+
+
+        // <summary>
+        /// Get Sprint Program Details By User
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("GetSprintProgramDetailsByUser/{programId}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetSprintProgramDetailsByUser(int programId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetSprintProgramDetailsByUser(user.Id, programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
     }
 }

@@ -83,7 +83,12 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// table for UserAppVersionInfo.
         /// </summary>
         public DbSet<UserAppVersionInfo> UserAppVersionInfo { get; set; }
-       
+
+        /// <summary>
+        /// table for SprintProgram.
+        /// </summary>
+        public DbSet<SprintProgram> SprintProgram { get; set; }
+
         /// <summary>
         /// table for friend invite list sent by internal app
         /// </summary>
