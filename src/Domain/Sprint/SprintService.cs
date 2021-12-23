@@ -20,6 +20,8 @@
     using System.IO;
     using System.Net.Mail;
     using System.Net;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Sprint service
@@ -1388,6 +1390,99 @@
             try
             {
                 return await this.userRepo.GetAllEmailUsers();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Create New Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> CreateNewSprintProgram(User user, SprintProgramDto sprintProgramDto)
+        {
+
+            SprintProgram sprintProgram = new SprintProgram();
+
+            //if (sprintProgramDto.ProgramCode != null && sprintModel.promotionCode != string.Empty)
+            //{
+            //    Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
+            //    if (sprintPromoCode != null)
+            //    {
+            //        throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+            //    }
+            //}
+
+            sprintProgram.Name = sprintProgramDto.Name;
+            sprintProgram.Description = sprintProgramDto.Description;
+            sprintProgram.Duration = sprintProgramDto.Duration;
+            sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
+            sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
+            sprintProgram.GetSocialLink = string.Empty;
+            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode() : null;
+            sprintProgram.StartDate = sprintProgramDto.StartDate;
+            sprintProgram.CreatedBy = user;
+
+            SprintProgram addedSprintProgram = await this.SprintRepo.AddSprintProgram(sprintProgram);
+
+            var customData = new
+            {
+                campaign_name = "programshare",
+                programId = addedSprintProgram.Id.ToString(),
+                programnCode = addedSprintProgram.ProgramCode,
+                name = addedSprintProgram.Name,
+                duration = addedSprintProgram.Duration.ToString(),
+                startDateTime = addedSprintProgram.StartDate.ToString(),
+                description = addedSprintProgram.Description
+            };
+            try
+            {
+                var socialLink = sprintProgram.IsPrivate ?
+                await this.SocialShareService.updateTokenAndGetInvite(customData) : string.Empty;
+                //await this.SocialShareService.GetSmartLink(new SocialLink()
+                //{
+                //    Name = addedSprintProgram.Name,
+                //    Description = addedSprintProgram.Description,
+                //    ImageUrl = addedSprintProgram.ImageUrl,
+                //    CustomData = customData
+                //});
+
+                addedSprintProgram.GetSocialLink = socialLink;
+                // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(addedSprintProgram));
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+        public static SprintProgramDto SprintProgramDtoMapper(SprintProgram sprintProgram)
+        {
+            SprintProgramDto result = new SprintProgramDto(
+                sprintProgram
+                );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Get Sprint Program Details By User
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> GetSprintProgramDetailsByUser(int userId , int sprintProgramId)
+        {
+            try
+            {
+                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByUser(userId,sprintProgramId));
             }
             catch (Exception ex)
             {
