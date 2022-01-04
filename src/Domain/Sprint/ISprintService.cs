@@ -9,6 +9,7 @@
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 
     /// <summary>
     /// ISprintService interface
@@ -232,5 +233,14 @@
         /// <param name="sprintProgramDto"></param>
         /// <returns></returns>
         Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto);
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit);
     }
 }

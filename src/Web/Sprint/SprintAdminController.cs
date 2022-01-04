@@ -491,5 +491,24 @@
 
             return this.Ok(response);
         }
+
+
+        /// <summary>
+        /// Get All Programms
+        /// </summary>
+        [HttpGet("GetAllProgramms/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllProgramms(int pageNo, int limit)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllSprintProgramms(user.Id, pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }

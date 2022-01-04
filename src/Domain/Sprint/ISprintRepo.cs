@@ -212,5 +212,14 @@
         /// </summary>
         /// <returns></returns>
         Task<SprintProgram> GetLastSpecialSprintProgram();
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit);
     }
 }
