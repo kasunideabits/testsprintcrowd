@@ -560,7 +560,7 @@
         {
             try
             {
-                return await ( this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId)).Skip(pageNo).Take(limit).ToListAsync();
+                return await ( this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId)).Skip(pageNo * limit).Take(limit).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -569,5 +569,22 @@
 
         }
 
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetAllSprintProgrammsCount(int userId)
+        {
+            try
+            {
+                return (this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId )).ToListAsync().Result.Count();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

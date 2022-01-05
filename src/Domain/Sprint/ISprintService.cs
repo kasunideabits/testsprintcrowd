@@ -242,5 +242,12 @@
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        int GetAllSprintProgrammsCount(int userId);
     }
 }
