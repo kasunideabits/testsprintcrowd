@@ -1580,5 +1580,23 @@
 
         }
 
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetAllSprintProgrammsCount(int userId)
+        {
+            try
+            {
+                return this.SprintRepo.GetAllSprintProgrammsCount(userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
     }
 }
