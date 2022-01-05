@@ -507,6 +507,7 @@
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result,
+                totalItems = this.SprintService.GetAllSprintProgrammsCount(user.Id)
             };
             return this.Ok(response);
         }
