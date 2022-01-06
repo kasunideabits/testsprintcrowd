@@ -598,6 +598,20 @@
 
                     // return allEvents;
                 }
+                else
+                {//if entered keyword is not a time format, following executes
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where ((searchTerm.Equals("null") ||
+                                 (
+                                              sprintProgram.Name.ToLower().Contains(searchTerm.Trim().ToLower())
+                                              )
+                                      )
+                                 )
+                                 select sprintProgram
+                        );
+
+                    // return allEvents;
+                }
                 IQueryable<SprintProgram> allEventsFilter = null;
                
                     if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin) && allEvents != null && allEvents.Count() != 0)
