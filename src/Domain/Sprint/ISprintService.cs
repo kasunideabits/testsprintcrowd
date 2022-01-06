@@ -238,10 +238,11 @@
         /// Get All Sprint Programms
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit);
+        Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit);
 
         /// <summary>
         /// Get All Sprint Programms Count

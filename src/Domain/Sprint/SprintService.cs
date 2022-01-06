@@ -1564,14 +1564,16 @@
         /// Get All Sprint Programms
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit)
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit)
         {
             try
             {
-                return await this.SprintRepo.GetAllSprintProgramms(userId, pageNo, limit);
+                var result = await this.userRepo.GetUserRoleInfo(userId);
+                return await this.SprintRepo.GetAllSprintProgramms(userId, searchTerm, pageNo, limit, result);
             }
             catch (Exception ex)
             {
