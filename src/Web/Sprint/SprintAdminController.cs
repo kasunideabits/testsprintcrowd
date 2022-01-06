@@ -512,5 +512,23 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Remove Program with given Program id
+        /// </summary>
+        /// <param name="programId">Program id to remove</param>
+        [HttpPost("removeProgram/{programId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveProgram(int programId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintService.RemoveSprintProgram(user.Id, programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
     }
 }

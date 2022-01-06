@@ -250,5 +250,13 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         int GetAllSprintProgrammsCount(int userId);
+
+        /// <summary>
+        /// Remove sprint program from Admin Panel
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task RemoveSprintProgram(int userId, int programId);
     }
 }

@@ -231,5 +231,19 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         int GetAllSprintProgrammsCount(int userId);
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="programData"></param>
+        /// <returns></returns>
+        Task<SprintProgram> UpdateSprintProgramData(SprintProgram programData);
+
+        /// <summary>
+        /// Get sprint program by given predicate
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgram(Expression<Func<SprintProgram, bool>> predicate);
     }
 }
