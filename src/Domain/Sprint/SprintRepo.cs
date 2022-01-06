@@ -15,6 +15,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Event repositiory
@@ -553,14 +554,77 @@
         /// Get All Sprint Programms
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
+        /// <param name="userRoles"></param>
         /// <returns></returns>
-        public async Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit)
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit, List<RolesDto> userRoles)
         {
             try
             {
-                return await ( this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId)).Skip(pageNo * limit).Take(limit).ToListAsync();
+                //return await ( this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId)).Skip(pageNo * limit).Take(limit).ToListAsync();
+                IQueryable<SprintProgram> allEvents = null;
+                List<SprintProgram> sprintPrograms = new List<SprintProgram>();
+                int noOfItems = 0;
+                if (Regex.IsMatch(searchTerm, @"^(?:19|20)\d{2}$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$"))
+                {
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where (searchTerm.Equals("null") || sprintProgram.StartDate.ToString().StartsWith(searchTerm.Trim()))select sprintProgram);
+
+                    // return allEvents;
+                }
+                else if (Regex.IsMatch(searchTerm, @"^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"))
+                {
+                    TimeSpan localTime = TimeSpan.Parse(searchTerm);
+                    TimeSpan twentyHrTime = localTime.Add(new TimeSpan(12, 0, 0));
+
+                    //Remove following line when time zone is UTC
+                    TimeSpan subtractedtwentyHrTime = twentyHrTime.Subtract(new TimeSpan(5, 30, 0));
+                    TimeSpan subtractedtwentyHrTimePM = subtractedtwentyHrTime.Add(new TimeSpan(12, 0, 0));
+                    //Remove following line when time zone is UTC
+                    TimeSpan subtractedTime = localTime.Subtract(new TimeSpan(5, 30, 0));
+
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where (
+                                                  sprintProgram.StartDate.ToString().Contains(subtractedTime.ToString().Trim())
+                                                  || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTime.ToString().Trim())
+                                                  || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTimePM.ToString().Trim())
+                                            
+                                 )
+                                 select sprintProgram
+                         );
+
+
+                    // return allEvents;
+                }
+                IQueryable<SprintProgram> allEventsFilter = null;
+               
+                    if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin) && allEvents != null && allEvents.Count() != 0)
+                    {
+                        allEventsFilter = allEvents.Where(spr => spr.CreatedBy.Id == userId);
+                        noOfItems = allEventsFilter.Count();
+                    }
+                    else
+                    {
+                        noOfItems = allEvents.Count();
+                        allEventsFilter = allEvents;
+                    }
+                    if (limit > 0)
+                    {
+                    sprintPrograms = await allEventsFilter.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
+                    }
+                    else
+                    {
+                    sprintPrograms = await allEventsFilter.OrderByDescending(x => x.CreatedDate).ToListAsync();
+                    }
+
+                    return new SprintProgramsPageDto()
+                    {
+                        sPrograms = sprintPrograms,
+                        totalItems = noOfItems
+                    };
+                
             }
             catch (Exception ex)
             {

@@ -496,20 +496,21 @@
         /// <summary>
         /// Get All Programms
         /// </summary>
-        [HttpGet("GetAllProgramms/{pageNo:int?}/{limit:int?}")]
+        [HttpGet("GetAllProgramms/{searchTerm}/{pageNo:int?}/{limit:int?}")]
         [ProducesResponseType(typeof(ResponseObject), 200)]
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
-        public async Task<IActionResult> GetAllProgramms(int pageNo, int limit)
+        public async Task<IActionResult> GetAllProgramms(string searchTerm, int pageNo, int limit)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetAllSprintProgramms(user.Id, pageNo, limit);
+            var result = await this.SprintService.GetAllSprintProgramms(user.Id, searchTerm, pageNo, limit);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result,
-                totalItems = this.SprintService.GetAllSprintProgrammsCount(user.Id)
+                Data = result.sPrograms,
+                totalItems = result.totalItems
             };
             return this.Ok(response);
         }
+
     }
 }

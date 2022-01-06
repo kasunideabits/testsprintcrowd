@@ -12,6 +12,7 @@
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
     using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// inerface for event repo
@@ -204,7 +205,7 @@
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="sprintProgramId"></param>
-        /// <returns></returns>
+         /// <returns></returns>
         Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
 
         /// <summary>
@@ -217,10 +218,12 @@
         /// Get All Sprint Programms
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
+        /// <param name="userRoles"></param>
         /// <returns></returns>
-        Task<List<SprintProgram>> GetAllSprintProgramms(int userId, int pageNo, int limit);
+        Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit, List<RolesDto> userRoles);
 
         /// <summary>
         /// Get All Sprint Programms Count
