@@ -87,6 +87,11 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// <value>created by the user.</value>
         public User CreatedBy { get; set; }
 
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>ststus of the program.</value>
+        public int Status { get; set; }
     }
 
 }
