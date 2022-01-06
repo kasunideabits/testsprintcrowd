@@ -1600,5 +1600,33 @@
 
         }
 
+
+        /// <summary>
+        /// Remove sprint program from Admin Panel
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task RemoveSprintProgram(int userId, int programId)
+        {
+            Expression<Func<SprintProgram, bool>> programPredicate = s => s.Id == programId;
+            var program = await this.SprintRepo.GetSprintProgram(programPredicate);
+            if (program == null)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint program not found with given id");
+            }
+            else if (program.CreatedBy.Id != userId)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete program");
+            }
+            else
+            {
+                program.Status = (int)SprintProgramStatus.ARCHIVED;
+                await this.SprintRepo.UpdateSprintProgram(program);
+                this.SprintRepo.SaveChanges();
+                
+            }
+        }
+
     }
 }

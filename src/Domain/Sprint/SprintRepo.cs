@@ -570,7 +570,7 @@
                 if (Regex.IsMatch(searchTerm, @"^(?:19|20)\d{2}$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$"))
                 {
                     allEvents = (from sprintProgram in this.dbContext.SprintProgram
-                                 where (searchTerm.Equals("null") || sprintProgram.StartDate.ToString().StartsWith(searchTerm.Trim()))select sprintProgram);
+                                 where ((sprintProgram.Status != 3) && (searchTerm.Equals("null") || sprintProgram.StartDate.ToString().StartsWith(searchTerm.Trim())))select sprintProgram);
 
                     // return allEvents;
                 }
@@ -586,10 +586,10 @@
                     TimeSpan subtractedTime = localTime.Subtract(new TimeSpan(5, 30, 0));
 
                     allEvents = (from sprintProgram in this.dbContext.SprintProgram
-                                 where (
-                                                  sprintProgram.StartDate.ToString().Contains(subtractedTime.ToString().Trim())
-                                                  || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTime.ToString().Trim())
-                                                  || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTimePM.ToString().Trim())
+                                 where ((sprintProgram.Status != 3) &&
+                                            (sprintProgram.StartDate.ToString().Contains(subtractedTime.ToString().Trim())
+                                            || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTime.ToString().Trim())
+                                            || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTimePM.ToString().Trim()))
                                             
                                  )
                                  select sprintProgram
@@ -601,7 +601,7 @@
                 else
                 {//if entered keyword is not a time format, following executes
                     allEvents = (from sprintProgram in this.dbContext.SprintProgram
-                                 where ((searchTerm.Equals("null") ||
+                                 where ((sprintProgram.Status != 3) && (searchTerm.Equals("null") ||
                                  (
                                               sprintProgram.Name.ToLower().Contains(searchTerm.Trim().ToLower())
                                               )
@@ -662,6 +662,31 @@
             {
                 throw ex;
             }
+
+        }
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="programData"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> UpdateSprintProgramData(SprintProgram programData)
+        {
+           
+            var result = this.dbContext.SprintProgram.Update(programData);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+
+        }
+
+        
+        /// <summary>
+        /// Get sprint program by given predicate
+        /// </summary>
+        /// <param name="predicate"> predicate</param>
+        public async Task<SprintProgram> GetSprintProgram(Expression<Func<SprintProgram, bool>> predicate)
+        {
+            return await this.dbContext.Set<SprintProgram>().FirstOrDefaultAsync(predicate);
 
         }
     }
