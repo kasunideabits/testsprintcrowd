@@ -689,5 +689,22 @@
             return await this.dbContext.Set<SprintProgram>().FirstOrDefaultAsync(predicate);
 
         }
+
+
+        /// <summary>
+        /// Get Program Sprint List By Program Id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetProgramSprintListByProgramId(int sprintProgramId)
+        {
+            try
+            {
+                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId).ToListAsync();
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

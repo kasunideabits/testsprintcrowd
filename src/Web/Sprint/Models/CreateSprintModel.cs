@@ -101,5 +101,10 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// </summary>
         public bool IsSoloRun { get; set; }
 
+        /// <summary>
+        /// Program Id for the sprint
+        /// </summary>
+        public int ProgramId { get; set; }
+
     }
 }
