@@ -277,6 +277,8 @@
             sprintAavail.IsTimeBased = sprintModel.IsTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            sprintAavail.ProgramId = sprintModel.ProgramId;
+
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
@@ -585,6 +587,7 @@
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
             sprint.IsSoloRun = sprintModel.IsSoloRun;
+            sprint.ProgramId = sprintModel.ProgramId;
 
             if (sprint.IsTimeBased == true)
             {
@@ -1453,7 +1456,8 @@
 
                 addedSprintProgram.GetSocialLink = socialLink;
                 // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
-                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(addedSprintProgram));
+               var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgram.Id);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(addedSprintProgram), programSprintList);
 
             }
 
@@ -1465,10 +1469,12 @@
         }
 
 
-        public static SprintProgramDto SprintProgramDtoMapper(SprintProgram sprintProgram)
+        public static SprintProgramDto SprintProgramDtoMapper(SprintProgram sprintProgram , List<Sprint> programSprintList)
         {
+            
+
             SprintProgramDto result = new SprintProgramDto(
-                sprintProgram
+                sprintProgram, programSprintList
                 );
             return result;
         }
@@ -1482,7 +1488,8 @@
         {
             try
             {
-                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByUser(userId,sprintProgramId));
+                var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgramId);
+                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByUser(userId,sprintProgramId), programSprintList);
             }
             catch (Exception ex)
             {
@@ -1503,15 +1510,7 @@
 
             SprintProgram sprintProgram = await this.SprintRepo.GetSprintProgramDetailsByUser(user.Id, sprintProgramDto.Id);
 
-            //if (sprintProgramDto.ProgramCode != null && sprintModel.promotionCode != string.Empty)
-            //{
-            //    Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
-            //    if (sprintPromoCode != null)
-            //    {
-            //        throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
-            //    }
-            //}
-
+            
             
             sprintProgram.Name = sprintProgramDto.Name;
             sprintProgram.Description = sprintProgramDto.Description;
@@ -1523,7 +1522,6 @@
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
 
-            //SprintProgram addedSprintProgram = await this.SprintRepo.UpdateSprintProgram(sprintProgram);
 
             var customData = new
             {
@@ -1549,7 +1547,8 @@
 
                 sprintProgram.GetSocialLink = socialLink;
                 // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
-                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(sprintProgram));
+                var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgram.Id);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(sprintProgram), programSprintList);
 
             }
 

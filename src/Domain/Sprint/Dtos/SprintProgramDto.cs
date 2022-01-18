@@ -13,7 +13,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
-        public SprintProgramDto(SprintProgram sprintProgram)
+        public SprintProgramDto(SprintProgram sprintProgram , List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> programSprints)
         {
             this.Id = sprintProgram.Id;
             this.Name = sprintProgram.Name;
@@ -24,7 +24,8 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.GetSocialLink = sprintProgram.GetSocialLink;
             this.ProgramCode = sprintProgram.ProgramCode;
             this.StartDate = sprintProgram.StartDate;
-           
+            this.ProgramSprints = programSprints;
+
         }
 
         /// <summary>
@@ -78,7 +79,10 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// <value>program StartDate.</value>
         public DateTime StartDate { get; set; }
 
-       
+        /// <summary>
+        /// Sprint list within the program
+        /// </summary>
+        public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> ProgramSprints { get; set; }
 
     }
 }
