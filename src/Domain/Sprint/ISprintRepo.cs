@@ -245,5 +245,12 @@
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<SprintProgram> GetSprintProgram(Expression<Func<SprintProgram, bool>> predicate);
+
+        /// <summary>
+        /// Get Program Sprint List By Program Id
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetProgramSprintListByProgramId(int sprintProgramId);
     }
 }
