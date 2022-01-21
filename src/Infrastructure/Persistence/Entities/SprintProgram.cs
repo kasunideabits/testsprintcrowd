@@ -1,6 +1,7 @@
 ﻿using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +27,8 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
             this.ProgramCode = sprintProgram.ProgramCode;
             this.StartDate = sprintProgram.StartDate;
             this.CreatedBy = sprintProgram.CreatedBy;
-            
+            this.IsPublish = sprintProgram.IsPublish;
+
         }
 
         /// <summary>
@@ -92,6 +94,14 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         /// <value>ststus of the program.</value>
         public int Status { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>program status, Public or Private.</value>
+        /// 
+        [DefaultValue(false)]
+        public bool IsPublish { get; set; }
     }
 
 }

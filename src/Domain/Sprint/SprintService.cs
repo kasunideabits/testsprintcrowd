@@ -1521,7 +1521,7 @@
             sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode(true) : null;
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
-
+            sprintProgram.IsPublish = sprintProgramDto.IsPublish;
 
             var customData = new
             {
@@ -1625,6 +1625,43 @@
                 this.SprintRepo.SaveChanges();
                 
             }
+        }
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public Dictionary<int, string> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+            try
+            {
+                return ToSprintProgramDictionary(this.SprintRepo.GetProgramSprintListBySprintStartDate(sprintStartDate).Result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// To Sprint Program Dictionary
+        /// </summary>
+        /// <param name="sprintPrograms"></param>
+        /// <returns></returns>
+        public static Dictionary<int, string> ToSprintProgramDictionary(List<SprintProgram> sprintPrograms)
+        {
+            var dictionary = new Dictionary<int, string>();
+            if (sprintPrograms != null)
+            {
+                foreach (var programs in sprintPrograms)
+                {
+                    dictionary.Add(programs.Id, programs.Name);
+                }
+            }
+
+            return dictionary;
         }
 
     }
