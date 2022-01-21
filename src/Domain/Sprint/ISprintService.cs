@@ -258,5 +258,12 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task RemoveSprintProgram(int userId, int programId);
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        Dictionary<int, string> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate);
     }
 }

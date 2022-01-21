@@ -252,5 +252,12 @@
         /// <param name="sprintProgramId"></param>
         /// <returns></returns>
         Task<List<Sprint>> GetProgramSprintListByProgramId(int sprintProgramId);
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint Start Date
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        Task<List<SprintProgram>> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate);
     }
 }

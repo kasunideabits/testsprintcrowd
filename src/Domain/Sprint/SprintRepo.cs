@@ -706,5 +706,21 @@
                 throw Ex;
             }
         }
+
+        /// <summary>
+        /// Get Program Sprint List By SprintStartDate
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SprintProgram>> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.Where(sp => sp.StartDate > sprintStartDate.AddMinutes(15)).ToListAsync();
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }
