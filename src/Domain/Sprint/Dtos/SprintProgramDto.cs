@@ -84,5 +84,9 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// </summary>
         public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> ProgramSprints { get; set; }
 
+        /// <summary>
+        /// Is Publish
+        /// </summary>
+        public bool IsPublish { get; set; }
     }
 }

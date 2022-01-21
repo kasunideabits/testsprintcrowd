@@ -530,5 +530,23 @@
             return this.Ok(response);
         }
 
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        [HttpGet("GetProgramSprintListBySprintStartDate/{sprintStartDate:DateTime}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+
+            var result = this.SprintService.GetProgramSprintListBySprintStartDate(sprintStartDate);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
     }
 }
