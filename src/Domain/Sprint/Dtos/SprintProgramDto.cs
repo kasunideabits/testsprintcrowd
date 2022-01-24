@@ -25,7 +25,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.ProgramCode = sprintProgram.ProgramCode;
             this.StartDate = sprintProgram.StartDate;
             this.ProgramSprints = programSprints;
-
+            this.IsPublish = sprintProgram.IsPublish;
         }
 
         /// <summary>

@@ -727,8 +727,9 @@
             sprintInfo.PromotionCode = sprint.promotionCode;
             sprintInfo.StartDateTime = sprint.StartTime;
             sprintInfo.SocialMediaLink = sprint.SocialMediaLink;
+            sprint.ProgramId = sprint.ProgramId;
 
-            if(isCrowdRun)
+            if (isCrowdRun)
             await this.SendEmail(user, sprintInfo, repeatType);
         }
 
