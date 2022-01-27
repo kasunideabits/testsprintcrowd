@@ -715,7 +715,7 @@
         {
             try
             {
-                return await this.dbContext.SprintProgram.Where(sp => sp.StartDate > sprintStartDate.AddMinutes(15)).ToListAsync();
+                return await this.dbContext.SprintProgram.Where(sp => sp.StartDate.AddDays(sp.Duration * 7) > sprintStartDate).ToListAsync();
             }
             catch (System.Exception Ex)
             {
