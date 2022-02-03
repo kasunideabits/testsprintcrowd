@@ -1016,6 +1016,10 @@
             {
                 throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
             }
+            else if (sprint.ProgramId > 0)
+            {
+                 this.SprintRepo.RemoveSprint(sprint);
+            }
             else
             {
                 sprint.Status = (int)SprintStatus.ARCHIVED;

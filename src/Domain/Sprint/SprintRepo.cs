@@ -338,6 +338,7 @@
         public void RemoveSprint(Sprint sprint)
         {
             this.dbContext.Set<Sprint>().Remove(sprint);
+            this.dbContext.SaveChanges();
         }
 
         public async Task<UserPreference> GetUserPreference(int userId)
@@ -699,7 +700,8 @@
         {
             try
             {
-                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId).ToListAsync();
+                var program = this.dbContext.SprintProgram.Where(sp => sp.Id == sprintProgramId ).FirstOrDefaultAsync();
+                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId && sp.StartDateTime > program.Result.StartDate).ToListAsync();
             }
             catch (System.Exception Ex)
             {
