@@ -1662,6 +1662,7 @@
             {
                 foreach (var programs in sprintPrograms)
                 {
+                    if(!dictionary.Values.Contains(programs.Name))
                     dictionary.Add(programs.Id, programs.Name);
                 }
             }
