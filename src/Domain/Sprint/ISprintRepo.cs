@@ -259,5 +259,13 @@
         /// <param name="sprintStartDate"></param>
         /// <returns></returns>
         Task<List<SprintProgram>> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate);
+
+        /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit);
     }
 }

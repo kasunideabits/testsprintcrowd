@@ -236,6 +236,22 @@
             return this.Ok(result);
         }
 
-        
+        /// <summary>
+        /// Get All Sprint Programs For Dashboard
+        /// </summary>
+        [HttpGet("GetAllSprintProgramsForDashboard/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllSprintProgramsForDashboard(int pageNo, int limit)
+        {
+            var result = await this.SprintService.GetAllSprintProgramForDashboard(pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result.sPrograms,
+                totalItems = result.totalItems
+            };
+            return this.Ok(response);
+        }
     }
 }
