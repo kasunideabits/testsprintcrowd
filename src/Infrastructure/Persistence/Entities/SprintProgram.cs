@@ -28,7 +28,7 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
             this.StartDate = sprintProgram.StartDate;
             this.CreatedBy = sprintProgram.CreatedBy;
             this.IsPublish = sprintProgram.IsPublish;
-
+            this.IsPromoteInApp = sprintProgram.IsPromoteInApp;
         }
 
         /// <summary>
@@ -98,10 +98,17 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// <summary>
         /// gets or sets value.
         /// </summary>
-        /// <value>program status, Public or Private.</value>
+        /// <value Is Publish .</value>
         /// 
         [DefaultValue(false)]
         public bool IsPublish { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>Is Promote In App.</value>
+        /// 
+        public bool IsPromoteInApp { get; set; }
     }
 
 }

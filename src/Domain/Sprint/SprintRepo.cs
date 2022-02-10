@@ -552,6 +552,25 @@
         }
 
         /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
+        {
+            int intervel = 10;
+            var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate > DateTime.UtcNow && (s.IsPrivate == false || s.IsPromoteInApp == true))).ToListAsync();
+
+            return new SprintProgramsPageDto()
+            {
+                sPrograms = sprintPrograms.Skip(pageNo * limit).Take(limit).ToList(),
+                totalItems = sprintPrograms.Count()
+            };
+        }
+
+
+        /// <summary>
         /// Get All Sprint Programms
         /// </summary>
         /// <param name="userId"></param>
@@ -564,7 +583,6 @@
         {
             try
             {
-                //return await ( this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId)).Skip(pageNo * limit).Take(limit).ToListAsync();
                 IQueryable<SprintProgram> allEvents = null;
                 List<SprintProgram> sprintPrograms = new List<SprintProgram>();
                 int noOfItems = 0;
