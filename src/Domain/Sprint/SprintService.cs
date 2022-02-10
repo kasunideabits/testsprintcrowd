@@ -1587,6 +1587,25 @@
         }
 
         /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
+        {
+            try
+            {
+                return await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
         /// Get All Sprint Programms Count
         /// </summary>
         /// <param name="userId"></param>
