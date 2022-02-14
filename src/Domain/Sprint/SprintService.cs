@@ -1269,6 +1269,7 @@
                                                 friends.Contains(participant.User.Id));
 
                                         }
+                                        resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true : false;
                                         sprintDto.Add(resultDto);
                                     }
                                 }
@@ -1305,6 +1306,8 @@
                                     friends.Contains(participant.User.Id));
 
                             }
+
+                            resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true:false; 
                             sprintDto.Add(resultDto);
                         }
                     }
