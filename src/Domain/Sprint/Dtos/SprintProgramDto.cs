@@ -26,6 +26,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.StartDate = sprintProgram.StartDate;
             this.ProgramSprints = programSprints;
             this.IsPublish = sprintProgram.IsPublish;
+            this.PromotionalText = sprintProgram.PromotionalText;
         }
 
         /// <summary>
@@ -88,5 +89,11 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// Is Publish
         /// </summary>
         public bool IsPublish { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>program promotional Text.</value>
+        public string PromotionalText { get; set; }
     }
 }

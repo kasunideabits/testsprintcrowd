@@ -1437,6 +1437,7 @@
             sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode(true) : null;
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
+            sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
 
             SprintProgram addedSprintProgram = await this.SprintRepo.AddSprintProgram(sprintProgram);
 
@@ -1530,6 +1531,7 @@
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
             sprintProgram.IsPublish = sprintProgramDto.IsPublish;
+            sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
 
             var customData = new
             {
@@ -1691,6 +1693,28 @@
 
             return dictionary;
         }
+
+
+        /// <summary>
+        /// Get All Scheduled Programs Detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            try
+            {
+                return await this.SprintRepo.GetAllScheduledProgramsDetail(programId, pageNo, limit);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
 
     }
 }

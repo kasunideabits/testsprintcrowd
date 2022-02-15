@@ -29,6 +29,7 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
             this.CreatedBy = sprintProgram.CreatedBy;
             this.IsPublish = sprintProgram.IsPublish;
             this.IsPromoteInApp = sprintProgram.IsPromoteInApp;
+            this.PromotionalText = sprintProgram.PromotionalText;
         }
 
         /// <summary>
@@ -109,6 +110,12 @@ namespace SprintCrowdBackEnd.Infrastructure.Persistence.Entities
         /// <value>Is Promote In App.</value>
         /// 
         public bool IsPromoteInApp { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>program promotional Text.</value>
+        public string PromotionalText { get; set; }
     }
 
 }
