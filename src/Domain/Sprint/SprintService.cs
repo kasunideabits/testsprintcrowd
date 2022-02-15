@@ -1270,6 +1270,7 @@
 
                                         }
                                         resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true : false;
+                                        resultDto.SprintInfo.ProgramId = sprint.ProgramId;
                                         sprintDto.Add(resultDto);
                                     }
                                 }
@@ -1307,7 +1308,8 @@
 
                             }
 
-                            resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true:false; 
+                            resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true:false;
+                            resultDto.SprintInfo.ProgramId = sprint.ProgramId;
                             sprintDto.Add(resultDto);
                         }
                     }
