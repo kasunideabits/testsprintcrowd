@@ -253,5 +253,24 @@
             };
             return this.Ok(response);
         }
+
+        /// <summary>
+        /// Get All Scheduled Programs For Dashboard
+        /// </summary>
+        [HttpGet("GetAllScheduledProgramsDetail/{programId:int?}/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            var result = await this.SprintService.GetAllScheduledProgramsDetail(programId, pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+                totalItems = result.Count
+            };
+            return this.Ok(response);
+        }
+
     }
 }
