@@ -3,6 +3,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
     using System.Collections.Generic;
     using System;
     using SprintCrowd.BackEnd.Application;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     public class PublicSprintWithParticipantsDto
     {
@@ -18,6 +19,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         }
 
         public SprintInfoDto SprintInfo { get; set; }
+
+        public SprintProgramsPageDto SprintProgramsPageDto { get; set; }
         public List<ParticipantInfoWithFriend> ParticipantInfo { get; set; }
 
         public void AddParticipant(int id, string name, string profilePicture, string city, string country,

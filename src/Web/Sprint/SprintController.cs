@@ -214,6 +214,7 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.GetOpenEvents(status, user.Id, timeOffset, pageNo, limit);
+
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
