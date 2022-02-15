@@ -719,8 +719,8 @@
             try
             {
                 var program = this.dbContext.SprintProgram.Where(sp => sp.Id == sprintProgramId ).FirstOrDefaultAsync();
-                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId && sp.StartDateTime > program.Result.StartDate).ToListAsync();
-            }
+                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId && ( sp.StartDateTime >= program.Result.StartDate && sp.StartDateTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))).ToListAsync();
+            }                                                                                    //sp => sp.StartDate > program.Result.StartDate && sp.StartDate < program.Result.StartDate.AddDays(program.Result.Duration * 7)   
             catch (System.Exception Ex)
             {
                 throw Ex;
