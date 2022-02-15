@@ -742,5 +742,53 @@
                 throw Ex;
             }
         }
+
+        /// <summary>
+        /// Get All Scheduled Program Detail For Dashboard
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            var program = this.GetSprintProgramDetailsByUser(0, programId);
+            
+            List<List<ProgramSprintScheduleDto>> programSprintSchedule2 = new List<List<ProgramSprintScheduleDto>>();
+
+            int weeks = 1;
+            
+
+            while (weeks <= program.Result.Duration)
+            {
+                List<ProgramSprintScheduleDto> programSprintSchedule = new List<ProgramSprintScheduleDto>();
+
+                var programSprints = await this.dbContext.Sprint.Where(s => s.ProgramId == programId && ((DateTime.ParseExact(program.Result.StartDate.AddDays((weeks-1)*7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null) <= DateTime.ParseExact(s.StartDateTime.ToString("dd/MM/yyyy"), "dd/MM/yyyy", null)) && (DateTime.ParseExact(s.StartDateTime.ToString("dd/MM/yyyy"), "dd/MM/yyyy", null) <= DateTime.ParseExact(program.Result.StartDate.AddDays(weeks*7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null)))).ToListAsync();
+
+                DateTime StartDateOfWeek = DateTime.ParseExact(program.Result.StartDate.AddDays((weeks - 1) * 7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null);
+                for (int weekDays = 0; weekDays < 7; weekDays++)
+                {
+                    ProgramSprintScheduleDto objSprintSchedule = new ProgramSprintScheduleDto();
+                    foreach (Sprint sprint in programSprints)
+                    {
+
+                        if (StartDateOfWeek.AddDays(weekDays).ToString("dd/MM/yyyy") == sprint.StartDateTime.ToString("dd/MM/yyyy"))
+                        {
+                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl));
+
+                        }
+                        //objSprintSchedule.WeekDate = StartDateOfWeek.AddDays(weekDays);
+                    }
+                    objSprintSchedule.WeekDate = StartDateOfWeek.AddDays(weekDays);
+                    programSprintSchedule.Add(objSprintSchedule);
+                }
+
+                programSprintSchedule2.Add(programSprintSchedule);
+                //objSprintSchedule.ProgramSprints = null;
+                weeks++;
+            }
+
+            return programSprintSchedule2;
+        }
     }
 }

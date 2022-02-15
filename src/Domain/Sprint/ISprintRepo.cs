@@ -267,5 +267,14 @@
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Scheduled Programs Detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
     }
 }
