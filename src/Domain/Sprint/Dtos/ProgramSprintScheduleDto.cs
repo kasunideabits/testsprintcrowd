@@ -55,4 +55,23 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         public DateTime SprintStartTime { get; set; }
         public string ImageUrl { get; set; }
     }
+
+    public class ProgramSprintScheduleEvents
+    {
+        
+        public ProgramSprintScheduleEvents(List<ProgramSprintScheduleDto> events)
+        {
+            this.Events = events;
+        }
+
+
+        /// <summary>
+        ///  Program Sprints Events List
+        /// </summary>
+        public List<ProgramSprintScheduleDto> Events
+        {
+            get;
+            set;
+        }
+    }
 }
