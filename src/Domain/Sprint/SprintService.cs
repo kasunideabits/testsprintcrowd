@@ -1704,7 +1704,7 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        public async Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
         {
             try
             {

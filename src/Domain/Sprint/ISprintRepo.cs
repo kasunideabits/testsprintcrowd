@@ -275,6 +275,6 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
+        Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
     }
 }

@@ -750,12 +750,11 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<List<List<ProgramSprintScheduleDto>>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        public async Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
         {
             var program = this.GetSprintProgramDetailsByUser(0, programId);
             
-            List<List<ProgramSprintScheduleDto>> programSprintSchedule2 = new List<List<ProgramSprintScheduleDto>>();
-
+            List<ProgramSprintScheduleEvents> objEventsList = new List<ProgramSprintScheduleEvents>();
             int weeks = 1;
             
 
@@ -777,18 +776,16 @@
                             objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl));
 
                         }
-                        //objSprintSchedule.WeekDate = StartDateOfWeek.AddDays(weekDays);
                     }
                     objSprintSchedule.WeekDate = StartDateOfWeek.AddDays(weekDays);
                     programSprintSchedule.Add(objSprintSchedule);
                 }
 
-                programSprintSchedule2.Add(programSprintSchedule);
-                //objSprintSchedule.ProgramSprints = null;
+                objEventsList.Add(new ProgramSprintScheduleEvents(programSprintSchedule));
                 weeks++;
             }
 
-            return programSprintSchedule2;
+            return objEventsList;
         }
     }
 }
