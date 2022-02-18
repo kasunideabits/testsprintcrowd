@@ -536,10 +536,11 @@
         }
 
         /// <summary>
-        /// Get All User Mails
+        /// Get Sprint Program Details By ProgramId
         /// </summary>
+        /// <param name="sprintProgramId"></param>
         /// <returns></returns>
-        public async Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId)
+        public async Task<SprintProgram> GetSprintProgramDetailsByProgramId( int sprintProgramId)
         {
             try
             {
@@ -752,7 +753,7 @@
         /// <returns></returns>
         public async Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
         {
-            var program = this.GetSprintProgramDetailsByUser(0, programId);
+            var program = this.GetSprintProgramDetailsByProgramId(programId);
             
             List<ProgramSprintScheduleEvents> objEventsList = new List<ProgramSprintScheduleEvents>();
             int weeks = 1;
@@ -786,6 +787,28 @@
             }
 
             return objEventsList;
+        }
+
+        /// <summary>
+        /// Get All Sprints In Programs
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task <List<Sprint>> GetAllSprintsInPrograms(int programId) 
+        {
+            return await this.dbContext.Sprint.Where(sp => sp.ProgramId == programId).ToListAsync();
+
+        }
+        /// <summary>
+        /// Get the Program Sprints participants with given predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<List<SprintParticipant>> GetProgramSprintsParticipants(Expression<Func<SprintParticipant, bool>> predicate)
+        {
+            return await this.dbContext.SprintParticipant
+                .Include(s => s.User)   
+                .Where(predicate).ToListAsync();
         }
     }
 }

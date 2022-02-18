@@ -219,12 +219,11 @@
         Task<SprintProgramDto> CreateNewSprintProgram(User user, SprintProgramDto sprintProgramDto);
 
         /// <summary>
-        /// GetSprintProgramDetailsByUser
+        /// Get Sprint Program Details By ProgramId
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="sprintProgramId"></param>
         /// <returns></returns>
-        Task<SprintProgramDto> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
+        Task<SprintProgramDto> GetSprintProgramDetailsByProgramId(int sprintProgramId);
 
         /// <summary>
         /// Update Sprint Program
@@ -283,5 +282,12 @@
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Program Participants
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId);
     }
 }

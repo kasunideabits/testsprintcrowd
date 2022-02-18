@@ -1492,15 +1492,16 @@
 
 
         /// <summary>
-        /// Get Sprint Program Details By User
+        /// Get Sprint Program Details By ProgramId
         /// </summary>
+        /// <param name="sprintProgramId"></param>
         /// <returns></returns>
-        public async Task<SprintProgramDto> GetSprintProgramDetailsByUser(int userId , int sprintProgramId)
+        public async Task<SprintProgramDto> GetSprintProgramDetailsByProgramId(int sprintProgramId)
         {
             try
             {
                 var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgramId);
-                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByUser(userId,sprintProgramId), programSprintList);
+                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintProgramId), programSprintList);
             }
             catch (Exception ex)
             {
@@ -1519,7 +1520,7 @@
         public async Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto)
         {
 
-            SprintProgram sprintProgram = await this.SprintRepo.GetSprintProgramDetailsByUser(user.Id, sprintProgramDto.Id);
+            SprintProgram sprintProgram = await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintProgramDto.Id);
 
             
             
@@ -1708,6 +1709,8 @@
         {
             try
             {
+                var ss = this.GetAllProgramParticipants(programId);
+
                 return await this.SprintRepo.GetAllScheduledProgramsDetail(programId, pageNo, limit);
             }
             catch (Exception ex)
@@ -1718,5 +1721,33 @@
         }
 
 
+        /// <summary>
+        /// Get All Program Participants with program detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId)
+        {
+            
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                Expression <Func<SprintParticipant, bool>> participantPredicate = null;
+                
+                participantPredicate = s => sprintIds.Contains(s.SprintId);
+
+                List<SprintParticipant> participants =  await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
+                var programDetail = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count,participants);
+
+                return programParticipantsDto;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }
