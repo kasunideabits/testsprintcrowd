@@ -273,5 +273,23 @@
             return this.Ok(response);
         }
 
+
+        /// <summary>
+        /// Get All Program Participants
+        /// </summary>
+        [HttpGet("GetAllProgramParticipants/{programId:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllProgramParticipants(int programId)
+        {
+            var result = await this.SprintService.GetAllProgramParticipants(programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+                totalItems = 1
+            };
+            return this.Ok(response);
+        }
     }
 }

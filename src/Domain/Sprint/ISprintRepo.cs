@@ -201,12 +201,11 @@
         Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData);
 
         /// <summary>
-        /// Get Sprint Program Details By User
+        /// Get Sprint Program Details By Program Id
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="sprintProgramId"></param>
-         /// <returns></returns>
-        Task<SprintProgram> GetSprintProgramDetailsByUser(int userId, int sprintProgramId);
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgramDetailsByProgramId(int sprintProgramId);
 
         /// <summary>
         /// Get Last Special Sprint Program
@@ -276,5 +275,19 @@
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprints In Programs
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsInPrograms(int programId);
+
+        /// <summary>
+        /// Get Program Sprints Participants
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Task<List<SprintParticipant>> GetProgramSprintsParticipants(Expression<Func<SprintParticipant, bool>> predicate);
     }
 }
