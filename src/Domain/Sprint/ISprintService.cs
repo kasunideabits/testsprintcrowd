@@ -271,7 +271,7 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit);
+        Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit);
 
 
         /// <summary>

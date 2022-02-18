@@ -249,7 +249,7 @@
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
-                Data = result.sPrograms,
+                Data = result.dbPrograms,
                 totalItems = result.totalItems
             };
             return this.Ok(response);

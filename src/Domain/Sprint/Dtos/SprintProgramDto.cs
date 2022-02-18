@@ -1,4 +1,5 @@
-﻿using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+﻿using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.ProgramSprints = programSprints;
             this.IsPublish = sprintProgram.IsPublish;
             this.PromotionalText = sprintProgram.PromotionalText;
+            this.EndDate = sprintProgram.StartDate.AddDays(sprintProgram.Duration * 7);
+            this.Events = programSprints.Count;
+            this.CreatedBy = sprintProgram.CreatedBy;
+            this.IsPromoteInApp = sprintProgram.IsPromoteInApp;
+            this.Status = sprintProgram.Status;
         }
 
         /// <summary>
@@ -81,9 +87,16 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Sprint list within the program
+        /// gets or sets value.
         /// </summary>
-        public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> ProgramSprints { get; set; }
+        /// <value>created by the user.</value>
+        public User CreatedBy { get; set; }
+
+        // <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>ststus of the program.</value>
+        public int Status { get; set; }
 
         /// <summary>
         /// Is Publish
@@ -93,7 +106,35 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// <summary>
         /// gets or sets value.
         /// </summary>
+        /// <value>Is Promote In App.</value>
+        /// 
+        public bool IsPromoteInApp { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
         /// <value>program promotional Text.</value>
         public string PromotionalText { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>program EndDate.</value>
+        public DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>Number of Events in Program.</value>
+        public int Events { get; set; }
+
+
+        /// <summary>
+        /// Sprint list within the program
+        /// </summary>
+        public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> ProgramSprints { get; set; }
+
+
+        
     }
 }
