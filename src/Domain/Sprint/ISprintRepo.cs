@@ -289,5 +289,12 @@
         /// <param name="predicate"></param>
         /// <returns></returns>
         Task<List<SprintParticipant>> GetProgramSprintsParticipants(Expression<Func<SprintParticipant, bool>> predicate);
+
+        /// <summary>
+        /// Get All Sprint List By Programmid
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintListByProgrammid(int programId);
     }
 }

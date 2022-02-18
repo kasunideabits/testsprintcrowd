@@ -686,6 +686,24 @@
         }
 
         /// <summary>
+        /// Get All Sprints Count By Programmid
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetAllSprintListByProgrammid(int programId)
+        {
+            try
+            {
+                return (this.dbContext.Sprint.Where(s => s.ProgramId == programId)).ToListAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
         /// Update Sprint Program Data
         /// </summary>
         /// <param name="programData"></param>

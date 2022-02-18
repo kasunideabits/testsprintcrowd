@@ -1601,11 +1601,23 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
+        public async Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
         {
             try
             {
-                return await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
+              var sprintProgram =   await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
+                List<SprintProgramDto> sprintProgramDto = new List<SprintProgramDto>();
+                foreach (SprintProgram programs in sprintProgram.sPrograms)
+                {
+                    sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id)));
+                }
+
+
+                return new SprintProgramsDashboardDto
+                {
+                    dbPrograms = sprintProgramDto,
+                    totalItems = sprintProgramDto.Count
+                }; ;
             }
             catch (Exception ex)
             {
