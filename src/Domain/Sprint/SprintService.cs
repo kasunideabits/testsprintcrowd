@@ -1201,7 +1201,8 @@
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
 
                 IEnumerable<Sprint> openEvents = null;
-                openEvents = this.SprintRepo.GetSprint_Open(query).OrderBy(x => x.StartDateTime);
+                //get events not assign to program (if assign to program programId > 0)
+                openEvents = this.SprintRepo.GetSprint_Open(query).OrderBy(x => x.StartDateTime).Where(s => s.ProgramId == 0);
 
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
