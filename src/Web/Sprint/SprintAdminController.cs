@@ -461,7 +461,7 @@
         public async Task<dynamic> GetSprintProgramDetailsByUser(int programId)
         {
             User user = await this.User.GetUser(this.UserService);
-            var result = await this.SprintService.GetSprintProgramDetailsByUser(user.Id, programId);
+            var result = await this.SprintService.GetSprintProgramDetailsByProgramId(programId);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
