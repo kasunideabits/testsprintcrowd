@@ -1755,13 +1755,16 @@
                 
                 foreach(SprintParticipant sprintParticipant in participants )
                 {
-                    ParticipantInfoDto.Add(new SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto(
-                        sprintParticipant.Id,
-                        sprintParticipant.User.Name,
-                        sprintParticipant.User.ProfilePicture,
-                        sprintParticipant.User.City,
-                        sprintParticipant.User.Country, sprintParticipant.User.CountryCode, sprintParticipant.User.ColorCode
-                        , false, sprintParticipant.Stage,false));
+                    if (!ParticipantInfoDto.Any(p => p.Id == sprintParticipant.User.Id))
+                    {
+                        ParticipantInfoDto.Add(new SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto(
+                            sprintParticipant.User.Id,
+                            sprintParticipant.User.Name,
+                            sprintParticipant.User.ProfilePicture,
+                            sprintParticipant.User.City,
+                            sprintParticipant.User.Country, sprintParticipant.User.CountryCode, sprintParticipant.User.ColorCode
+                            , false, sprintParticipant.Stage, false));
+                    }
                 }
                 
                 var programDetail = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
