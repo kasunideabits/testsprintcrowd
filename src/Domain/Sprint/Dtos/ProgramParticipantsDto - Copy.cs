@@ -1,4 +1,5 @@
-﻿using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+﻿using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
+using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
     {
         public ProgramParticipantsDto() { }
         
-        public ProgramParticipantsDto(string name , string description, int duration, DateTime startDate, DateTime endDate,int participants, List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintParticipant> programParticipants)
+        public ProgramParticipantsDto(string name , string description, int duration, DateTime startDate, DateTime endDate,int participants, List<ParticipantInfoDto> programParticipants)
         {
             this.Name = name;
             this.Description = description;
@@ -57,7 +58,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// <summary>
         /// Participantt list within the program
         /// </summary>
-        public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintParticipant> ProgramParticipants { get; set; }
+        public List<ParticipantInfoDto> ProgramParticipants { get; set; }
 
         /// <summary>
         /// Number of participants

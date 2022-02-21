@@ -1751,8 +1751,21 @@
                 participantPredicate = s => sprintIds.Contains(s.SprintId);
 
                 List<SprintParticipant> participants =  await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
+                List < SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto> ParticipantInfoDto = new List<SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto>();
+                
+                foreach(SprintParticipant sprintParticipant in participants )
+                {
+                    ParticipantInfoDto.Add(new SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto(
+                        sprintParticipant.Id,
+                        sprintParticipant.User.Name,
+                        sprintParticipant.User.ProfilePicture,
+                        sprintParticipant.User.City,
+                        sprintParticipant.User.Country, sprintParticipant.User.CountryCode, sprintParticipant.User.ColorCode
+                        , false, sprintParticipant.Stage,false));
+                }
+                
                 var programDetail = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
-                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count,participants);
+                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count, ParticipantInfoDto);
 
                 return programParticipantsDto;
             }
