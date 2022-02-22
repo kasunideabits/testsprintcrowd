@@ -1608,13 +1608,15 @@
               var sprintProgram =   await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
                 List<SprintProgramDto> sprintProgramDto = new List<SprintProgramDto>();
                 int participantCount = 0;
-                foreach (SprintProgram programs in sprintProgram.sPrograms)
+                foreach (SprintProgram programs in sprintProgram.sPrograms.Skip(pageNo * limit).Take(limit))
                 {
                     sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id)));
+                }
+
+                foreach (SprintProgram programs in sprintProgram.sPrograms)
+                {
                     participantCount = participantCount + await this.GetAllProgramParticipantsCount(programs.Id);
                 }
-                
-
                 return new SprintProgramsDashboardDto
                 {
                     dbPrograms = sprintProgramDto,
