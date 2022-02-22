@@ -10,5 +10,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
     {
         public List<SprintProgramDto> dbPrograms { get; set; }
         public int totalItems { get; set; }
+
+        public int totalParticipants { get; set; }
     }
 }

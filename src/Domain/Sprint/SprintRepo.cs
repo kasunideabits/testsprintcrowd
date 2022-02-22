@@ -560,7 +560,7 @@
         /// <returns></returns>
         public async Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
         {
-            int intervel = 10;
+            
             var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate > DateTime.UtcNow && (s.IsPrivate == false || s.IsPromoteInApp == true))).ToListAsync();
 
             return new SprintProgramsPageDto()
@@ -792,7 +792,8 @@
 
                         if (StartDateOfWeek.AddDays(weekDays).ToString("dd/MM/yyyy") == sprint.StartDateTime.ToString("dd/MM/yyyy"))
                         {
-                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl));
+                            
+                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl, sprint.IsTimeBased));
 
                         }
                     }

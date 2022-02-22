@@ -246,11 +246,13 @@
         public async Task<IActionResult> GetAllSprintProgramsForDashboard(int pageNo, int limit)
         {
             var result = await this.SprintService.GetAllSprintProgramForDashboard(pageNo, limit);
-            ResponseObject response = new ResponseObject()
+            ProgramDashboardResponseObject response = new ProgramDashboardResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
                 Data = result.dbPrograms,
-                totalItems = result.totalItems
+                totalEvents = result.totalItems,
+                totalParticipants = result.totalParticipants
+
             };
             return this.Ok(response);
         }

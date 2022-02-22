@@ -289,5 +289,12 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId);
+
+        /// <summary>
+        /// Get All Program Participants Count 
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<int> GetAllProgramParticipantsCount(int programId);
     }
 }
