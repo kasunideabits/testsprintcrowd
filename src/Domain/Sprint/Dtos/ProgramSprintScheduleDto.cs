@@ -40,7 +40,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
 
     public class ProgramSprint
     {
-        public ProgramSprint(int sprintId,string sprintName, int sprintDistance ,DateTime sprintStartTime , string imageUrl , bool isTimeBased)
+        public ProgramSprint(int sprintId,string sprintName, int sprintDistance ,DateTime sprintStartTime , string imageUrl , bool isTimeBased, TimeSpan timeBasedDuration)
         {
             this.SprintId = sprintId;
             this.SprintName = sprintName;
@@ -48,6 +48,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.SprintStartTime = sprintStartTime;
             this.ImageUrl = imageUrl;
             this.IsTimeBased = isTimeBased;
+            this.TimeBasedDuration = timeBasedDuration;
         }
 
         public int SprintId { get; set; }
@@ -57,6 +58,8 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         public string ImageUrl { get; set; }
 
         public bool IsTimeBased { get; set; }
+
+        public TimeSpan TimeBasedDuration { get; set; }
     }
 
     public class ProgramSprintScheduleEvents

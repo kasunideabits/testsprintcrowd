@@ -14,7 +14,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
-        public SprintProgramDto(SprintProgram sprintProgram , List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> programSprints)
+        public SprintProgramDto(SprintProgram sprintProgram , List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> programSprints ,bool isDashBoard = false, int programParticipantCount = 0)
         {
             this.Id = sprintProgram.Id;
             this.Name = sprintProgram.Name;
@@ -25,14 +25,15 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.GetSocialLink = sprintProgram.GetSocialLink;
             this.ProgramCode = sprintProgram.ProgramCode;
             this.StartDate = sprintProgram.StartDate;
-            this.ProgramSprints = programSprints;
+            this.ProgramSprints = !isDashBoard ? programSprints : null;
             this.IsPublish = sprintProgram.IsPublish;
             this.PromotionalText = sprintProgram.PromotionalText;
             this.EndDate = sprintProgram.StartDate.AddDays(sprintProgram.Duration * 7);
             this.Events = programSprints.Count;
-            this.CreatedBy = sprintProgram.CreatedBy;
+            //this.CreatedBy = sprintProgram.CreatedBy;
             this.IsPromoteInApp = sprintProgram.IsPromoteInApp;
             this.Status = sprintProgram.Status;
+            this.ProgramParticipantCount = programParticipantCount;
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>created by the user.</value>
-        public User CreatedBy { get; set; }
+        //public int CreatedBy { get; set; }
 
         // <summary>
         /// gets or sets value.
@@ -128,6 +129,12 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// <value>Number of Events in Program.</value>
         public int Events { get; set; }
 
+
+        /// <summary>
+        /// gets or sets value.
+        /// </summary>
+        /// <value>Number of Participants in Program.</value>
+        public int ProgramParticipantCount { get; set; }
 
         /// <summary>
         /// Sprint list within the program
