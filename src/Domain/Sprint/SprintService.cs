@@ -1607,17 +1607,21 @@
             {
               var sprintProgram =   await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
                 List<SprintProgramDto> sprintProgramDto = new List<SprintProgramDto>();
+                int participantCount = 0;
                 foreach (SprintProgram programs in sprintProgram.sPrograms)
                 {
                     sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id)));
+                    participantCount = participantCount + await this.GetAllProgramParticipantsCount(programs.Id);
                 }
-
+                
 
                 return new SprintProgramsDashboardDto
                 {
                     dbPrograms = sprintProgramDto,
-                    totalItems = sprintProgramDto.Count
-                }; ;
+                    totalItems = sprintProgram.totalItems,
+                    totalParticipants = participantCount
+
+                }; 
             }
             catch (Exception ex)
             {
@@ -1771,6 +1775,33 @@
                 ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count, ParticipantInfoDto);
 
                 return programParticipantsDto;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        ///Get All Program Participants Count
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<int> GetAllProgramParticipantsCount(int programId)
+        {
+
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                Expression<Func<SprintParticipant, bool>> participantPredicate = null;
+
+                participantPredicate = s => sprintIds.Contains(s.SprintId);
+
+                List<SprintParticipant> participants = await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
+               
+                return participants.Count;
             }
             catch (Exception ex)
             {
