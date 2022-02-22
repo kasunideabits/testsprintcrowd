@@ -793,7 +793,7 @@
                         if (StartDateOfWeek.AddDays(weekDays).ToString("dd/MM/yyyy") == sprint.StartDateTime.ToString("dd/MM/yyyy"))
                         {
                             
-                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl, sprint.IsTimeBased));
+                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl, sprint.IsTimeBased , sprint.DurationForTimeBasedEvent));
 
                         }
                     }
