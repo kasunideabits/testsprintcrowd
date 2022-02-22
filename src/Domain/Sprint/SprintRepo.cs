@@ -565,7 +565,7 @@
 
             return new SprintProgramsPageDto()
             {
-                sPrograms = sprintPrograms.Skip(pageNo * limit).Take(limit).ToList(),
+                sPrograms = sprintPrograms.ToList(),
                 totalItems = sprintPrograms.Count()
             };
         }
