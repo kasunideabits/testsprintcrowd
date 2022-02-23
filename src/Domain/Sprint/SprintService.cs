@@ -34,7 +34,7 @@
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
         public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService,
-        ISprintParticipantRepo sprintParticipantRepo, ISprintParticipantService sprintParticipantService)
+        ISprintParticipantRepo sprintParticipantRepo, ISprintParticipantService sprintParticipantService, IUserService userService)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
@@ -42,6 +42,7 @@
             this.SocialShareService = socialShareService;
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.SprintParticipantService = sprintParticipantService;
+            this.UserService = userService;
         }
         private readonly IUserRepo userRepo;
         private ISprintParticipantService SprintParticipantService { get; }
@@ -50,7 +51,7 @@
         private INotificationClient NotificationClient { get; }
         private const int REPEAT_EVENTS_COUNT = 7;
         private ISprintParticipantRepo SprintParticipantRepo { get; }
-
+        private IUserService UserService { get; set; }
         /// <summary>
         /// Get all events
         /// </summary>
@@ -1805,6 +1806,42 @@
                 List<SprintParticipant> participants = await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
                
                 return participants.Count;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Program Sprints Hosts
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task <List<UserDto>> GetAllProgramSprintsHosts(int programId)
+        {
+
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                Expression<Func<SprintParticipant, bool>> participantPredicate = null;
+
+                List<string> hosts = new List<string>(); 
+                List<string> coHosts = new List<string>();
+                hosts = sprints.Select(x => x.InfluencerEmail).Distinct().ToList();
+                coHosts = sprints.Select(x => x.InfluencerEmailSecond).Distinct().ToList();
+                hosts.AddRange(coHosts);
+                List<UserDto> hostUsersList = new List<UserDto>();
+                foreach (string email in hosts)
+                {
+                    if(email != null)
+                    hostUsersList.Add(await this.UserService.getUserByEmail(email));
+                }
+
+                
+                return hostUsersList;
             }
             catch (Exception ex)
             {

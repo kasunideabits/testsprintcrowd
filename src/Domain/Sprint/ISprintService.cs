@@ -296,5 +296,11 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task<int> GetAllProgramParticipantsCount(int programId);
+        /// <summary>
+        /// Get All Program Sprints Hosts
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<UserDto>> GetAllProgramSprintsHosts(int programId);
     }
 }
