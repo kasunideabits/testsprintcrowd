@@ -296,5 +296,21 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task<List<Sprint>> GetAllSprintListByProgrammid(int programId);
+
+        /// <summary>
+        /// Add Program Participant
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipant> AddProgramParticipant(int programId, int userId);
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task JoinProgram(int userId, int programId);
     }
 }

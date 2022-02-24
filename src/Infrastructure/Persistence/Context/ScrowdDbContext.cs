@@ -89,6 +89,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         /// </summary>
         public DbSet<SprintProgram> SprintProgram { get; set; }
 
+       
         /// <summary>
         /// table for friend invite list sent by internal app
         /// </summary>
@@ -99,6 +100,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence
         public DbSet<UserRoles> UserRoles { get; set; }
 
         public DbSet<SprintParticipantMembers> SprintParticipantMembers { get; set; }
+
+        /// <summary>
+        /// table for ProgramParticipant.
+        /// </summary>
+        public DbSet<ProgramParticipant> ProgramParticipant { get; set; }
 
 
         /// <summary>
