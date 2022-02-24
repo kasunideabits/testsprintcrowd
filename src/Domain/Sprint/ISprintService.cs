@@ -302,5 +302,14 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task<List<UserDto>> GetAllProgramSprintsHosts(int programId);
+        
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <param name="accept"></param>
+        /// <returns></returns>
+        Task<dynamic> JoinProgram(int programId, int userId, string programCode, bool accept = true);
     }
 }

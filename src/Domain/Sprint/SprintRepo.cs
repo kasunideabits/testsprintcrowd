@@ -829,5 +829,59 @@
                 .Include(s => s.User)   
                 .Where(predicate).ToListAsync();
         }
+
+        /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<ProgramParticipant> GetProgramByUserId(int userId, int programId)
+        {
+            return await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintProgram.Id == programId);
+        }
+
+        /// <summary>
+        /// Add Program Participant
+        /// </summary>
+        /// <param name="programId">programId for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        public async Task<ProgramParticipant> AddProgramParticipant(int programId, int userId)
+        {
+            var proParticipatInfor = await this.GetProgramByUserId(userId, programId);
+
+            if (proParticipatInfor == null)
+            {
+                ProgramParticipant proParticipant = new ProgramParticipant()
+                {
+                    UserId = userId,
+                    ProgramId = programId,
+                    Stage = ParticipantStage.JOINED,
+                };
+                var result = await this.dbContext.ProgramParticipant.AddAsync(proParticipant);
+                this.dbContext.SaveChanges();
+                return result.Entity;
+            }
+            else
+                return proParticipatInfor;
+        }
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task JoinProgram(int userId, int programId)
+        {
+            var participant = await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.ProgramId == programId);
+            if (participant != null)
+            {
+                participant.Stage = ParticipantStage.JOINED;
+                this.dbContext.Update(participant);
+                this.dbContext.SaveChanges();
+            }
+        }
     }
 }

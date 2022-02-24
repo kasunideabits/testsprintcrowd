@@ -18,4 +18,18 @@ namespace SprintCrowd.BackEnd.Web.Event
 
         public bool Status { get; set; }
     }
+
+
+    public class JoinProgramModel
+    {
+        /// <summary>
+        /// Program Id
+        /// </summary>
+        /// <value>Sprint Id</value>
+        public int ProgramId { get; set; }
+
+        public bool Status { get; set; }
+
+        public string ProgramCode { get; set; }
+    }
 }

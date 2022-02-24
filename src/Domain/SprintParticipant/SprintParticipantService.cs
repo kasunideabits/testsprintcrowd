@@ -195,6 +195,7 @@
                 }
                 else
                 {
+                    //for get social link , in here we have to join that user as well
                     var joinedUser = await this.SprintParticipantRepo.AddSprintParticipant(sprintId, userId);
                     await this.SprintParticipantRepo.JoinSprint(userId, sprintId, sprint.Type);
 
