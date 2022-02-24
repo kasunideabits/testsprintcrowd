@@ -1859,6 +1859,7 @@
         /// <returns></returns>
         public async Task<dynamic> JoinProgram(int programId, int userId,string programCode, bool accept = true)
         {
+            bool success = false;
             var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
             if (program == null)
             {
@@ -1872,13 +1873,17 @@
 
             var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);          
             var programSprint = await this.SprintRepo.AddProgramParticipant(programId, userId);
-            foreach (Sprint sprint in sprints)
+            if (sprints != null && sprints.Count > 0)
             {
-                await this.SprintParticipantRepo.AddSprintParticipant(sprint.Id, userId);
+                foreach (Sprint sprint in sprints)
+                {
+                    await this.SprintParticipantRepo.AddSprintParticipant(sprint.Id, userId);
 
+                }
             }
-             
-            return programSprint;
+            if (programSprint != null)
+                success = true;
+            return success;
 
         }
     }

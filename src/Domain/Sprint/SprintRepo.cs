@@ -563,10 +563,12 @@
             
             var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate > DateTime.UtcNow && (s.IsPrivate == false || s.IsPromoteInApp == true))).ToListAsync();
 
+           var result = sprintPrograms.Where(c => !this.dbContext.ProgramParticipant.Select(b => b.ProgramId).Contains(c.Id)).ToList();
+
             return new SprintProgramsPageDto()
             {
-                sPrograms = sprintPrograms.ToList(),
-                totalItems = sprintPrograms.Count()
+                sPrograms = result,
+                totalItems = result.Count()
             };
         }
 
@@ -857,7 +859,7 @@
                 {
                     UserId = userId,
                     ProgramId = programId,
-                    Stage = ParticipantStage.JOINED,
+                    Stage = ProgramParticipantStage.JOINED,
                 };
                 var result = await this.dbContext.ProgramParticipant.AddAsync(proParticipant);
                 this.dbContext.SaveChanges();
@@ -878,7 +880,7 @@
             var participant = await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.ProgramId == programId);
             if (participant != null)
             {
-                participant.Stage = ParticipantStage.JOINED;
+                participant.Stage = ProgramParticipantStage.JOINED;
                 this.dbContext.Update(participant);
                 this.dbContext.SaveChanges();
             }
