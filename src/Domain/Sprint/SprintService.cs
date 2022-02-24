@@ -1849,5 +1849,37 @@
             }
 
         }
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <param name="accept"></param>
+        /// <returns></returns>
+        public async Task<dynamic> JoinProgram(int programId, int userId,string programCode, bool accept = true)
+        {
+            var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+            if (program == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Program not found");
+            }
+
+            if (program.ProgramCode != programCode)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Not Allowed");
+            }
+
+            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);          
+            var programSprint = await this.SprintRepo.AddProgramParticipant(programId, userId);
+            foreach (Sprint sprint in sprints)
+            {
+                await this.SprintParticipantRepo.AddSprintParticipant(sprint.Id, userId);
+
+            }
+             
+            return programSprint;
+
+        }
     }
 }

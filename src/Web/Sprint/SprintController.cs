@@ -12,6 +12,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// event controller
@@ -310,6 +311,21 @@
                 totalItems = 1
             };
             return this.Ok(response);
+        }
+
+        [HttpPost("JoinProgram")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintProgramsPageDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinProgram([FromBody] JoinProgramModel joinUser)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.JoinProgram(
+                joinUser.ProgramId,
+                user.Id,
+                joinUser.ProgramCode,
+                joinUser.Status
+            );
+            return this.Ok(new SuccessResponse<SprintProgramsPageDto>(result));
         }
     }
 }
