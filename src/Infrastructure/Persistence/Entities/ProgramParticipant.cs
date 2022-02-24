@@ -29,7 +29,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// gets or sets value.
         /// </summary>
         /// <value>participant joined or not.</value>
-        public ParticipantStage Stage { get; set; }
+        public ProgramParticipantStage Stage { get; set; }
 
         /// <summary>
         /// gets or sets value.

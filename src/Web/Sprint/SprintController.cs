@@ -325,7 +325,7 @@
                 joinUser.ProgramCode,
                 joinUser.Status
             );
-            return this.Ok(new SuccessResponse<SprintProgramsPageDto>(result));
+            return this.Ok(new SuccessResponse<bool>(result));
         }
     }
 }
