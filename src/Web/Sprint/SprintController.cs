@@ -246,7 +246,8 @@
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> GetAllSprintProgramsForDashboard(int pageNo, int limit)
         {
-            var result = await this.SprintService.GetAllSprintProgramForDashboard(pageNo, limit);
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllSprintProgramForDashboard(pageNo, limit, user.Id);
             ProgramDashboardResponseObject response = new ProgramDashboardResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,

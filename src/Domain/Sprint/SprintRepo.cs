@@ -563,12 +563,12 @@
             
             var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate > DateTime.UtcNow && (s.IsPrivate == false || s.IsPromoteInApp == true))).ToListAsync();
 
-           var result = sprintPrograms.Where(c => !this.dbContext.ProgramParticipant.Select(b => b.ProgramId).Contains(c.Id)).ToList();
+           //var result = sprintPrograms.Where(c => !this.dbContext.ProgramParticipant.Select(b => b.ProgramId).Contains(c.Id)).ToList();
 
             return new SprintProgramsPageDto()
             {
-                sPrograms = result,
-                totalItems = result.Count()
+                sPrograms = sprintPrograms,
+                totalItems = sprintPrograms.Count()
             };
         }
 
