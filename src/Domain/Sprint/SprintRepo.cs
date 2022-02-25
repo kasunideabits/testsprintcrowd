@@ -840,7 +840,7 @@
         /// <returns></returns>
         public async Task<ProgramParticipant> GetProgramByUserId(int userId, int programId)
         {
-            return await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.SprintProgram.Id == programId);
+            return await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.ProgramId == programId);
         }
 
         /// <summary>
