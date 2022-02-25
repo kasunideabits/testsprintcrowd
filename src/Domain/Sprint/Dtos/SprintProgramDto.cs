@@ -14,7 +14,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// gets or sets value.
         /// </summary>
         /// <value>unique id for the event.</value>
-        public SprintProgramDto(SprintProgram sprintProgram , List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> programSprints ,bool isDashBoard = false, int programParticipantCount = 0)
+        public SprintProgramDto(SprintProgram sprintProgram , List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> programSprints ,bool isDashBoard = false, int programParticipantCount = 0, bool isUserJoined = false)
         {
             this.Id = sprintProgram.Id;
             this.Name = sprintProgram.Name;
@@ -34,6 +34,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.IsPromoteInApp = sprintProgram.IsPromoteInApp;
             this.Status = sprintProgram.Status;
             this.ProgramParticipantCount = programParticipantCount;
+            this.IsUserJoined = isUserJoined;
         }
 
         /// <summary>
@@ -140,6 +141,11 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// Sprint list within the program
         /// </summary>
         public List<SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint> ProgramSprints { get; set; }
+
+        /// <summary>
+        /// IsUserJoined
+        /// </summary>
+        public bool IsUserJoined { get; set; }
 
 
         

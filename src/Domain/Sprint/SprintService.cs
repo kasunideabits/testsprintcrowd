@@ -1602,7 +1602,7 @@
         /// <param name="pageNo"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
+        public async Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit , int userId)
         {
             try
             {
@@ -1612,7 +1612,7 @@
 
                 foreach (SprintProgram programs in sprintProgram.sPrograms.Skip(pageNo * limit).Take(limit))
                 {
-                    sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id),true, await this.GetAllProgramParticipantsCount(programs.Id)));
+                    sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id),true, await this.GetAllProgramParticipantsCount(programs.Id), await this.IsUserJoinedProgram(programs.Id, userId)));
                 }
 
                 foreach (SprintProgram programs in sprintProgram.sPrograms)
@@ -1861,14 +1861,20 @@
         {
             bool success = false;
             var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+            var proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
             if (program == null)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Program not found");
             }
 
+            if (proParticipatInfor != null && proParticipatInfor.ProgramId == programId)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined");
+            }
+
             if (program.ProgramCode != programCode)
             {
-                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Not Allowed");
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
             }
 
             var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);          
@@ -1884,6 +1890,29 @@
             if (programSprint != null)
                 success = true;
             return success;
+
+        }
+
+        /// <summary>
+        ///Get All Program Participants Count
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserJoinedProgram(int programId , int userId)
+        {
+
+            try
+            {
+                bool isJoined = false;
+                var proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+                if (proParticipatInfor != null && proParticipatInfor.Id.ToString() != string.Empty)
+                    isJoined = true;
+                return isJoined;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
         }
     }
