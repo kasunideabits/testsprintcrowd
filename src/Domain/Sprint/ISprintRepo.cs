@@ -312,5 +312,13 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task JoinProgram(int userId, int programId);
+
+        /// <summary>
+        /// Get Program By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipant> GetProgramByUserId(int userId, int programId);
     }
 }
