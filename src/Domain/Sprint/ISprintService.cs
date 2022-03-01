@@ -287,8 +287,9 @@
         /// Get All Program Participants
         /// </summary>
         /// <param name="programId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId);
+        Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId , int userId);
 
         /// <summary>
         /// Get All Program Participants Count 
