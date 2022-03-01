@@ -11,7 +11,7 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
     {
         public ProgramParticipantsDto() { }
         
-        public ProgramParticipantsDto(string name , string description, int duration, DateTime startDate, DateTime endDate,int participants, List<ParticipantInfoDto> programParticipants)
+        public ProgramParticipantsDto(string name , string description, int duration, DateTime startDate, DateTime endDate,int participants, List<ParticipantInfoDto> programParticipants ,bool isUserJoined, bool isPromoteInApp , string promotionalText, int events,int programParticipantCount, bool isPrivate)
         {
             this.Name = name;
             this.Description = description;
@@ -20,8 +20,15 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
             this.EndDate = endDate;
             this.Participants = participants;
             this.ProgramParticipants = programParticipants;
-            
-          
+            this.IsUserJoined = isUserJoined;
+            this.IsPromoteInApp = isPromoteInApp;
+            this.PromotionalText = promotionalText;
+            this.Events = events;
+            this.ProgramParticipantCount = programParticipantCount;
+            this.IsPrivate = isPrivate
+
+;
+
         }
 
 
@@ -65,6 +72,34 @@ namespace SprintCrowdBackEnd.Domain.Sprint.Dtos
         /// </summary>
         public int Participants { get; set; }
 
+        /// <summary>
+        /// Is User Joined
+        /// </summary>
+        public bool IsUserJoined { get; set; }
         
+        /// <summary>
+        /// Is Promote In App
+        /// </summary>
+        public bool IsPromoteInApp { get; set; }
+
+        /// <summary>
+        /// Promotional Text
+        /// </summary>
+        public string PromotionalText { get; set; }
+
+        /// <summary>
+        /// Events
+        /// </summary>
+        public int Events { get; set; }
+
+        /// <summary>
+        /// Program Participant Count
+        /// </summary>
+        public int ProgramParticipantCount { get; set; }
+
+        /// <summary>
+        /// Is Private
+        /// </summary>
+        public bool IsPrivate { get; set; }
     }
 }
