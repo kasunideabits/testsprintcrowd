@@ -1730,7 +1730,6 @@
         {
             try
             {
-                var ss = this.GetAllProgramParticipants(programId);
 
                 return await this.SprintRepo.GetAllScheduledProgramsDetail(programId, pageNo, limit);
             }
@@ -1747,7 +1746,7 @@
         /// </summary>
         /// <param name="programId"></param>
         /// <returns></returns>
-        public async Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId)
+        public async Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId, int userId)
         {
             
             try
@@ -1776,7 +1775,7 @@
                 }
                 
                 var programDetail = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
-                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count, ParticipantInfoDto);
+                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count, ParticipantInfoDto, await this.IsUserJoinedProgram(programId, userId),programDetail.IsPromoteInApp,programDetail.PromotionalText, sprintIds.Count(), ParticipantInfoDto.Count(), programDetail.IsPrivate);
 
                 return programParticipantsDto;
             }

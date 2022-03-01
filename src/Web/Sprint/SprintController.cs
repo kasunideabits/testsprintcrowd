@@ -286,7 +286,8 @@
         [ProducesResponseType(typeof(ErrorResponseObject), 400)]
         public async Task<IActionResult> GetAllProgramParticipants(int programId)
         {
-            var result = await this.SprintService.GetAllProgramParticipants(programId);
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllProgramParticipants(programId , user.Id);
             ResponseObject response = new ResponseObject()
             {
                 StatusCode = (int)ApplicationResponseCode.Success,
