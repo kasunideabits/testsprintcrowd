@@ -1442,6 +1442,7 @@
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
             sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
+            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
 
             SprintProgram addedSprintProgram = await this.SprintRepo.AddSprintProgram(sprintProgram);
 
@@ -1537,6 +1538,7 @@
             sprintProgram.CreatedBy = user;
             sprintProgram.IsPublish = sprintProgramDto.IsPublish;
             sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
+            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
 
             var customData = new
             {
