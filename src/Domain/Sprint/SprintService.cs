@@ -1867,7 +1867,7 @@
             SprintProgram program = new SprintProgram();
             ProgramParticipant proParticipatInfor = new ProgramParticipant();
             //if promoCode program
-            if (isPrivateProgram && programCode != string.Empty)
+            if (isPrivateProgram && !string.IsNullOrEmpty(programCode))
             {
                 program = await this.SprintRepo.GetSprintProgramDetailsByProgramCode(programCode);
                 if (program != null)
@@ -1882,10 +1882,14 @@
                     }
                 }
             }
-            else
+            else if (programId > 0)
             {
                 program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
                 proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+            }
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
             }
             
             if (program == null)
@@ -1899,8 +1903,7 @@
             }
             
             //Get all sprints in the program
-            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);     
-            
+            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);              
             //Join the participant to program
             var programSprint = await this.SprintRepo.AddProgramParticipant(programId, userId);
             if (sprints != null && sprints.Count > 0)
@@ -1908,7 +1911,6 @@
                 foreach (Sprint sprint in sprints)
                 {
                     await this.SprintParticipantRepo.AddSprintParticipant(sprint.Id, userId);
-
                 }
             }
             if (programSprint != null)
