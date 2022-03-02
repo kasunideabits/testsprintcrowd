@@ -28,7 +28,7 @@ namespace SprintCrowd.BackEnd.Web.Event
         /// <value>Sprint Id</value>
         public int ProgramId { get; set; }
 
-        public bool Status { get; set; }
+        public bool IsPrivateProgram { get; set; }
 
         public string ProgramCode { get; set; }
     }
