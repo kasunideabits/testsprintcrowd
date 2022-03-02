@@ -325,7 +325,7 @@
                 joinUser.ProgramId,
                 user.Id,
                 joinUser.ProgramCode,
-                joinUser.Status
+                joinUser.IsPrivateProgram
             );
             return this.Ok(new SuccessResponse<bool>(result));
         }
