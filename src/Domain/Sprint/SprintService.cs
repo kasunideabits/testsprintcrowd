@@ -1435,7 +1435,7 @@
             sprintProgram.Name = sprintProgramDto.Name;
             sprintProgram.Description = sprintProgramDto.Description;
             sprintProgram.Duration = sprintProgramDto.Duration;
-            sprintProgram.IsPrivate = ;
+            sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
             sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
             sprintProgram.GetSocialLink = string.Empty;
             sprintProgram.ProgramCode = sprintProgramDto.IsPrivate ? await this.generatePromotionCode(true) : null;
