@@ -886,5 +886,22 @@
                 this.dbContext.SaveChanges();
             }
         }
+
+        /// <summary>
+        /// Get Sprint Program Details By ProgramCode
+        /// </summary>
+        /// <param name="programCode"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetSprintProgramDetailsByProgramCode(string programCode)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.FirstOrDefaultAsync(sp => sp.ProgramCode == programCode);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

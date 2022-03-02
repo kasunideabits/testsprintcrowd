@@ -311,6 +311,6 @@
         /// <param name="userId"></param>
         /// <param name="accept"></param>
         /// <returns></returns>
-        Task<dynamic> JoinProgram(int programId, int userId, string programCode, bool accept = true);
+        Task<dynamic> JoinProgram(int programId, int userId, string programCode, bool isPrivateProgram );
     }
 }

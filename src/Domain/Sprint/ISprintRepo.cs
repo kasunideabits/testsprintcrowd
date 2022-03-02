@@ -320,5 +320,12 @@
         /// <param name="programId"></param>
         /// <returns></returns>
         Task<ProgramParticipant> GetProgramByUserId(int userId, int programId);
+       
+        /// <summary>
+        /// Get Sprint Program Details By ProgramCode
+        /// </summary>
+        /// <param name="programCode"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgramDetailsByProgramCode(string programCode);
     }
 }

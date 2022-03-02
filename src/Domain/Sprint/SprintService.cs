@@ -1445,7 +1445,7 @@
             sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
 
             SprintProgram addedSprintProgram = await this.SprintRepo.AddSprintProgram(sprintProgram);
-
+            var sprintList = await this.SprintRepo.GetAllSprintsInPrograms(addedSprintProgram.Id);
             var customData = new
             {
                 campaign_name = "programshare",
@@ -1454,7 +1454,10 @@
                 name = addedSprintProgram.Name,
                 duration = addedSprintProgram.Duration.ToString(),
                 startDateTime = addedSprintProgram.StartDate.ToString(),
-                description = addedSprintProgram.Description
+                description = addedSprintProgram.Description,
+                imageLink = addedSprintProgram.ImageUrl,
+                endDate = addedSprintProgram.StartDate.AddDays(addedSprintProgram.Duration * 7),
+                events = sprintList.Count().ToString()
             };
             try
             {
@@ -1858,11 +1861,33 @@
         /// <param name="userId"></param>
         /// <param name="accept"></param>
         /// <returns></returns>
-        public async Task<dynamic> JoinProgram(int programId, int userId,string programCode, bool accept = true)
+        public async Task<dynamic> JoinProgram(int programId, int userId,string programCode, bool isPrivateProgram)
         {
             bool success = false;
-            var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
-            var proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+            SprintProgram program = new SprintProgram();
+            ProgramParticipant proParticipatInfor = new ProgramParticipant();
+            //if promoCode program
+            if (isPrivateProgram && programCode != string.Empty)
+            {
+                program = await this.SprintRepo.GetSprintProgramDetailsByProgramCode(programCode);
+                if (program != null)
+                {
+                    //To check the participant joined or not
+                    proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, program.Id);
+                    programId = program.Id;
+
+                    if (program.ProgramCode != programCode)
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
+                    }
+                }
+            }
+            else
+            {
+                program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+                proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+            }
+            
             if (program == null)
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Program not found");
@@ -1872,13 +1897,11 @@
             {
                 throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined");
             }
-
-            if (program.ProgramCode != programCode)
-            {
-                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
-            }
-
-            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);          
+            
+            //Get all sprints in the program
+            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);     
+            
+            //Join the participant to program
             var programSprint = await this.SprintRepo.AddProgramParticipant(programId, userId);
             if (sprints != null && sprints.Count > 0)
             {
