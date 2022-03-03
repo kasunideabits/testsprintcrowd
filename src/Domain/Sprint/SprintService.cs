@@ -1886,6 +1886,12 @@
             {
                 program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
                 proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+
+                if (program.IsPrivate)
+                {
+                    if (program.IsPrivate != isPrivateProgram || program.ProgramCode != programCode)
+                    throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
+                }
             }
             else
             {
