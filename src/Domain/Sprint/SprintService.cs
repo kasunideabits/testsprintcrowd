@@ -1536,13 +1536,14 @@
             sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
             sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
             sprintProgram.GetSocialLink = string.Empty;
-            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode == "PROMO" ? await this.generatePromotionCode(true) : null;
+            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode;
             sprintProgram.StartDate = sprintProgramDto.StartDate;
             sprintProgram.CreatedBy = user;
             sprintProgram.IsPublish = sprintProgramDto.IsPublish;
             sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
             sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
 
+            var sprintList = await this.SprintRepo.GetAllSprintsInPrograms(sprintProgram.Id);
             var customData = new
             {
                 campaign_name = "programshare",
@@ -1551,20 +1552,16 @@
                 name = sprintProgram.Name,
                 duration = sprintProgram.Duration.ToString(),
                 startDateTime = sprintProgram.StartDate.ToString(),
-                description = sprintProgram.Description
+                description = sprintProgram.Description,
+                imageLink = sprintProgram.ImageUrl,
+                endDate = sprintProgram.StartDate.AddDays(sprintProgram.Duration * 7),
+                events = sprintList.Count().ToString()
             };
             try
             {
                 var socialLink = sprintProgram.IsPrivate ?
                 await this.SocialShareService.updateTokenAndGetInvite(customData) : string.Empty;
-                //await this.SocialShareService.GetSmartLink(new SocialLink()
-                //{
-                //    Name = addedSprintProgram.Name,
-                //    Description = addedSprintProgram.Description,
-                //    ImageUrl = addedSprintProgram.ImageUrl,
-                //    CustomData = customData
-                //});
-
+                
                 sprintProgram.GetSocialLink = socialLink;
                 // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
                 var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgram.Id);
