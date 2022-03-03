@@ -1882,7 +1882,7 @@
                     }
                 }
             }
-            else if (programId > 0)
+            else if (!isPrivateProgram && programId > 0)
             {
                 program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
                 proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
