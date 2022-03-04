@@ -597,7 +597,18 @@
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
             sprint.IsSoloRun = sprintModel.IsSoloRun;
-            sprint.ProgramId = sprintModel.ProgramId;
+            // sprint.ProgramId = sprintModel.ProgramId;
+
+            if (sprintModel.ProgramId > 0)
+            {
+                var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintModel.ProgramId);
+                //Add program Id only within the program start and end dates
+                if (program.StartDate <= sprint.StartDateTime && sprint.StartDateTime <= program.StartDate.AddDays(program.Duration * 7))
+                    sprint.ProgramId = sprintModel.ProgramId;
+                else
+                    sprint.ProgramId = 0;
+            }else
+                sprint.ProgramId = 0;
 
             if (sprint.IsTimeBased == true)
             {
@@ -695,7 +706,7 @@
             Sprint sprintInfo = new Sprint();
             int incementalSprintNumber = 0;
             string sprintName = sprint.Name;
-            var program = this.SprintRepo.GetSprintProgramDetailsByProgramId(sprint.ProgramId);
+            
             if (repeatType == "DAILY")
             {
                 DateTime endDate = sprint.StartTime.AddDays(REPEAT_EVENTS_COUNT);
@@ -706,9 +717,6 @@
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(1);
 
-                    //Add program Id only within the program start and end dates
-                    if(program.Result.StartDate <= sprint.StartTime && sprint.StartTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
-                    sprint.ProgramId = sprint.ProgramId;
                 }
             }
             else if (repeatType == "WEEKLY")
@@ -721,9 +729,6 @@
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(7);
 
-                    //Add program Id only within the program start and end dates
-                    if (program.Result.StartDate <= sprint.StartTime && sprint.StartTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
-                        sprint.ProgramId = sprint.ProgramId;
                 }
             }
             else if (repeatType == "MONTHLY")
@@ -736,9 +741,6 @@
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddMonths(1);
 
-                    //Add program Id only within the program start and end dates
-                    if (program.Result.StartDate <= sprint.StartTime && sprint.StartTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
-                        sprint.ProgramId = sprint.ProgramId;
                 }
             }
 
