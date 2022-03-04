@@ -562,7 +562,7 @@
         {
             DateTime aa = DateTime.UtcNow;
             
-            var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate.AddDays(s.Duration*7) > DateTime.UtcNow && s.Status != (int)SprintProgramStatus.ARCHIVED && (s.IsPrivate == false || s.IsPromoteInApp == true))).OrderBy(date => date.StartDate).Distinct().ToListAsync();
+            var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate.AddDays(s.Duration*7) > DateTime.UtcNow && s.Status != (int)SprintProgramStatus.ARCHIVED && (s.IsPrivate == false || s.IsPromoteInApp == true))).OrderByDescending(date => date.StartDate).Distinct().ToListAsync();
 
            //var result = sprintPrograms.Where(c => !this.dbContext.ProgramParticipant.Select(b => b.ProgramId).Contains(c.Id)).ToList();
 
