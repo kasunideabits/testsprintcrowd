@@ -519,9 +519,9 @@
             User user,
             CreateSprintModel sprintModel,
             TimeSpan durationForTimeBasedEvent,
-            string descriptionForTimeBasedEvent,string repeatType ,bool isCrowdRun = false)
+            string descriptionForTimeBasedEvent, string repeatType, bool isCrowdRun = false)
         {
-
+            bool isAddRecord = true;
             Sprint sprint = new Sprint();
 
             if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
@@ -606,8 +606,9 @@
                 if (program.StartDate <= sprint.StartDateTime && sprint.StartDateTime <= program.StartDate.AddDays(program.Duration * 7))
                     sprint.ProgramId = sprintModel.ProgramId;
                 else
-                    sprint.ProgramId = 0;
-            }else
+                    isAddRecord = false;
+            }
+            else
                 sprint.ProgramId = 0;
 
             if (sprint.IsTimeBased == true)
@@ -625,69 +626,72 @@
             {
                 sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
             }
-
-            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
-            if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
+            if (isAddRecord)
             {
-                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
-            }
-
-            this.SprintRepo.SaveChanges();
-
-            this.NotificationClient.NotificationReminderJobs.TimeReminder(
-                addedSprint.Id,
-                addedSprint.Name,
-                addedSprint.Distance,
-                addedSprint.StartDateTime,
-                addedSprint.NumberOfParticipants,
-                (SprintType)addedSprint.Type,
-                (SprintStatus)addedSprint.Status);
-
-            if (sprintModel.DraftEvent == 0)
-            {
-                     var customData = new
-                     {
-                         campaign_name = "sprintshare",
-                         sprintId = sprint.Id.ToString(),
-                         promotionCode = sprint.PromotionCode,
-                         name = addedSprint.Name,
-                         distance = addedSprint.Distance > 0 ? (addedSprint.Distance/1000).ToString() : addedSprint.Distance.ToString(),
-                         startDateTime = addedSprint.StartDateTime.ToString(),
-                         type = addedSprint.Type.ToString(),
-                         extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
-                         descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
-                     };
-                try
+                Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+                if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
                 {
-                    var socialLink = sprintModel.IsSmartInvite ?
-                    await this.SocialShareService.updateTokenAndGetInvite(customData) :
-                    await this.SocialShareService.GetSmartLink(new SocialLink()
-                    {
-                        Name = sprintModel.Name,
-                        Description = descriptionForTimeBasedEvent,
-                        ImageUrl = sprintModel.ImageUrl,
-                        CustomData = customData
-                    });
-
-                    sprint.SocialMediaLink = socialLink;
-                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
-                    {
-                        await this.joinUser(sprint.Id, sprint.InfluencerEmail);
-                    }
-                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
-                    {
-                        await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
-                    }
-                    if(isCrowdRun && repeatType == "NONE")
-                    await this.SendEmail(user, sprint, string.Empty);
-                    await this.SprintRepo.UpdateSprint(sprint);
-
-
+                    await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
                 }
 
-                catch(Exception ex)
+                this.SprintRepo.SaveChanges();
+
+                this.NotificationClient.NotificationReminderJobs.TimeReminder(
+                    addedSprint.Id,
+                    addedSprint.Name,
+                    addedSprint.Distance,
+                    addedSprint.StartDateTime,
+                    addedSprint.NumberOfParticipants,
+                    (SprintType)addedSprint.Type,
+                    (SprintStatus)addedSprint.Status);
+
+                if (sprintModel.DraftEvent == 0)
                 {
-                    throw ex;
+                    var customData = new
+                    {
+                        campaign_name = "sprintshare",
+                        sprintId = sprint.Id.ToString(),
+                        promotionCode = sprint.PromotionCode,
+                        name = addedSprint.Name,
+                        distance = addedSprint.Distance > 0 ? (addedSprint.Distance / 1000).ToString() : addedSprint.Distance.ToString(),
+                        startDateTime = addedSprint.StartDateTime.ToString(),
+                        type = addedSprint.Type.ToString(),
+                        extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
+                        descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
+                    };
+                    try
+                    {
+                        var socialLink = sprintModel.IsSmartInvite ?
+                        await this.SocialShareService.updateTokenAndGetInvite(customData) :
+                        await this.SocialShareService.GetSmartLink(new SocialLink()
+                        {
+                            Name = sprintModel.Name,
+                            Description = descriptionForTimeBasedEvent,
+                            ImageUrl = sprintModel.ImageUrl,
+                            CustomData = customData
+                        });
+
+                        sprint.SocialMediaLink = socialLink;
+                        if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
+                        {
+                            await this.joinUser(sprint.Id, sprint.InfluencerEmail);
+                        }
+                        if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
+                        {
+                            await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
+                        }
+                        if (isCrowdRun && repeatType == "NONE")
+                            await this.SendEmail(user, sprint, string.Empty);
+                        await this.SprintRepo.UpdateSprint(sprint);
+
+
+                    }
+
+
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
             }
 
@@ -1566,7 +1570,7 @@
             sprintProgram.CreatedBy = user;
             sprintProgram.IsPublish = sprintProgramDto.IsPublish;
             sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
-            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
+            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPrivate ? sprintProgramDto.IsPromoteInApp : false;
 
             var sprintList = await this.SprintRepo.GetAllSprintsInPrograms(sprintProgram.Id);
             var customData = new
