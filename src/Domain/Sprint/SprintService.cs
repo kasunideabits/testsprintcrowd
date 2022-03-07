@@ -1784,6 +1784,9 @@
             {
                 var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
                 var sprintIds = sprints.Select(x => x.Id);
+                //var influencerEmail = sprints.Select(y => y.InfluencerEmail);
+                //var influencerEmailecont = sprints.Select(y => y.InfluencerEmailSecond);
+                var allInfluencers = sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmail)).Concat(sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmailSecond))).ToList();
                 Expression <Func<SprintParticipant, bool>> participantPredicate = null;
                 
                 participantPredicate = s => sprintIds.Contains(s.SprintId);
@@ -1795,13 +1798,15 @@
                 {
                     if (!ParticipantInfoDto.Any(p => p.Id == sprintParticipant.User.Id))
                     {
+                        
+
                         ParticipantInfoDto.Add(new SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto(
                             sprintParticipant.User.Id,
                             sprintParticipant.User.Name,
                             sprintParticipant.User.ProfilePicture,
                             sprintParticipant.User.City,
                             sprintParticipant.User.Country, sprintParticipant.User.CountryCode, sprintParticipant.User.ColorCode
-                            , false, sprintParticipant.Stage, false));
+                            , false, sprintParticipant.Stage, allInfluencers.Contains(this.userRepo.getDecriptedEmail(sprintParticipant.User.Email))));
                     }
                 }
                 
