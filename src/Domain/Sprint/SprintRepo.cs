@@ -903,5 +903,16 @@
                 throw Ex;
             }
         }
+
+
+        /// <summary>
+        /// Get Program Participant List By ProgramId
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<List<ProgramParticipant>> GetProgramParticipantListByProgramId(int programId)
+        {
+            return await this.dbContext.ProgramParticipant.Where(pp=> pp.ProgramId == programId).ToListAsync();
+        }
     }
 }

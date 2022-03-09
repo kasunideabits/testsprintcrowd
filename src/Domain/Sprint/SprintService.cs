@@ -607,6 +607,7 @@
                     sprint.ProgramId = sprintModel.ProgramId;
                 else
                     isAddRecord = false;
+
             }
             else
                 sprint.ProgramId = 0;
@@ -633,7 +634,15 @@
                 {
                     await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
                 }
-
+                if (sprintModel.ProgramId > 0)
+                {
+                    //Join all the program users to this sprint
+                    var programParticipant = this.SprintRepo.GetProgramParticipantListByProgramId(sprintModel.ProgramId);
+                    foreach (ProgramParticipant participant in programParticipant.Result)
+                    {
+                        await this.SprintParticipantRepo.AddSprintParticipant(addedSprint.Id, participant.UserId);
+                    }
+                }
                 this.SprintRepo.SaveChanges();
 
                 this.NotificationClient.NotificationReminderJobs.TimeReminder(
@@ -1784,8 +1793,7 @@
             {
                 var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
                 var sprintIds = sprints.Select(x => x.Id);
-                //var influencerEmail = sprints.Select(y => y.InfluencerEmail);
-                //var influencerEmailecont = sprints.Select(y => y.InfluencerEmailSecond);
+                
                 var allInfluencers = sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmail)).Concat(sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmailSecond))).ToList();
                 Expression <Func<SprintParticipant, bool>> participantPredicate = null;
                 
