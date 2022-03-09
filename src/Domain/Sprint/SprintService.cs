@@ -608,8 +608,6 @@
                 else
                     isAddRecord = false;
 
-                //Join all the program users to this sprint
-
             }
             else
                 sprint.ProgramId = 0;
@@ -636,7 +634,15 @@
                 {
                     await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
                 }
-
+                if (sprintModel.ProgramId > 0)
+                {
+                    //Join all the program users to this sprint
+                    var programParticipant = this.SprintRepo.GetProgramParticipantListByProgramId(sprintModel.ProgramId);
+                    foreach (ProgramParticipant participant in programParticipant.Result)
+                    {
+                        await this.SprintParticipantRepo.AddSprintParticipant(addedSprint.Id, participant.UserId);
+                    }
+                }
                 this.SprintRepo.SaveChanges();
 
                 this.NotificationClient.NotificationReminderJobs.TimeReminder(
