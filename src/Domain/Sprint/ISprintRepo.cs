@@ -327,5 +327,12 @@
         /// <param name="programCode"></param>
         /// <returns></returns>
         Task<SprintProgram> GetSprintProgramDetailsByProgramCode(string programCode);
+
+        /// <summary>
+        /// Get Program Participant List By ProgramId
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<ProgramParticipant>> GetProgramParticipantListByProgramId(int programId);
     }
 }
