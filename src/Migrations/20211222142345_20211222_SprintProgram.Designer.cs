@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SprintCrowd.BackEnd.Infrastructure.Persistence;
@@ -10,9 +11,10 @@ using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
 namespace SprintCrowdBackEnd.Migrations
 {
     [DbContext(typeof(ScrowdDbContext))]
-    partial class ScrowdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211222142345_20211222_SprintProgram")]
+    partial class _20211222_SprintProgram
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,41 +216,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasDiscriminator<int>("Type");
                 });
 
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.ProgramParticipant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("created_date");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("last_updated");
-
-                    b.Property<int>("ProgramId")
-                        .HasColumnName("program_id");
-
-                    b.Property<int?>("SprintProgramId")
-                        .HasColumnName("sprint_program_id");
-
-                    b.Property<int>("Stage")
-                        .HasColumnName("stage");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SprintProgramId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("program_participant");
-                });
-
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.PromoCodeUser", b =>
                 {
                     b.Property<int>("Id")
@@ -366,9 +333,6 @@ namespace SprintCrowdBackEnd.Migrations
 
                     b.Property<int>("NumberOfParticipants")
                         .HasColumnName("number_of_participants");
-
-                    b.Property<int>("ProgramId")
-                        .HasColumnName("program_id");
 
                     b.Property<string>("PromotionCode")
                         .HasColumnName("promotion_code");
@@ -889,12 +853,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<bool>("IsPrivate")
                         .HasColumnName("is_private");
 
-                    b.Property<bool>("IsPromoteInApp")
-                        .HasColumnName("is_promote_in_app");
-
-                    b.Property<bool>("IsPublish")
-                        .HasColumnName("is_publish");
-
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("last_updated");
@@ -905,14 +863,8 @@ namespace SprintCrowdBackEnd.Migrations
                     b.Property<string>("ProgramCode")
                         .HasColumnName("program_code");
 
-                    b.Property<string>("PromotionalText")
-                        .HasColumnName("promotional_text");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnName("start_date");
-
-                    b.Property<int>("Status")
-                        .HasColumnName("status");
 
                     b.HasKey("Id");
 
@@ -1040,18 +992,6 @@ namespace SprintCrowdBackEnd.Migrations
                     b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.SprintInvite")
                         .WithMany("Notification")
                         .HasForeignKey("SprintInviteId");
-                });
-
-            modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.ProgramParticipant", b =>
-                {
-                    b.HasOne("SprintCrowdBackEnd.Infrastructure.Persistence.Entities.SprintProgram", "SprintProgram")
-                        .WithMany()
-                        .HasForeignKey("SprintProgramId");
-
-                    b.HasOne("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SprintCrowd.BackEnd.Infrastructure.Persistence.Entities.Sprint", b =>

@@ -11,6 +11,8 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using Microsoft.AspNetCore.Mvc;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// inerface for event repo
@@ -183,5 +185,154 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         IEnumerable<Sprint> GetSprint_Open(Expression<Func<Sprint, bool>> predicate);
+
+        /// <summary>
+        /// Add Sprint Program
+        /// </summary>
+        /// <param name="sprintProgram"></param>
+        /// <returns></returns>
+        Task<SprintProgram> AddSprintProgram(SprintProgram sprintProgram);
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="sprintProgramData"></param>
+        /// <returns></returns>
+        Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData);
+
+        /// <summary>
+        /// Get Sprint Program Details By Program Id
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgramDetailsByProgramId(int sprintProgramId);
+
+        /// <summary>
+        /// Get Last Special Sprint Program
+        /// </summary>
+        /// <returns></returns>
+        Task<SprintProgram> GetLastSpecialSprintProgram();
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <param name="userRoles"></param>
+        /// <returns></returns>
+        Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit, List<RolesDto> userRoles);
+
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        int GetAllSprintProgrammsCount(int userId);
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="programData"></param>
+        /// <returns></returns>
+        Task<SprintProgram> UpdateSprintProgramData(SprintProgram programData);
+
+        /// <summary>
+        /// Get sprint program by given predicate
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgram(Expression<Func<SprintProgram, bool>> predicate);
+
+        /// <summary>
+        /// Get Program Sprint List By Program Id
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetProgramSprintListByProgramId(int sprintProgramId);
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint Start Date
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        Task<List<SprintProgram>> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate);
+
+        /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Scheduled Programs Detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprints In Programs
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintsInPrograms(int programId);
+
+        /// <summary>
+        /// Get Program Sprints Participants
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Task<List<SprintParticipant>> GetProgramSprintsParticipants(Expression<Func<SprintParticipant, bool>> predicate);
+
+        /// <summary>
+        /// Get All Sprint List By Programmid
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<Sprint>> GetAllSprintListByProgrammid(int programId);
+
+        /// <summary>
+        /// Add Program Participant
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipant> AddProgramParticipant(int programId, int userId);
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task JoinProgram(int userId, int programId);
+
+        /// <summary>
+        /// Get Program By UserId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipant> GetProgramByUserId(int userId, int programId);
+       
+        /// <summary>
+        /// Get Sprint Program Details By ProgramCode
+        /// </summary>
+        /// <param name="programCode"></param>
+        /// <returns></returns>
+        Task<SprintProgram> GetSprintProgramDetailsByProgramCode(string programCode);
+
+        /// <summary>
+        /// Get Program Participant List By ProgramId
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<ProgramParticipant>> GetProgramParticipantListByProgramId(int programId);
     }
 }

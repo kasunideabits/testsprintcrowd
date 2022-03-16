@@ -14,6 +14,8 @@
     using System.Globalization;
     using SprintCrowd.BackEnd.Domain.Sprint.Dtos;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Event repositiory
@@ -39,11 +41,23 @@
             return await this.dbContext.Set<Sprint>().FirstOrDefaultAsync(predicate);
         }
 
+        /// <summary>
+        /// Get Last Special Sprint
+        /// </summary>
+        /// <returns></returns>
         public async Task<Sprint> GetLastSpecialSprint()
         {
             return await this.dbContext.Set<Sprint>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.PromotionCode));
         }
 
+        /// <summary>
+        /// Get Last Special Sprint Program
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetLastSpecialSprintProgram()
+        {
+            return await this.dbContext.Set<SprintProgram>().OrderByDescending(p => p.Id).FirstOrDefaultAsync(p => !String.IsNullOrEmpty(p.ProgramCode));
+        }
         /// <summary>
         /// Get all sprints with given predicate
         /// </summary>
@@ -282,6 +296,7 @@
             var result = this.dbContext.Sprint.Update(sprintData);
             this.dbContext.SaveChanges();
             return result.Entity;
+
         }
 
         /// <summary>
@@ -323,6 +338,7 @@
         public void RemoveSprint(Sprint sprint)
         {
             this.dbContext.Set<Sprint>().Remove(sprint);
+            this.dbContext.SaveChanges();
         }
 
         public async Task<UserPreference> GetUserPreference(int userId)
@@ -486,6 +502,417 @@
             return this.dbContext.SaveChanges();
         }
 
+        /// <summary>
+        /// creates event
+        /// </summary>
+        /// <param name="sprintToAdd">event model</param>
+        /// <returns>add sprint Program</returns>
+        public async Task<SprintProgram> AddSprintProgram(SprintProgram sprintProgram)
+        {
+            
+            var result = await this.dbContext.SprintProgram.AddAsync(sprintProgram);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+        }
 
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="sprintProgramData"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> UpdateSprintProgram(SprintProgram sprintProgramData)
+        {
+            try
+            {
+                var result = this.dbContext.SprintProgram.Update(sprintProgramData);
+                this.dbContext.SaveChanges();
+                return result.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Sprint Program Details By ProgramId
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetSprintProgramDetailsByProgramId( int sprintProgramId)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.FirstOrDefaultAsync(sp => sp.Id == sprintProgramId);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramForDashboard(int pageNo, int limit)
+        {
+            DateTime aa = DateTime.UtcNow;
+            
+            var sprintPrograms = await (this.dbContext.SprintProgram.Where(s => s.StartDate.AddDays(s.Duration*7) > DateTime.UtcNow && s.Status != (int)SprintProgramStatus.ARCHIVED && (s.IsPrivate == false || s.IsPromoteInApp == true))).OrderBy(date => date.StartDate).Distinct().ToListAsync();
+
+           //var result = sprintPrograms.Where(c => !this.dbContext.ProgramParticipant.Select(b => b.ProgramId).Contains(c.Id)).ToList();
+
+            return new SprintProgramsPageDto()
+            {
+                sPrograms = sprintPrograms,
+                totalItems = sprintPrograms.Count()
+            };
+        }
+
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <param name="userRoles"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit, List<RolesDto> userRoles)
+        {
+            try
+            {
+                IQueryable<SprintProgram> allEvents = null;
+                List<SprintProgram> sprintPrograms = new List<SprintProgram>();
+                int noOfItems = 0;
+                if (Regex.IsMatch(searchTerm, @"^(?:19|20)\d{2}$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])$") || Regex.IsMatch(searchTerm, @"^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$"))
+                {
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where ((sprintProgram.Status != 3) && (searchTerm.Equals("null") || sprintProgram.StartDate.ToString().StartsWith(searchTerm.Trim())))select sprintProgram);
+
+                    // return allEvents;
+                }
+                else if (Regex.IsMatch(searchTerm, @"^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"))
+                {
+                    TimeSpan localTime = TimeSpan.Parse(searchTerm);
+                    TimeSpan twentyHrTime = localTime.Add(new TimeSpan(12, 0, 0));
+
+                    //Remove following line when time zone is UTC
+                    TimeSpan subtractedtwentyHrTime = twentyHrTime.Subtract(new TimeSpan(5, 30, 0));
+                    TimeSpan subtractedtwentyHrTimePM = subtractedtwentyHrTime.Add(new TimeSpan(12, 0, 0));
+                    //Remove following line when time zone is UTC
+                    TimeSpan subtractedTime = localTime.Subtract(new TimeSpan(5, 30, 0));
+
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where ((sprintProgram.Status != 3) &&
+                                            (sprintProgram.StartDate.ToString().Contains(subtractedTime.ToString().Trim())
+                                            || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTime.ToString().Trim())
+                                            || sprintProgram.StartDate.ToString().Contains(subtractedtwentyHrTimePM.ToString().Trim()))
+                                            
+                                 )
+                                 select sprintProgram
+                         );
+
+
+                    // return allEvents;
+                }
+                else
+                {//if entered keyword is not a time format, following executes
+                    allEvents = (from sprintProgram in this.dbContext.SprintProgram
+                                 where ((sprintProgram.Status != 3) && (searchTerm.Equals("null") ||
+                                 (
+                                              sprintProgram.Name.ToLower().Contains(searchTerm.Trim().ToLower())
+                                              )
+                                      )
+                                 )
+                                 select sprintProgram
+                        );
+
+                    // return allEvents;
+                }
+                IQueryable<SprintProgram> allEventsFilter = null;
+               
+                    if (userRoles.Any(item => item.RoleName != Enums.UserRoles.Admin) && allEvents != null && allEvents.Count() != 0)
+                    {
+                        allEventsFilter = allEvents.Where(spr => spr.CreatedBy.Id == userId);
+                        noOfItems = allEventsFilter.Count();
+                    }
+                    else
+                    {
+                        noOfItems = allEvents.Count();
+                        allEventsFilter = allEvents;
+                    }
+                    if (limit > 0)
+                    {
+                    sprintPrograms = await allEventsFilter.OrderByDescending(x => x.CreatedDate).Skip(pageNo * limit).Take(limit).ToListAsync();
+                    }
+                    else
+                    {
+                    sprintPrograms = await allEventsFilter.OrderByDescending(x => x.CreatedDate).ToListAsync();
+                    }
+
+                    return new SprintProgramsPageDto()
+                    {
+                        sPrograms = sprintPrograms,
+                        totalItems = noOfItems
+                    };
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetAllSprintProgrammsCount(int userId)
+        {
+            try
+            {
+                return (this.dbContext.SprintProgram.Where(s => s.CreatedBy.Id == userId )).ToListAsync().Result.Count();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprints Count By Programmid
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetAllSprintListByProgrammid(int programId)
+        {
+            try
+            {
+                return (this.dbContext.Sprint.Where(s => s.ProgramId == programId)).ToListAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Update Sprint Program Data
+        /// </summary>
+        /// <param name="programData"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> UpdateSprintProgramData(SprintProgram programData)
+        {
+           
+            var result = this.dbContext.SprintProgram.Update(programData);
+            this.dbContext.SaveChanges();
+            return result.Entity;
+
+        }
+
+        
+        /// <summary>
+        /// Get sprint program by given predicate
+        /// </summary>
+        /// <param name="predicate"> predicate</param>
+        public async Task<SprintProgram> GetSprintProgram(Expression<Func<SprintProgram, bool>> predicate)
+        {
+            return await this.dbContext.Set<SprintProgram>().FirstOrDefaultAsync(predicate);
+
+        }
+
+
+        /// <summary>
+        /// Get Program Sprint List By Program Id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Sprint>> GetProgramSprintListByProgramId(int sprintProgramId)
+        {
+            try
+            {
+                var program = this.dbContext.SprintProgram.Where(sp => sp.Id == sprintProgramId ).FirstOrDefaultAsync();
+                return await this.dbContext.Sprint.Where(sp => sp.ProgramId == sprintProgramId && ( sp.StartDateTime >= program.Result.StartDate && sp.StartDateTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))).ToListAsync();
+            }                                                                                    //sp => sp.StartDate > program.Result.StartDate && sp.StartDate < program.Result.StartDate.AddDays(program.Result.Duration * 7)   
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Program Sprint List By SprintStartDate
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SprintProgram>> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.Where(sp => sp.StartDate < sprintStartDate && sp.StartDate.AddDays(sp.Duration * 7) > sprintStartDate).ToListAsync();
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        /// <summary>
+        /// Get All Scheduled Program Detail For Dashboard
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            var program = this.GetSprintProgramDetailsByProgramId(programId);
+            
+            List<ProgramSprintScheduleEvents> objEventsList = new List<ProgramSprintScheduleEvents>();
+            int weeks = 1;
+            
+
+            while (weeks <= program.Result.Duration)
+            {
+                List<ProgramSprintScheduleDto> programSprintSchedule = new List<ProgramSprintScheduleDto>();
+
+                var programSprints = await this.dbContext.Sprint.Where(s => s.ProgramId == programId && ((DateTime.ParseExact(program.Result.StartDate.AddDays((weeks-1)*7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null) <= DateTime.ParseExact(s.StartDateTime.ToString("dd/MM/yyyy"), "dd/MM/yyyy", null)) && (DateTime.ParseExact(s.StartDateTime.ToString("dd/MM/yyyy"), "dd/MM/yyyy", null) <= DateTime.ParseExact(program.Result.StartDate.AddDays(weeks*7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null)))).ToListAsync();
+
+                DateTime StartDateOfWeek = DateTime.ParseExact(program.Result.StartDate.AddDays((weeks - 1) * 7).ToString("dd/MM/yyyy"), "dd/MM/yyyy", null);
+                for (int weekDays = 0; weekDays < 7; weekDays++)
+                {
+                    ProgramSprintScheduleDto objSprintSchedule = new ProgramSprintScheduleDto();
+                    foreach (Sprint sprint in programSprints)
+                    {
+
+                        if (StartDateOfWeek.AddDays(weekDays).ToString("dd/MM/yyyy") == sprint.StartDateTime.ToString("dd/MM/yyyy"))
+                        {
+                            
+                            objSprintSchedule.ProgramSprints.Add(new ProgramSprint(sprint.Id, sprint.Name, sprint.Distance, sprint.StartDateTime, sprint.ImageUrl, sprint.IsTimeBased , sprint.DurationForTimeBasedEvent));
+
+                        }
+                    }
+                    objSprintSchedule.WeekDate = StartDateOfWeek.AddDays(weekDays);
+                    programSprintSchedule.Add(objSprintSchedule);
+                }
+
+                objEventsList.Add(new ProgramSprintScheduleEvents(programSprintSchedule));
+                weeks++;
+            }
+
+            return objEventsList;
+        }
+
+        /// <summary>
+        /// Get All Sprints In Programs
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task <List<Sprint>> GetAllSprintsInPrograms(int programId) 
+        {
+            return await this.dbContext.Sprint.Where(sp => sp.ProgramId == programId).ToListAsync();
+
+        }
+        /// <summary>
+        /// Get the Program Sprints participants with given predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<List<SprintParticipant>> GetProgramSprintsParticipants(Expression<Func<SprintParticipant, bool>> predicate)
+        {
+            return await this.dbContext.SprintParticipant
+                .Include(s => s.User)   
+                .Where(predicate).ToListAsync();
+        }
+
+        /// <summary>
+        /// Get By User Id SprintId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sprintId"></param>
+        /// <returns></returns>
+        public async Task<ProgramParticipant> GetProgramByUserId(int userId, int programId)
+        {
+            return await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.ProgramId == programId);
+        }
+
+        /// <summary>
+        /// Add Program Participant
+        /// </summary>
+        /// <param name="programId">programId for join</param>
+        /// <param name="userId">user id for who join</param>
+        /// <returns>joined user details</returns>
+        public async Task<ProgramParticipant> AddProgramParticipant(int programId, int userId)
+        {
+            var proParticipatInfor = await this.GetProgramByUserId(userId, programId);
+
+            if (proParticipatInfor == null)
+            {
+                ProgramParticipant proParticipant = new ProgramParticipant()
+                {
+                    UserId = userId,
+                    ProgramId = programId,
+                    Stage = ProgramParticipantStage.JOINED,
+                };
+                var result = await this.dbContext.ProgramParticipant.AddAsync(proParticipant);
+                this.dbContext.SaveChanges();
+                return result.Entity;
+            }
+            else
+                return proParticipatInfor;
+        }
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task JoinProgram(int userId, int programId)
+        {
+            var participant = await this.dbContext.ProgramParticipant.FirstOrDefaultAsync(s => s.UserId == userId && s.ProgramId == programId);
+            if (participant != null)
+            {
+                participant.Stage = ProgramParticipantStage.JOINED;
+                this.dbContext.Update(participant);
+                this.dbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Get Sprint Program Details By ProgramCode
+        /// </summary>
+        /// <param name="programCode"></param>
+        /// <returns></returns>
+        public async Task<SprintProgram> GetSprintProgramDetailsByProgramCode(string programCode)
+        {
+            try
+            {
+                return await this.dbContext.SprintProgram.FirstOrDefaultAsync(sp => sp.ProgramCode == programCode);
+            }
+            catch (System.Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Get Program Participant List By ProgramId
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<List<ProgramParticipant>> GetProgramParticipantListByProgramId(int programId)
+        {
+            return await this.dbContext.ProgramParticipant.Where(pp=> pp.ProgramId == programId).ToListAsync();
+        }
     }
 }

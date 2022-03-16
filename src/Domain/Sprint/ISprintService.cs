@@ -8,6 +8,9 @@
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
     using SprintCrowd.BackEnd.Web.Event;
     using SprintCrowd.BackEnd.Domain.ScrowdUser;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+
     /// <summary>
     /// ISprintService interface
     /// </summary>
@@ -206,5 +209,108 @@
         /// <param name="sprintId"></param>
         /// <returns></returns>
         Task<int> GetSprintPaticipantsCounts(int sprintId);
+
+        /// <summary>
+        /// Create New Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> CreateNewSprintProgram(User user, SprintProgramDto sprintProgramDto);
+
+        /// <summary>
+        /// Get Sprint Program Details By ProgramId
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> GetSprintProgramDetailsByProgramId(int sprintProgramId);
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto);
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        int GetAllSprintProgrammsCount(int userId);
+
+        /// <summary>
+        /// Remove sprint program from Admin Panel
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task RemoveSprintProgram(int userId, int programId);
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        Dictionary<int, string> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate);
+
+        /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit , int userId);
+
+
+        /// <summary>
+        /// Get All Scheduled Programs Detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit);
+
+        /// <summary>
+        /// Get All Program Participants
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId , int userId);
+
+        /// <summary>
+        /// Get All Program Participants Count 
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<int> GetAllProgramParticipantsCount(int programId);
+        /// <summary>
+        /// Get All Program Sprints Hosts
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        Task<List<UserDto>> GetAllProgramSprintsHosts(int programId);
+        
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <param name="accept"></param>
+        /// <returns></returns>
+        Task<dynamic> JoinProgram(int programId, int userId, string programCode, bool isPrivateProgram );
     }
 }

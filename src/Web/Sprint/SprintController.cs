@@ -12,6 +12,7 @@
     using SprintCrowd.BackEnd.Domain.Sprint;
     using SprintCrowd.BackEnd.Extensions;
     using SprintCrowd.BackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// event controller
@@ -214,6 +215,7 @@
         {
             User user = await this.User.GetUser(this.UserService);
             var result = await this.SprintService.GetOpenEvents(status, user.Id, timeOffset, pageNo, limit);
+
             return this.Ok(new SuccessResponse<List<PublicSprintWithParticipantsDto>>(result));
         }
 
@@ -236,6 +238,96 @@
             return this.Ok(result);
         }
 
+        /// <summary>
+        /// Get All Sprint Programs For Dashboard
+        /// </summary>
+        [HttpGet("GetAllSprintProgramsForDashboard/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllSprintProgramsForDashboard(int pageNo, int limit)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllSprintProgramForDashboard(pageNo, limit, user.Id);
+            ProgramDashboardResponseObject response = new ProgramDashboardResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result.dbPrograms,
+                totalEvents = result.totalItems,
+                totalParticipants = result.totalParticipants
 
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get All Scheduled Programs For Dashboard
+        /// </summary>
+        [HttpGet("GetAllScheduledProgramsDetail/{programId:int?}/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            var result = await this.SprintService.GetAllScheduledProgramsDetail(programId, pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+                totalItems = result.Count
+            };
+            return this.Ok(response);
+        }
+
+
+        /// <summary>
+        /// Get All Program Participants
+        /// </summary>
+        [HttpGet("GetAllProgramParticipants/{programId:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllProgramParticipants(int programId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllProgramParticipants(programId , user.Id);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+                totalItems = 1
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get All Program Participants
+        /// </summary>
+        [HttpGet("GetAllProgramSprintsHosts/{programId:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllProgramSprintsHosts(int programId)
+        {
+            var result = await this.SprintService.GetAllProgramSprintsHosts(programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+                totalItems = 1
+            };
+            return this.Ok(response);
+        }
+
+        [HttpPost("JoinProgram")]
+        [ProducesResponseType(typeof(SuccessResponse<SprintProgramsPageDto>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> JoinProgram([FromBody] JoinProgramModel joinUser)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.JoinProgram(
+                joinUser.ProgramId,
+                user.Id,
+                joinUser.ProgramCode,
+                joinUser.IsPrivate
+            );
+            return this.Ok(new SuccessResponse<bool>(result));
+        }
     }
 }

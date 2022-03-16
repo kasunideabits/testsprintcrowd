@@ -435,11 +435,14 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         public string getDecriptedEmail(string base64)
         {
             string email = string.Empty;
-            base64 = base64.Trim();
-            if (StringUtils.IsBase64String(base64))
-                email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
-            else
-                email = base64;
+            if (base64 != null)
+            {
+                base64 = base64.Trim();
+                if (StringUtils.IsBase64String(base64))
+                    email = Common.EncryptionDecryptionUsingSymmetricKey.DecryptString(base64);
+                else
+                    email = base64;
+            }
             return email;
         }
 
@@ -646,5 +649,7 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
                RoleName = items.Role,
             }).ToList() : null;
         }
+
+
     }
 }

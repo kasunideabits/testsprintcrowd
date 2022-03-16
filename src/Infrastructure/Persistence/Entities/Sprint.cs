@@ -1,10 +1,11 @@
+
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using SprintCrowd.BackEnd.Domain.Sprint.Video;
+using System;
+
 namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using SprintCrowd.BackEnd.Domain.Sprint.Video;
-    using System;
-
     /// <summary>
     /// Sprint Model.
     /// </summary>
@@ -45,6 +46,7 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
             this.IsNarrationsOn = sprint.IsNarrationsOn;
             this.Interval = sprint.Interval;
             this.IsSoloRun = sprint.IsSoloRun;
+            this.ProgramId = sprint.ProgramId;
 
         }
         public int Id { get; set; }
@@ -196,6 +198,11 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// Identified as a solo run
         /// </summary>
         public bool IsSoloRun { get; set; }
+
+        /// <summary>
+        /// Program Id for the sprint
+        /// </summary>
+        public int ProgramId { get; set; }
 
 
     }

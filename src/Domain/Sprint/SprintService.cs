@@ -20,6 +20,8 @@
     using System.IO;
     using System.Net.Mail;
     using System.Net;
+    using SprintCrowdBackEnd.Infrastructure.Persistence.Entities;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// Sprint service
@@ -32,7 +34,7 @@
         /// <param name="sprintRepo">sprint repository</param>
         /// <param name="notificationClient">notification client</param>
         public SprintService(ISprintRepo sprintRepo, INotificationClient notificationClient, IUserRepo _userRepo, ISocialShareService socialShareService,
-        ISprintParticipantRepo sprintParticipantRepo, ISprintParticipantService sprintParticipantService)
+        ISprintParticipantRepo sprintParticipantRepo, ISprintParticipantService sprintParticipantService, IUserService userService)
         {
             this.SprintRepo = sprintRepo;
             this.NotificationClient = notificationClient;
@@ -40,6 +42,7 @@
             this.SocialShareService = socialShareService;
             this.SprintParticipantRepo = sprintParticipantRepo;
             this.SprintParticipantService = sprintParticipantService;
+            this.UserService = userService;
         }
         private readonly IUserRepo userRepo;
         private ISprintParticipantService SprintParticipantService { get; }
@@ -48,7 +51,7 @@
         private INotificationClient NotificationClient { get; }
         private const int REPEAT_EVENTS_COUNT = 7;
         private ISprintParticipantRepo SprintParticipantRepo { get; }
-
+        private IUserService UserService { get; set; }
         /// <summary>
         /// Get all events
         /// </summary>
@@ -275,6 +278,17 @@
             sprintAavail.IsTimeBased = sprintModel.IsTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
+            
+
+
+            var program = this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintModel.ProgramId);
+            //Add program Id only within the program start and end dates
+            if (program.Result.StartDate <= sprintAavail.StartDateTime && sprintAavail.StartDateTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
+                sprintAavail.ProgramId = sprintModel.ProgramId;
+            else
+                sprintAavail.ProgramId = 0;
+
+
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
@@ -358,13 +372,13 @@
         /// creates a new sprint
         /// </summary>
 
-        public async Task<String> generatePromotionCode()
+        public async Task<String> generatePromotionCode(bool isProgramCode = false)
         {
             int x = 0;
-            Sprint lastSpecialSprint = await this.SprintRepo.GetLastSpecialSprint();
-            if (Int32.TryParse(lastSpecialSprint.PromotionCode, out x))
+            string pCode = isProgramCode ? (await this.SprintRepo.GetLastSpecialSprintProgram()).ProgramCode : (await this.SprintRepo.GetLastSpecialSprint()).PromotionCode;
+            if (Int32.TryParse(pCode, out x))
             {
-                int promocode = Int32.Parse(lastSpecialSprint.PromotionCode) + 1;
+                int promocode = Int32.Parse(pCode) + 1;
                 string strPromocode = promocode.ToString("D6");
                 return strPromocode;
             }
@@ -505,9 +519,9 @@
             User user,
             CreateSprintModel sprintModel,
             TimeSpan durationForTimeBasedEvent,
-            string descriptionForTimeBasedEvent,string repeatType ,bool isCrowdRun = false)
+            string descriptionForTimeBasedEvent, string repeatType, bool isCrowdRun = false)
         {
-
+            bool isAddRecord = true;
             Sprint sprint = new Sprint();
 
             if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
@@ -583,6 +597,20 @@
             sprint.VideoLink = sprintModel.VideoLink;
             sprint.VideoType = sprintModel.VideoType;
             sprint.IsSoloRun = sprintModel.IsSoloRun;
+            // sprint.ProgramId = sprintModel.ProgramId;
+
+            if (sprintModel.ProgramId > 0)
+            {
+                var program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintModel.ProgramId);
+                //Add program Id only within the program start and end dates
+                if (program.StartDate <= sprint.StartDateTime && sprint.StartDateTime <= program.StartDate.AddDays(program.Duration * 7))
+                    sprint.ProgramId = sprintModel.ProgramId;
+                else
+                    isAddRecord = false;
+
+            }
+            else
+                sprint.ProgramId = 0;
 
             if (sprint.IsTimeBased == true)
             {
@@ -599,69 +627,80 @@
             {
                 sprint.Status = (int)SprintStatus.NOTPUBLISHEDYET;
             }
-
-            Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
-            if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
+            if (isAddRecord)
             {
-                await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
-            }
-
-            this.SprintRepo.SaveChanges();
-
-            this.NotificationClient.NotificationReminderJobs.TimeReminder(
-                addedSprint.Id,
-                addedSprint.Name,
-                addedSprint.Distance,
-                addedSprint.StartDateTime,
-                addedSprint.NumberOfParticipants,
-                (SprintType)addedSprint.Type,
-                (SprintStatus)addedSprint.Status);
-
-            if (sprintModel.DraftEvent == 0)
-            {
-                     var customData = new
-                     {
-                         campaign_name = "sprintshare",
-                         sprintId = sprint.Id.ToString(),
-                         promotionCode = sprint.PromotionCode,
-                         name = addedSprint.Name,
-                         distance = addedSprint.Distance > 0 ? (addedSprint.Distance/1000).ToString() : addedSprint.Distance.ToString(),
-                         startDateTime = addedSprint.StartDateTime.ToString(),
-                         type = addedSprint.Type.ToString(),
-                         extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
-                         descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
-                     };
-                try
+                Sprint addedSprint = await this.SprintRepo.AddSprint(sprint);
+                if (sprintModel.SprintType == (int)SprintType.PrivateSprint)
                 {
-                    var socialLink = sprintModel.IsSmartInvite ?
-                    await this.SocialShareService.updateTokenAndGetInvite(customData) :
-                    await this.SocialShareService.GetSmartLink(new SocialLink()
-                    {
-                        Name = sprintModel.Name,
-                        Description = descriptionForTimeBasedEvent,
-                        ImageUrl = sprintModel.ImageUrl,
-                        CustomData = customData
-                    });
-
-                    sprint.SocialMediaLink = socialLink;
-                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
-                    {
-                        await this.joinUser(sprint.Id, sprint.InfluencerEmail);
-                    }
-                    if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
-                    {
-                        await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
-                    }
-                    if(isCrowdRun && repeatType == "NONE")
-                    await this.SendEmail(user, sprint, string.Empty);
-                    await this.SprintRepo.UpdateSprint(sprint);
-
-
+                    await this.SprintRepo.AddParticipant(user.Id, addedSprint.Id, ParticipantStage.JOINED);
                 }
-
-                catch(Exception ex)
+                if (sprintModel.ProgramId > 0)
                 {
-                    throw ex;
+                    //Join all the program users to this sprint
+                    var programParticipant = this.SprintRepo.GetProgramParticipantListByProgramId(sprintModel.ProgramId);
+                    foreach (ProgramParticipant participant in programParticipant.Result)
+                    {
+                        await this.SprintParticipantRepo.AddSprintParticipant(addedSprint.Id, participant.UserId);
+                    }
+                }
+                this.SprintRepo.SaveChanges();
+
+                this.NotificationClient.NotificationReminderJobs.TimeReminder(
+                    addedSprint.Id,
+                    addedSprint.Name,
+                    addedSprint.Distance,
+                    addedSprint.StartDateTime,
+                    addedSprint.NumberOfParticipants,
+                    (SprintType)addedSprint.Type,
+                    (SprintStatus)addedSprint.Status);
+
+                if (sprintModel.DraftEvent == 0)
+                {
+                    var customData = new
+                    {
+                        campaign_name = "sprintshare",
+                        sprintId = sprint.Id.ToString(),
+                        promotionCode = sprint.PromotionCode,
+                        name = addedSprint.Name,
+                        distance = addedSprint.Distance > 0 ? (addedSprint.Distance / 1000).ToString() : addedSprint.Distance.ToString(),
+                        startDateTime = addedSprint.StartDateTime.ToString(),
+                        type = addedSprint.Type.ToString(),
+                        extendedTime = addedSprint.StartDateTime.AddMinutes(addedSprint.Interval).ToString(),
+                        descriptionForTimeBasedEvent = addedSprint.DescriptionForTimeBasedEvent
+                    };
+                    try
+                    {
+                        var socialLink = sprintModel.IsSmartInvite ?
+                        await this.SocialShareService.updateTokenAndGetInvite(customData) :
+                        await this.SocialShareService.GetSmartLink(new SocialLink()
+                        {
+                            Name = sprintModel.Name,
+                            Description = descriptionForTimeBasedEvent,
+                            ImageUrl = sprintModel.ImageUrl,
+                            CustomData = customData
+                        });
+
+                        sprint.SocialMediaLink = socialLink;
+                        if (!string.IsNullOrEmpty(sprintModel.InfluencerEmail))
+                        {
+                            await this.joinUser(sprint.Id, sprint.InfluencerEmail);
+                        }
+                        if (!string.IsNullOrEmpty(sprintModel.InfluencerEmailSecond))
+                        {
+                            await this.joinUser(sprint.Id, sprint.InfluencerEmailSecond);
+                        }
+                        if (isCrowdRun && repeatType == "NONE")
+                            await this.SendEmail(user, sprint, string.Empty);
+                        await this.SprintRepo.UpdateSprint(sprint);
+
+
+                    }
+
+
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
             }
 
@@ -680,6 +719,7 @@
             Sprint sprintInfo = new Sprint();
             int incementalSprintNumber = 0;
             string sprintName = sprint.Name;
+            
             if (repeatType == "DAILY")
             {
                 DateTime endDate = sprint.StartTime.AddDays(REPEAT_EVENTS_COUNT);
@@ -689,6 +729,7 @@
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(1);
+
                 }
             }
             else if (repeatType == "WEEKLY")
@@ -700,6 +741,7 @@
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddDays(7);
+
                 }
             }
             else if (repeatType == "MONTHLY")
@@ -711,6 +753,7 @@
                     sprint.Name = sprintName + " (" + incementalSprintNumber + ")";
                     await this.CreateNewSprint(user, sprint, durationForTimeBasedEvent, sprint.DescriptionForTimeBasedEvent, repeatType, isCrowdRun);
                     sprint.StartTime = sprint.StartTime.AddMonths(1);
+
                 }
             }
 
@@ -723,7 +766,9 @@
             sprintInfo.StartDateTime = sprint.StartTime;
             sprintInfo.SocialMediaLink = sprint.SocialMediaLink;
 
-            if(isCrowdRun)
+            
+
+            if (isCrowdRun)
             await this.SendEmail(user, sprintInfo, repeatType);
         }
 
@@ -1010,6 +1055,10 @@
             {
                 throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete event");
             }
+            else if (sprint.ProgramId > 0)
+            {
+                 this.SprintRepo.RemoveSprint(sprint);
+            }
             else
             {
                 sprint.Status = (int)SprintStatus.ARCHIVED;
@@ -1191,7 +1240,8 @@
                 var query = new PublicSprintQueryBuilder(userPreference).BuildOpenEvents(timeOffset);
 
                 IEnumerable<Sprint> openEvents = null;
-                openEvents = this.SprintRepo.GetSprint_Open(query).OrderBy(x => x.StartDateTime);
+                //get events not assign to program (if assign to program programId > 0)
+                openEvents = this.SprintRepo.GetSprint_Open(query).OrderBy(x => x.StartDateTime).Where(s => s.ProgramId == 0);
 
                 var sprintDto = new List<PublicSprintWithParticipantsDto>();
                 var friendsRelations = this.SprintRepo.GetFriends(userId);
@@ -1259,6 +1309,8 @@
                                                 friends.Contains(participant.User.Id));
 
                                         }
+                                        resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true : false;
+                                        resultDto.SprintInfo.ProgramId = sprint.ProgramId;
                                         sprintDto.Add(resultDto);
                                     }
                                 }
@@ -1295,6 +1347,9 @@
                                     friends.Contains(participant.User.Id));
 
                             }
+
+                            resultDto.SprintInfo.IsProgramSprint = sprint.ProgramId > 0 ? true:false;
+                            resultDto.SprintInfo.ProgramId = sprint.ProgramId;
                             sprintDto.Add(resultDto);
                         }
                     }
@@ -1395,5 +1450,541 @@
             }
         }
 
+        /// <summary>
+        /// Create New Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> CreateNewSprintProgram(User user, SprintProgramDto sprintProgramDto)
+        {
+
+            SprintProgram sprintProgram = new SprintProgram();
+
+            //if (sprintProgramDto.ProgramCode != null && sprintModel.promotionCode != string.Empty)
+            //{
+            //    Sprint sprintPromoCode = await this.userRepo.IsPromoCodeExist(sprintModel.promotionCode);
+            //    if (sprintPromoCode != null)
+            //    {
+            //        throw new SCApplicationException((int)SprintErrorCode.AlreadyExistPromoCode, "Already exist promotion Code");
+            //    }
+            //}
+
+            sprintProgram.Name = sprintProgramDto.Name;
+            sprintProgram.Description = sprintProgramDto.Description;
+            sprintProgram.Duration = sprintProgramDto.Duration;
+            sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
+            sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
+            sprintProgram.GetSocialLink = string.Empty;
+            sprintProgram.ProgramCode = sprintProgramDto.IsPrivate ? await this.generatePromotionCode(true) : null;
+            sprintProgram.StartDate = sprintProgramDto.StartDate;
+            sprintProgram.CreatedBy = user;
+            sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
+            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPromoteInApp;
+
+            SprintProgram addedSprintProgram = await this.SprintRepo.AddSprintProgram(sprintProgram);
+            var sprintList = await this.SprintRepo.GetAllSprintsInPrograms(addedSprintProgram.Id);
+            var customData = new
+            {
+                campaign_name = "programshare",
+                programId = addedSprintProgram.Id.ToString(),
+                programnCode = addedSprintProgram.ProgramCode,
+                name = addedSprintProgram.Name,
+                duration = addedSprintProgram.Duration.ToString(),
+                startDateTime = addedSprintProgram.StartDate.ToString(),
+                description = addedSprintProgram.Description,
+                imageLink = addedSprintProgram.ImageUrl,
+                endDate = addedSprintProgram.StartDate.AddDays(addedSprintProgram.Duration * 7),
+                events = sprintList.Count().ToString()
+            };
+            try
+            {
+                var socialLink = sprintProgram.IsPrivate ?
+                await this.SocialShareService.updateTokenAndGetInvite(customData) : string.Empty;
+                //await this.SocialShareService.GetSmartLink(new SocialLink()
+                //{
+                //    Name = addedSprintProgram.Name,
+                //    Description = addedSprintProgram.Description,
+                //    ImageUrl = addedSprintProgram.ImageUrl,
+                //    CustomData = customData
+                //});
+
+                addedSprintProgram.GetSocialLink = socialLink;
+                // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
+               var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgram.Id);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(addedSprintProgram), programSprintList);
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+        public static SprintProgramDto SprintProgramDtoMapper(SprintProgram sprintProgram , List<Sprint> programSprintList)
+        {
+            
+
+            SprintProgramDto result = new SprintProgramDto(
+                sprintProgram, programSprintList
+                );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Get Sprint Program Details By ProgramId
+        /// </summary>
+        /// <param name="sprintProgramId"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> GetSprintProgramDetailsByProgramId(int sprintProgramId)
+        {
+            try
+            {
+                var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgramId);
+                return SprintProgramDtoMapper(await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintProgramId), programSprintList);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="sprintProgramDto"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramDto> UpdateSprintProgram(User user, SprintProgramDto sprintProgramDto)
+        {
+
+            SprintProgram sprintProgram = await this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintProgramDto.Id);
+
+            
+            
+            sprintProgram.Name = sprintProgramDto.Name;
+            sprintProgram.Description = sprintProgramDto.Description;
+            sprintProgram.Duration = sprintProgramDto.Duration;
+            sprintProgram.IsPrivate = sprintProgramDto.IsPrivate;
+            sprintProgram.ImageUrl = sprintProgramDto.ImageUrl;
+            sprintProgram.GetSocialLink = string.Empty;
+            sprintProgram.ProgramCode = sprintProgramDto.ProgramCode;
+            sprintProgram.StartDate = sprintProgramDto.StartDate;
+            sprintProgram.CreatedBy = user;
+            sprintProgram.IsPublish = sprintProgramDto.IsPublish;
+            sprintProgram.PromotionalText = sprintProgramDto.PromotionalText;
+            sprintProgram.IsPromoteInApp = sprintProgramDto.IsPrivate ? sprintProgramDto.IsPromoteInApp : false;
+
+            var sprintList = await this.SprintRepo.GetAllSprintsInPrograms(sprintProgram.Id);
+            var customData = new
+            {
+                campaign_name = "programshare",
+                programId = sprintProgram.Id.ToString(),
+                programnCode = sprintProgram.ProgramCode,
+                name = sprintProgram.Name,
+                duration = sprintProgram.Duration.ToString(),
+                startDateTime = sprintProgram.StartDate.ToString(),
+                description = sprintProgram.Description,
+                imageLink = sprintProgram.ImageUrl,
+                endDate = sprintProgram.StartDate.AddDays(sprintProgram.Duration * 7),
+                events = sprintList.Count().ToString()
+            };
+            try
+            {
+                var socialLink = sprintProgram.IsPrivate ?
+                await this.SocialShareService.updateTokenAndGetInvite(customData) : string.Empty;
+                
+                sprintProgram.GetSocialLink = socialLink;
+                // await this.SprintRepo.UpdateSprintProgram(addedSprintProgram);
+                var programSprintList = await this.SprintRepo.GetProgramSprintListByProgramId(sprintProgram.Id);
+                return SprintProgramDtoMapper(await this.SprintRepo.UpdateSprintProgram(sprintProgram), programSprintList);
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprint Programms
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsPageDto> GetAllSprintProgramms(int userId, string searchTerm, int pageNo, int limit)
+        {
+            try
+            {
+                var result = await this.userRepo.GetUserRoleInfo(userId);
+                return await this.SprintRepo.GetAllSprintProgramms(userId, searchTerm, pageNo, limit, result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprint Program For Dashboard
+        /// </summary>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<SprintProgramsDashboardDto> GetAllSprintProgramForDashboard(int pageNo, int limit , int userId)
+        {
+            try
+            {
+              var sprintProgram =   await this.SprintRepo.GetAllSprintProgramForDashboard( pageNo, limit);
+                List<SprintProgramDto> sprintProgramDto = new List<SprintProgramDto>();
+                int participantCount = 0;
+
+                foreach (SprintProgram programs in sprintProgram.sPrograms.Skip(pageNo * limit).Take(limit))
+                {
+                    sprintProgramDto.Add(new SprintProgramDto(programs, await this.SprintRepo.GetAllSprintListByProgrammid(programs.Id),true, await this.GetAllProgramParticipantsCount(programs.Id), await this.IsUserJoinedProgram(programs.Id, userId)));
+                }
+
+                foreach (SprintProgram programs in sprintProgram.sPrograms)
+                {
+                    participantCount = participantCount + await this.GetAllProgramParticipantsCount(programs.Id);
+                }
+                return new SprintProgramsDashboardDto
+                {
+                    dbPrograms = sprintProgramDto,
+                    totalItems = sprintProgram.totalItems,
+                    totalParticipants = participantCount
+
+                }; 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Sprint Programms Count
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int GetAllSprintProgrammsCount(int userId)
+        {
+            try
+            {
+                return this.SprintRepo.GetAllSprintProgrammsCount(userId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Remove sprint program from Admin Panel
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task RemoveSprintProgram(int userId, int programId)
+        {
+            Expression<Func<SprintProgram, bool>> programPredicate = s => s.Id == programId;
+            var program = await this.SprintRepo.GetSprintProgram(programPredicate);
+            if (program == null)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotMatchingSprintWithId, "Sprint program not found with given id");
+            }
+            else if (program.CreatedBy.Id != userId)
+            {
+                throw new SCApplicationException((int)SprintErrorCode.NotAllowedOperation, "Only creator can delete program");
+            }
+            else
+            {
+                program.Status = (int)SprintProgramStatus.ARCHIVED;
+                await this.SprintRepo.UpdateSprintProgram(program);
+                this.SprintRepo.SaveChanges();
+                
+            }
+        }
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public Dictionary<int, string> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+            try
+            {
+                return ToSprintProgramDictionary(this.SprintRepo.GetProgramSprintListBySprintStartDate(sprintStartDate).Result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// To Sprint Program Dictionary
+        /// </summary>
+        /// <param name="sprintPrograms"></param>
+        /// <returns></returns>
+        public static Dictionary<int, string> ToSprintProgramDictionary(List<SprintProgram> sprintPrograms)
+        {
+            var dictionary = new Dictionary<int, string>();
+            if (sprintPrograms != null)
+            {
+                foreach (var programs in sprintPrograms)
+                {
+                    if(!dictionary.Values.Contains(programs.Name))
+                    dictionary.Add(programs.Id, programs.Name);
+                }
+            }
+
+            return dictionary;
+        }
+
+
+        /// <summary>
+        /// Get All Scheduled Programs Detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="pageNo"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<List<ProgramSprintScheduleEvents>> GetAllScheduledProgramsDetail(int programId, int pageNo, int limit)
+        {
+            try
+            {
+
+                return await this.SprintRepo.GetAllScheduledProgramsDetail(programId, pageNo, limit);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Get All Program Participants with program detail
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<ProgramParticipantsDto> GetAllProgramParticipants(int programId, int userId)
+        {
+            
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                
+                var allInfluencers = sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmail)).Concat(sprints.Select(y => this.userRepo.getDecriptedEmail(y.InfluencerEmailSecond))).ToList();
+                Expression <Func<SprintParticipant, bool>> participantPredicate = null;
+                
+                participantPredicate = s => sprintIds.Contains(s.SprintId);
+
+                List<SprintParticipant> participants =  await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
+                List < SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto> ParticipantInfoDto = new List<SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto>();
+                
+                foreach(SprintParticipant sprintParticipant in participants )
+                {
+                    if (!ParticipantInfoDto.Any(p => p.Id == sprintParticipant.User.Id))
+                    {
+                        
+
+                        ParticipantInfoDto.Add(new SprintCrowd.BackEnd.Domain.Sprint.Dtos.ParticipantInfoDto(
+                            sprintParticipant.User.Id,
+                            sprintParticipant.User.Name,
+                            sprintParticipant.User.ProfilePicture,
+                            sprintParticipant.User.City,
+                            sprintParticipant.User.Country, sprintParticipant.User.CountryCode, sprintParticipant.User.ColorCode
+                            , false, sprintParticipant.Stage, allInfluencers.Contains(this.userRepo.getDecriptedEmail(sprintParticipant.User.Email))));
+                    }
+                }
+                
+                var programDetail = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+                ProgramParticipantsDto programParticipantsDto = new ProgramParticipantsDto(programDetail.Name, programDetail.Description, programDetail.Duration, programDetail.StartDate , programDetail.StartDate.AddDays(programDetail.Duration*7),participants.Count, ParticipantInfoDto, await this.IsUserJoinedProgram(programId, userId),programDetail.IsPromoteInApp,programDetail.PromotionalText, sprintIds.Count(), ParticipantInfoDto.Count(), programDetail.IsPrivate);
+
+                return programParticipantsDto;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        ///Get All Program Participants Count
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<int> GetAllProgramParticipantsCount(int programId)
+        {
+
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                Expression<Func<SprintParticipant, bool>> participantPredicate = null;
+
+                participantPredicate = s => sprintIds.Contains(s.SprintId);
+
+                List<SprintParticipant> participants = await this.SprintRepo.GetProgramSprintsParticipants(participantPredicate);
+               
+                return participants.Count;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Get All Program Sprints Hosts
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task <List<UserDto>> GetAllProgramSprintsHosts(int programId)
+        {
+
+            try
+            {
+                var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);
+                var sprintIds = sprints.Select(x => x.Id);
+                Expression<Func<SprintParticipant, bool>> participantPredicate = null;
+
+                List<string> hosts = new List<string>(); 
+                List<string> coHosts = new List<string>();
+                hosts = sprints.Select(x => x.InfluencerEmail).Distinct().ToList();
+                coHosts = sprints.Select(x => x.InfluencerEmailSecond).Distinct().ToList();
+                hosts.AddRange(coHosts);
+                List<UserDto> hostUsersList = new List<UserDto>();
+                foreach (string email in hosts)
+                {
+                    if(email != null)
+                    hostUsersList.Add(await this.UserService.getUserByEmail(email));
+                }
+
+                
+                return hostUsersList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Join Program
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <param name="userId"></param>
+        /// <param name="accept"></param>
+        /// <returns></returns>
+        public async Task<dynamic> JoinProgram(int programId, int userId,string programCode, bool isPrivateProgram)
+        {
+            bool success = false;
+            SprintProgram program = new SprintProgram();
+            ProgramParticipant proParticipatInfor = new ProgramParticipant();
+            //if promoCode program
+            if (isPrivateProgram && !string.IsNullOrEmpty(programCode))
+            {
+                program = await this.SprintRepo.GetSprintProgramDetailsByProgramCode(programCode);
+                if (program != null)
+                {
+                    //To check the participant joined or not
+                    proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, program.Id);
+                    programId = program.Id;
+
+                    if (program.ProgramCode != programCode)
+                    {
+                        throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
+                    }
+                }
+            }
+            else if (!isPrivateProgram && programId > 0)
+            {
+                program = await this.SprintRepo.GetSprintProgramDetailsByProgramId(programId);
+                proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+
+                if (program.IsPrivate)
+                {
+                    if (program.IsPrivate != isPrivateProgram || program.ProgramCode != programCode)
+                    throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
+                }
+            }
+            else
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.NotAllowedOperation, "Notallowed");
+            }
+            
+            if (program == null)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.SprintNotFound, "Program not found");
+            }
+
+            if (proParticipatInfor != null && proParticipatInfor.ProgramId == programId)
+            {
+                throw new Application.SCApplicationException((int)ErrorCodes.AlreadyJoined, "Already joined");
+            }
+            
+            //Get all sprints in the program
+            var sprints = await this.SprintRepo.GetAllSprintsInPrograms(programId);              
+            //Join the participant to program
+            var programSprint = await this.SprintRepo.AddProgramParticipant(programId, userId);
+            if (sprints != null && sprints.Count > 0)
+            {
+                foreach (Sprint sprint in sprints)
+                {
+                    await this.SprintParticipantRepo.AddSprintParticipant(sprint.Id, userId);
+                }
+            }
+            if (programSprint != null)
+                success = true;
+            return success;
+
+        }
+
+        /// <summary>
+        ///Get All Program Participants Count
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUserJoinedProgram(int programId , int userId)
+        {
+
+            try
+            {
+                bool isJoined = false;
+                var proParticipatInfor = await this.SprintRepo.GetProgramByUserId(userId, programId);
+                if (proParticipatInfor != null && proParticipatInfor.Id.ToString() != string.Empty)
+                    isJoined = true;
+                return isJoined;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

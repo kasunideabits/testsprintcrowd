@@ -223,5 +223,12 @@ namespace SprintCrowd.BackEnd.Domain.ScrowdUser
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<ViewUserProfileDto> IsViewUserProfile(int userId, bool isFriend);
+
+        /// <summary>
+        /// Get Decripted Email
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <returns></returns>
+        string getDecriptedEmail(string base64);
     }
 }

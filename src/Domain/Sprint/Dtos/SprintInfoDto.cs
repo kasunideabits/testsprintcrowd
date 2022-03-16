@@ -23,7 +23,9 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             bool influencerAvailability = false,
             bool isNarrationsOn = true,
             string coHost = "",
-            int interval = 15
+            int interval = 15,
+            bool isProgramSprint = false,
+            int programId = 0
             ) : base(id, name, distance, numberOfParticipants, startTime, type, imageUrl, promoCode, isTimeBased, durationForTimeBasedEvent, descriptionForTimeBasedEvent, influencerAvailability)
 
         {
@@ -35,7 +37,8 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
             this.InfluencerAvailability = influencerAvailability;
             this.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
             this.CoHost = coHost;
-
+            this.IsProgramSprint = isProgramSprint;
+            this.ProgramId = programId;
         }
 
         public SprintInfoDto(
@@ -69,5 +72,7 @@ namespace SprintCrowd.BackEnd.Domain.Sprint.Dtos
         public bool IsNarrationsOn { get; set; } = true;
 
         public string CoHost { get; set; }
+        public bool IsProgramSprint { get; set; }
+        public int ProgramId { get; set; }
     }
 }

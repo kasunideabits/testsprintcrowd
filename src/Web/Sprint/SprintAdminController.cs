@@ -16,6 +16,7 @@
     using System.IO;
     using SprintCrowd.BackEnd.Domain.SprintParticipant;
     using SprintCrowd.BackEnd.Infrastructure.RealTimeMessage;
+    using SprintCrowdBackEnd.Domain.Sprint.Dtos;
 
     /// <summary>
     /// event controller
@@ -423,6 +424,129 @@
             string fileName = $"EmailData-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
 
             return this.File(stream, contentType, fileName);
+        }
+
+
+        /// <summary>
+        /// Create Sprint Program
+        /// </summary>
+        /// <param name="sprint"></param>
+        /// <returns></returns>
+        [HttpPost("CreateSprintProgram")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> CreateSprintProgram([FromBody] SprintProgramDto sprintProgram)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.CreateNewSprintProgram(
+                user,
+                sprintProgram);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
+        }
+
+
+        // <summary>
+        /// Get Sprint Program Details By User
+        /// </summary>
+        /// <param name="timeOffset">time offset</param>
+        /// <returns></returns>
+        [HttpGet("GetSprintProgramDetailsByUser/{programId}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<dynamic> GetSprintProgramDetailsByUser(int programId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetSprintProgramDetailsByProgramId(programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Update Sprint Program
+        /// </summary>
+        /// <param name="sprint"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateSprintProgram")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> UpdateSprintProgram([FromBody] SprintProgramDto sprintProgram)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.UpdateSprintProgram(
+                user,
+                sprintProgram);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+
+            return this.Ok(response);
+        }
+
+
+        /// <summary>
+        /// Get All Programms
+        /// </summary>
+        [HttpGet("GetAllProgramms/{searchTerm}/{pageNo:int?}/{limit:int?}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> GetAllProgramms(string searchTerm, int pageNo, int limit)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            var result = await this.SprintService.GetAllSprintProgramms(user.Id, searchTerm, pageNo, limit);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result.sPrograms,
+                totalItems = result.totalItems
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Remove Program with given Program id
+        /// </summary>
+        /// <param name="programId">Program id to remove</param>
+        [HttpPost("removeProgram/{programId:int}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorResponseObject), 400)]
+        public async Task<IActionResult> RemoveProgram(int programId)
+        {
+            User user = await this.User.GetUser(this.UserService);
+            await this.SprintService.RemoveSprintProgram(user.Id, programId);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success
+            };
+            return this.Ok(response);
+        }
+
+        /// <summary>
+        /// Get Program Sprint List By Sprint StartDate
+        /// </summary>
+        /// <param name="sprintStartDate"></param>
+        /// <returns></returns>
+        [HttpGet("GetProgramSprintListBySprintStartDate/{sprintStartDate:DateTime}")]
+        [ProducesResponseType(typeof(ResponseObject), 200)]
+        public async Task<IActionResult> GetProgramSprintListBySprintStartDate(DateTime sprintStartDate)
+        {
+
+            var result = this.SprintService.GetProgramSprintListBySprintStartDate(sprintStartDate);
+            ResponseObject response = new ResponseObject()
+            {
+                StatusCode = (int)ApplicationResponseCode.Success,
+                Data = result,
+            };
+            return this.Ok(response);
         }
     }
 }

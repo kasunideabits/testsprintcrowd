@@ -668,5 +668,7 @@
             return this.Context.SprintParticipant
                 .Where(predicate);
         }
+
+
     }
 }
