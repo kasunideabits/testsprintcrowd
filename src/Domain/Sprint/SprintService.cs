@@ -278,17 +278,18 @@
             sprintAavail.IsTimeBased = sprintModel.IsTimeBased;
             sprintAavail.DurationForTimeBasedEvent = durationForTimeBasedEvent;
             sprintAavail.DescriptionForTimeBasedEvent = descriptionForTimeBasedEvent;
-            
 
 
-            var program = this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintModel.ProgramId);
-            //Add program Id only within the program start and end dates
-            if (program.Result.StartDate <= sprintAavail.StartDateTime && sprintAavail.StartDateTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
-                sprintAavail.ProgramId = sprintModel.ProgramId;
-            else
-                sprintAavail.ProgramId = 0;
+            if(sprintModel.ProgramId > 0)
+            {
+                var program = this.SprintRepo.GetSprintProgramDetailsByProgramId(sprintModel.ProgramId);
+                //Add program Id only within the program start and end dates
+                if ( program!=null && program.Result != null && program.Result.StartDate <= sprintAavail.StartDateTime && sprintAavail.StartDateTime <= program.Result.StartDate.AddDays(program.Result.Duration * 7))
+                    sprintAavail.ProgramId = sprintModel.ProgramId;
+                else
+                    sprintAavail.ProgramId = 0;
 
-
+            }
             if (sprintAavail.IsTimeBased == true)
             {
                 sprintAavail.Interval = (int)sprintAavail.DurationForTimeBasedEvent.TotalMinutes;
