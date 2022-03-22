@@ -12,7 +12,7 @@ namespace SprintCrowd.BackEnd.Enums
     public enum AllowCrowdSprints
     {
         HostAllowCount = 500,
-        UserAllowCount = 3,
+        UserAllowCount = 10,
     }
 
     public static class UserRoles
