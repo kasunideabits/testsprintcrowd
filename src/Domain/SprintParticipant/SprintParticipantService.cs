@@ -246,9 +246,10 @@
 
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
+                    participant.DistanceRan = distance;
                     if (participant.Sprint.IsTimeBased)
                     {
-                        participant.DistanceRan = distance;
+                        
                         participant.RaceCompletedDuration = raceCompletedDuation;
                     }
 
