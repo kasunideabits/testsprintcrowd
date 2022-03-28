@@ -246,12 +246,17 @@
 
                 if (participant.Stage != ParticipantStage.COMPLETED)
                 {
+                    
                     if (participant.Sprint.IsTimeBased)
                     {
+
                         participant.DistanceRan = distance;
                         participant.RaceCompletedDuration = raceCompletedDuation;
+                    }else
+                    {
+                        participant.DistanceRanUnCompleted = distance;
                     }
-
+                    
                     //Mark Attendance users only can exit others will remove from sprint
                     if (participant.Stage == ParticipantStage.MARKED_ATTENDENCE)
                         participant.Stage = ParticipantStage.QUIT;

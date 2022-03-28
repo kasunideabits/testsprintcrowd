@@ -61,22 +61,25 @@ namespace SprintCrowd.BackEnd.Infrastructure.NotificationWorker.Sprint.Jobs
 
         private void AblyMessage(Participant participant)
         {
-            // var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(this._joinSprint.SprintId);
-            var message = new Participant()
+            if (participant != null)
             {
-                Id = participant.Id,
-                Name = participant.Name ?? String.Empty,
-                Email = participant.Email ?? String.Empty,
-                ProfilePicture = participant.ProfilePicture ?? String.Empty,
-                Code = participant.Code ?? String.Empty,
-                ColorCode = participant.ColorCode ?? String.Empty,
-                City = participant.City ?? String.Empty,
-                Country = participant.Country ?? String.Empty,
-                CountryCode = participant.CountryCode ?? String.Empty,
-            };
-            IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + this._joinSprint.SprintId);
-            channel.Publish("Join", message);
-           // channel.SwitchOffChannel();
+                // var notificaitonMsg = ExitNotificationMessageMapper.AblyNotificationMessageMapper(this._joinSprint.SprintId);
+                var message = new Participant()
+                {
+                    Id = participant.Id,
+                    Name = participant.Name ?? String.Empty,
+                    Email = participant.Email ?? String.Empty,
+                    ProfilePicture = participant.ProfilePicture ?? String.Empty,
+                    Code = participant.Code ?? String.Empty,
+                    ColorCode = participant.ColorCode ?? String.Empty,
+                    City = participant.City ?? String.Empty,
+                    Country = participant.Country ?? String.Empty,
+                    CountryCode = participant.CountryCode ?? String.Empty,
+                };
+                IChannel channel = this.AblyConnectionFactory.CreateChannel("sprintChannelOne" + this._joinSprint.SprintId);
+                channel.Publish("Join", message);
+                // channel.SwitchOffChannel();
+            }
         }
 
         private void SendPushNotification(Participant participant)

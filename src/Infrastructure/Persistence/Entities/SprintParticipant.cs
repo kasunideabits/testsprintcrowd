@@ -73,6 +73,9 @@ namespace SprintCrowd.BackEnd.Infrastructure.Persistence.Entities
         /// </summary>
         public virtual Sprint Sprint { get; set; }
 
-       
+        /// <summary>
+        ///UnCompleted Distance ran in the sprint
+        /// </summary>
+        public int DistanceRanUnCompleted { get; set; }
     }
 }
