@@ -17,8 +17,4 @@ on:
 #         uses: SonarSource/sonarcloud-github-action@master
 #         env:
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-<<<<<<< HEAD
 #
-=======
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
->>>>>>> 48a3c8601e5bf72952464aad66c8c7fbc96971f9
