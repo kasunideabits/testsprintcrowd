@@ -21,7 +21,7 @@ RUN cd src && dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/runtime:2.2
 WORKDIR /app
 COPY --from=build-env /app/src/out .
-x
+
 RUN mkdir -p /app/src/out/fcm_keystore
 COPY /config/firebase-token.json /app/src/out/fcm_keystore/firebase-token.json
 
