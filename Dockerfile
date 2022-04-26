@@ -1,5 +1,6 @@
 
-FROM mcr.microsoft.com/dotnet/sdk:2.2 AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2.105 AS build-env
+
 WORKDIR /app
 #RUN mkdir -p app/fcm_keystore
 
@@ -18,7 +19,7 @@ Run cd ./test/ && dotnet restore && dotnet test
 RUN cd src && dotnet publish -c Release -o out
 # RUN dotnet sonarscanner end /d:sonar.login=97ee00357e0bf3f04ee7bbbda21bd6bdbb7b9843
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:2.2
+FROM mcr.microsoft.com/dotnet/core/runtime:2.2.3
 WORKDIR /app
 COPY --from=build-env /app/src/out .
 
